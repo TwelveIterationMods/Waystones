@@ -120,7 +120,7 @@ public class WaystoneManager {
 		ForgeDirection facing = ForgeDirection.getOrientation(targetWorld.getBlockMetadata(x, y, z));
 		BlockPos targetPos = waystone.getPos().offset(facing);
 		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.dimensionId;
-		if (dimensionWarp && (!Waystones.getConfig().interDimension && !(serverEntry != null && Waystones.getConfig().globalInterDimension))) {
+		if (dimensionWarp && !Waystones.getConfig().interDimension && !(serverEntry == null || !Waystones.getConfig().globalInterDimension)) {
 			player.addChatComponentMessage(new ChatComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}

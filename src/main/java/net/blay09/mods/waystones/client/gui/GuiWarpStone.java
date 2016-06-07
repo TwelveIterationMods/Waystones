@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui;
 
+import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWarpStone;
@@ -42,7 +43,7 @@ public class GuiWarpStone extends GuiScreen {
 		final int buttonsPerPage = 4;
 
 		btnPrevPage.enabled = pageOffset > 0;
-		btnNextPage.enabled = pageOffset < entries.length / buttonsPerPage;
+		btnNextPage.enabled = pageOffset < (entries.length - 1) / buttonsPerPage;
 
 		Iterator it = buttonList.iterator();
 		while(it.hasNext()) {
@@ -57,7 +58,7 @@ public class GuiWarpStone extends GuiScreen {
 			if(entryIndex >= 0 && entryIndex < entries.length) {
 				GuiButtonWaystone btnWaystone = new GuiButtonWaystone(2 + i, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex]);
 				if(entries[entryIndex].getDimensionId() != Minecraft.getMinecraft().theWorld.provider.dimensionId) {
-					if(!Waystones.getConfig().interDimension && !(entries[entryIndex].isGlobal() && Waystones.getConfig().globalInterDimension)) {
+					if(!Waystones.getConfig().interDimension && !(!entries[entryIndex].isGlobal() || !Waystones.getConfig().globalInterDimension)) {
 						btnWaystone.enabled = false;
 					}
 				}
