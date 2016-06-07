@@ -1,2 +1,2 @@
 # Waystones
-Minecraft Mod. Adds waystones you can teleport to after they are activated.
+Minecraft Mod. Teleport back to activated waystones. For Survival, Adventure or Servers.

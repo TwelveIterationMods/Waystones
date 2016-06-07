@@ -1,0 +1,16 @@
+[
+{
+  "modid": "waystones",
+  "name": "Waystones",
+  "description": "Adds waystones you can teleport to after they've been activated.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BlayTheNinth", "ZeroTheShinigami"],
+  "credits": "Developed by BlayTheNinth, Models by ZeroTheShinigami. Includes item icons from @JoeCreates",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

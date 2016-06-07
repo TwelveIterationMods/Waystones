@@ -1,0 +1,26 @@
+tile.waystones:waystone.name=Waystone
+
+item.waystones:returnScroll.name=Return Scroll
+item.waystones:warpStone.name=Warp Stone
+
+waystones:noDimensionWarp=You cannot warp between worlds.
+waystones:waystoneBroken=The bound waystone has been moved or destroyed.
+waystones:scrollNotBound=You have not activated any waystones yet.
+waystones:stoneNotCharged=The Warp Stone is not fully charged yet.
+waystones:activatedWaystone=Activated Waystone: %s
+waystones:nameOccupied=The name %s is already in use.
+
+gui.waystones:warpStone.selectDestination=Select your destination:
+gui.waystones:warpStone.nextPage=Next
+gui.waystones:warpStone.previousPage=Previous
+gui.waystones:confirmReturn=Do you really want to warp back to your latest waystone?
+gui.waystones:confirmReturn.boundTo=Bound to: %s
+gui.waystones:confirmReturn.noWaystoneActive=No waystone active.
+gui.waystones:editWaystone.enterName=Enter waystone name:
+gui.waystones:editWaystone.isGlobal=is Global
+
+tooltip.waystones:cooldownLeft=Cooldown: %d seconds
+tooltip.waystones:boundTo=Bound to: %s
+tooltip.waystones:none=None
+tooltip.waystones:returnToWaystone=Return to Waystone
+tooltip.waystones:openWaystoneMenu=Open Waystone Menu
