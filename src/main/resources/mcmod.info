@@ -2,7 +2,7 @@
 {
   "modid": "waystones",
   "name": "Waystones",
-  "description": "Adds waystones you can teleport to after they've been activated.",
+  "description": "Teleport back to activated waystones. For Survival, Adventure or Servers.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
