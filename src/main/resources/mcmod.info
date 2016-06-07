@@ -7,8 +7,8 @@
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["BlayTheNinth", "ZeroTheShinigami"],
-  "credits": "Developed by BlayTheNinth, Models by ZeroTheShinigami. Includes item icons from @JoeCreates",
+  "authorList": ["BlayTheNinth"],
+  "credits": "Developed by BlayTheNinth. Includes item icons by @JoeCreates released under CC-BY-SA 3.0",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
