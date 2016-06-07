@@ -37,6 +37,9 @@ repositories {
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
+    maven {
+        url "http://chickenbones.net/maven/"
+    }
 }
 
 dependencies {
