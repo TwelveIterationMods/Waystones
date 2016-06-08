@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -125,6 +126,10 @@ public class BlockWaystone extends BlockContainer {
 			chatComponent.getChatStyle().setColor(EnumChatFormatting.YELLOW);
 			player.addChatComponentMessage(chatComponent);
 			WaystoneManager.activateWaystone(player, tileWaystone);
+			if(Waystones.getConfig().setSpawnPoint) {
+				ForgeDirection facing = ForgeDirection.getOrientation(world.getBlockMetadata(tileWaystone.xCoord, tileWaystone.yCoord, tileWaystone.zCoord));
+				player.setSpawnChunk(new ChunkCoordinates(tileWaystone.xCoord + facing.offsetX, tileWaystone.yCoord + facing.offsetY, tileWaystone.zCoord + facing.offsetZ), true);
+			}
 		} else {
 			Waystones.proxy.playSound("random.levelup", 1f);
 			for(int i = 0; i < 32; i++) {
