@@ -68,7 +68,11 @@ public class WaystoneManager {
 
 	public static boolean checkAndUpdateWaystone(EntityPlayer player, WaystoneEntry waystone) {
 		WaystoneEntry serverEntry = getServerWaystone(waystone.getName());
-		if(serverEntry != null && getWaystoneInWorld(serverEntry) != null) {
+		if(serverEntry != null) {
+			if(getWaystoneInWorld(serverEntry) == null) {
+				removeServerWaystone(serverEntry);
+				return false;
+			}
 			if(removePlayerWaystone(player, waystone)) {
 				sendPlayerWaystones(player);
 			}

@@ -83,11 +83,6 @@ public class Waystones {
 		}
 	}
 
-	@Mod.EventHandler
-	public void serverStarting(FMLServerStartingEvent event) {
-		System.out.println("server starting");
-	}
-
 	public static WaystoneConfig getConfig() {
 		return instance.config;
 	}

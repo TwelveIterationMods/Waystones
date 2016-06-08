@@ -2,12 +2,11 @@ package net.blay09.mods.waystones.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockPos {
 
-	private static final int NUM_X_BITS = 1 + MathHelper.calculateLogBaseTwo(MathHelper.roundUpToPowerOfTwo(30000000));
+	private static final int NUM_X_BITS = 26;
 	private static final int NUM_Z_BITS = NUM_X_BITS;
 	private static final int NUM_Y_BITS = 64 - NUM_X_BITS - NUM_Z_BITS;
 	private static final int Y_SHIFT = NUM_Z_BITS;
@@ -55,7 +54,7 @@ public class BlockPos {
 	}
 
 	public static BlockPos fromLong(long value) {
-		int i = (int) (value << 64 - X_SHIFT - NUM_X_BITS >> 64 - NUM_X_BITS);
+		int i = (int) (value >> 64 - NUM_X_BITS);
 		int j = (int) (value << 64 - Y_SHIFT - NUM_Y_BITS >> 64 - NUM_Y_BITS);
 		int k = (int) (value << 64 - NUM_Z_BITS >> 64 - NUM_Z_BITS);
 		return new BlockPos(i, j, k);
@@ -85,4 +84,5 @@ public class BlockPos {
 	public BlockPos offset(ForgeDirection facing) {
 		return new BlockPos(x + facing.offsetX, y + facing.offsetY, z + facing.offsetZ);
 	}
+
 }
