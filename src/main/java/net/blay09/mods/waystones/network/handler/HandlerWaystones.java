@@ -17,7 +17,7 @@ public class HandlerWaystones implements IMessageHandler<MessageWaystones, IMess
 			public void run() {
 				WaystoneManager.setKnownWaystones(message.getEntries());
 				WaystoneManager.setServerWaystones(message.getServerEntries());
-				PlayerWaystoneData.store(FMLClientHandler.instance().getClientPlayerEntity(), message.getEntries(), message.getLastFreeWarp(), message.getLastWarpStoneUse());
+				PlayerWaystoneData.store(FMLClientHandler.instance().getClientPlayerEntity(), message.getEntries(), message.getLastServerWaystoneName(), message.getLastFreeWarp(), message.getLastWarpStoneUse());
 			}
 		});
 		return null;

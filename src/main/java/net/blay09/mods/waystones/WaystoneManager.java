@@ -31,9 +31,13 @@ public class WaystoneManager {
 	private static final Map<String, WaystoneEntry> knownWaystones = Maps.newHashMap();
 
 	public static void activateWaystone(EntityPlayer player, TileWaystone waystone) {
-		if(getServerWaystone(waystone.getWaystoneName()) != null) {
+		WaystoneEntry serverWaystone = getServerWaystone(waystone.getWaystoneName());
+		if(serverWaystone != null) {
+			PlayerWaystoneData.setLastServerWaystone(player, serverWaystone);
+			sendPlayerWaystones(player);
 			return;
 		}
+		PlayerWaystoneData.resetLastServerWaystone(player);
 		removePlayerWaystone(player, new WaystoneEntry(waystone));
 		addPlayerWaystone(player, waystone);
 		sendPlayerWaystones(player);
@@ -42,7 +46,7 @@ public class WaystoneManager {
 	public static void sendPlayerWaystones(EntityPlayer player) {
 		if (player instanceof EntityPlayerMP) {
 			PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-			NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), getServerWaystones().toArray(new WaystoneEntry[getServerWaystones().size()]), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (EntityPlayerMP) player);
+			NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), getServerWaystones().toArray(new WaystoneEntry[getServerWaystones().size()]), waystoneData.getLastServerWaystoneName(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (EntityPlayerMP) player);
 		}
 	}
 
