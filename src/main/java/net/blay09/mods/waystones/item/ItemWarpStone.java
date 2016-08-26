@@ -86,6 +86,7 @@ public class ItemWarpStone extends Item {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public double getDurabilityForDisplay(ItemStack stack) {
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		float percentage = (float) timeSince / (float) (Waystones.getConfig().warpStoneCooldown * 1000);
@@ -104,6 +105,7 @@ public class ItemWarpStone extends Item {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack itemStack) {
 		return PlayerWaystoneData.canUseWarpStone(FMLClientHandler.instance().getClientPlayerEntity());
 	}
