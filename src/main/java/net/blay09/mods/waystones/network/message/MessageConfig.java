@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.message;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import net.blay09.mods.waystones.WaystoneConfig;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageConfig implements IMessage {
 

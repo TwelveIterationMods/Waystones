@@ -1,8 +1,6 @@
 package net.blay09.mods.waystones.client.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWarpReturn;
 import net.blay09.mods.waystones.util.WaystoneEntry;
@@ -10,7 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class GuiConfirmReturn extends GuiYesNo implements GuiYesNoCallback {
 	private final String waystoneName;
@@ -31,9 +30,9 @@ public class GuiConfirmReturn extends GuiYesNo implements GuiYesNoCallback {
 	private static String getWaystoneName() {
 		WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
 		if(lastEntry != null) {
-			return EnumChatFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", lastEntry.getName());
+			return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", lastEntry.getName());
 		}
-		return EnumChatFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.noWaystoneActive");
+		return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.noWaystoneActive");
 	}
 
 	@Override

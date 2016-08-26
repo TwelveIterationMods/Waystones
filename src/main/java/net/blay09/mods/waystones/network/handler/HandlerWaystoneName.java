@@ -1,20 +1,19 @@
 package net.blay09.mods.waystones.network.handler;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.message.MessageWaystoneName;
-import net.blay09.mods.waystones.util.BlockPos;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName, IMessage> {
 	@Override
@@ -31,17 +30,17 @@ public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName,
 				if(entityPlayer.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
 					return;
 				}
-				TileEntity tileEntity = world.getTileEntity(pos.getX(), pos.getY(), pos.getZ());
+				TileEntity tileEntity = world.getTileEntity(pos);
 				if(tileEntity instanceof TileWaystone) {
 					if(WaystoneManager.getServerWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
-						ctx.getServerHandler().playerEntity.addChatComponentMessage(new ChatComponentTranslation("waystones:nameOccupied", message.getName()));
+						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
 						return;
 					}
 					WaystoneManager.removeServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
 					((TileWaystone) tileEntity).setWaystoneName(message.getName());
 					if(message.isGlobal() && ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						WaystoneManager.addServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
-						for(Object obj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+						for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
 							WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
 						}
 					}

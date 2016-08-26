@@ -1,9 +1,10 @@
 package net.blay09.mods.waystones.util;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class WaystoneEntry {
 
@@ -20,8 +21,8 @@ public class WaystoneEntry {
 
 	public WaystoneEntry(TileWaystone tileWaystone) {
 		this.name = tileWaystone.getWaystoneName();
-		this.dimensionId = tileWaystone.getWorldObj().provider.dimensionId;
-		this.pos = new BlockPos(tileWaystone);
+		this.dimensionId = tileWaystone.getWorld().provider.getDimension();
+		this.pos = tileWaystone.getPos();
 	}
 
 	public String getName() {

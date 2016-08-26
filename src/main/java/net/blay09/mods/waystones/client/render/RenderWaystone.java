@@ -3,15 +3,16 @@ package net.blay09.mods.waystones.client.render;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
-public class RenderWaystone extends TileEntitySpecialRenderer {
+public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 
 	private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone.png");
 	private static final ResourceLocation textureActive = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_active.png");
@@ -19,31 +20,35 @@ public class RenderWaystone extends TileEntitySpecialRenderer {
 	private final ModelWaystone model = new ModelWaystone();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTicks) {
-		TileWaystone tileWaystone = (TileWaystone) tileEntity;
+	public void renderTileEntityAt(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+		IBlockState state = (tileEntity != null && tileEntity.hasWorldObj()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
+		if(state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
+			return;
+		}
+
 		bindTexture(texture);
 
-		float angle = tileEntity.hasWorldObj() ? WaystoneManager.getRotationYaw(ForgeDirection.getOrientation(tileEntity.getBlockMetadata())) : 0f;
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		GL11.glTranslated(x + 0.5, y, z + 0.5);
-		GL11.glRotatef(angle, 0f, 1f, 0f);
-		GL11.glRotatef(-180f, 1f, 0f, 0f);
-		GL11.glScalef(0.5f, 0.5f, 0.5f);
+		float angle = state != null ? WaystoneManager.getRotationYaw(state.getValue(BlockWaystone.FACING)) : 0f;
+		GlStateManager.pushMatrix();
+//		GlStateManager.enableLighting();
+		GlStateManager.color(1f, 1f, 1f, 1f);
+		GlStateManager.translate(x + 0.5, y, z + 0.5);
+		GlStateManager.rotate(angle, 0f, 1f, 0f);
+		GlStateManager.rotate(-180f, 1f, 0f, 0f);
+		GlStateManager.scale(0.5f, 0.5f, 0.5f);
 		model.renderAll();
-		if(tileWaystone.hasWorldObj() && WaystoneManager.getKnownWaystone(tileWaystone.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null) {
+		if(tileEntity != null && tileEntity.hasWorldObj() && (WaystoneManager.getKnownWaystone(tileEntity.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileEntity.getWaystoneName()) != null)) {
 			bindTexture(textureActive);
-			GL11.glScalef(1.05f, 1.05f, 1.05f);
+			GlStateManager.scale(1.05f, 1.05f, 1.05f);
 			if(!WaystoneConfig.disableTextGlow) {
-				GL11.glDisable(GL11.GL_LIGHTING);
-				Minecraft.getMinecraft().entityRenderer.disableLightmap(0);
+//				GlStateManager.disableLighting();
+				Minecraft.getMinecraft().entityRenderer.disableLightmap();
 			}
 			model.renderPillar();
 			if(!WaystoneConfig.disableTextGlow) {
-				Minecraft.getMinecraft().entityRenderer.enableLightmap(0);
+				Minecraft.getMinecraft().entityRenderer.enableLightmap();
 			}
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

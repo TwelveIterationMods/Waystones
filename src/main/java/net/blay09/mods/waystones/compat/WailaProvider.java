@@ -10,7 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -37,10 +38,10 @@ public class WailaProvider {
 		public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 			TileEntity tileEntity = accessor.getTileEntity();
 			if(tileEntity == null) {
-				tileEntity = accessor.getWorld().getTileEntity(accessor.getPosition().blockX, accessor.getPosition().blockY - 1, accessor.getPosition().blockZ);
+				tileEntity = accessor.getWorld().getTileEntity(accessor.getPosition().down());
 			}
 			if(tileEntity instanceof TileWaystone) {
-				list.add(EnumChatFormatting.DARK_AQUA + ((TileWaystone) tileEntity).getWaystoneName());
+				list.add(TextFormatting.DARK_AQUA + ((TileWaystone) tileEntity).getWaystoneName());
 			}
 			return list;
 		}
@@ -51,11 +52,12 @@ public class WailaProvider {
 		}
 
 		@Override
-		public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tileEntity, NBTTagCompound tagCompound, World world, int x, int y, int z) {
+		public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity tileEntity, NBTTagCompound tagCompound, World world, BlockPos pos) {
 			if(tileEntity != null) {
 				tileEntity.writeToNBT(tagCompound);
 			}
 			return tagCompound;
 		}
+
 	}
 }

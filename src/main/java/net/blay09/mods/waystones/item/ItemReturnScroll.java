@@ -6,22 +6,28 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemReturnScroll extends Item {
 
 	public ItemReturnScroll() {
-		setCreativeTab(CreativeTabs.tabTools);
-		setUnlocalizedName(Waystones.MOD_ID + ":returnScroll");
-		setTextureName(Waystones.MOD_ID + ":returnScroll");
+		setCreativeTab(CreativeTabs.TOOLS);
+		setRegistryName(Waystones.MOD_ID, "warpScroll");
+		setUnlocalizedName(getRegistryName().toString());
 	}
 
 	@Override
@@ -31,16 +37,17 @@ public class ItemReturnScroll extends Item {
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemStack) {
-		return EnumAction.bow;
+		return EnumAction.BOW;
 	}
 
+	@Nullable
 	@Override
-	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer player) {
-		if(!world.isRemote) {
-			WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(player);
+	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
+		if(!world.isRemote && entity instanceof EntityPlayer) {
+			WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone((EntityPlayer) entity);
 			if(lastEntry != null) {
-				if(WaystoneManager.teleportToWaystone(player, lastEntry)) {
-					if(!player.capabilities.isCreativeMode) {
+				if(WaystoneManager.teleportToWaystone((EntityPlayer) entity, lastEntry)) {
+					if(!((EntityPlayer) entity).capabilities.isCreativeMode) {
 						itemStack.stackSize--;
 					}
 				}
@@ -50,23 +57,20 @@ public class ItemReturnScroll extends Item {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 		if(PlayerWaystoneData.getLastWaystone(player) != null) {
-			if(!player.isUsingItem() && world.isRemote) {
-				Waystones.proxy.playSound("portal.trigger", 2f);
+			if(!player.isHandActive() && world.isRemote) {
+				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, 2f);
 			}
-			player.setItemInUse(itemStack, getMaxItemUseDuration(itemStack));
+			player.setActiveHand(hand);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		} else {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("waystones:scrollNotBound");
-			chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:scrollNotBound");
+			chatComponent.getStyle().setColor(TextFormatting.RED);
 			Waystones.proxy.printChatMessage(3, chatComponent);
+			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
-		return itemStack;
-	}
 
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		return false;
 	}
 
 	@Override
@@ -74,9 +78,9 @@ public class ItemReturnScroll extends Item {
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean debug) {
 		WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(player);
 		if(lastEntry != null) {
-			list.add(EnumChatFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", EnumChatFormatting.DARK_AQUA + lastEntry.getName()));
+			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
 		} else {
-			list.add(EnumChatFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", I18n.format("tooltip.waystones:none")));
+			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", I18n.format("tooltip.waystones:none")));
 		}
 	}
 }

@@ -1,0 +1,3 @@
+dependencies {
+    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
+}

@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.network.message;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import net.blay09.mods.waystones.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageWaystoneName implements IMessage {
 

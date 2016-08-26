@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui;
 
-import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWarpStone;
@@ -57,7 +56,7 @@ public class GuiWarpStone extends GuiScreen {
 			int entryIndex = pageOffset * buttonsPerPage + i;
 			if(entryIndex >= 0 && entryIndex < entries.length) {
 				GuiButtonWaystone btnWaystone = new GuiButtonWaystone(2 + i, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex]);
-				if(entries[entryIndex].getDimensionId() != Minecraft.getMinecraft().theWorld.provider.dimensionId) {
+				if(entries[entryIndex].getDimensionId() != Minecraft.getMinecraft().theWorld.provider.getDimension()) {
 					if(!Waystones.getConfig().interDimension && !(!entries[entryIndex].isGlobal() || !Waystones.getConfig().globalInterDimension)) {
 						btnWaystone.enabled = false;
 					}

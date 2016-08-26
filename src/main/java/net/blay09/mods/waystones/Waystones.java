@@ -1,13 +1,5 @@
 package net.blay09.mods.waystones;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.item.ItemReturnScroll;
@@ -15,8 +7,16 @@ import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 @Mod(modid = Waystones.MOD_ID, name = "Waystones")
@@ -42,14 +42,15 @@ public class Waystones {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		blockWaystone = new BlockWaystone();
-		GameRegistry.registerBlock(blockWaystone, "waystone");
+		GameRegistry.register(blockWaystone);
+		GameRegistry.register(new ItemBlock(blockWaystone).setRegistryName(blockWaystone.getRegistryName()));
 		GameRegistry.registerTileEntity(TileWaystone.class, MOD_ID + ":waystone");
 
 		itemReturnScroll = new ItemReturnScroll();
-		GameRegistry.registerItem(itemReturnScroll, "warpScroll");
+		GameRegistry.register(itemReturnScroll);
 
 		itemWarpStone = new ItemWarpStone();
-		GameRegistry.registerItem(itemWarpStone, "warpStone");
+		GameRegistry.register(itemWarpStone);
 
 		NetworkHandler.init();
 
@@ -65,21 +66,22 @@ public class Waystones {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+		proxy.registerModels();
 		FMLInterModComms.sendMessage("Waila", "register", "net.blay09.mods.waystones.compat.WailaProvider.register");
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		if(instance.config.allowReturnScrolls) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "GEG", "PPP", 'G', "nuggetGold", 'E', Items.ender_pearl, 'P', Items.paper));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "GEG", "PPP", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER));
 		}
 
 		if(instance.config.allowWarpStone) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemWarpStone), "DED", "EGE", "DED", 'D', "dyePurple", 'E', Items.ender_pearl, 'G', "gemEmerald"));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemWarpStone), "DED", "EGE", "DED", 'D', "dyePurple", 'E', Items.ENDER_PEARL, 'G', "gemEmerald"));
 		}
 
 		if(!config.creativeModeOnly) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockWaystone), " S ", "SWS", "OOO", 'S', Blocks.stonebrick, 'W', itemWarpStone, 'O', Blocks.obsidian));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockWaystone), " S ", "SWS", "OOO", 'S', Blocks.STONEBRICK, 'W', itemWarpStone, 'O', Blocks.OBSIDIAN));
 		}
 	}
 

@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones;
 
 import io.netty.buffer.ByteBuf;
-import net.blay09.mods.waystones.util.BlockPos;
 import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.config.Configuration;
 
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class WaystoneConfig {
 		allowWarpStone = config.getBoolean("Allow Warp Stone", "general", true, "If true, the warp stone will be craftable.");
 
 		teleportButtonX = config.getInt("Teleport Button GUI X", "client", 60, -100, 250, "The x position of the warp button in the inventory.");
-		teleportButtonY = config.getInt("Teleport Button GUI Y", "client", 60, -100, 250, "The y position of the warp button in the inventory.");
+		teleportButtonY = config.getInt("Teleport Button GUI Y", "client", 58, -100, 250, "The y position of the warp button in the inventory.");
 		disableTextGlow = config.getBoolean("Disable Text Glow", "client", false, "If true, the text overlay on waystones will no longer always render at full brightness.");
 		disableParticles = config.getBoolean("Disable Particles", "client", false, "If true, activated waystones will not emit particles.");
 

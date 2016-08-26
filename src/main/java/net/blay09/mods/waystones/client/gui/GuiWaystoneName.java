@@ -1,17 +1,19 @@
 package net.blay09.mods.waystones.client.gui;
 
-import cpw.mods.fml.client.config.GuiCheckBox;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWaystoneName;
-import net.blay09.mods.waystones.util.BlockPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
 
 public class GuiWaystoneName extends GuiScreen {
 
@@ -31,7 +33,7 @@ public class GuiWaystoneName extends GuiScreen {
 		if(textField != null) {
 			oldText = textField.getText();
 		}
-		textField = new GuiTextField(fontRendererObj, width / 2 - 100, height / 2 - 20, 200, 20);
+		textField = new GuiTextField(2, fontRendererObj, width / 2 - 100, height / 2 - 20, 200, 20);
 		textField.setText(oldText);
 		textField.setFocused(true);
 		btnDone = new GuiButton(0, width / 2, height / 2 + 10, 100, 20, I18n.format("gui.done"));
@@ -54,19 +56,19 @@ public class GuiWaystoneName extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if(button == btnDone) {
-			NetworkHandler.channel.sendToServer(new MessageWaystoneName(new BlockPos(tileWaystone), textField.getText(), chkGlobal.isChecked()));
+			NetworkHandler.channel.sendToServer(new MessageWaystoneName(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked()));
 			mc.displayGuiScreen(null);
 		}
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		textField.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) {
+	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		if(keyCode == Keyboard.KEY_RETURN) {
 			actionPerformed(btnDone);
 			return;

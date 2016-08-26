@@ -1,24 +1,26 @@
 package net.blay09.mods.waystones;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageConfig;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
+@SuppressWarnings("unused")
 public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public void addScheduledTask(Runnable runnable) {
-		runnable.run();
+		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(runnable);
 	}
 
 	@SubscribeEvent
@@ -40,11 +42,15 @@ public class CommonProxy {
 
 	}
 
-	public void printChatMessage(int i, IChatComponent chatComponent) {
+	public void printChatMessage(int i, ITextComponent chatComponent) {
 
 	}
 
-	public void playSound(String soundName, float pitch) {
+	public void registerModels() {
+
+	}
+
+	public void playSound(SoundEvent soundEvent, float pitch) {
 
 	}
 }

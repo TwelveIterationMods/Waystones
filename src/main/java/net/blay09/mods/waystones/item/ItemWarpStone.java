@@ -1,29 +1,35 @@
 package net.blay09.mods.waystones.item;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemWarpStone extends Item {
 
 	public ItemWarpStone() {
-		setUnlocalizedName(Waystones.MOD_ID + ":warpStone");
-		setTextureName(Waystones.MOD_ID + ":warpStone");
-		setCreativeTab(CreativeTabs.tabTools);
+		setRegistryName(Waystones.MOD_ID, "warpStone");
+		setUnlocalizedName(getRegistryName().toString());
+		setCreativeTab(CreativeTabs.TOOLS);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 	}
@@ -35,11 +41,12 @@ public class ItemWarpStone extends Item {
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemStack) {
-		return EnumAction.bow;
+		return EnumAction.BOW;
 	}
 
+	@Nullable
 	@Override
-	public ItemStack onEaten(ItemStack itemStack, World world, EntityPlayer player) {
+	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote) {
 			Waystones.proxy.openWaystoneSelection(false);
 		}
@@ -47,46 +54,42 @@ public class ItemWarpStone extends Item {
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
 		if(player.capabilities.isCreativeMode) {
 			PlayerWaystoneData.setLastWarpStoneUse(player, 0);
 		}
 		if (PlayerWaystoneData.canUseWarpStone(player)) {
 			if(PlayerWaystoneData.getLastWaystone(player) != null || !WaystoneManager.getServerWaystones().isEmpty()) {
-				if(!player.isUsingItem() && world.isRemote) {
-					Waystones.proxy.playSound("portal.trigger", 2f);
+				if(!player.isHandActive() && world.isRemote) {
+					Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, 2f);
 				}
-				player.setItemInUse(itemStack, getMaxItemUseDuration(itemStack));
+				player.setActiveHand(hand);
+				return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 			} else {
-				ChatComponentTranslation chatComponent = new ChatComponentTranslation("waystones:scrollNotBound");
-				chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:scrollNotBound");
+				chatComponent.getStyle().setColor(TextFormatting.RED);
 				Waystones.proxy.printChatMessage(3, chatComponent);
+				return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 			}
 		} else {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("waystones:stoneNotCharged");
-			chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:stoneNotCharged");
+			chatComponent.getStyle().setColor(TextFormatting.RED);
 			Waystones.proxy.printChatMessage(3, chatComponent);
+			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
-		return itemStack;
-	}
-
-	@Override
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		return false;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean showDurabilityBar(ItemStack itemStack) {
-		return getDisplayDamage(itemStack) > 0;
+		return getDurabilityForDisplay(itemStack) > 0;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getDisplayDamage(ItemStack itemStack) {
+	public double getDurabilityForDisplay(ItemStack stack) {
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		float percentage = (float) timeSince / (float) (Waystones.getConfig().warpStoneCooldown * 1000);
-		return 100 - (int) (Math.max(0, Math.min(1, percentage)) * 100);
+		return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
 	}
 
 	@Override
@@ -96,13 +99,13 @@ public class ItemWarpStone extends Item {
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
 		if(secondsLeft > 0) {
-			list.add(EnumChatFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
+			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
 		}
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack itemStack, int pass) {
+	public boolean hasEffect(ItemStack itemStack) {
 		return PlayerWaystoneData.canUseWarpStone(FMLClientHandler.instance().getClientPlayerEntity());
 	}
+
 }

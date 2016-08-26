@@ -1,0 +1,5 @@
+jar {
+    manifest {
+        attributes 'FMLAT': mod_id + '_at.cfg'
+    }
+}

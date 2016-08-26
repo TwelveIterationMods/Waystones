@@ -1,8 +1,5 @@
 package net.blay09.mods.waystones.network;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.handler.HandlerConfig;
 import net.blay09.mods.waystones.network.handler.HandlerFreeWarpReturn;
@@ -16,6 +13,9 @@ import net.blay09.mods.waystones.network.message.MessageWarpReturn;
 import net.blay09.mods.waystones.network.message.MessageWarpStone;
 import net.blay09.mods.waystones.network.message.MessageWaystoneName;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class NetworkHandler {
 

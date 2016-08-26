@@ -1,6 +1,6 @@
 tile.waystones:waystone.name=Waystone
 
-item.waystones:returnScroll.name=Return Scroll
+item.waystones:warpScroll.name=Return Scroll
 item.waystones:warpStone.name=Warp Stone
 
 waystones:noDimensionWarp=You cannot warp between worlds.

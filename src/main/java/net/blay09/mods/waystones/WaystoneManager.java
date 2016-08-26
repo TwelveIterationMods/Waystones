@@ -1,26 +1,27 @@
 package net.blay09.mods.waystones;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.util.BlockPos;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.Collection;
 import java.util.Map;
@@ -105,8 +106,8 @@ public class WaystoneManager {
 	}
 
 	public static TileWaystone getWaystoneInWorld(WaystoneEntry waystone) {
-		World targetWorld = MinecraftServer.getServer().worldServerForDimension(waystone.getDimensionId());
-		TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos().getX(), waystone.getPos().getY(), waystone.getPos().getZ());
+		World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
+		TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
 		if(tileEntity instanceof TileWaystone) {
 			return (TileWaystone) tileEntity;
 		}
@@ -115,27 +116,24 @@ public class WaystoneManager {
 
 	public static boolean teleportToWaystone(EntityPlayer player, WaystoneEntry waystone) {
 		if(!checkAndUpdateWaystone(player, waystone)) {
-			ChatComponentTranslation chatComponent = new ChatComponentTranslation("waystones:waystoneBroken");
-			chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:waystoneBroken");
+			chatComponent.getStyle().setColor(TextFormatting.RED);
 			player.addChatComponentMessage(chatComponent);
 			return false;
 		}
 		WaystoneEntry serverEntry = getServerWaystone(waystone.getName());
-		World targetWorld = MinecraftServer.getServer().worldServerForDimension(waystone.getDimensionId());
-		int x = waystone.getPos().getX();
-		int y = waystone.getPos().getY();
-		int z = waystone.getPos().getZ();
-		ForgeDirection facing = ForgeDirection.getOrientation(targetWorld.getBlockMetadata(x, y, z));
+		World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
+		EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
 		BlockPos targetPos = waystone.getPos().offset(facing);
-		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.dimensionId;
+		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
 		if (dimensionWarp && !Waystones.getConfig().interDimension && !(serverEntry == null || !Waystones.getConfig().globalInterDimension)) {
-			player.addChatComponentMessage(new ChatComponentTranslation("waystones:noDimensionWarp"));
+			player.addChatComponentMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}
 		sendTeleportEffect(player.worldObj, new BlockPos(player));
-		player.addPotionEffect(new PotionEffect(Potion.blindness.getId(), 20, 3));
+		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
 		if(dimensionWarp) {
-			player.travelToDimension(waystone.getDimensionId());
+			player.changeDimension(waystone.getDimensionId());
 		}
 		player.rotationYaw = getRotationYaw(facing);
 		player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
@@ -144,10 +142,10 @@ public class WaystoneManager {
 	}
 
 	public static void sendTeleportEffect(World world, BlockPos pos) {
-		NetworkHandler.channel.sendToAllAround(new MessageTeleportEffect(pos), new NetworkRegistry.TargetPoint(world.provider.dimensionId, pos.getX(), pos.getY(), pos.getZ(), 64));
+		NetworkHandler.channel.sendToAllAround(new MessageTeleportEffect(pos), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
 	}
 
-	public static float getRotationYaw(ForgeDirection facing) {
+	public static float getRotationYaw(EnumFacing facing) {
 		switch(facing) {
 			case NORTH:
 				return 180f;
