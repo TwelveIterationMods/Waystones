@@ -34,13 +34,13 @@ public class WaystoneConfig {
 	public void reloadLocal(Configuration config) {
 		teleportButton = config.getBoolean("Teleport Button in GUI", "general", false, "Should there be a button in the inventory to access the waystone menu?");
 		teleportButtonCooldown = config.getInt("Teleport Button Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the teleport button in seconds.");
-		teleportButtonReturnOnly = config.getBoolean("Teleport Button Return Only", "general", false, "If true, the teleport button will only let you return to the last activated waystone, instead of allowing to choose.");
+		teleportButtonReturnOnly = config.getBoolean("Teleport Button Return Only", "general", true, "If true, the teleport button will only let you return to the last activated waystone, instead of allowing to choose.");
 
 		allowReturnScrolls = config.getBoolean("Allow Return Scrolls", "general", true, "If true, return scrolls will be craftable.");
 		allowWarpStone = config.getBoolean("Allow Warp Stone", "general", true, "If true, the warp stone will be craftable.");
 
-		teleportButtonX = config.getInt("Teleport Button GUI X", "client", 60, -100, 250, "The x position of the warp button in the inventory.");
-		teleportButtonY = config.getInt("Teleport Button GUI Y", "client", 58, -100, 250, "The y position of the warp button in the inventory.");
+		teleportButtonX = config.getInt("Teleport Button GUI X", "client", 58, -100, 250, "The x position of the warp button in the inventory.");
+		teleportButtonY = config.getInt("Teleport Button GUI Y", "client", 60, -100, 250, "The y position of the warp button in the inventory.");
 		disableTextGlow = config.getBoolean("Disable Text Glow", "client", false, "If true, the text overlay on waystones will no longer always render at full brightness.");
 		disableParticles = config.getBoolean("Disable Particles", "client", false, "If true, activated waystones will not emit particles.");
 

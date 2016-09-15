@@ -32,6 +32,9 @@ public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName,
 				}
 				TileEntity tileEntity = world.getTileEntity(pos);
 				if(tileEntity instanceof TileWaystone) {
+					if(WaystoneManager.getServerWaystone(((TileWaystone) tileEntity).getWaystoneName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
+						return;
+					}
 					if(WaystoneManager.getServerWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
 						return;

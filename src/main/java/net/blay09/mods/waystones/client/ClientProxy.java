@@ -48,7 +48,12 @@ public class ClientProxy extends CommonProxy {
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileWaystone.class, new RenderWaystone());
 		ForgeHooksClient.registerTESRItemStack(Item.getItemFromBlock(Waystones.blockWaystone), 0, TileWaystone.class);
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(Waystones.blockWaystone), 0, new ModelResourceLocation("waystones:waystone", "inventory"));
+		Item itemBlockWaystone = Item.getItemFromBlock(Waystones.blockWaystone);
+		if(itemBlockWaystone != null) {
+			ModelLoader.setCustomModelResourceLocation(itemBlockWaystone, 0, new ModelResourceLocation("waystones:waystone", "inventory"));
+		}
+		ModelLoader.setCustomModelResourceLocation(Waystones.itemWarpStone, 0, new ModelResourceLocation(Waystones.itemWarpStone.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Waystones.itemReturnScroll, 0, new ModelResourceLocation(Waystones.itemReturnScroll.getRegistryName(), "inventory"));
 	}
 
 	@SubscribeEvent
@@ -103,7 +108,7 @@ public class ClientProxy extends CommonProxy {
 					tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
 				}
 			}
-			event.getGui().drawHoveringText(tmpTooltip, event.getMouseY(), event.getMouseY());
+			event.getGui().drawHoveringText(tmpTooltip, event.getMouseX(), event.getMouseY());
 		}
 	}
 
@@ -140,12 +145,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void playSound(SoundEvent sound, float pitch) {
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, pitch));
-	}
-
-	@Override
-	public void registerModels() {
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Waystones.itemWarpStone, 0, new ModelResourceLocation(Waystones.itemWarpStone.getRegistryName(), "inventory"));
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Waystones.itemReturnScroll, 0, new ModelResourceLocation(Waystones.itemReturnScroll.getRegistryName(), "inventory"));
 	}
 
 	@Override

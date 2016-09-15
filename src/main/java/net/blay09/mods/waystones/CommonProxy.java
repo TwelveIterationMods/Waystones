@@ -46,10 +46,6 @@ public class CommonProxy {
 
 	}
 
-	public void registerModels() {
-
-	}
-
 	public void playSound(SoundEvent soundEvent, float pitch) {
 
 	}

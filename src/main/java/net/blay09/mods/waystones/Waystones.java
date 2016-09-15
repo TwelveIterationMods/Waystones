@@ -66,7 +66,6 @@ public class Waystones {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
-		proxy.registerModels();
 		FMLInterModComms.sendMessage("Waila", "register", "net.blay09.mods.waystones.compat.WailaProvider.register");
 	}
 

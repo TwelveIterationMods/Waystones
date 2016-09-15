@@ -23,6 +23,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -183,6 +184,7 @@ public class WaystoneManager {
 		}
 	}
 
+	@Nullable
 	public static WaystoneEntry getKnownWaystone(String name) {
 		return knownWaystones.get(name);
 	}
@@ -191,6 +193,7 @@ public class WaystoneManager {
 		return serverWaystones.values();
 	}
 
+	@Nullable
 	public static WaystoneEntry getServerWaystone(String name) {
 		return serverWaystones.get(name);
 	}

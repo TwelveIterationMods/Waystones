@@ -61,6 +61,7 @@ public class BlockWaystone extends BlockContainer {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing facing = EnumFacing.getFront(meta & 7);
 		if (facing.getAxis() == EnumFacing.Axis.Y) {
@@ -71,16 +72,19 @@ public class BlockWaystone extends BlockContainer {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
+	@Nullable
 	public TileEntity createNewTileEntity(World world, int metadata) {
 		if((metadata & 8) > 0) {
 			return new TileWaystone();
@@ -89,8 +93,13 @@ public class BlockWaystone extends BlockContainer {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos) {
 		if (Waystones.getConfig().creativeModeOnly && !player.capabilities.isCreativeMode) {
+			return -1f;
+		}
+		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
+		if(tileWaystone != null && WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
 			return -1f;
 		}
 		return super.getPlayerRelativeBlockHardness(state, player, world, pos);
@@ -109,10 +118,16 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		EnumFacing facing = BlockPistonBase.getFacingFromEntity(pos, placer);
+		if(facing.getAxis() == EnumFacing.Axis.Y) {
+			facing = EnumFacing.NORTH;
+		}
 		world.setBlockState(pos, this.getDefaultState().withProperty(FACING, facing).withProperty(BASE, true));
 		world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false));
 		if (world.isRemote && placer instanceof EntityPlayer && (!Waystones.getConfig().creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
-			Waystones.proxy.openWaystoneNameEdit((TileWaystone) world.getTileEntity(pos));
+			TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
+			if(tileWaystone != null) {
+				Waystones.proxy.openWaystoneNameEdit(tileWaystone);
+			}
 		}
 	}
 
@@ -136,6 +151,10 @@ public class BlockWaystone extends BlockContainer {
 			if (world.isRemote) {
 				TileWaystone tileWaystone = getTileWaystone(world, pos);
 				if (tileWaystone == null) {
+					return true;
+				}
+				if(WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
+					player.addChatComponentMessage(new TextComponentTranslation("waystones:creativeRequired"));
 					return true;
 				}
 				Waystones.proxy.openWaystoneNameEdit(tileWaystone);
@@ -181,6 +200,7 @@ public class BlockWaystone extends BlockContainer {
 		}
 	}
 
+	@Nullable
 	public TileWaystone getTileWaystone(World world, BlockPos pos) {
 		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
 		if (tileWaystone == null) {
