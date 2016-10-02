@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.network.handler;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWaystoneName;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName, IMessage> {
 	@Override
 	public IMessage onMessage(final MessageWaystoneName message, final MessageContext ctx) {
-		Waystones.proxy.addScheduledTask(new Runnable() {
+		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
 				EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;

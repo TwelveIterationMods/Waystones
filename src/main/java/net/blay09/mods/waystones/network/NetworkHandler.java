@@ -13,9 +13,14 @@ import net.blay09.mods.waystones.network.message.MessageWarpReturn;
 import net.blay09.mods.waystones.network.message.MessageWarpStone;
 import net.blay09.mods.waystones.network.message.MessageWaystoneName;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class NetworkHandler {
 
@@ -30,4 +35,12 @@ public class NetworkHandler {
 		channel.registerMessage(HandlerTeleportEffect.class, MessageTeleportEffect.class, 5, Side.CLIENT);
 	}
 
+	public static IThreadListener getThreadListener(MessageContext ctx) {
+		return ctx.side == Side.SERVER ? (WorldServer) ctx.getServerHandler().playerEntity.worldObj : getClientThreadListener();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static IThreadListener getClientThreadListener() {
+		return Minecraft.getMinecraft();
+	}
 }

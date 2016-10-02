@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.handler;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class HandlerTeleportEffect implements IMessageHandler<MessageTeleportEffect, IMessage> {
 	@Override
 	public IMessage onMessage(final MessageTeleportEffect message, MessageContext ctx) {
-		Waystones.proxy.addScheduledTask(new Runnable() {
+		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
 				Minecraft mc = Minecraft.getMinecraft();

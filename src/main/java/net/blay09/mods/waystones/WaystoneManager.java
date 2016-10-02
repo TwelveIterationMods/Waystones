@@ -13,14 +13,17 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nullable;
@@ -134,7 +137,10 @@ public class WaystoneManager {
 		sendTeleportEffect(player.worldObj, new BlockPos(player));
 		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
 		if(dimensionWarp) {
-			player.changeDimension(waystone.getDimensionId());
+			MinecraftServer server = player.worldObj.getMinecraftServer();
+			if(server != null) {
+				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), new TeleporterWaystone((WorldServer) player.worldObj));
+			}
 		}
 		player.rotationYaw = getRotationYaw(facing);
 		player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
