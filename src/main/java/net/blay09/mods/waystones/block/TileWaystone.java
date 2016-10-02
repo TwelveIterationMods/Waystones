@@ -1,7 +1,9 @@
 package net.blay09.mods.waystones.block;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -10,15 +12,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class TileWaystone extends TileEntity {
 
 	private String waystoneName = "";
+	private UUID owner;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		tagCompound.setString("WaystoneName", waystoneName);
+		if(owner != null) {
+			tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
+		}
 		return tagCompound;
 	}
 
@@ -26,6 +33,9 @@ public class TileWaystone extends TileEntity {
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		waystoneName = tagCompound.getString("WaystoneName");
+		if(tagCompound.hasKey("Owner")) {
+			owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
+		}
 	}
 
 	@Override
@@ -49,6 +59,10 @@ public class TileWaystone extends TileEntity {
 		return waystoneName;
 	}
 
+	public boolean isOwner(EntityPlayer player) {
+		return owner == null || player.getGameProfile().getId().equals(owner) || player.capabilities.isCreativeMode;
+	}
+
 	public void setWaystoneName(String waystoneName) {
 		this.waystoneName = waystoneName;
 		IBlockState state = worldObj.getBlockState(pos);
@@ -66,4 +80,7 @@ public class TileWaystone extends TileEntity {
 		return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1);
 	}
 
+	public void setOwner(EntityPlayer owner) {
+		this.owner = owner.getGameProfile().getId();
+	}
 }

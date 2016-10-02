@@ -36,6 +36,10 @@ public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName,
 					if(WaystoneManager.getServerWaystone(((TileWaystone) tileEntity).getWaystoneName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						return;
 					}
+					if(Waystones.getConfig().restrictRenameToOwner && !((TileWaystone) tileEntity).isOwner(ctx.getServerHandler().playerEntity)) {
+						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:notTheOwner"));
+						return;
+					}
 					if(WaystoneManager.getServerWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
 						return;

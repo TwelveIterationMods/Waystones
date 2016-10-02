@@ -21,9 +21,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -120,8 +123,14 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void openWaystoneNameEdit(TileWaystone tileEntity) {
-		Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneName(tileEntity));
+	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+		if(id == 1) {
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+			if(tileEntity instanceof TileWaystone) {
+				return new GuiWaystoneName((TileWaystone) tileEntity);
+			}
+		}
+		return null;
 	}
 
 	@Override

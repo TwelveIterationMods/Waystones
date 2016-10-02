@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -53,6 +54,7 @@ public class Waystones {
 		GameRegistry.register(itemWarpStone);
 
 		NetworkHandler.init();
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
 		configuration = new Configuration(event.getSuggestedConfigurationFile());
 		config = new WaystoneConfig();

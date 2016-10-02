@@ -3,17 +3,21 @@ package net.blay09.mods.waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageConfig;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 @SuppressWarnings("unused")
-public class CommonProxy {
+public class CommonProxy implements IGuiHandler {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -39,10 +43,6 @@ public class CommonProxy {
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
-	public void openWaystoneNameEdit(TileWaystone tileEntity) {
-
-	}
-
 	public void openWaystoneSelection(boolean isFree) {
 
 	}
@@ -54,4 +54,23 @@ public class CommonProxy {
 	public void playSound(SoundEvent soundEvent, float pitch) {
 
 	}
+
+	@Override
+	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+		if(id == 1) {
+			return new Container() {
+				@Override
+				public boolean canInteractWith(EntityPlayer playerIn) {
+					return true;
+				}
+			};
+		}
+		return null;
+	}
+
+	@Override
+	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
+		return null;
+	}
+
 }

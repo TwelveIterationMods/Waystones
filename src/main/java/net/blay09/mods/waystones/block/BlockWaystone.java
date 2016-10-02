@@ -123,10 +123,11 @@ public class BlockWaystone extends BlockContainer {
 		}
 		world.setBlockState(pos, this.getDefaultState().withProperty(FACING, facing).withProperty(BASE, true));
 		world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false));
-		if (world.isRemote && placer instanceof EntityPlayer && (!Waystones.getConfig().creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
+		if (!world.isRemote && placer instanceof EntityPlayer && (!Waystones.getConfig().creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
 			TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
 			if(tileWaystone != null) {
-				Waystones.proxy.openWaystoneNameEdit(tileWaystone);
+				tileWaystone.setOwner((EntityPlayer) placer);
+				((EntityPlayer) placer).openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 		}
 	}
@@ -148,16 +149,20 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking() && (player.capabilities.isCreativeMode || !Waystones.getConfig().creativeModeOnly)) {
-			if (world.isRemote) {
+			if (!world.isRemote) {
 				TileWaystone tileWaystone = getTileWaystone(world, pos);
 				if (tileWaystone == null) {
+					return true;
+				}
+				if(Waystones.getConfig().restrictRenameToOwner && !tileWaystone.isOwner(player)) {
+					player.addChatComponentMessage(new TextComponentTranslation("waystones:notTheOwner"));
 					return true;
 				}
 				if(WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
 					player.addChatComponentMessage(new TextComponentTranslation("waystones:creativeRequired"));
 					return true;
 				}
-				Waystones.proxy.openWaystoneNameEdit(tileWaystone);
+				player.openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 			return true;
 		}

@@ -25,6 +25,7 @@ public class WaystoneConfig {
 
 	public boolean interDimension;
 
+	public boolean restrictRenameToOwner;
 	public boolean creativeModeOnly;
 	public boolean setSpawnPoint;
 
@@ -49,6 +50,7 @@ public class WaystoneConfig {
 		setSpawnPoint = config.getBoolean("Set Spawnpoint on Activation", "general", false, "If true, the player's spawnpoint will be set to the last activated waystone.");
 		interDimension = config.getBoolean("Interdimensional Teleport", "general", true, "If true, all waystones work inter-dimensionally.");
 
+		restrictRenameToOwner = config.getBoolean("Restrict Rename to Owner", "general", false, "If true, only the owner of a waystone can rename it.");
 		creativeModeOnly = config.getBoolean("Creative Mode Only", "general", false, "If true, waystones can only be placed in creative mode.");
 
 		globalNoCooldown = config.getBoolean("No Cooldown on Global Waystones", "general", true, "If true, waystones marked as global have no cooldown.");
@@ -98,6 +100,7 @@ public class WaystoneConfig {
 		config.interDimension = buf.readBoolean();
 		config.creativeModeOnly = buf.readBoolean();
 		config.setSpawnPoint = buf.readBoolean();
+		config.restrictRenameToOwner = buf.readBoolean();
 		return config;
 	}
 
@@ -109,5 +112,6 @@ public class WaystoneConfig {
 		buf.writeBoolean(interDimension);
 		buf.writeBoolean(creativeModeOnly);
 		buf.writeBoolean(setSpawnPoint);
+		buf.writeBoolean(restrictRenameToOwner);
 	}
 }
