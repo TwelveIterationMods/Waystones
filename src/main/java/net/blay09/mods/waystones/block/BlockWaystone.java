@@ -166,11 +166,13 @@ public class BlockWaystone extends BlockContainer {
 			if (tileWaystone == null) {
 				return true;
 			}
-			TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
-			nameComponent.getStyle().setColor(TextFormatting.WHITE);
-			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:activatedWaystone", nameComponent);
-			chatComponent.getStyle().setColor(TextFormatting.YELLOW);
-			player.addChatComponentMessage(chatComponent);
+			if(!WaystoneManager.checkAndUpdateWaystone(player, new WaystoneEntry(tileWaystone))) {
+				TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
+				nameComponent.getStyle().setColor(TextFormatting.WHITE);
+				TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:activatedWaystone", nameComponent);
+				chatComponent.getStyle().setColor(TextFormatting.YELLOW);
+				player.addChatComponentMessage(chatComponent);
+			}
 			WaystoneManager.activateWaystone(player, tileWaystone);
 			if (Waystones.getConfig().setSpawnPoint) {
 				EnumFacing facing = state.getValue(FACING);

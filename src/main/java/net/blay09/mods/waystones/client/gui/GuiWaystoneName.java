@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class GuiWaystoneName extends GuiScreen {
 		buttonList.add(btnDone);
 
 		chkGlobal = new GuiCheckBox(1, width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones:editWaystone.isGlobal"), WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null);
-		if(!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode) {
+		if(!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode || (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer())) {
 			chkGlobal.visible = false;
 		}
 		buttonList.add(chkGlobal);

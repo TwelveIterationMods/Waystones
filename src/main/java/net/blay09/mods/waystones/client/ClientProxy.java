@@ -89,7 +89,7 @@ public class ClientProxy extends CommonProxy {
 		if (event.getGui() instanceof GuiInventory && buttonWarp != null && buttonWarp.isHovered()) {
 			tmpTooltip.clear();
 			long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastFreeWarp(FMLClientHandler.instance().getClientPlayerEntity());
-			int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
+			int secondsLeft = (int) ((Waystones.getConfig().teleportButtonCooldown * 1000 - timeSince) / 1000);
 			if (Waystones.getConfig().teleportButtonReturnOnly) {
 				tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
 				WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
