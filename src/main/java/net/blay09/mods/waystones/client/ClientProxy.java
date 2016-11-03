@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client;
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.CommonProxy;
 import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
@@ -22,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -152,8 +154,8 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void playSound(SoundEvent sound, float pitch) {
-		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(sound, pitch));
+	public void playSound(SoundEvent sound, BlockPos pos, float pitch) {
+		Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.soundVolume, pitch, pos));
 	}
 
 	@Override

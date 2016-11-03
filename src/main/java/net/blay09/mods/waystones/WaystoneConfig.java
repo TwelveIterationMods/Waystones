@@ -32,6 +32,8 @@ public class WaystoneConfig {
 	public boolean globalNoCooldown;
 	public boolean globalInterDimension;
 
+	public static float soundVolume = 0.5f;
+
 	public void reloadLocal(Configuration config) {
 		teleportButton = config.getBoolean("Teleport Button in GUI", "general", false, "Should there be a button in the inventory to access the waystone menu?");
 		teleportButtonCooldown = config.getInt("Teleport Button Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the teleport button in seconds.");
@@ -55,6 +57,8 @@ public class WaystoneConfig {
 
 		globalNoCooldown = config.getBoolean("No Cooldown on Global Waystones", "general", true, "If true, waystones marked as global have no cooldown.");
 		globalInterDimension = config.getBoolean("Interdimensional Teleport on Global Waystones", "general", true, "If true, waystones marked as global work inter-dimensionally.");
+
+		soundVolume = config.getFloat("Sound Volume", "client", 0.5f, 0f, 1f, "The volume of the sound played when teleporting.");
 
 		String[] serverWaystoneData = config.getStringList("Server Waystones", "generated", new String[0], "This option is automatically populated by the server when using the Server Hub Mode. Do not change.");
 		WaystoneEntry[] serverWaystones = new WaystoneEntry[serverWaystoneData.length];
