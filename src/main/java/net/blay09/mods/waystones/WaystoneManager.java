@@ -111,9 +111,15 @@ public class WaystoneManager {
 
 	public static TileWaystone getWaystoneInWorld(WaystoneEntry waystone) {
 		World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
-		TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
-		if(tileEntity instanceof TileWaystone) {
-			return (TileWaystone) tileEntity;
+		if(targetWorld == null) {
+			DimensionManager.initDimension(waystone.getDimensionId());
+			targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
+		}
+		if(targetWorld != null) {
+			TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
+			if (tileEntity instanceof TileWaystone) {
+				return (TileWaystone) tileEntity;
+			}
 		}
 		return null;
 	}
