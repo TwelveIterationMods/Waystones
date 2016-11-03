@@ -184,7 +184,7 @@ public class BlockWaystone extends BlockContainer {
 				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(facing)), true, world.provider.getDimension());
 			}
 		} else {
-			Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f);
+			Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
 			for (int i = 0; i < 32; i++) {
 				world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, pos.getY() + 3, pos.getZ() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, 0, -5, 0);
 				world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, pos.getY() + 4, pos.getZ() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, 0, -5, 0);
