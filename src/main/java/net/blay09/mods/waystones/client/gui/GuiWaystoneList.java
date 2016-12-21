@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;
-import net.blay09.mods.waystones.network.message.MessageWarpStone;
+import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -15,7 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Arrays;
+import javax.annotation.Nullable;
 import java.util.Iterator;
 
 public class GuiWaystoneList extends GuiScreen {
@@ -23,14 +23,16 @@ public class GuiWaystoneList extends GuiScreen {
 	private final WaystoneEntry[] entries;
 	private final WarpMode warpMode;
 	private final EnumHand hand;
+	private final WaystoneEntry fromWaystone;
 	private GuiButton btnPrevPage;
 	private GuiButton btnNextPage;
 	private int pageOffset;
 
-	public GuiWaystoneList(WaystoneEntry[] entries, WarpMode warpMode, EnumHand hand) {
+	public GuiWaystoneList(WaystoneEntry[] entries, WarpMode warpMode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
 		this.entries = entries;
 		this.warpMode = warpMode;
 		this.hand = hand;
+		this.fromWaystone = fromWaystone;
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class GuiWaystoneList extends GuiScreen {
 			pageOffset--;
 			updateList();
 		} else if(button instanceof GuiButtonWaystoneEntry) {
-			NetworkHandler.channel.sendToServer(new MessageWarpStone(((GuiButtonWaystoneEntry) button).getWaystone(), warpMode, hand));
+			NetworkHandler.channel.sendToServer(new MessageTeleportToWaystone(((GuiButtonWaystoneEntry) button).getWaystone(), warpMode, hand, fromWaystone));
 			mc.displayGuiScreen(null);
 		} else if(button instanceof GuiButtonSortWaystone) {
 			WaystoneEntry waystoneEntry = ((GuiButtonSortWaystone) button).getWaystone();

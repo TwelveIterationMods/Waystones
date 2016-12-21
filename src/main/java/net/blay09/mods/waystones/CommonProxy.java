@@ -2,6 +2,7 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageConfig;
+import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -40,7 +41,7 @@ public class CommonProxy implements IGuiHandler {
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
-	public void openWaystoneSelection(WarpMode mode, EnumHand hand) {
+	public void openWaystoneSelection(WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
 
 	}
 

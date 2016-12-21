@@ -38,7 +38,7 @@ public class ItemWarpScroll extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote) {
-			Waystones.proxy.openWaystoneSelection(WarpMode.WARP_SCROLL, entityLiving.getActiveHand());
+			Waystones.proxy.openWaystoneSelection(WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
 		}
 		return itemStack;
 	}

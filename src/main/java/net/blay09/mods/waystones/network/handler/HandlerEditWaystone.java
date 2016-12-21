@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageWaystoneName;
+import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -18,10 +18,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import javax.annotation.Nullable;
 
-public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName, IMessage> {
+public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone, IMessage> {
 	@Override
 	@Nullable
-	public IMessage onMessage(final MessageWaystoneName message, final MessageContext ctx) {
+	public IMessage onMessage(final MessageEditWaystone message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
 			public void run() {

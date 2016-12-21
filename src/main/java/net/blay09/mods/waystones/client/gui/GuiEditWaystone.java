@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageWaystoneName;
+import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -56,7 +56,7 @@ public class GuiEditWaystone extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if(button == btnDone) {
-			NetworkHandler.channel.sendToServer(new MessageWaystoneName(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked()));
+			NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked()));
 			mc.displayGuiScreen(null);
 		}
 	}

@@ -5,16 +5,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class MessageWaystoneName implements IMessage {
+public class MessageEditWaystone implements IMessage {
 
 	private BlockPos pos;
 	private String name;
 	private boolean isGlobal;
 
-	public MessageWaystoneName() {
+	public MessageEditWaystone() {
 	}
 
-	public MessageWaystoneName(BlockPos pos, String name, boolean isGlobal) {
+	public MessageEditWaystone(BlockPos pos, String name, boolean isGlobal) {
 		this.pos = pos;
 		this.name = name;
 		this.isGlobal = isGlobal;

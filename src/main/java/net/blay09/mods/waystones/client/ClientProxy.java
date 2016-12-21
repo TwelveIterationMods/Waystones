@@ -41,6 +41,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ClientProxy extends CommonProxy {
@@ -78,7 +79,7 @@ public class ClientProxy extends CommonProxy {
 						event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn());
 					}
 				} else {
-					Waystones.proxy.openWaystoneSelection(WarpMode.INVENTORY_BUTTON, EnumHand.MAIN_HAND);
+					Waystones.proxy.openWaystoneSelection(WarpMode.INVENTORY_BUTTON, EnumHand.MAIN_HAND, null);
 				}
 			} else {
 				event.getGui().mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -136,7 +137,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void openWaystoneSelection(WarpMode mode, EnumHand hand) {
+	public void openWaystoneSelection(WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
 		WaystoneEntry[] playerWaystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
 		WaystoneEntry[] combinedWaystones = new WaystoneEntry[WaystoneManager.getServerWaystones().size() + playerWaystones.length];
 		int i = 0;
@@ -145,7 +146,7 @@ public class ClientProxy extends CommonProxy {
 			i++;
 		}
 		System.arraycopy(playerWaystones, 0, combinedWaystones, i, playerWaystones.length);
- 		Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(combinedWaystones, mode, hand));
+ 		Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(combinedWaystones, mode, hand, fromWaystone));
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class ItemWarpStone extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote) {
-			Waystones.proxy.openWaystoneSelection(WarpMode.WARP_STONE, entityLiving.getActiveHand());
+			Waystones.proxy.openWaystoneSelection(WarpMode.WARP_STONE, entityLiving.getActiveHand(), null);
 		}
 		return itemStack;
 	}

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.block;
 
+import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
@@ -165,11 +166,14 @@ public class BlockWaystone extends BlockContainer {
 			}
 			return true;
 		}
-		if (!world.isRemote) {
-			TileWaystone tileWaystone = getTileWaystone(world, pos);
-			if (tileWaystone == null) {
-				return true;
-			}
+		TileWaystone tileWaystone = getTileWaystone(world, pos);
+		if (tileWaystone == null) {
+			return true;
+		}
+		WaystoneEntry knownWaystone = WaystoneManager.getKnownWaystone(tileWaystone.getWaystoneName());
+		if(knownWaystone != null) {
+			Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+		} else if (!world.isRemote) {
 			if(!WaystoneManager.checkAndUpdateWaystone(player, new WaystoneEntry(tileWaystone))) {
 				TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
 				nameComponent.getStyle().setColor(TextFormatting.WHITE);

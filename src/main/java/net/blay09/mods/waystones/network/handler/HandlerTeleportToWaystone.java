@@ -1,11 +1,12 @@
 package net.blay09.mods.waystones.network.handler;
 
 import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageWarpStone;
+import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
+import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,10 +14,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import javax.annotation.Nullable;
 
-public class HandlerWarpStone implements IMessageHandler<MessageWarpStone, IMessage> {
+public class HandlerTeleportToWaystone implements IMessageHandler<MessageTeleportToWaystone, IMessage> {
 	@Override
 	@Nullable
-	public IMessage onMessage(final MessageWarpStone message, final MessageContext ctx) {
+	public IMessage onMessage(final MessageTeleportToWaystone message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
@@ -34,6 +35,11 @@ public class HandlerWarpStone implements IMessageHandler<MessageWarpStone, IMess
 						break;
 					case WARP_STONE:
 						if(heldItem.isEmpty() || heldItem.getItem() != Waystones.itemWarpStone) {
+							return;
+						}
+					case WAYSTONE:
+						WaystoneEntry fromWaystone = message.getFromWaystone();
+						if(fromWaystone == null || WaystoneManager.getWaystoneInWorld(fromWaystone) == null) {
 							return;
 						}
 						break;
