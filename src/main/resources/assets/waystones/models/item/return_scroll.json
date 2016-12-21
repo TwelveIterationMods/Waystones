@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "waystones:items/returnScroll"
+    "layer0": "waystones:items/return_scroll"
   }
 }

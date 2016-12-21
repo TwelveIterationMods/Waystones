@@ -82,4 +82,5 @@ public class WaystoneEntry {
 		result = 31 * result + pos.hashCode();
 		return result;
 	}
+
 }

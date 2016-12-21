@@ -11,10 +11,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-public class GuiConfirmReturn extends GuiYesNo implements GuiYesNoCallback {
+public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesNoCallback {
 	private final String waystoneName;
 
-	public GuiConfirmReturn() {
+	public GuiConfirmInventoryButtonReturn() {
 		super(new GuiYesNoCallback() {
 			@Override
 			public void confirmClicked(boolean result, int id) {

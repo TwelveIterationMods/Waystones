@@ -23,7 +23,7 @@ public class HandlerTeleportEffect implements IMessageHandler<MessageTeleportEff
 				mc.ingameGUI.getBossOverlay().clearBossInfos();
 				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRAVEL, message.getPos(), 1f);
 				for (int i = 0; i < 128; i++) {
-					mc.theWorld.spawnParticle(EnumParticleTypes.PORTAL, message.getPos().getX() + (mc.theWorld.rand.nextDouble() - 0.5) * 3, message.getPos().getY() + mc.theWorld.rand.nextDouble() * 3, message.getPos().getZ() + (mc.theWorld.rand.nextDouble() - 0.5) * 3, (mc.theWorld.rand.nextDouble() - 0.5) * 2, -mc.theWorld.rand.nextDouble(), (mc.theWorld.rand.nextDouble() - 0.5) * 2);
+					mc.world.spawnParticle(EnumParticleTypes.PORTAL, message.getPos().getX() + (mc.world.rand.nextDouble() - 0.5) * 3, message.getPos().getY() + mc.world.rand.nextDouble() * 3, message.getPos().getZ() + (mc.world.rand.nextDouble() - 0.5) * 3, (mc.world.rand.nextDouble() - 0.5) * 2, -mc.world.rand.nextDouble(), (mc.world.rand.nextDouble() - 0.5) * 2);
 				}
 			}
 		});

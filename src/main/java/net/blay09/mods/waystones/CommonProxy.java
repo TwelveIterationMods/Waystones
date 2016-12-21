@@ -5,12 +5,12 @@ import net.blay09.mods.waystones.network.message.MessageConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -18,15 +18,10 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
 
-@SuppressWarnings("unused")
 public class CommonProxy implements IGuiHandler {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	public void addScheduledTask(Runnable runnable) {
-		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(runnable);
 	}
 
 	@SubscribeEvent
@@ -45,7 +40,7 @@ public class CommonProxy implements IGuiHandler {
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
-	public void openWaystoneSelection(boolean isFree) {
+	public void openWaystoneSelection(WarpMode mode, EnumHand hand) {
 
 	}
 

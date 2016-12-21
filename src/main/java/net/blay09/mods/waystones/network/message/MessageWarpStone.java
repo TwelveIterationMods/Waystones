@@ -1,40 +1,50 @@
 package net.blay09.mods.waystones.network.message;
 
 import io.netty.buffer.ByteBuf;
+import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageWarpStone implements IMessage {
 
 	private WaystoneEntry waystone;
-	private boolean isFree;
+	private WarpMode warpMode;
+	private EnumHand hand;
 
 	public MessageWarpStone() {
 	}
 
-	public MessageWarpStone(WaystoneEntry waystone, boolean isFree) {
+	public MessageWarpStone(WaystoneEntry waystone, WarpMode warpMode, EnumHand hand) {
 		this.waystone = waystone;
-		this.isFree = isFree;
+		this.warpMode = warpMode;
+		this.hand = hand;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		waystone = WaystoneEntry.read(buf);
-		isFree = buf.readBoolean();
+		warpMode = WarpMode.values()[buf.readByte()];
+		hand = EnumHand.values()[buf.readByte()];
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		waystone.write(buf);
-		buf.writeBoolean(isFree);
+		buf.writeByte(warpMode.ordinal());
+		buf.writeByte(hand.ordinal());
 	}
 
 	public WaystoneEntry getWaystone() {
 		return waystone;
 	}
 
-	public boolean isFree() {
-		return isFree;
+	public WarpMode getWarpMode() {
+		return warpMode;
+	}
+
+	public EnumHand getHand() {
+		return hand;
 	}
 
 }

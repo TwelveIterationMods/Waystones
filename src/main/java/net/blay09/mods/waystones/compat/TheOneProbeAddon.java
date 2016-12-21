@@ -53,6 +53,7 @@ public class TheOneProbeAddon implements Function<ITheOneProbe, Void> {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Nullable
 	private static <T extends TileEntity> T tryGetTileEntity(World world, BlockPos pos, Class<T> tileClass) {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(tileEntity != null && tileClass.isAssignableFrom(tileEntity.getClass())) {

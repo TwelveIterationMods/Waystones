@@ -12,12 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-public class GuiButtonWarp extends GuiButton {
+public class GuiButtonInventoryWarp extends GuiButton {
 
 	private final GuiContainer parentScreen;
 	private final ItemStack iconItem;
 
-	public GuiButtonWarp(GuiContainer parentScreen) {
+	public GuiButtonInventoryWarp(GuiContainer parentScreen) {
 		super(-1, 0, 0, 16, 16, "");
 		this.parentScreen = parentScreen;
 		this.iconItem = new ItemStack(Waystones.itemReturnScroll);

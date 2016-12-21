@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -117,7 +116,7 @@ public class BlockWaystone extends BlockContainer {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		EnumFacing facing = BlockPistonBase.getFacingFromEntity(pos, placer);
+		EnumFacing facing = EnumFacing.getDirectionFromEntityLiving(pos, placer);
 		if(facing.getAxis() == EnumFacing.Axis.Y) {
 			facing = EnumFacing.NORTH;
 		}
@@ -147,7 +146,7 @@ public class BlockWaystone extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (player.isSneaking() && (player.capabilities.isCreativeMode || !Waystones.getConfig().creativeModeOnly)) {
 			if (!world.isRemote) {
 				TileWaystone tileWaystone = getTileWaystone(world, pos);
@@ -155,11 +154,11 @@ public class BlockWaystone extends BlockContainer {
 					return true;
 				}
 				if(Waystones.getConfig().restrictRenameToOwner && !tileWaystone.isOwner(player)) {
-					player.addChatComponentMessage(new TextComponentTranslation("waystones:notTheOwner"));
+					player.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
 					return true;
 				}
 				if(WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
-					player.addChatComponentMessage(new TextComponentTranslation("waystones:creativeRequired"));
+					player.sendMessage(new TextComponentTranslation("waystones:creativeRequired"));
 					return true;
 				}
 				player.openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
@@ -176,12 +175,12 @@ public class BlockWaystone extends BlockContainer {
 				nameComponent.getStyle().setColor(TextFormatting.WHITE);
 				TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:activatedWaystone", nameComponent);
 				chatComponent.getStyle().setColor(TextFormatting.YELLOW);
-				player.addChatComponentMessage(chatComponent);
+				player.sendMessage(chatComponent);
 			}
 			WaystoneManager.activateWaystone(player, tileWaystone);
 			if (Waystones.getConfig().setSpawnPoint) {
-				EnumFacing facing = state.getValue(FACING);
-				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(facing)), true, world.provider.getDimension());
+				EnumFacing blockFacing = state.getValue(FACING);
+				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true, world.provider.getDimension());
 			}
 		} else {
 			Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);

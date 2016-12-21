@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.item.ItemReturnScroll;
+import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.minecraft.init.Blocks;
@@ -15,14 +16,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-@Mod(modid = Waystones.MOD_ID, name = "Waystones", acceptedMinecraftVersions = "[1.10]")
-@SuppressWarnings("unused")
+@Mod(modid = Waystones.MOD_ID, name = "Waystones", acceptedMinecraftVersions = "[1.11]")
 public class Waystones {
 
 	public static final String MOD_ID = "waystones";
@@ -35,6 +34,7 @@ public class Waystones {
 
 	public static BlockWaystone blockWaystone;
 	public static ItemReturnScroll itemReturnScroll;
+	public static ItemWarpScroll itemWarpScroll;
 	public static ItemWarpStone itemWarpStone;
 
 	public static Configuration configuration;
@@ -50,6 +50,9 @@ public class Waystones {
 
 		itemReturnScroll = new ItemReturnScroll();
 		GameRegistry.register(itemReturnScroll);
+
+		itemWarpScroll = new ItemWarpScroll();
+		GameRegistry.register(itemWarpScroll);
 
 		itemWarpStone = new ItemWarpStone();
 		GameRegistry.register(itemWarpStone);
@@ -74,6 +77,10 @@ public class Waystones {
 
 		if(instance.config.allowReturnScrolls) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "GEG", "PPP", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER));
+		}
+
+		if(instance.config.allowWarpScrolls) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "DED", "PPP", "GGG", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER, 'D', "dyePurple"));
 		}
 
 		if(instance.config.allowWarpStone) {

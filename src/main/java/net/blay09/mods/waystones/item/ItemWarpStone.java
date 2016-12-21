@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.WaystoneManager;
+import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,13 +22,12 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemWarpStone extends Item {
 
 	public ItemWarpStone() {
-		setRegistryName(Waystones.MOD_ID, "warpStone");
+		setRegistryName(Waystones.MOD_ID, "warp_stone");
 		setUnlocalizedName(getRegistryName().toString());
 		setCreativeTab(CreativeTabs.TOOLS);
 		setMaxStackSize(1);
@@ -45,33 +44,26 @@ public class ItemWarpStone extends Item {
 		return EnumAction.BOW;
 	}
 
-	@Nullable
 	@Override
 	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entityLiving) {
 		if(world.isRemote) {
-			Waystones.proxy.openWaystoneSelection(false);
+			Waystones.proxy.openWaystoneSelection(WarpMode.WARP_STONE, entityLiving.getActiveHand());
 		}
 		return itemStack;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack itemStack = player.getHeldItem(hand);
 		if(player.capabilities.isCreativeMode) {
 			PlayerWaystoneData.setLastWarpStoneUse(player, 0);
 		}
 		if (PlayerWaystoneData.canUseWarpStone(player)) {
-			if(PlayerWaystoneData.getLastWaystone(player) != null || !WaystoneManager.getServerWaystones().isEmpty()) {
-				if(!player.isHandActive() && world.isRemote) {
-					Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
-				}
-				player.setActiveHand(hand);
-				return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
-			} else {
-				TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:scrollNotBound");
-				chatComponent.getStyle().setColor(TextFormatting.RED);
-				Waystones.proxy.printChatMessage(3, chatComponent);
-				return new ActionResult<>(EnumActionResult.FAIL, itemStack);
+			if(!player.isHandActive() && world.isRemote) {
+				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
 			}
+			player.setActiveHand(hand);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		} else {
 			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:stoneNotCharged");
 			chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -96,8 +88,7 @@ public class ItemWarpStone extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("unchecked")
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean debug) {
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
 		if(secondsLeft > 0) {

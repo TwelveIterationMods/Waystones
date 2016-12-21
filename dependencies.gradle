@@ -1,4 +1,3 @@
 dependencies {
-    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.2.0-40"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.3-46"
 }

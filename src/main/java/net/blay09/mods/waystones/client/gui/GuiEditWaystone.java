@@ -9,39 +9,38 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class GuiWaystoneName extends GuiScreen {
+public class GuiEditWaystone extends GuiScreen {
 
 	private final TileWaystone tileWaystone;
 	private GuiTextField textField;
 	private GuiButton btnDone;
 	private GuiCheckBox chkGlobal;
 
-	public GuiWaystoneName(TileWaystone tileWaystone) {
+	public GuiEditWaystone(TileWaystone tileWaystone) {
 		this.tileWaystone = tileWaystone;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void initGui() {
 		String oldText = tileWaystone.getWaystoneName();
 		if(textField != null) {
 			oldText = textField.getText();
 		}
 		textField = new GuiTextField(2, fontRendererObj, width / 2 - 100, height / 2 - 20, 200, 20);
+		textField.setMaxStringLength(128);
 		textField.setText(oldText);
 		textField.setFocused(true);
 		btnDone = new GuiButton(0, width / 2, height / 2 + 10, 100, 20, I18n.format("gui.done"));
 		buttonList.add(btnDone);
 
 		chkGlobal = new GuiCheckBox(1, width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones:editWaystone.isGlobal"), WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null);
-		if(!Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode || (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer())) {
+		if(!Minecraft.getMinecraft().player.capabilities.isCreativeMode || (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer())) {
 			chkGlobal.visible = false;
 		}
 		buttonList.add(chkGlobal);

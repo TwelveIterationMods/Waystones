@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 
@@ -21,7 +20,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 
 	@Override
 	public void renderTileEntityAt(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
-		IBlockState state = (tileEntity != null && tileEntity.hasWorldObj()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
+		IBlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
 		if(state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
 			return;
 		}
@@ -37,7 +36,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 		GlStateManager.rotate(-180f, 1f, 0f, 0f);
 		GlStateManager.scale(0.5f, 0.5f, 0.5f);
 		model.renderAll();
-		if(tileEntity != null && tileEntity.hasWorldObj() && (WaystoneManager.getKnownWaystone(tileEntity.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileEntity.getWaystoneName()) != null)) {
+		if(tileEntity != null && tileEntity.hasWorld() && (WaystoneManager.getKnownWaystone(tileEntity.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileEntity.getWaystoneName()) != null)) {
 			bindTexture(textureActive);
 			GlStateManager.scale(1.05f, 1.05f, 1.05f);
 			if(!WaystoneConfig.disableTextGlow) {

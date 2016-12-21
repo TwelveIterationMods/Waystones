@@ -16,8 +16,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import javax.annotation.Nullable;
+
 public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName, IMessage> {
 	@Override
+	@Nullable
 	public IMessage onMessage(final MessageWaystoneName message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
@@ -37,18 +40,18 @@ public class HandlerWaystoneName implements IMessageHandler<MessageWaystoneName,
 						return;
 					}
 					if(Waystones.getConfig().restrictRenameToOwner && !((TileWaystone) tileEntity).isOwner(ctx.getServerHandler().playerEntity)) {
-						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:notTheOwner"));
+						ctx.getServerHandler().playerEntity.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
 						return;
 					}
 					if(WaystoneManager.getServerWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
-						ctx.getServerHandler().playerEntity.addChatComponentMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
+						ctx.getServerHandler().playerEntity.sendMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
 						return;
 					}
 					WaystoneManager.removeServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
 					((TileWaystone) tileEntity).setWaystoneName(message.getName());
 					if(message.isGlobal() && ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						WaystoneManager.addServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
-						for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
+						for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
 							WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
 						}
 					}

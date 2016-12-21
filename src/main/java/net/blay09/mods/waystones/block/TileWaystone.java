@@ -65,8 +65,8 @@ public class TileWaystone extends TileEntity {
 
 	public void setWaystoneName(String waystoneName) {
 		this.waystoneName = waystoneName;
-		IBlockState state = worldObj.getBlockState(pos);
-		worldObj.markAndNotifyBlock(pos, worldObj.getChunkFromBlockCoords(pos), state, state, 3);
+		IBlockState state = world.getBlockState(pos);
+		world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3);
 		markDirty();
 	}
 

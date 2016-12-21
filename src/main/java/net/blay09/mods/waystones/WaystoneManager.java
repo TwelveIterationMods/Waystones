@@ -23,7 +23,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nullable;
@@ -109,6 +108,7 @@ public class WaystoneManager {
 		return false;
 	}
 
+	@Nullable
 	public static TileWaystone getWaystoneInWorld(WaystoneEntry waystone) {
 		World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
 		if(targetWorld == null) {
@@ -128,7 +128,7 @@ public class WaystoneManager {
 		if(!checkAndUpdateWaystone(player, waystone)) {
 			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:waystoneBroken");
 			chatComponent.getStyle().setColor(TextFormatting.RED);
-			player.addChatComponentMessage(chatComponent);
+			player.sendMessage(chatComponent);
 			return false;
 		}
 		WaystoneEntry serverEntry = getServerWaystone(waystone.getName());
@@ -137,20 +137,20 @@ public class WaystoneManager {
 		BlockPos targetPos = waystone.getPos().offset(facing);
 		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
 		if (dimensionWarp && !Waystones.getConfig().interDimension && !(serverEntry == null || !Waystones.getConfig().globalInterDimension)) {
-			player.addChatComponentMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
+			player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}
-		sendTeleportEffect(player.worldObj, new BlockPos(player));
+		sendTeleportEffect(player.world, new BlockPos(player));
 		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
 		if(dimensionWarp) {
-			MinecraftServer server = player.worldObj.getMinecraftServer();
+			MinecraftServer server = player.world.getMinecraftServer();
 			if(server != null) {
-				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), new TeleporterWaystone((WorldServer) player.worldObj));
+				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), new TeleporterWaystone((WorldServer) player.world));
 			}
 		}
 		player.rotationYaw = getRotationYaw(facing);
 		player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
-		sendTeleportEffect(player.worldObj, targetPos);
+		sendTeleportEffect(player.world, targetPos);
 		return true;
 	}
 

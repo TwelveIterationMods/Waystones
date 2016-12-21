@@ -1,7 +1,8 @@
 tile.waystones:waystone.name=Waystone
 
-item.waystones:warpScroll.name=Return Scroll
-item.waystones:warpStone.name=Warp Stone
+item.waystones:warp_scroll.name=Warp Scroll
+item.waystones:return_scroll.name=Return Scroll
+item.waystones:warp_stone.name=Warp Stone
 
 waystones:noDimensionWarp=You cannot warp between worlds.
 waystones:waystoneBroken=The bound waystone has been moved or destroyed.

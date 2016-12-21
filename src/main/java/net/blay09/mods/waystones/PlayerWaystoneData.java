@@ -2,9 +2,13 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
 
 public class PlayerWaystoneData {
 
@@ -75,6 +79,10 @@ public class PlayerWaystoneData {
 		tagCompound.setLong(LAST_WARP_STONE_USE, lastWarpStoneUse);
 	}
 
+	public void store(EntityPlayerMP player) {
+		store(player, entries, lastServerWaystoneName, lastFreeWarp, lastWarpStoneUse);
+	}
+
 	public static void setLastServerWaystone(EntityPlayer player, WaystoneEntry waystone) {
 		getOrCreateWaystonesTag(player).setString(LAST_SERVER_WAYSTONE, waystone.getName());
 	}
@@ -83,6 +91,7 @@ public class PlayerWaystoneData {
 		getWaystonesTag(player).removeTag(LAST_SERVER_WAYSTONE);
 	}
 
+	@Nullable
 	public static WaystoneEntry getLastWaystone(EntityPlayer player) {
 		NBTTagCompound tagCompound = getWaystonesTag(player);
 		NBTTagList tagList = tagCompound.getTagList(WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
@@ -123,4 +132,5 @@ public class PlayerWaystoneData {
 	public String getLastServerWaystoneName() {
 		return lastServerWaystoneName;
 	}
+
 }
