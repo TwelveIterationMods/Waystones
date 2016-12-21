@@ -40,18 +40,21 @@ public class HandlerWarpStone implements IMessageHandler<MessageWarpStone, IMess
 				}
 
 				if(WaystoneManager.teleportToWaystone(ctx.getServerHandler().playerEntity, message.getWaystone())) {
-					if(WaystoneManager.getServerWaystone(message.getWaystone().getName()) == null || !Waystones.getConfig().globalNoCooldown) {
-						switch(message.getWarpMode()) {
-							case INVENTORY_BUTTON:
+					boolean shouldCooldown = WaystoneManager.getServerWaystone(message.getWaystone().getName()) == null || !Waystones.getConfig().globalNoCooldown;
+					switch(message.getWarpMode()) {
+						case INVENTORY_BUTTON:
+							if(shouldCooldown) {
 								PlayerWaystoneData.setLastFreeWarp(ctx.getServerHandler().playerEntity, System.currentTimeMillis());
-								break;
-							case WARP_SCROLL:
-								heldItem.shrink(1);
-								break;
-							case WARP_STONE:
+							}
+							break;
+						case WARP_SCROLL:
+							heldItem.shrink(1);
+							break;
+						case WARP_STONE:
+							if(shouldCooldown) {
 								PlayerWaystoneData.setLastWarpStoneUse(ctx.getServerHandler().playerEntity, System.currentTimeMillis());
-								break;
-						}
+							}
+							break;
 					}
 				}
 
