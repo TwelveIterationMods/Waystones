@@ -84,7 +84,7 @@ public class Waystones {
 		}
 
 		if(instance.config.allowWarpScrolls) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "DED", "PPP", "GGG", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER, 'D', "dyePurple"));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemWarpScroll, 3), "EDE", "PPP", "GDG", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER, 'D', "dyePurple"));
 		}
 
 		if(instance.config.allowWarpStone) {
