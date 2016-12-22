@@ -72,7 +72,6 @@ public class NameGenerator {
 		addSpecialName(Biomes.SKY, "The Nocturne");
 		addSpecialName(Biomes.VOID, "The Nihilus");
 
-
 		addBiomeName(Biomes.COLD_TAIGA, "Taiga");
 		addBiomeName(Biomes.REDWOOD_TAIGA, "Taiga");
 		addBiomeName(Biomes.TAIGA, "Taiga");
@@ -159,7 +158,7 @@ public class NameGenerator {
 			init();
 		}
 		String name = SPECIAL_NAMES.get(biome.getBiomeName());
-		if (usedNames.contains(name)) {
+		if (name == null || usedNames.contains(name)) {
 			String biomeSuffix = BIOME_NAMES.get(biome.getBiomeName());
 			name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
 			String tryName = name;
