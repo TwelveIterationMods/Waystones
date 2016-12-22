@@ -1,12 +1,10 @@
 package net.blay09.mods.waystones.client.gui;
 
 import net.blay09.mods.waystones.WarpMode;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;
 import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -65,7 +63,7 @@ public class GuiWaystoneList extends GuiScreen {
 		for(int i = 0; i < buttonsPerPage; i++) {
 			int entryIndex = pageOffset * buttonsPerPage + i;
 			if(entryIndex >= 0 && entryIndex < entries.length) {
-				GuiButtonWaystoneEntry btnWaystone = new GuiButtonWaystoneEntry(id, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex]);
+				GuiButtonWaystoneEntry btnWaystone = new GuiButtonWaystoneEntry(id, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex], warpMode);
 				buttonList.add(btnWaystone);
 				id++;
 

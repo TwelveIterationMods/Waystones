@@ -18,6 +18,7 @@ public class TileWaystone extends TileEntity {
 
 	private String waystoneName = "";
 	private UUID owner;
+	private boolean isGlobal;
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
@@ -26,6 +27,7 @@ public class TileWaystone extends TileEntity {
 		if(owner != null) {
 			tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
 		}
+		tagCompound.setBoolean("IsGlobal", isGlobal);
 		return tagCompound;
 	}
 
@@ -36,6 +38,7 @@ public class TileWaystone extends TileEntity {
 		if(tagCompound.hasKey("Owner")) {
 			owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
 		}
+		isGlobal = tagCompound.getBoolean("IsGlobal");
 	}
 
 	@Override
@@ -82,5 +85,16 @@ public class TileWaystone extends TileEntity {
 
 	public void setOwner(EntityPlayer owner) {
 		this.owner = owner.getGameProfile().getId();
+		markDirty();
 	}
+
+	public boolean isGlobal() {
+		return isGlobal;
+	}
+
+	public void setGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
+		markDirty();
+	}
+
 }

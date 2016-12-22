@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,7 @@ public class GuiButtonInventoryWarp extends GuiButton {
 			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
 			mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 			EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
-			if(!PlayerWaystoneData.canFreeWarp(entityPlayer) || PlayerWaystoneData.getLastWaystone(entityPlayer) == null) {
+			if(!PlayerWaystoneHelper.canFreeWarp(entityPlayer) || PlayerWaystoneHelper.getLastWaystone(entityPlayer) == null) {
 				GlStateManager.color(0.5f, 0.5f, 0.5f, 0.5f);
 			} else if(hovered) {
 				GlStateManager.color(1f, 1f, 1f, 1f);

@@ -1,9 +1,11 @@
 package net.blay09.mods.waystones.block;
 
+import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.client.ClientWaystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -99,7 +101,7 @@ public class BlockWaystone extends BlockContainer {
 			return -1f;
 		}
 		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
-		if(tileWaystone != null && WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
+		if(tileWaystone != null && tileWaystone.isGlobal() && !player.capabilities.isCreativeMode) {
 			return -1f;
 		}
 		return super.getPlayerRelativeBlockHardness(state, player, world, pos);
@@ -135,8 +137,8 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		TileWaystone tileWaystone = getTileWaystone(world, pos);
-		if (tileWaystone != null) {
-			WaystoneManager.removeServerWaystone(new WaystoneEntry(tileWaystone));
+		if (tileWaystone != null && tileWaystone.isGlobal()) {
+			GlobalWaystones.get(world).removeGlobalWaystone(new WaystoneEntry(tileWaystone));
 		}
 		super.breakBlock(world, pos, state);
 		if (world.getBlockState(pos.up()).getBlock() == this) {
@@ -155,11 +157,11 @@ public class BlockWaystone extends BlockContainer {
 					return true;
 				}
 				if(Waystones.getConfig().restrictRenameToOwner && !tileWaystone.isOwner(player)) {
-					player.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
+					player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
 					return true;
 				}
-				if(WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode) {
-					player.sendMessage(new TextComponentTranslation("waystones:creativeRequired"));
+				if(tileWaystone.isGlobal() && !player.capabilities.isCreativeMode) {
+					player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
 					return true;
 				}
 				player.openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
@@ -170,18 +172,23 @@ public class BlockWaystone extends BlockContainer {
 		if (tileWaystone == null) {
 			return true;
 		}
-		WaystoneEntry knownWaystone = WaystoneManager.getKnownWaystone(tileWaystone.getWaystoneName());
+		WaystoneEntry knownWaystone = ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName());
 		if(knownWaystone != null) {
 			Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
 		} else if (!world.isRemote) {
-			if(!WaystoneManager.checkAndUpdateWaystone(player, new WaystoneEntry(tileWaystone))) {
+			WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
+			if(!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
 				TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
 				nameComponent.getStyle().setColor(TextFormatting.WHITE);
 				TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:activatedWaystone", nameComponent);
 				chatComponent.getStyle().setColor(TextFormatting.YELLOW);
 				player.sendMessage(chatComponent);
 			}
-			WaystoneManager.activateWaystone(player, tileWaystone);
+
+			WaystoneManager.removePlayerWaystone(player, waystone);
+			WaystoneManager.addPlayerWaystone(player, waystone);
+			WaystoneManager.sendPlayerWaystones(player);
+
 			if (Waystones.getConfig().setSpawnPoint) {
 				EnumFacing blockFacing = state.getValue(FACING);
 				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true, world.provider.getDimension());
@@ -203,7 +210,7 @@ public class BlockWaystone extends BlockContainer {
 			if (tileWaystone == null) {
 				return;
 			}
-			if (WaystoneManager.getKnownWaystone(tileWaystone.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null) {
+			if (ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) != null) {
 				world.spawnParticle(EnumParticleTypes.PORTAL, pos.getX() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, 0, 0, 0);
 				world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, 0, 0, 0);
 			}

@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.resources.I18n;
@@ -56,18 +56,16 @@ public class ItemWarpStone extends Item {
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack itemStack = player.getHeldItem(hand);
 		if(player.capabilities.isCreativeMode) {
-			PlayerWaystoneData.setLastWarpStoneUse(player, 0);
+			PlayerWaystoneHelper.setLastWarpStoneUse(player, 0);
 		}
-		if (PlayerWaystoneData.canUseWarpStone(player)) {
+		if (PlayerWaystoneHelper.canUseWarpStone(player)) {
 			if(!player.isHandActive() && world.isRemote) {
 				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
 			}
 			player.setActiveHand(hand);
 			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		} else {
-			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:stoneNotCharged");
-			chatComponent.getStyle().setColor(TextFormatting.RED);
-			Waystones.proxy.printChatMessage(3, chatComponent);
+			player.sendStatusMessage(new TextComponentTranslation("waystones:stoneNotCharged"), true);
 			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
 	}
@@ -81,7 +79,7 @@ public class ItemWarpStone extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public double getDurabilityForDisplay(ItemStack stack) {
-		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
+		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		float percentage = (float) timeSince / (float) (Waystones.getConfig().warpStoneCooldown * 1000);
 		return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
 	}
@@ -89,7 +87,7 @@ public class ItemWarpStone extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
-		long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
+		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
 		int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
 		if(secondsLeft > 0) {
 			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
@@ -99,7 +97,7 @@ public class ItemWarpStone extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack itemStack) {
-		return PlayerWaystoneData.canUseWarpStone(FMLClientHandler.instance().getClientPlayerEntity());
+		return PlayerWaystoneHelper.canUseWarpStone(FMLClientHandler.instance().getClientPlayerEntity());
 	}
 
 }

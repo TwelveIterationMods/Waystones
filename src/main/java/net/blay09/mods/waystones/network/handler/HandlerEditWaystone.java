@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.network.handler;
 
+import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
@@ -34,23 +35,32 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 				if(entityPlayer.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
 					return;
 				}
+				GlobalWaystones globalWaystones = GlobalWaystones.get(ctx.getServerHandler().playerEntity.world);
 				TileEntity tileEntity = world.getTileEntity(pos);
 				if(tileEntity instanceof TileWaystone) {
-					if(WaystoneManager.getServerWaystone(((TileWaystone) tileEntity).getWaystoneName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
+					TileWaystone tileWaystone = (TileWaystone) tileEntity;
+					if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						return;
 					}
-					if(Waystones.getConfig().restrictRenameToOwner && !((TileWaystone) tileEntity).isOwner(ctx.getServerHandler().playerEntity)) {
+					if(Waystones.getConfig().restrictRenameToOwner && !tileWaystone.isOwner(ctx.getServerHandler().playerEntity)) {
 						ctx.getServerHandler().playerEntity.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
 						return;
 					}
-					if(WaystoneManager.getServerWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
+					if(globalWaystones.getGlobalWaystone(message.getName()) != null && !ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
 						ctx.getServerHandler().playerEntity.sendMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
 						return;
 					}
-					WaystoneManager.removeServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
-					((TileWaystone) tileEntity).setWaystoneName(message.getName());
+					WaystoneEntry oldWaystone = new WaystoneEntry(tileWaystone);
+					globalWaystones.removeGlobalWaystone(oldWaystone);
+
+					tileWaystone.setWaystoneName(message.getName());
+
+					WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
+
 					if(message.isGlobal() && ctx.getServerHandler().playerEntity.capabilities.isCreativeMode) {
-						WaystoneManager.addServerWaystone(new WaystoneEntry((TileWaystone) tileEntity));
+						tileWaystone.setGlobal(true);
+						newWaystone.setGlobal(true);
+						globalWaystones.addGlobalWaystone(newWaystone);
 						for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
 							WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
 						}

@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.client.ClientWaystones;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -36,7 +37,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 		GlStateManager.rotate(-180f, 1f, 0f, 0f);
 		GlStateManager.scale(0.5f, 0.5f, 0.5f);
 		model.renderAll();
-		if(tileEntity != null && tileEntity.hasWorld() && (WaystoneManager.getKnownWaystone(tileEntity.getWaystoneName()) != null || WaystoneManager.getServerWaystone(tileEntity.getWaystoneName()) != null)) {
+		if(tileEntity != null && tileEntity.hasWorld() && (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null)) {
 			bindTexture(textureActive);
 			GlStateManager.scale(1.05f, 1.05f, 1.05f);
 			if(!WaystoneConfig.disableTextGlow) {

@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.client;
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.CommonProxy;
 import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
@@ -28,7 +28,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -73,9 +72,9 @@ public class ClientProxy extends CommonProxy {
 	public void onActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
 		if (event.getButton() instanceof GuiButtonInventoryWarp) {
 			EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
-			if (PlayerWaystoneData.canFreeWarp(entityPlayer)) {
+			if (PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
 				if(Waystones.getConfig().teleportButtonReturnOnly) {
-					if(PlayerWaystoneData.getLastWaystone(entityPlayer) != null){
+					if(PlayerWaystoneHelper.getLastWaystone(entityPlayer) != null){
 						event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn());
 					}
 				} else {
@@ -94,11 +93,11 @@ public class ClientProxy extends CommonProxy {
 	public void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
 		if (event.getGui() instanceof GuiInventory && buttonWarp != null && buttonWarp.isHovered()) {
 			tmpTooltip.clear();
-			long timeSince = System.currentTimeMillis() - PlayerWaystoneData.getLastFreeWarp(FMLClientHandler.instance().getClientPlayerEntity());
+			long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastFreeWarp(FMLClientHandler.instance().getClientPlayerEntity());
 			int secondsLeft = (int) ((Waystones.getConfig().teleportButtonCooldown * 1000 - timeSince) / 1000);
 			if (Waystones.getConfig().teleportButtonReturnOnly) {
 				tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
-				WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
+				WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
 				if (lastEntry != null) {
 					tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
 				} else {
@@ -138,20 +137,8 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void openWaystoneSelection(WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
-		WaystoneEntry[] playerWaystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
-		WaystoneEntry[] combinedWaystones = new WaystoneEntry[WaystoneManager.getServerWaystones().size() + playerWaystones.length];
-		int i = 0;
-		for(WaystoneEntry entry : WaystoneManager.getServerWaystones()) {
-			combinedWaystones[i] = entry;
-			i++;
-		}
-		System.arraycopy(playerWaystones, 0, combinedWaystones, i, playerWaystones.length);
- 		Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(combinedWaystones, mode, hand, fromWaystone));
-	}
-
-	@Override
-	public void printChatMessage(int id, ITextComponent chatComponent) {
-		Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(chatComponent, id);
+		WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
+ 		Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(waystones, mode, hand, fromWaystone));
 	}
 
 	@Override

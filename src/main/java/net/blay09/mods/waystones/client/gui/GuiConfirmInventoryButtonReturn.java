@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWarpReturn;
 import net.blay09.mods.waystones.util.WaystoneEntry;
@@ -28,7 +28,7 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
 	}
 
 	private static String getWaystoneName() {
-		WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
+		WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
 		if(lastEntry != null) {
 			return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", lastEntry.getName());
 		}

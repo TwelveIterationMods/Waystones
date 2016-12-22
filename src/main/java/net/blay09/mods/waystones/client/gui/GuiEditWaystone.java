@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui;
 
-import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
@@ -39,7 +38,7 @@ public class GuiEditWaystone extends GuiScreen {
 		btnDone = new GuiButton(0, width / 2, height / 2 + 10, 100, 20, I18n.format("gui.done"));
 		buttonList.add(btnDone);
 
-		chkGlobal = new GuiCheckBox(1, width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones:editWaystone.isGlobal"), WaystoneManager.getServerWaystone(tileWaystone.getWaystoneName()) != null);
+		chkGlobal = new GuiCheckBox(1, width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones:editWaystone.isGlobal"), tileWaystone.isGlobal());
 		if(!Minecraft.getMinecraft().player.capabilities.isCreativeMode || (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer())) {
 			chkGlobal.visible = false;
 		}

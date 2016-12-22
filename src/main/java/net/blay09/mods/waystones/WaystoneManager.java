@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones;
 
-import com.google.common.collect.Maps;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
@@ -26,44 +25,26 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Map;
 
 public class WaystoneManager {
-
-	private static final Map<String, WaystoneEntry> serverWaystones = Maps.newHashMap();
-	private static final Map<String, WaystoneEntry> knownWaystones = Maps.newHashMap();
-
-	public static void activateWaystone(EntityPlayer player, TileWaystone waystone) {
-		WaystoneEntry serverWaystone = getServerWaystone(waystone.getWaystoneName());
-		if(serverWaystone != null) {
-			PlayerWaystoneData.setLastServerWaystone(player, serverWaystone);
-			sendPlayerWaystones(player);
-			return;
-		}
-		PlayerWaystoneData.resetLastServerWaystone(player);
-		removePlayerWaystone(player, new WaystoneEntry(waystone));
-		addPlayerWaystone(player, waystone);
-		sendPlayerWaystones(player);
-	}
 
 	public static void sendPlayerWaystones(EntityPlayer player) {
 		if (player instanceof EntityPlayerMP) {
 			PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-			NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), getServerWaystones().toArray(new WaystoneEntry[getServerWaystones().size()]), waystoneData.getLastServerWaystoneName(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (EntityPlayerMP) player);
+			NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (EntityPlayerMP) player);
 		}
 	}
 
-	public static void addPlayerWaystone(EntityPlayer player, TileWaystone waystone) {
-		NBTTagCompound tagCompound = PlayerWaystoneData.getOrCreateWaystonesTag(player);
-		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneData.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-		tagList.appendTag(new WaystoneEntry(waystone).writeToNBT());
-		tagCompound.setTag(PlayerWaystoneData.WAYSTONE_LIST, tagList);
+	public static void addPlayerWaystone(EntityPlayer player, WaystoneEntry waystone) {
+		NBTTagCompound tagCompound = PlayerWaystoneHelper.getOrCreateWaystonesTag(player);
+		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+		tagList.appendTag(waystone.writeToNBT());
+		tagCompound.setTag(PlayerWaystoneHelper.WAYSTONE_LIST, tagList);
 	}
 
 	public static boolean removePlayerWaystone(EntityPlayer player, WaystoneEntry waystone) {
-		NBTTagCompound tagCompound = PlayerWaystoneData.getWaystonesTag(player);
-		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneData.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+		NBTTagCompound tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
+		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound entryCompound = tagList.getCompoundTagAt(i);
 			if (WaystoneEntry.read(entryCompound).equals(waystone)) {
@@ -75,19 +56,8 @@ public class WaystoneManager {
 	}
 
 	public static boolean checkAndUpdateWaystone(EntityPlayer player, WaystoneEntry waystone) {
-		WaystoneEntry serverEntry = getServerWaystone(waystone.getName());
-		if(serverEntry != null) {
-			if(getWaystoneInWorld(serverEntry) == null) {
-				removeServerWaystone(serverEntry);
-				return false;
-			}
-			if(removePlayerWaystone(player, waystone)) {
-				sendPlayerWaystones(player);
-			}
-			return true;
-		}
-		NBTTagCompound tagCompound = PlayerWaystoneData.getWaystonesTag(player);
-		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneData.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+		NBTTagCompound tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
+		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound entryCompound = tagList.getCompoundTagAt(i);
 			if (WaystoneEntry.read(entryCompound).equals(waystone)) {
@@ -99,6 +69,9 @@ public class WaystoneManager {
 					}
 					return true;
 				} else {
+					if(waystone.isGlobal()) {
+						GlobalWaystones.get(player.world).removeGlobalWaystone(waystone);
+					}
 					removePlayerWaystone(player, waystone);
 					sendPlayerWaystones(player);
 				}
@@ -131,12 +104,11 @@ public class WaystoneManager {
 			player.sendMessage(chatComponent);
 			return false;
 		}
-		WaystoneEntry serverEntry = getServerWaystone(waystone.getName());
 		World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
 		EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
 		BlockPos targetPos = waystone.getPos().offset(facing);
 		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
-		if (dimensionWarp && !Waystones.getConfig().interDimension && !(serverEntry == null || !Waystones.getConfig().globalInterDimension)) {
+		if (dimensionWarp && !Waystones.getConfig().interDimension && !(waystone.isGlobal() && Waystones.getConfig().globalInterDimension)) {
 			player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}
@@ -172,41 +144,4 @@ public class WaystoneManager {
 		return 0f;
 	}
 
-	public static void addServerWaystone(WaystoneEntry entry) {
-		serverWaystones.put(entry.getName(), entry);
-		WaystoneConfig.storeServerWaystones(Waystones.configuration, serverWaystones.values());
-	}
-
-	public static void removeServerWaystone(WaystoneEntry entry) {
-		serverWaystones.remove(entry.getName());
-		WaystoneConfig.storeServerWaystones(Waystones.configuration, serverWaystones.values());
-	}
-
-	public static void setServerWaystones(WaystoneEntry[] entries) {
-		serverWaystones.clear();
-		for(WaystoneEntry entry : entries) {
-			serverWaystones.put(entry.getName(), entry);
-		}
-	}
-
-	public static void setKnownWaystones(WaystoneEntry[] entries) {
-		knownWaystones.clear();
-		for(WaystoneEntry entry : entries) {
-			knownWaystones.put(entry.getName(), entry);
-		}
-	}
-
-	@Nullable
-	public static WaystoneEntry getKnownWaystone(String name) {
-		return knownWaystones.get(name);
-	}
-
-	public static Collection<WaystoneEntry> getServerWaystones() {
-		return serverWaystones.values();
-	}
-
-	@Nullable
-	public static WaystoneEntry getServerWaystone(String name) {
-		return serverWaystones.get(name);
-	}
 }

@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
@@ -43,7 +43,7 @@ public class ItemReturnScroll extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
 		if(!world.isRemote && entity instanceof EntityPlayer) {
-			WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone((EntityPlayer) entity);
+			WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone((EntityPlayer) entity);
 			if(lastEntry != null) {
 				if(WaystoneManager.teleportToWaystone((EntityPlayer) entity, lastEntry)) {
 					if(!((EntityPlayer) entity).capabilities.isCreativeMode) {
@@ -58,16 +58,14 @@ public class ItemReturnScroll extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack itemStack = player.getHeldItem(hand);
-		if(PlayerWaystoneData.getLastWaystone(player) != null) {
+		if(PlayerWaystoneHelper.getLastWaystone(player) != null) {
 			if(!player.isHandActive() && world.isRemote) {
 				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
 			}
 			player.setActiveHand(hand);
 			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		} else {
-			TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:scrollNotBound");
-			chatComponent.getStyle().setColor(TextFormatting.RED);
-			Waystones.proxy.printChatMessage(3, chatComponent);
+			player.sendStatusMessage(new TextComponentTranslation("waystones:scrollNotBound"), true);
 			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
 
@@ -75,7 +73,7 @@ public class ItemReturnScroll extends Item {
 
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
-		WaystoneEntry lastEntry = PlayerWaystoneData.getLastWaystone(player);
+		WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(player);
 		if(lastEntry != null) {
 			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
 		} else {

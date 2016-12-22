@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network.handler;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -24,12 +24,12 @@ public class HandlerFreeWarpReturn implements IMessageHandler<MessageWarpReturn,
 					return;
 				}
 				EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-				if(!PlayerWaystoneData.canFreeWarp(entityPlayer)) {
+				if(!PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
 					return;
 				}
-				WaystoneEntry lastWaystone = PlayerWaystoneData.getLastWaystone(entityPlayer);
+				WaystoneEntry lastWaystone = PlayerWaystoneHelper.getLastWaystone(entityPlayer);
 				if(lastWaystone != null && WaystoneManager.teleportToWaystone(entityPlayer, lastWaystone)) {
-					PlayerWaystoneData.setLastFreeWarp(entityPlayer, System.currentTimeMillis());
+					PlayerWaystoneHelper.setLastFreeWarp(entityPlayer, System.currentTimeMillis());
 				}
 				WaystoneManager.sendPlayerWaystones(entityPlayer);
 

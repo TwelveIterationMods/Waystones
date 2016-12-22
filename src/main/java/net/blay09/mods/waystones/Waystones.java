@@ -73,7 +73,6 @@ public class Waystones {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		FMLInterModComms.sendFunctionMessage(Compat.THEONEPROBE, "getTheOneProbe", "net.blay09.mods.waystones.compat.TheOneProbeAddon");
-		FMLInterModComms.sendMessage(Compat.WAILA, "register", "net.blay09.mods.waystones.compat.WailaProvider.register");
 
 		if(instance.config.allowReturnScrolls) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "GEG", "PPP", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER));

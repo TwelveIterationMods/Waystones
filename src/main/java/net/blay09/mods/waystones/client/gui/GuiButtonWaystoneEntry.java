@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui;
 
 import com.google.common.collect.Lists;
+import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
@@ -21,11 +22,12 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 	private final WaystoneEntry waystone;
 	private final int xpLevelCost;
 
-	public GuiButtonWaystoneEntry(int id, int x, int y, WaystoneEntry waystone) {
+	public GuiButtonWaystoneEntry(int id, int x, int y, WaystoneEntry waystone, WarpMode mode) {
 		super(id, x, y, (waystone.isGlobal() ? TextFormatting.YELLOW : "") +  waystone.getName());
 		this.waystone = waystone;
 		EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-		this.xpLevelCost = Waystones.getConfig().blocksPerXPLevel > 0 ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / Waystones.getConfig().blocksPerXPLevel, 0, 3) : 0;
+		boolean enableXPCost = (mode != WarpMode.WARP_STONE || Waystones.getConfig().warpStoneXpCost);
+		this.xpLevelCost = (enableXPCost && Waystones.getConfig().blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / Waystones.getConfig().blocksPerXPLevel, 0, 3) : 0;
 
 		if(waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
 			if(!Waystones.getConfig().interDimension && !(!waystone.isGlobal() || !Waystones.getConfig().globalInterDimension)) {
@@ -53,7 +55,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 			drawTexturedModalRect(xPosition + 2, yPosition + 2, (xpLevelCost - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
 			if(hovered && mouseX <= xPosition + 16) {
-				GuiUtils.drawHoveringText(Lists.newArrayList(TextFormatting.RED + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRendererObj.FONT_HEIGHT, mc.displayWidth, mc.displayHeight, 200, mc.fontRendererObj);
+				GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRendererObj.FONT_HEIGHT, mc.displayWidth, mc.displayHeight, 200, mc.fontRendererObj);
 			}
 			GlStateManager.disableLighting();
 		}
