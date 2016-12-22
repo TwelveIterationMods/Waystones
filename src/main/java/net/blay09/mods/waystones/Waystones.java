@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.item.ItemReturnScroll;
 import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
+import net.blay09.mods.waystones.worldgen.WaystoneWorldGen;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
@@ -65,6 +66,10 @@ public class Waystones {
 		config.reloadLocal(configuration);
 		if(configuration.hasChanged()) {
 			configuration.save();
+		}
+
+		if(WaystoneConfig.worldGenChance > 0) {
+			GameRegistry.registerWorldGenerator(new WaystoneWorldGen(), 0);
 		}
 
 		proxy.preInit(event);

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class TileWaystone extends TileEntity {
 
-	private String waystoneName = "";
+	private String waystoneName = "Unnamed";
 	private UUID owner;
 	private boolean isGlobal;
 
