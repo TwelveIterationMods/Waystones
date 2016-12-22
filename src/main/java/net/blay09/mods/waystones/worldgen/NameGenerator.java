@@ -51,7 +51,6 @@ public class NameGenerator {
 		addSpecialName(Biomes.EXTREME_HILLS, "Smart Hills");
 		addSpecialName(Biomes.DESERT, "Fiery Sands");
 		addSpecialName(Biomes.OCEAN, "Dubzian Ocean");
-		addSpecialName(Biomes.BIRCH_FOREST_HILLS, ""); // ??
 		addSpecialName(Biomes.JUNGLE, "Senroht Jungles");
 		addSpecialName(Biomes.ICE_MOUNTAINS, "Azra Mountain");
 		addSpecialName(Biomes.MESA, "Black Mesa");
