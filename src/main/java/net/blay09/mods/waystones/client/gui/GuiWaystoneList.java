@@ -66,11 +66,6 @@ public class GuiWaystoneList extends GuiScreen {
 			int entryIndex = pageOffset * buttonsPerPage + i;
 			if(entryIndex >= 0 && entryIndex < entries.length) {
 				GuiButtonWaystoneEntry btnWaystone = new GuiButtonWaystoneEntry(id, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex]);
-				if(entries[entryIndex].getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
-					if(!Waystones.getConfig().interDimension && !(!entries[entryIndex].isGlobal() || !Waystones.getConfig().globalInterDimension)) {
-						btnWaystone.enabled = false;
-					}
-				}
 				buttonList.add(btnWaystone);
 				id++;
 

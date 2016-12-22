@@ -27,3 +27,4 @@ tooltip.waystones:boundTo=Bound to: %s
 tooltip.waystones:none=None
 tooltip.waystones:returnToWaystone=Return to Waystone
 tooltip.waystones:openWaystoneMenu=Open Waystone Menu
+tooltip.waystones:levelRequirement=Level Requirement: %d

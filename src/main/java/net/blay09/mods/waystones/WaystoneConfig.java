@@ -22,6 +22,7 @@ public class WaystoneConfig {
 	public boolean allowWarpScrolls;
 	public boolean allowWarpStone;
 
+	public int blocksPerXPLevel;
 	public int warpStoneCooldown;
 
 	public boolean interDimension;
@@ -50,6 +51,7 @@ public class WaystoneConfig {
 		disableParticles = config.getBoolean("Disable Particles", "client", false, "If true, activated waystones will not emit particles.");
 
 		warpStoneCooldown = config.getInt("Warp Stone Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the warp stone in seconds.");
+		blocksPerXPLevel = config.getInt("Blocks per XP Level", "general", 0, 0, 2000, "The amount of blocks per xp level requirement. Set to 0 to disable xp requirement.");
 
 		setSpawnPoint = config.getBoolean("Set Spawnpoint on Activation", "general", false, "If true, the player's spawnpoint will be set to the last activated waystone.");
 		interDimension = config.getBoolean("Interdimensional Teleport", "general", true, "If true, all waystones work inter-dimensionally.");
@@ -107,6 +109,7 @@ public class WaystoneConfig {
 		config.creativeModeOnly = buf.readBoolean();
 		config.setSpawnPoint = buf.readBoolean();
 		config.restrictRenameToOwner = buf.readBoolean();
+		config.blocksPerXPLevel = buf.readInt();
 		return config;
 	}
 
@@ -119,5 +122,6 @@ public class WaystoneConfig {
 		buf.writeBoolean(creativeModeOnly);
 		buf.writeBoolean(setSpawnPoint);
 		buf.writeBoolean(restrictRenameToOwner);
+		buf.writeInt(blocksPerXPLevel);
 	}
 }

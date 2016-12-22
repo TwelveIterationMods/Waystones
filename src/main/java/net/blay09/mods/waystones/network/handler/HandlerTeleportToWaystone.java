@@ -3,11 +3,12 @@ package net.blay09.mods.waystones.network.handler;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -21,7 +22,10 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
 			@Override
 			public void run() {
-				ItemStack heldItem = ctx.getServerHandler().playerEntity.getHeldItem(message.getHand());
+				EntityPlayer player = ctx.getServerHandler().playerEntity;
+				int dist = (int) Math.sqrt(player.getDistanceSqToCenter(message.getWaystone().getPos()));
+				int xpLevelCost = Waystones.getConfig().blocksPerXPLevel > 0 ? MathHelper.clamp(dist / Waystones.getConfig().blocksPerXPLevel, 0, 3) : 0;
+				ItemStack heldItem = player.getHeldItem(message.getHand());
 				switch(message.getWarpMode()) {
 					case INVENTORY_BUTTON:
 						if(!Waystones.getConfig().teleportButton || Waystones.getConfig().teleportButtonReturnOnly || !PlayerWaystoneData.canFreeWarp(ctx.getServerHandler().playerEntity)) {
@@ -34,6 +38,9 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 						}
 						break;
 					case WARP_STONE:
+						if(player.experienceLevel < xpLevelCost) {
+							return;
+						}
 						if(heldItem.isEmpty() || heldItem.getItem() != Waystones.itemWarpStone) {
 							return;
 						}
@@ -57,9 +64,13 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 							heldItem.shrink(1);
 							break;
 						case WARP_STONE:
+							player.removeExperienceLevel(xpLevelCost);
 							if(shouldCooldown) {
 								PlayerWaystoneData.setLastWarpStoneUse(ctx.getServerHandler().playerEntity, System.currentTimeMillis());
 							}
+							break;
+						case WAYSTONE:
+							player.removeExperienceLevel(xpLevelCost);
 							break;
 					}
 				}
