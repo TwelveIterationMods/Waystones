@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
@@ -56,7 +57,7 @@ public class GuiEditWaystone extends GuiScreen {
 	protected void actionPerformed(GuiButton button) {
 		if(button == btnDone) {
 			NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked()));
-			mc.displayGuiScreen(null);
+			FMLClientHandler.instance().getClientPlayerEntity().closeScreen();
 		}
 	}
 

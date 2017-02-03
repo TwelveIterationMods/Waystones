@@ -72,12 +72,7 @@ public class CommonProxy implements IGuiHandler {
 	@Nullable
 	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		if(id == 1) {
-			return new Container() {
-				@Override
-				public boolean canInteractWith(EntityPlayer playerIn) {
-					return true;
-				}
-			};
+			return new ContainerEditWaystoneName();
 		}
 		return null;
 	}

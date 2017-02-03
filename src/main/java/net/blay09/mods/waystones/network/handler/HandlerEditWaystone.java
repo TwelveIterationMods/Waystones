@@ -66,6 +66,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 						}
 					}
 				}
+
 			}
 		});
 		return null;
