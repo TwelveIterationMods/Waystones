@@ -6,7 +6,6 @@ import net.blay09.mods.waystones.network.message.MessageConfig;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +71,7 @@ public class CommonProxy implements IGuiHandler {
 	@Nullable
 	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		if(id == 1) {
-			return new ContainerEditWaystoneName();
+			return new ContainerEditWaystoneNameDummy();
 		}
 		return null;
 	}
