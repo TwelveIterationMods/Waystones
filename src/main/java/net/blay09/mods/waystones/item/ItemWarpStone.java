@@ -87,7 +87,7 @@ public class ItemWarpStone extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
-		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
+		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(player);
 		int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
 		if(secondsLeft > 0) {
 			list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
