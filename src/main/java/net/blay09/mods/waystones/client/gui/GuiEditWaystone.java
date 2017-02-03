@@ -30,6 +30,7 @@ public class GuiEditWaystone extends GuiContainer {
 
 	@Override
 	public void initGui() {
+		super.initGui();
 		String oldText = tileWaystone.getWaystoneName();
 		if(textField != null) {
 			oldText = textField.getText();
