@@ -76,8 +76,10 @@ public class GuiEditWaystone extends GuiContainer {
 			actionPerformed(btnDone);
 			return;
 		}
+		if(textField.textboxKeyTyped(typedChar, keyCode)) {
+			return;
+		}
 		super.keyTyped(typedChar, keyCode);
-		textField.textboxKeyTyped(typedChar, keyCode);
 	}
 
 	@Override
