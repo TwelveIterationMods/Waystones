@@ -76,7 +76,7 @@ public class Waystones {
 		}
 
 		if(config.useOwnCreativeTab) {
-            creativeTab = new WaystoneCreativeTab();
+			creativeTab = new WaystoneCreativeTab();
 			blockWaystone.setCreativeTab(creativeTab);
 			itemReturnScroll.setCreativeTab(creativeTab);
 			itemWarpScroll.setCreativeTab(creativeTab);
