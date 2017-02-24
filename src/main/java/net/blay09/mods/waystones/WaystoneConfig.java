@@ -35,6 +35,8 @@ public class WaystoneConfig {
 
 	public static int worldGenChance = 0;
 
+	public boolean useOwnCreativeTab;
+
 	public void reloadLocal(Configuration config) {
 		teleportButton = config.getBoolean("Teleport Button in GUI", "general", false, "Should there be a button in the inventory to access the waystone menu?");
 		teleportButtonCooldown = config.getInt("Teleport Button Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the teleport button in seconds.");
@@ -65,6 +67,8 @@ public class WaystoneConfig {
 		soundVolume = config.getFloat("Sound Volume", "client", 0.5f, 0f, 1f, "The volume of the sound played when teleporting.");
 
 		worldGenChance = config.getInt("World Gen Chance", "general", 0, 0, 10000, "The chance for a waystone to spawn in world gen, per 10000 blocks. Set to 0 to disable");
+
+		useOwnCreativeTab = config.getBoolean("Use own Creative Tab", "client", false, "If true, all waystone blocks and items will be in a special Waystones tab.");
 	}
 
 	public static WaystoneConfig read(ByteBuf buf) {

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.client.WaystoneCreativeTab;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.item.ItemReturnScroll;
 import net.blay09.mods.waystones.item.ItemWarpScroll;
@@ -38,6 +39,8 @@ public class Waystones {
 	public static ItemWarpScroll itemWarpScroll;
 	public static ItemWarpStone itemWarpStone;
 
+	static WaystoneCreativeTab creativeTab;
+
 	public static Configuration configuration;
 
 	private WaystoneConfig config;
@@ -70,6 +73,14 @@ public class Waystones {
 
 		if(WaystoneConfig.worldGenChance > 0) {
 			GameRegistry.registerWorldGenerator(new WaystoneWorldGen(), 0);
+		}
+
+		if(config.useOwnCreativeTab) {
+            creativeTab = new WaystoneCreativeTab();
+			blockWaystone.setCreativeTab(creativeTab);
+			itemReturnScroll.setCreativeTab(creativeTab);
+			itemWarpScroll.setCreativeTab(creativeTab);
+			itemWarpStone.setCreativeTab(creativeTab);
 		}
 
 		proxy.preInit(event);

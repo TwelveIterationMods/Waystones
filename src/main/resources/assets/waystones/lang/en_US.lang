@@ -4,6 +4,8 @@ item.waystones:warp_scroll.name=Warp Scroll
 item.waystones:return_scroll.name=Return Scroll
 item.waystones:warp_stone.name=Warp Stone
 
+itemGroup.Waystone=Waystone
+
 waystones:noDimensionWarp=You cannot warp between worlds.
 waystones:waystoneBroken=The bound waystone has been moved or destroyed.
 waystones:scrollNotBound=You have not activated any waystones yet.
