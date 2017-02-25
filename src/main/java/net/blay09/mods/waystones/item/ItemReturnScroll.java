@@ -25,7 +25,7 @@ import java.util.List;
 public class ItemReturnScroll extends Item {
 
 	public ItemReturnScroll() {
-		setCreativeTab(CreativeTabs.TOOLS);
+		setCreativeTab(Waystones.creativeTab);
 		setRegistryName(Waystones.MOD_ID, "return_scroll");
 		setUnlocalizedName(getRegistryName().toString());
 	}

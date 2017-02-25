@@ -39,7 +39,7 @@ public class Waystones {
 	public static ItemWarpScroll itemWarpScroll;
 	public static ItemWarpStone itemWarpStone;
 
-	static WaystoneCreativeTab creativeTab;
+	public static WaystoneCreativeTab creativeTab;
 
 	public static Configuration configuration;
 
@@ -47,6 +47,8 @@ public class Waystones {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		creativeTab = new WaystoneCreativeTab();
+
 		blockWaystone = new BlockWaystone();
 		GameRegistry.register(blockWaystone);
 		GameRegistry.register(new ItemBlock(blockWaystone).setRegistryName(blockWaystone.getRegistryName()));
@@ -73,14 +75,6 @@ public class Waystones {
 
 		if(WaystoneConfig.worldGenChance > 0) {
 			GameRegistry.registerWorldGenerator(new WaystoneWorldGen(), 0);
-		}
-
-		if(config.useOwnCreativeTab) {
-			creativeTab = new WaystoneCreativeTab();
-			blockWaystone.setCreativeTab(creativeTab);
-			itemReturnScroll.setCreativeTab(creativeTab);
-			itemWarpScroll.setCreativeTab(creativeTab);
-			itemWarpStone.setCreativeTab(creativeTab);
 		}
 
 		proxy.preInit(event);

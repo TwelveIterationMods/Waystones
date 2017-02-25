@@ -9,11 +9,13 @@ public class WaystoneCreativeTab extends net.minecraft.creativetab.CreativeTabs 
 
 	public WaystoneCreativeTab() {
 		super("Waystone");
-		itemStack = new ItemStack(Waystones.blockWaystone);
 	}
 
 	@Override
 	public ItemStack getTabIconItem() {
+		if (itemStack == null) {
+			itemStack = new ItemStack(Waystones.blockWaystone);
+		}
 		return itemStack;
 	}
 }
