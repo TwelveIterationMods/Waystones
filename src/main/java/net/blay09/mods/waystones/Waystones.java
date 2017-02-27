@@ -2,13 +2,13 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
-import net.blay09.mods.waystones.client.WaystoneCreativeTab;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.item.ItemReturnScroll;
 import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.worldgen.WaystoneWorldGen;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
@@ -39,7 +39,12 @@ public class Waystones {
 	public static ItemWarpScroll itemWarpScroll;
 	public static ItemWarpStone itemWarpStone;
 
-	public static WaystoneCreativeTab creativeTab;
+	public static final CreativeTabs creativeTab = new CreativeTabs(Waystones.MOD_ID) {
+		@Override
+		public ItemStack getTabIconItem() {
+			return new ItemStack(Waystones.blockWaystone);
+		}
+	};
 
 	public static Configuration configuration;
 
@@ -47,8 +52,6 @@ public class Waystones {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		creativeTab = new WaystoneCreativeTab();
-
 		blockWaystone = new BlockWaystone();
 		GameRegistry.register(blockWaystone);
 		GameRegistry.register(new ItemBlock(blockWaystone).setRegistryName(blockWaystone.getRegistryName()));
