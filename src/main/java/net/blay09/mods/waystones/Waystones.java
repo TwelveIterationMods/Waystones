@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.worldgen.WaystoneWorldGen;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
@@ -37,6 +38,13 @@ public class Waystones {
 	public static ItemReturnScroll itemReturnScroll;
 	public static ItemWarpScroll itemWarpScroll;
 	public static ItemWarpStone itemWarpStone;
+
+	public static final CreativeTabs creativeTab = new CreativeTabs(Waystones.MOD_ID) {
+		@Override
+		public ItemStack getTabIconItem() {
+			return new ItemStack(Waystones.blockWaystone);
+		}
+	};
 
 	public static Configuration configuration;
 
