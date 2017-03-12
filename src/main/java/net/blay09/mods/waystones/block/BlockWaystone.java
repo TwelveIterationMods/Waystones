@@ -174,7 +174,9 @@ public class BlockWaystone extends BlockContainer {
 		}
 		WaystoneEntry knownWaystone = ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName());
 		if(knownWaystone != null) {
-			Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+			if(world.isRemote) {
+				Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+			}
 		} else if (!world.isRemote) {
 			WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
 			if(!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
