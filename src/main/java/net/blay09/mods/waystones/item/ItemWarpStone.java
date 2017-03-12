@@ -29,7 +29,7 @@ public class ItemWarpStone extends Item {
 	public ItemWarpStone() {
 		setRegistryName(Waystones.MOD_ID, "warp_stone");
 		setUnlocalizedName(getRegistryName().toString());
-		setCreativeTab(CreativeTabs.TOOLS);
+		setCreativeTab(Waystones.creativeTab);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 	}

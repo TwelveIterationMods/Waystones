@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemWarpScroll extends Item {
 
 	public ItemWarpScroll() {
-		setCreativeTab(CreativeTabs.TOOLS);
+		setCreativeTab(Waystones.creativeTab);
 		setRegistryName(Waystones.MOD_ID, "warp_scroll");
 		setUnlocalizedName(getRegistryName().toString());
 	}

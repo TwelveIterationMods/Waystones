@@ -45,7 +45,7 @@ public class BlockWaystone extends BlockContainer {
 		setUnlocalizedName(getRegistryName().toString());
 		setHardness(5f);
 		setResistance(2000f);
-		setCreativeTab(CreativeTabs.DECORATIONS);
+		setCreativeTab(Waystones.creativeTab);
 	}
 
 	@Override
