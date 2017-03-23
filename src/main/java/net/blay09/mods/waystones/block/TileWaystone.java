@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.block;
 
+import net.blay09.mods.waystones.worldgen.NameGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,12 +45,20 @@ public class TileWaystone extends TileEntity {
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		super.onDataPacket(net, pkt);
+		generateNameIfNecessary();
 		readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
+		generateNameIfNecessary();
 		return writeToNBT(new NBTTagCompound());
+	}
+
+	private void generateNameIfNecessary() {
+		if(waystoneName.isEmpty()) {
+			waystoneName = NameGenerator.getName(world.getBiome(pos), world.rand);
+		}
 	}
 
 	@Nullable
