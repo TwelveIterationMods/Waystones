@@ -113,7 +113,7 @@ public class WaystoneManager {
 			return false;
 		}
 		sendTeleportEffect(player.world, new BlockPos(player));
-		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
+//		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
 		if(dimensionWarp) {
 			MinecraftServer server = player.world.getMinecraftServer();
 			if(server != null) {
