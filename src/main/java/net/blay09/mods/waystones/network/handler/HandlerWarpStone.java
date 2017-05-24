@@ -15,7 +15,7 @@ public class HandlerWarpStone implements IMessageHandler<MessageWarpStone, IMess
 			@Override
 			public void run() {
 				if(message.isFree()) {
-					if(!Waystones.getConfig().teleportButton || Waystones.getConfig().teleportButtonReturnOnly || PlayerWaystoneData.canFreeWarp(ctx.getServerHandler().playerEntity)) {
+					if(!Waystones.getConfig().teleportButton || Waystones.getConfig().teleportButtonReturnOnly || !PlayerWaystoneData.canFreeWarp(ctx.getServerHandler().playerEntity)) {
 						return;
 					}
 				}
