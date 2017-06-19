@@ -81,16 +81,17 @@ public class Waystones {
 		}
 
 		proxy.preInit(event);
+
+// 		Sad:
+//		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_return_scroll"), (IConditionFactory) (context, json) -> () -> instance.config.allowReturnScrolls);
+//		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_scroll"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpScrolls);
+//		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_stone"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpStone);
+//		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_waystone"), (IConditionFactory) (context, json) -> () -> !instance.config.creativeModeOnly);
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		FMLInterModComms.sendFunctionMessage(Compat.THEONEPROBE, "getTheOneProbe", "net.blay09.mods.waystones.compat.TheOneProbeAddon");
-
-		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_return_scrolls"), (IConditionFactory) (context, json) -> () -> instance.config.allowReturnScrolls);
-		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_scrolls"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpScrolls);
-		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_stone"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpStone);
-		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_waystone"), (IConditionFactory) (context, json) -> () -> !instance.config.creativeModeOnly);
 	}
 
 	public static WaystoneConfig getConfig() {

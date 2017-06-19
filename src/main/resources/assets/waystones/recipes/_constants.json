@@ -3,7 +3,7 @@
     "name": "GOLD_NUGGET",
     "ingredient": {
       "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "ore": "nuggetGold"
     }
   },
   {

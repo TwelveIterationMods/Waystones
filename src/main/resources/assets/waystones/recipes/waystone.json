@@ -10,7 +10,8 @@
   ],
   "key": {
     "S": {
-      "item": "minecraft:stone_brick"
+      "item": "minecraft:stonebrick",
+      "data": 0
     },
     "W": {
       "item": "waystones:warp_stone"

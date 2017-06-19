@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "waystones:return_scroll",
+    "item": "waystones:warp_scroll",
     "amount": 3
   },
   "type": "forge:ore_shaped",
