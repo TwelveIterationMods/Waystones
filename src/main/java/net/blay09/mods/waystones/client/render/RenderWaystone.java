@@ -20,7 +20,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 	private final ModelWaystone model = new ModelWaystone();
 
 	@Override
-	public void renderTileEntityAt(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		IBlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
 		if(state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
 			return;

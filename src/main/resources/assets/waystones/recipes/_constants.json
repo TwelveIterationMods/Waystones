@@ -1,0 +1,23 @@
+[
+  {
+    "name": "GOLD_NUGGET",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    }
+  },
+  {
+    "name": "PURPLE_DYE",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "dyePurple"
+    }
+  },
+  {
+    "name": "EMERALD",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "gemEmerald"
+    }
+  }
+]

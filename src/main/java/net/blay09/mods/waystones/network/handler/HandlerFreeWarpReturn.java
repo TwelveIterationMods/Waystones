@@ -17,23 +17,20 @@ public class HandlerFreeWarpReturn implements IMessageHandler<MessageWarpReturn,
 	@Override
 	@Nullable
 	public IMessage onMessage(MessageWarpReturn message, final MessageContext ctx) {
-		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				if(!Waystones.getConfig().teleportButton) {
-					return;
-				}
-				EntityPlayer entityPlayer = ctx.getServerHandler().playerEntity;
-				if(!PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
-					return;
-				}
-				WaystoneEntry lastWaystone = PlayerWaystoneHelper.getLastWaystone(entityPlayer);
-				if(lastWaystone != null && WaystoneManager.teleportToWaystone(entityPlayer, lastWaystone)) {
-					PlayerWaystoneHelper.setLastFreeWarp(entityPlayer, System.currentTimeMillis());
-				}
-				WaystoneManager.sendPlayerWaystones(entityPlayer);
-
+		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
+			if(!Waystones.getConfig().teleportButton) {
+				return;
 			}
+			EntityPlayer entityPlayer = ctx.getServerHandler().player;
+			if(!PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
+				return;
+			}
+			WaystoneEntry lastWaystone = PlayerWaystoneHelper.getLastWaystone(entityPlayer);
+			if(lastWaystone != null && WaystoneManager.teleportToWaystone(entityPlayer, lastWaystone)) {
+				PlayerWaystoneHelper.setLastFreeWarp(entityPlayer, System.currentTimeMillis());
+			}
+			WaystoneManager.sendPlayerWaystones(entityPlayer);
+
 		});
 		return null;
 	}

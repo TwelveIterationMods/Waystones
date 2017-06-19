@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "waystones:warp_stone"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "DED",
+    "EGE",
+    "DED"
+  ],
+  "key": {
+    "G": {
+      "item": "#EMERALD"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "D": {
+      "item": "#PURPLE_DYE"
+    }
+  },
+  "conditions": [
+    {
+      "type": "allow_return_scroll"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "waystones:return_scroll",
+    "amount": 3
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "EDE",
+    "PPP",
+    "GDG"
+  ],
+  "key": {
+    "G": {
+      "item": "#GOLD_NUGGET"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "D": {
+      "item": "#PURPLE_DYE"
+    }
+  },
+  "conditions": [
+    {
+      "type": "allow_warp_scroll"
+    }
+  ]
+}

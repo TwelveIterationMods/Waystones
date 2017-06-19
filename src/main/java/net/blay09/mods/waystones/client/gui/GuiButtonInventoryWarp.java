@@ -24,11 +24,11 @@ public class GuiButtonInventoryWarp extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if(visible) {
-			xPosition = parentScreen.guiLeft + WaystoneConfig.teleportButtonX;
-			yPosition = parentScreen.guiTop + WaystoneConfig.teleportButtonY;
-			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
+			x = parentScreen.guiLeft + WaystoneConfig.teleportButtonX;
+			y = parentScreen.guiTop + WaystoneConfig.teleportButtonY;
+			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 			EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
 			if(!PlayerWaystoneHelper.canFreeWarp(entityPlayer) || PlayerWaystoneHelper.getLastWaystone(entityPlayer) == null) {
@@ -38,7 +38,7 @@ public class GuiButtonInventoryWarp extends GuiButton {
 			} else {
 				GlStateManager.color(0.8f, 0.8f, 0.8f, 0.8f);
 			}
-			Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(iconItem, xPosition, yPosition);
+			Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(iconItem, x, y);
 		}
 	}
 

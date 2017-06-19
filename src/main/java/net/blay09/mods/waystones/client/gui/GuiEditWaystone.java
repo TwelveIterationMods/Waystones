@@ -35,7 +35,7 @@ public class GuiEditWaystone extends GuiContainer {
 		if(textField != null) {
 			oldText = textField.getText();
 		}
-		textField = new GuiTextField(2, fontRendererObj, width / 2 - 100, height / 2 - 20, 200, 20);
+		textField = new GuiTextField(2, fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20);
 		textField.setMaxStringLength(128);
 		textField.setText(oldText);
 		textField.setFocused(true);
@@ -92,7 +92,7 @@ public class GuiEditWaystone extends GuiContainer {
 		drawWorldBackground(0);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
-		fontRendererObj.drawString(I18n.format("gui.waystones:editWaystone.enterName"), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
+		fontRenderer.drawString(I18n.format("gui.waystones:editWaystone.enterName"), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
 		textField.drawTextBox();
 	}
 

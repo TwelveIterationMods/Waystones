@@ -9,11 +9,12 @@ import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.worldgen.WaystoneWorldGen;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -21,9 +22,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
-@Mod(modid = Waystones.MOD_ID, name = "Waystones", acceptedMinecraftVersions = "[1.11]")
+@Mod(modid = Waystones.MOD_ID, name = "Waystones", acceptedMinecraftVersions = "[1.12]")
 public class Waystones {
 
 	public static final String MOD_ID = "waystones";
@@ -87,21 +87,10 @@ public class Waystones {
 	public void init(FMLInitializationEvent event) {
 		FMLInterModComms.sendFunctionMessage(Compat.THEONEPROBE, "getTheOneProbe", "net.blay09.mods.waystones.compat.TheOneProbeAddon");
 
-		if(instance.config.allowReturnScrolls) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemReturnScroll, 3), "GEG", "PPP", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER));
-		}
-
-		if(instance.config.allowWarpScrolls) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemWarpScroll, 3), "EDE", "PPP", "GDG", 'G', "nuggetGold", 'E', Items.ENDER_PEARL, 'P', Items.PAPER, 'D', "dyePurple"));
-		}
-
-		if(instance.config.allowWarpStone) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(itemWarpStone), "DED", "EGE", "DED", 'D', "dyePurple", 'E', Items.ENDER_PEARL, 'G', "gemEmerald"));
-		}
-
-		if(!config.creativeModeOnly) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockWaystone), " S ", "SWS", "OOO", 'S', Blocks.STONEBRICK, 'W', itemWarpStone, 'O', Blocks.OBSIDIAN));
-		}
+		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_return_scrolls"), (IConditionFactory) (context, json) -> () -> instance.config.allowReturnScrolls);
+		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_scrolls"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpScrolls);
+		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_warp_stone"), (IConditionFactory) (context, json) -> () -> instance.config.allowWarpStone);
+		CraftingHelper.register(new ResourceLocation(MOD_ID, "allow_waystone"), (IConditionFactory) (context, json) -> () -> !instance.config.creativeModeOnly);
 	}
 
 	public static WaystoneConfig getConfig() {

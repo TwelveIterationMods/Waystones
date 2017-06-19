@@ -30,16 +30,17 @@ public class GuiButtonSortWaystone extends GuiButtonExt {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
 		GlStateManager.color(1f, 1f, 1f, 1f);
 		mc.getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
-		if (this.visible && mouseY >= parentButton.yPosition && mouseY < parentButton.yPosition + parentButton.height) {
-			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+		if (this.visible && mouseY >= parentButton.y && mouseY < parentButton.y + parentButton.height) {
+			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 			if (hovered) {
-				Gui.drawModalRectWithCustomSizedTexture(xPosition - 5, yPosition - 5 - (sortDir == 1 ? 15 : 0), 96f - (sortDir == 1 ? 32f : 0f), 32f, 32, 32, 256f, 256f);
+				Gui.drawModalRectWithCustomSizedTexture(x - 5, y - 5 - (sortDir == 1 ? 15 : 0), 96f - (sortDir == 1 ? 32f : 0f), 32f, 32, 32, 256f, 256f);
 			} else {
-				Gui.drawModalRectWithCustomSizedTexture(xPosition - 5, yPosition - 5 - (sortDir == 1 ? 15 : 0), 96f - (sortDir == 1 ? 32f : 0f), 0f, 32, 32, 256f, 256f);
+				Gui.drawModalRectWithCustomSizedTexture(x - 5, y - 5 - (sortDir == 1 ? 15 : 0), 96f - (sortDir == 1 ? 32f : 0f), 0f, 32, 32, 256f, 256f);
 			}
 		}
 	}
+
 }

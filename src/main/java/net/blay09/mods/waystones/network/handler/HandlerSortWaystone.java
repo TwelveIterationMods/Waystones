@@ -15,22 +15,19 @@ public class HandlerSortWaystone implements IMessageHandler<MessageSortWaystone,
 	@Override
 	@Nullable
 	public IMessage onMessage(final MessageSortWaystone message, final MessageContext ctx) {
-		NetworkHandler.getThreadListener(ctx).addScheduledTask(new Runnable() {
-			@Override
-			public void run() {
-				PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(ctx.getServerHandler().playerEntity);
-				WaystoneEntry[] entries = waystoneData.getWaystones();
-				int index = message.getIndex();
-				int otherIndex = message.getOtherIndex();
-				if(index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
-					return;
-				}
-				WaystoneEntry swap = entries[index];
-				entries[index] = entries[otherIndex];
-				entries[otherIndex] = swap;
-				waystoneData.store(ctx.getServerHandler().playerEntity);
-				WaystoneManager.sendPlayerWaystones(ctx.getServerHandler().playerEntity);
+		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
+			PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(ctx.getServerHandler().player);
+			WaystoneEntry[] entries = waystoneData.getWaystones();
+			int index = message.getIndex();
+			int otherIndex = message.getOtherIndex();
+			if(index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
+				return;
 			}
+			WaystoneEntry swap = entries[index];
+			entries[index] = entries[otherIndex];
+			entries[otherIndex] = swap;
+			waystoneData.store(ctx.getServerHandler().player);
+			WaystoneManager.sendPlayerWaystones(ctx.getServerHandler().player);
 		});
 		return null;
 	}

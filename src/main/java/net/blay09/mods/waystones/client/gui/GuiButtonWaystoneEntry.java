@@ -45,19 +45,20 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-		super.drawButton(mc, mouseX, mouseY);
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+		super.drawButton(mc, mouseX, mouseY, partialTicks);
 		GlStateManager.color(1f, 1f, 1f, 1f);
 
 		if(xpLevelCost > 0) {
 			boolean canAfford = mc.player.experienceLevel >= xpLevelCost;
 			mc.getTextureManager().bindTexture(ENCHANTMENT_TABLE_GUI_TEXTURE);
-			drawTexturedModalRect(xPosition + 2, yPosition + 2, (xpLevelCost - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+			drawTexturedModalRect(x + 2, y + 2, (xpLevelCost - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
-			if(hovered && mouseX <= xPosition + 16) {
-				GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRendererObj.FONT_HEIGHT, mc.displayWidth, mc.displayHeight, 200, mc.fontRendererObj);
+			if(hovered && mouseX <= x + 16) {
+				GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.displayWidth, mc.displayHeight, 200, mc.fontRenderer);
 			}
 			GlStateManager.disableLighting();
 		}
 	}
+
 }

@@ -14,7 +14,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
 
 public class GuiWaystoneList extends GuiScreen {
 
@@ -50,13 +49,7 @@ public class GuiWaystoneList extends GuiScreen {
 		btnPrevPage.enabled = pageOffset > 0;
 		btnNextPage.enabled = pageOffset < (entries.length - 1) / buttonsPerPage;
 
-		Iterator<GuiButton> it = buttonList.iterator();
-		while(it.hasNext()) {
-			GuiButton button = it.next();
-			if (button instanceof GuiButtonWaystoneEntry || button instanceof GuiButtonSortWaystone) {
-				it.remove();
-			}
-		}
+		buttonList.removeIf(button -> button instanceof GuiButtonWaystoneEntry || button instanceof GuiButtonSortWaystone);
 
 		int id = 2;
 		int y = 0;
@@ -119,9 +112,9 @@ public class GuiWaystoneList extends GuiScreen {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		drawRect(width / 2 - 50, height / 2 - 50, width / 2 + 50, height / 2 + 50, 0xFFFFFF);
-		drawCenteredString(fontRendererObj, I18n.format("gui.waystones:warpStone.selectDestination"), width / 2, height / 2 - 85, 0xFFFFFF);
+		drawCenteredString(fontRenderer, I18n.format("gui.waystones:warpStone.selectDestination"), width / 2, height / 2 - 85, 0xFFFFFF);
 		if(entries.length == 0) {
-			drawCenteredString(fontRendererObj, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
+			drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
 		}
 	}
 

@@ -15,14 +15,11 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
 	private final String waystoneName;
 
 	public GuiConfirmInventoryButtonReturn() {
-		super(new GuiYesNoCallback() {
-			@Override
-			public void confirmClicked(boolean result, int id) {
-				if(result) {
-					NetworkHandler.channel.sendToServer(new MessageWarpReturn());
-				}
-				Minecraft.getMinecraft().displayGuiScreen(null);
+		super((result, id) -> {
+			if(result) {
+				NetworkHandler.channel.sendToServer(new MessageWarpReturn());
 			}
+			Minecraft.getMinecraft().displayGuiScreen(null);
 		}, I18n.format("gui.waystones:confirmReturn"), "", 0);
 		this.waystoneName = getWaystoneName();
 	}
@@ -38,6 +35,6 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(fontRendererObj, waystoneName, width / 2, 100, 0xFFFFFF);
+		drawCenteredString(fontRenderer, waystoneName, width / 2, 100, 0xFFFFFF);
 	}
 }
