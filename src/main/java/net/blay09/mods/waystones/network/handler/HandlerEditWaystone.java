@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.handler;
 
 import net.blay09.mods.waystones.GlobalWaystones;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
@@ -25,7 +25,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 	public IMessage onMessage(final MessageEditWaystone message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
 			EntityPlayer entityPlayer = ctx.getServerHandler().player;
-			if(Waystones.getConfig().creativeModeOnly && !entityPlayer.capabilities.isCreativeMode) {
+			if(WaystoneConfig.general.creativeModeOnly && !entityPlayer.capabilities.isCreativeMode) {
 				return;
 			}
 			World world = entityPlayer.getEntityWorld();
@@ -40,7 +40,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 				if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode) {
 					return;
 				}
-				if(Waystones.getConfig().restrictRenameToOwner && !tileWaystone.isOwner(ctx.getServerHandler().player)) {
+				if(WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(ctx.getServerHandler().player)) {
 					ctx.getServerHandler().player.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
 					return;
 				}

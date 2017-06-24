@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -12,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,10 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemWarpScroll extends Item {
 
+	public static final String name = "warp_scroll";
+	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
+
 	public ItemWarpScroll() {
 		setCreativeTab(Waystones.creativeTab);
-		setRegistryName(Waystones.MOD_ID, "warp_scroll");
-		setUnlocalizedName(getRegistryName().toString());
+		setRegistryName(name);
+		setUnlocalizedName(registryName.toString());
 	}
 
 	@Override

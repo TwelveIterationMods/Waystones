@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -28,10 +29,13 @@ import java.util.List;
 
 public class ItemReturnScroll extends Item {
 
+	public static final String name = "return_scroll";
+	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
+
 	public ItemReturnScroll() {
 		setCreativeTab(Waystones.creativeTab);
-		setRegistryName(Waystones.MOD_ID, "return_scroll");
-		setUnlocalizedName(getRegistryName().toString());
+		setRegistryName(name);
+		setUnlocalizedName(registryName.toString());
 	}
 
 	@Override

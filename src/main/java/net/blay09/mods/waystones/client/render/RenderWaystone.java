@@ -40,12 +40,12 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 		if(tileEntity != null && tileEntity.hasWorld() && (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null)) {
 			bindTexture(textureActive);
 			GlStateManager.scale(1.05f, 1.05f, 1.05f);
-			if(!WaystoneConfig.disableTextGlow) {
+			if(!WaystoneConfig.client.disableTextGlow) {
 //				GlStateManager.disableLighting();
 				Minecraft.getMinecraft().entityRenderer.disableLightmap();
 			}
 			model.renderPillar();
-			if(!WaystoneConfig.disableTextGlow) {
+			if(!WaystoneConfig.client.disableTextGlow) {
 				Minecraft.getMinecraft().entityRenderer.enableLightmap();
 			}
 		}

@@ -23,7 +23,7 @@ public class WaystoneWorldGen implements IWorldGenerator {
 		if(world.provider.getDimension() != 0) {
 			return;
 		}
-		float chance = (float) WaystoneConfig.worldGenChance / 10000f;
+		float chance = (float) WaystoneConfig.general.worldGenChance / 10000f;
 		if(random.nextFloat() <= chance) {
 			for(int i = 0; i < 5; i++) {
 				int blockX = chunkX * 16 + random.nextInt(16);

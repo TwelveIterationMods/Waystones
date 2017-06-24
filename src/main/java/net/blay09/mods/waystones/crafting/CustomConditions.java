@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.crafting;
 
 import com.google.gson.JsonObject;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
@@ -15,28 +15,28 @@ public class CustomConditions {
 	public static class AllowReturnScroll implements IConditionFactory {
 		@Override
 		public BooleanSupplier parse(JsonContext context, JsonObject json) {
-			return () -> Waystones.getConfig().allowReturnScrolls;
+			return () -> WaystoneConfig.general.allowReturnScrolls;
 		}
 	}
 
 	public static class AllowWarpScroll implements IConditionFactory {
 		@Override
 		public BooleanSupplier parse(JsonContext context, JsonObject json) {
-			return () -> Waystones.getConfig().allowWarpScrolls;
+			return () -> WaystoneConfig.general.allowWarpScrolls;
 		}
 	}
 
 	public static class AllowWarpStone implements IConditionFactory {
 		@Override
 		public BooleanSupplier parse(JsonContext context, JsonObject json) {
-			return () -> Waystones.getConfig().allowWarpStone;
+			return () -> WaystoneConfig.general.allowWarpStone;
 		}
 	}
 
 	public static class AllowWaystone implements IConditionFactory {
 		@Override
 		public BooleanSupplier parse(JsonContext context, JsonObject json) {
-			return () -> !Waystones.getConfig().creativeModeOnly;
+			return () -> !WaystoneConfig.general.creativeModeOnly;
 		}
 	}
 }

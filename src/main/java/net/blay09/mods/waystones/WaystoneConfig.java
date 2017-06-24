@@ -1,95 +1,129 @@
 package net.blay09.mods.waystones;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Config;
 
+@Config(modid = Waystones.MOD_ID, type = Config.Type.INSTANCE, name = "Waystones", category = "")
+@Config.LangKey("waystones.config")
 public class WaystoneConfig {
 
-	public static int teleportButtonX;
-	public static int teleportButtonY;
-	public static boolean disableParticles;
-	public static boolean disableTextGlow;
+	public static General general = new General();
 
-	public boolean teleportButton;
-	public int teleportButtonCooldown;
-	public boolean teleportButtonReturnOnly;
+	public static Client client = new Client();
 
-	public boolean allowReturnScrolls;
-	public boolean allowWarpScrolls;
-	public boolean allowWarpStone;
+	public static class General {
 
-	public int blocksPerXPLevel;
-	public boolean warpStoneXpCost;
-	public int warpStoneCooldown;
+		@Config.Name("Teleport Button in GUI")
+		@Config.Comment("Should there be a button in the inventory to access the waystone menu?")
+		public boolean teleportButton = false;
 
-	public boolean interDimension;
+		@Config.Name("Teleport Button Cooldown")
+		@Config.Comment("The cooldown between usages of the teleport button in seconds.")
+		public int teleportButtonCooldown = 300;
 
-	public boolean restrictRenameToOwner;
-	public boolean creativeModeOnly;
-	public boolean setSpawnPoint;
+		@Config.Name("Teleport Button Return Only")
+		@Config.Comment("If enabled, the teleport button will only let you return to the last activated waystone, instead of allowing to choose.")
+		public boolean teleportButtonReturnOnly = true;
 
-	public boolean globalNoCooldown;
-	public boolean globalInterDimension;
+		@Config.Name("Allow Return Scrolls")
+		@Config.Comment("If enabled, return scrolls will be craftable.")
+		public boolean allowReturnScrolls = true;
 
-	public static float soundVolume = 0.5f;
+		@Config.Name("Allow Warp Scrolls")
+		@Config.Comment("If enabled, warp scrolls will be craftable.")
+		public boolean allowWarpScrolls = true;
 
-	public static int worldGenChance = 0;
+		@Config.Name("Allow Warp Stone")
+		@Config.Comment("If enabled, the warp stone will be craftable.")
+		public boolean allowWarpStone = true;
 
-	public void reloadLocal(Configuration config) {
-		teleportButton = config.getBoolean("Teleport Button in GUI", "general", false, "Should there be a button in the inventory to access the waystone menu?");
-		teleportButtonCooldown = config.getInt("Teleport Button Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the teleport button in seconds.");
-		teleportButtonReturnOnly = config.getBoolean("Teleport Button Return Only", "general", true, "If true, the teleport button will only let you return to the last activated waystone, instead of allowing to choose.");
+		@Config.Name("Blocks per XP Level")
+		@Config.Comment("The amount of blocks per xp level requirement (for inventory button & waystone-to-waystone teleport). Set to 0 to disable xp requirement.")
+		public int blocksPerXPLevel = 500;
 
-		allowReturnScrolls = config.getBoolean("Allow Return Scrolls", "general", true, "If true, return scrolls will be craftable.");
-		allowWarpScrolls = config.getBoolean("Allow Warp Scrolls", "general", true, "If true, warp scrolls will be craftable.");
-		allowWarpStone = config.getBoolean("Allow Warp Stone", "general", true, "If true, the warp stone will be craftable.");
+		@Config.Name("Warp Stone Costs XP")
+		@Config.Comment("If enabled, the warp stone costs experience when used as well.")
+		public boolean warpStoneXpCost = false;
 
-		teleportButtonX = config.getInt("Teleport Button GUI X", "client", 58, -100, 250, "The x position of the warp button in the inventory.");
-		teleportButtonY = config.getInt("Teleport Button GUI Y", "client", 60, -100, 250, "The y position of the warp button in the inventory.");
-		disableTextGlow = config.getBoolean("Disable Text Glow", "client", false, "If true, the text overlay on waystones will no longer always render at full brightness.");
-		disableParticles = config.getBoolean("Disable Particles", "client", false, "If true, activated waystones will not emit particles.");
+		@Config.Name("Warp Stone Cooldown")
+		@Config.Comment("The cooldown between usages of the warp stone in seconds.")
+		public int warpStoneCooldown = 300;
 
-		warpStoneCooldown = config.getInt("Warp Stone Cooldown", "general", 300, 0, 86400, "The cooldown between usages of the warp stone in seconds.");
-		blocksPerXPLevel = config.getInt("Blocks per XP Level", "general", 500, 0, 2000, "The amount of blocks per xp level requirement (for inventory button & waystone-to-waystone teleport). Set to 0 to disable xp requirement.");
-		warpStoneXpCost = config.getBoolean("Warp Stone Costs XP", "general", false, "Set to true if you want the warp stone to cost experience when used as well.");
+		@Config.Name("Interdimensional Teleport")
+		@Config.Comment("If enabled, all waystones work inter-dimensionally.")
+		public boolean interDimension = true;
 
-		setSpawnPoint = config.getBoolean("Set Spawnpoint on Activation", "general", false, "If true, the player's spawnpoint will be set to the last activated waystone.");
-		interDimension = config.getBoolean("Interdimensional Teleport", "general", true, "If true, all waystones work inter-dimensionally.");
+		@Config.Name("Restrict Rename to Owner")
+		@Config.Comment("If enabled, only the owner of a waystone can rename it.")
+		public boolean restrictRenameToOwner = false;
 
-		restrictRenameToOwner = config.getBoolean("Restrict Rename to Owner", "general", false, "If true, only the owner of a waystone can rename it.");
-		creativeModeOnly = config.getBoolean("Creative Mode Only", "general", false, "If true, waystones can only be placed in creative mode.");
+		@Config.Name("Creative Mode Only")
+		@Config.Comment("If enabled, waystones can only be placed in creative mode.")
+		public boolean creativeModeOnly;
 
-		globalNoCooldown = config.getBoolean("No Cooldown on Global Waystones", "general", true, "If true, waystones marked as global have no cooldown.");
-		globalInterDimension = config.getBoolean("Interdimensional Teleport on Global Waystones", "general", true, "If true, waystones marked as global work inter-dimensionally.");
+		@Config.Name("Set Spawnpoint on Activation")
+		@Config.Comment("If enabled, the player's spawnpoint will be set to the last activated waystone.")
+		public boolean setSpawnPoint = false;
 
-		soundVolume = config.getFloat("Sound Volume", "client", 0.5f, 0f, 1f, "The volume of the sound played when teleporting.");
+		@Config.Name("No Cooldown on Global Waystones")
+		@Config.Comment("If enabled, waystones marked as global have no cooldown.")
+		public boolean globalNoCooldown = true;
 
-		worldGenChance = config.getInt("World Gen Chance", "general", 0, 0, 10000, "The chance for a waystone to spawn in world gen, per 10000 blocks. Set to 0 to disable");
+		@Config.Name("Interdimensional Teleport on Global Waystones")
+		@Config.Comment("If enabled, waystones marked as global work inter-dimensionally.")
+		public boolean globalInterDimension = true;
+
+		@Config.Name("World Gen Chaance")
+		@Config.Comment("The chance for a waystone to spawn in world gen, per 10000 blocks. Set to 0 to disable")
+		@Config.RangeInt(min = 0, max = 10000)
+		public int worldGenChance = 0;
+
 	}
 
-	public static WaystoneConfig read(ByteBuf buf) {
-		WaystoneConfig config = new WaystoneConfig();
-		config.teleportButton = buf.readBoolean();
-		config.teleportButtonCooldown = buf.readInt();
-		config.teleportButtonReturnOnly = buf.readBoolean();
-		config.warpStoneCooldown = buf.readInt();
-		config.interDimension = buf.readBoolean();
-		config.creativeModeOnly = buf.readBoolean();
-		config.setSpawnPoint = buf.readBoolean();
-		config.restrictRenameToOwner = buf.readBoolean();
-		config.blocksPerXPLevel = buf.readInt();
-		return config;
+	public static class Client {
+		@Config.Name("Sound Volume")
+		@Config.Comment("The volume of the sound played when teleporting.")
+		@Config.RangeDouble(min = 0f, max = 1f)
+		public float soundVolume = 0.5f;
+
+		@Config.Name("Teleport Button GUI X")
+		@Config.Comment("The x position of the warp button in the inventory.")
+		public int teleportButtonX = 58;
+
+		@Config.Name("Teleport Button GUI Y")
+		@Config.Comment("The y position of the warp button in the inventory.")
+		public int teleportButtonY = 60;
+
+		@Config.Name("Disable Particles")
+		@Config.Comment("If enabled, activated waystones will not emit particles.")
+		public boolean disableParticles = false;
+
+		@Config.Name("Disable Text Glow")
+		@Config.Comment("If enabled, the text overlay on waystones will no longer always render at full brightness.")
+		public boolean disableTextGlow = false;
 	}
 
-	public void write(ByteBuf buf) {
-		buf.writeBoolean(teleportButton);
-		buf.writeInt(teleportButtonCooldown);
-		buf.writeBoolean(teleportButtonReturnOnly);
-		buf.writeInt(warpStoneCooldown);
-		buf.writeBoolean(interDimension);
-		buf.writeBoolean(creativeModeOnly);
-		buf.writeBoolean(setSpawnPoint);
-		buf.writeBoolean(restrictRenameToOwner);
-		buf.writeInt(blocksPerXPLevel);
+	public static void read(ByteBuf buf) {
+		general.teleportButton = buf.readBoolean();
+		general.teleportButtonCooldown = buf.readInt();
+		general.teleportButtonReturnOnly = buf.readBoolean();
+		general.warpStoneCooldown = buf.readInt();
+		general.interDimension = buf.readBoolean();
+		general.creativeModeOnly = buf.readBoolean();
+		general.setSpawnPoint = buf.readBoolean();
+		general.restrictRenameToOwner = buf.readBoolean();
+		general.blocksPerXPLevel = buf.readInt();
+	}
+
+	public static void write(ByteBuf buf) {
+		buf.writeBoolean(general.teleportButton);
+		buf.writeInt(general.teleportButtonCooldown);
+		buf.writeBoolean(general.teleportButtonReturnOnly);
+		buf.writeInt(general.warpStoneCooldown);
+		buf.writeBoolean(general.interDimension);
+		buf.writeBoolean(general.creativeModeOnly);
+		buf.writeBoolean(general.setSpawnPoint);
+		buf.writeBoolean(general.restrictRenameToOwner);
+		buf.writeInt(general.blocksPerXPLevel);
 	}
 }

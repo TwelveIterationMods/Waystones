@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.handler;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageWarpReturn;
 import net.blay09.mods.waystones.util.WaystoneEntry;
@@ -18,7 +18,7 @@ public class HandlerFreeWarpReturn implements IMessageHandler<MessageWarpReturn,
 	@Nullable
 	public IMessage onMessage(MessageWarpReturn message, final MessageContext ctx) {
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-			if(!Waystones.getConfig().teleportButton) {
+			if(!WaystoneConfig.general.teleportButton) {
 				return;
 			}
 			EntityPlayer entityPlayer = ctx.getServerHandler().player;

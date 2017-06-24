@@ -26,8 +26,8 @@ public class GuiButtonInventoryWarp extends GuiButton {
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if(visible) {
-			x = parentScreen.guiLeft + WaystoneConfig.teleportButtonX;
-			y = parentScreen.guiTop + WaystoneConfig.teleportButtonY;
+			x = parentScreen.guiLeft + WaystoneConfig.client.teleportButtonX;
+			y = parentScreen.guiTop + WaystoneConfig.client.teleportButtonY;
 			hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 			EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();

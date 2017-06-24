@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -33,7 +32,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -53,16 +51,11 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileWaystone.class, new RenderWaystone());
-		ForgeHooksClient.registerTESRItemStack(Item.getItemFromBlock(Waystones.blockWaystone), 0, TileWaystone.class);
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(Waystones.blockWaystone), 0, new ModelResourceLocation("waystones:waystone", "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Waystones.itemWarpStone, 0, new ModelResourceLocation(Waystones.itemWarpStone.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Waystones.itemReturnScroll, 0, new ModelResourceLocation(Waystones.itemReturnScroll.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(Waystones.itemWarpScroll, 0, new ModelResourceLocation(Waystones.itemWarpScroll.getRegistryName(), "inventory"));
 	}
 
 	@SubscribeEvent
 	public void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
-		if (Waystones.getConfig().teleportButton && event.getGui() instanceof GuiInventory) {
+		if (WaystoneConfig.general.teleportButton && event.getGui() instanceof GuiInventory) {
 			buttonWarp = new GuiButtonInventoryWarp((GuiContainer) event.getGui());
 			event.getButtonList().add(buttonWarp);
 		}
@@ -73,7 +66,7 @@ public class ClientProxy extends CommonProxy {
 		if (event.getButton() instanceof GuiButtonInventoryWarp) {
 			EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
 			if (PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
-				if(Waystones.getConfig().teleportButtonReturnOnly) {
+				if(WaystoneConfig.general.teleportButtonReturnOnly) {
 					if(PlayerWaystoneHelper.getLastWaystone(entityPlayer) != null){
 						event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn());
 					}
@@ -94,8 +87,8 @@ public class ClientProxy extends CommonProxy {
 		if (event.getGui() instanceof GuiInventory && buttonWarp != null && buttonWarp.isHovered()) {
 			tmpTooltip.clear();
 			long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastFreeWarp(FMLClientHandler.instance().getClientPlayerEntity());
-			int secondsLeft = (int) ((Waystones.getConfig().teleportButtonCooldown * 1000 - timeSince) / 1000);
-			if (Waystones.getConfig().teleportButtonReturnOnly) {
+			int secondsLeft = (int) ((WaystoneConfig.general.teleportButtonCooldown * 1000 - timeSince) / 1000);
+			if (WaystoneConfig.general.teleportButtonReturnOnly) {
 				tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
 				WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
 				if (lastEntry != null) {
@@ -143,7 +136,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void playSound(SoundEvent sound, BlockPos pos, float pitch) {
-		Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.soundVolume, pitch, pos));
+		Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.client.soundVolume, pitch, pos));
 	}
 
 }

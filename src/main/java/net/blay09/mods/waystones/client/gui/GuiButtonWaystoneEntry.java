@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.gui;
 
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.WarpMode;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -26,11 +26,11 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 		super(id, x, y, (waystone.isGlobal() ? TextFormatting.YELLOW : "") +  waystone.getName());
 		this.waystone = waystone;
 		EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-		boolean enableXPCost = (mode != WarpMode.WARP_STONE || Waystones.getConfig().warpStoneXpCost);
-		this.xpLevelCost = (enableXPCost && Waystones.getConfig().blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / Waystones.getConfig().blocksPerXPLevel, 0, 3) : 0;
+		boolean enableXPCost = (mode != WarpMode.WARP_STONE || WaystoneConfig.general.warpStoneXpCost);
+		this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, 3) : 0;
 
 		if(waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
-			if(!Waystones.getConfig().interDimension && !(!waystone.isGlobal() || !Waystones.getConfig().globalInterDimension)) {
+			if(!WaystoneConfig.general.interDimension && !(!waystone.isGlobal() || !WaystoneConfig.general.globalInterDimension)) {
 				enabled = false;
 			}
 		}

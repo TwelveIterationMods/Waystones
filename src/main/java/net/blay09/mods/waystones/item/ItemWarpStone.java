@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -28,9 +30,12 @@ import java.util.List;
 
 public class ItemWarpStone extends Item {
 
+	public static final String name = "warp_stone";
+	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
+
 	public ItemWarpStone() {
-		setRegistryName(Waystones.MOD_ID, "warp_stone");
-		setUnlocalizedName(getRegistryName().toString());
+		setRegistryName(name);
+		setUnlocalizedName(registryName.toString());
 		setCreativeTab(Waystones.creativeTab);
 		setMaxStackSize(1);
 		setMaxDamage(100);
@@ -82,7 +87,7 @@ public class ItemWarpStone extends Item {
 	@SideOnly(Side.CLIENT)
 	public double getDurabilityForDisplay(ItemStack stack) {
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
-		float percentage = (float) timeSince / (float) (Waystones.getConfig().warpStoneCooldown * 1000);
+		float percentage = (float) timeSince / (float) (WaystoneConfig.general.warpStoneCooldown * 1000);
 		return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
 	}
 
@@ -100,7 +105,7 @@ public class ItemWarpStone extends Item {
 			return;
 		}
 		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(player);
-		int secondsLeft = (int) ((Waystones.getConfig().warpStoneCooldown * 1000 - timeSince) / 1000);
+		int secondsLeft = (int) ((WaystoneConfig.general.warpStoneCooldown * 1000 - timeSince) / 1000);
 		if(secondsLeft > 0) {
 			tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
 		}

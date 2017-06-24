@@ -40,11 +40,11 @@ public class PlayerWaystoneHelper {
 	}
 
 	public static boolean canFreeWarp(EntityPlayer player) {
-		return System.currentTimeMillis() - getLastFreeWarp(player) > Waystones.getConfig().teleportButtonCooldown * 1000;
+		return System.currentTimeMillis() - getLastFreeWarp(player) > WaystoneConfig.general.teleportButtonCooldown * 1000;
 	}
 
 	public static boolean canUseWarpStone(EntityPlayer player) {
-		return System.currentTimeMillis() - getLastWarpStoneUse(player) > Waystones.getConfig().warpStoneCooldown * 1000;
+		return System.currentTimeMillis() - getLastWarpStoneUse(player) > WaystoneConfig.general.warpStoneCooldown * 1000;
 	}
 
 	public static void setLastFreeWarp(EntityPlayer player, long lastFreeWarp) {

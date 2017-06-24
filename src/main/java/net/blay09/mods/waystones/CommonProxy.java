@@ -45,7 +45,7 @@ public class CommonProxy implements IGuiHandler {
 		}
 		PlayerWaystoneHelper.store(event.player, validWaystones.toArray(new WaystoneEntry[validWaystones.size()]), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse());
 
-		NetworkHandler.channel.sendTo(new MessageConfig(Waystones.getConfig()), (EntityPlayerMP) event.player);
+		NetworkHandler.channel.sendTo(new MessageConfig(), (EntityPlayerMP) event.player);
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
