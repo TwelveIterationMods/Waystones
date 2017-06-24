@@ -146,20 +146,20 @@ public class NameGenerator {
 	}
 
 	private static void addBiomeName(Biome biome, String name) {
-		BIOME_NAMES.put(biome.getBiomeName(), name);
+		BIOME_NAMES.put(biome.biomeName, name);
 	}
 
 	private static void addSpecialName(Biome biome, String name) {
-		SPECIAL_NAMES.put(biome.getBiomeName(), name);
+		SPECIAL_NAMES.put(biome.biomeName, name);
 	}
 
 	public static String getName(Biome biome, Random rand) {
 		if(SPECIAL_NAMES == null) {
 			init();
 		}
-		String name = SPECIAL_NAMES.get(biome.getBiomeName());
+		String name = SPECIAL_NAMES.get(biome.biomeName);
 		if (name == null || usedNames.contains(name)) {
-			String biomeSuffix = BIOME_NAMES.get(biome.getBiomeName());
+			String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
 			name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
 			String tryName = name;
 			int i = 1;
