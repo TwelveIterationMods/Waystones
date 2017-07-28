@@ -24,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -140,8 +141,15 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		TileWaystone tileWaystone = getTileWaystone(world, pos);
-		if (tileWaystone != null && tileWaystone.isGlobal()) {
-			GlobalWaystones.get(world).removeGlobalWaystone(new WaystoneEntry(tileWaystone));
+		if(tileWaystone != null) {
+			WaystoneEntry entry = new WaystoneEntry(tileWaystone);
+			if (tileWaystone.isGlobal()) {
+				GlobalWaystones.get(world).removeGlobalWaystone(entry);
+			}
+			for (EntityPlayer player : world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos).expand(64, 64, 64))) {
+				WaystoneManager.removePlayerWaystone(player, entry);
+				WaystoneManager.sendPlayerWaystones(player);
+			}
 		}
 		super.breakBlock(world, pos, state);
 		if (world.getBlockState(pos.up()).getBlock() == this) {

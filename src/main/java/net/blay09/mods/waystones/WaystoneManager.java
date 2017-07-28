@@ -139,7 +139,7 @@ public class WaystoneManager {
 	/**
 	 *  Taken from CoFHCore's EntityHelper (https://github.com/CoFH/CoFHCore/blob/1.12/src/main/java/cofh/core/util/helpers/EntityHelper.java)
 	 */
-	public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList manager) {
+	private static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList manager) {
 		int oldDim = player.dimension;
 		WorldServer oldWorld = manager.getServerInstance().getWorld(player.dimension);
 		player.dimension = dimension;
@@ -169,7 +169,7 @@ public class WaystoneManager {
 	/**
 	 * Taken from CoFHCore's EntityHelper (https://github.com/CoFH/CoFHCore/blob/1.12/src/main/java/cofh/core/util/helpers/EntityHelper.java)
 	 */
-	public static void transferEntityToWorld(Entity entity, WorldServer oldWorld, WorldServer newWorld) {
+	private static void transferEntityToWorld(Entity entity, WorldServer oldWorld, WorldServer newWorld) {
 		WorldProvider oldWorldProvider = oldWorld.provider;
 		WorldProvider newWorldProvider = newWorld.provider;
 		double moveFactor = oldWorldProvider.getMovementFactor() / newWorldProvider.getMovementFactor();
