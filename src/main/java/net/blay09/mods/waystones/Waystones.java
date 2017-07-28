@@ -44,13 +44,13 @@ public class Waystones {
 	@GameRegistry.ObjectHolder(BlockWaystone.name)
 	public static final Block blockWaystone = Blocks.AIR;
 
-	@GameRegistry.ObjectHolder("return_scroll")
+	@GameRegistry.ObjectHolder(ItemReturnScroll.name)
 	public static final Item itemReturnScroll = Items.AIR;
 
-	@GameRegistry.ObjectHolder("warp_scroll")
+	@GameRegistry.ObjectHolder(ItemWarpScroll.name)
 	public static final Item itemWarpScroll = Items.AIR;
 
-	@GameRegistry.ObjectHolder("warp_stone")
+	@GameRegistry.ObjectHolder(ItemWarpStone.name)
 	public static final Item itemWarpStone = Items.AIR;
 
 	public static final CreativeTabs creativeTab = new CreativeTabs(Waystones.MOD_ID) {

@@ -1,6 +1,7 @@
 tile.waystones:waystone.name=Waystone
 
 item.waystones:warp_scroll.name=Warp Scroll
+item.waystones:warp_scroll_bound.name=Warp Scroll (Bound)
 item.waystones:return_scroll.name=Return Scroll
 item.waystones:warp_stone.name=Warp Stone
 

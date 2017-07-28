@@ -112,18 +112,21 @@ public class WaystoneManager {
 			player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}
+		teleportToPosition(player, targetWorld, targetPos, facing, waystone.getDimensionId());
+		return true;
+	}
+
+	public static void teleportToPosition(EntityPlayer player, World world, BlockPos pos, EnumFacing facing, int dimensionId) {
 		sendTeleportEffect(player.world, new BlockPos(player));
-//		player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 20, 3));
-		if(dimensionWarp) {
+		if(dimensionId != player.getEntityWorld().provider.getDimension()) {
 			MinecraftServer server = player.world.getMinecraftServer();
 			if(server != null) {
-				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), new TeleporterWaystone((WorldServer) player.world));
+				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, dimensionId, new TeleporterWaystone((WorldServer) player.world));
 			}
 		}
 		player.rotationYaw = getRotationYaw(facing);
-		player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
-		sendTeleportEffect(player.world, targetPos);
-		return true;
+		player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+		sendTeleportEffect(player.world, pos);
 	}
 
 	public static void sendTeleportEffect(World world, BlockPos pos) {
