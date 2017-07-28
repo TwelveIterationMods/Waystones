@@ -11,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+import org.omg.CORBA.BAD_CONTEXT;
 
 public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 
@@ -22,33 +24,54 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
 	@Override
 	public void render(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		IBlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
-		if(state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
+		if (state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
 			return;
 		}
 
-		bindTexture(texture);
+		boolean isDummy = state != null && !state.getValue(BlockWaystone.BASE);
+		if(isDummy && destroyStage < 0) {
+			return;
+		}
+
+		if (destroyStage >= 0) {
+			bindTexture(DESTROY_STAGES[destroyStage]);
+			GlStateManager.matrixMode(GL11.GL_TEXTURE);
+			GlStateManager.pushMatrix();
+			GlStateManager.scale(4f, 8f, 1f);
+			GlStateManager.translate(0.0625f, 0.0625f, 0.0625f);
+			GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		} else {
+			bindTexture(texture);
+		}
 
 		float angle = state != null ? WaystoneManager.getRotationYaw(state.getValue(BlockWaystone.FACING)) : 0f;
 		GlStateManager.pushMatrix();
 //		GlStateManager.enableLighting();
 		GlStateManager.color(1f, 1f, 1f, 1f);
-		GlStateManager.translate(x + 0.5, y, z + 0.5);
+		GlStateManager.translate(x + 0.5, y + (isDummy ? -1 : 0), z + 0.5);
 		GlStateManager.rotate(angle, 0f, 1f, 0f);
 		GlStateManager.rotate(-180f, 1f, 0f, 0f);
 		GlStateManager.scale(0.5f, 0.5f, 0.5f);
 		model.renderAll();
-		if(tileEntity != null && tileEntity.hasWorld() && (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null)) {
+		if (tileEntity != null && tileEntity.hasWorld() && (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null)) {
 			bindTexture(textureActive);
 			GlStateManager.scale(1.05f, 1.05f, 1.05f);
-			if(!WaystoneConfig.client.disableTextGlow) {
+			if (!WaystoneConfig.client.disableTextGlow) {
 //				GlStateManager.disableLighting();
 				Minecraft.getMinecraft().entityRenderer.disableLightmap();
 			}
 			model.renderPillar();
-			if(!WaystoneConfig.client.disableTextGlow) {
+			if (!WaystoneConfig.client.disableTextGlow) {
 				Minecraft.getMinecraft().entityRenderer.enableLightmap();
 			}
 		}
 		GlStateManager.popMatrix();
+//		GlStateManager.color(1f, 1f, 1f, 1f);
+
+		if (destroyStage >= 0) {
+			GlStateManager.matrixMode(GL11.GL_TEXTURE);
+			GlStateManager.popMatrix();
+			GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+		}
 	}
 }

@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -92,10 +93,7 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	@Nullable
 	public TileEntity createNewTileEntity(World world, int metadata) {
-		if((metadata & 8) > 0) {
-			return new TileWaystone();
-		}
-		return null;
+		return new TileWaystone((metadata & 8) == 0);
 	}
 
 	@Override
@@ -240,5 +238,10 @@ public class BlockWaystone extends BlockContainer {
 			}
 		}
 		return tileWaystone;
+	}
+
+	@Override
+	public boolean hasCustomBreakingProgress(IBlockState state) {
+		return true;
 	}
 }

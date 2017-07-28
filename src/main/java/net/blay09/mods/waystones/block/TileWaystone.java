@@ -17,29 +17,43 @@ import java.util.UUID;
 
 public class TileWaystone extends TileEntity {
 
+	private boolean isDummy;
 	private String waystoneName = "";
 	private UUID owner;
 	private boolean isGlobal;
 
+	public TileWaystone() {
+	}
+
+	public TileWaystone(boolean isDummy) {
+		this.isDummy = isDummy;
+	}
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
-		tagCompound.setString("WaystoneName", waystoneName);
-		if(owner != null) {
-			tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
+		tagCompound.setBoolean("IsDummy", isDummy);
+		if(!isDummy) {
+			tagCompound.setString("WaystoneName", waystoneName);
+			if (owner != null) {
+				tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
+			}
+			tagCompound.setBoolean("IsGlobal", isGlobal);
 		}
-		tagCompound.setBoolean("IsGlobal", isGlobal);
 		return tagCompound;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-		waystoneName = tagCompound.getString("WaystoneName");
-		if(tagCompound.hasKey("Owner")) {
-			owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
+		isDummy = tagCompound.getBoolean("IsDummy");
+		if(!isDummy) {
+			waystoneName = tagCompound.getString("WaystoneName");
+			if (tagCompound.hasKey("Owner")) {
+				owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
+			}
+			isGlobal = tagCompound.getBoolean("IsGlobal");
 		}
-		isGlobal = tagCompound.getBoolean("IsGlobal");
 	}
 
 	@Override
