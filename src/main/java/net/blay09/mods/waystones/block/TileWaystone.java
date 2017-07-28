@@ -120,4 +120,7 @@ public class TileWaystone extends TileEntity {
 		markDirty();
 	}
 
+	public boolean isDummy() {
+		return isDummy;
+	}
 }

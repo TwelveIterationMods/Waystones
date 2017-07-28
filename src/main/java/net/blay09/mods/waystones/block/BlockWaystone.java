@@ -93,7 +93,7 @@ public class BlockWaystone extends BlockContainer {
 	@Override
 	@Nullable
 	public TileEntity createNewTileEntity(World world, int metadata) {
-		return new TileWaystone((metadata & 8) == 0);
+		return new TileWaystone(!getStateFromMeta(metadata).getValue(BASE));
 	}
 
 	@Override
@@ -120,12 +120,16 @@ public class BlockWaystone extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
 		EnumFacing facing = EnumFacing.getDirectionFromEntityLiving(pos, placer);
 		if(facing.getAxis() == EnumFacing.Axis.Y) {
 			facing = EnumFacing.NORTH;
 		}
-		world.setBlockState(pos, this.getDefaultState().withProperty(FACING, facing).withProperty(BASE, true));
+		return getDefaultState().withProperty(FACING, facing).withProperty(BASE, true);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false));
 		if (!world.isRemote && placer instanceof EntityPlayer && (!WaystoneConfig.general.creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
 			TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
@@ -144,7 +148,7 @@ public class BlockWaystone extends BlockContainer {
 			if (tileWaystone.isGlobal()) {
 				GlobalWaystones.get(world).removeGlobalWaystone(entry);
 			}
-			for (EntityPlayer player : world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos).expand(64, 64, 64))) {
+			for (EntityPlayer player : world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos).grow(64, 64, 64))) {
 				WaystoneManager.removePlayerWaystone(player, entry);
 				WaystoneManager.sendPlayerWaystones(player);
 			}
@@ -229,7 +233,7 @@ public class BlockWaystone extends BlockContainer {
 	@Nullable
 	public TileWaystone getTileWaystone(World world, BlockPos pos) {
 		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
-		if (tileWaystone == null) {
+		if (tileWaystone == null || tileWaystone.isDummy()) {
 			TileEntity tileBelow = world.getTileEntity(pos.down());
 			if (tileBelow instanceof TileWaystone) {
 				return (TileWaystone) tileBelow;
