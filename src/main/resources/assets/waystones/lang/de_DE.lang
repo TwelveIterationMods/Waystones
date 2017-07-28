@@ -1,0 +1,32 @@
+tile.waystones:waystone.name=Wegstein
+
+item.waystones:warp_scroll.name=Rolle der Teleportation
+item.waystones:return_scroll.name=Rolle der Rückkehr
+item.waystones:warp_stone.name=Warpstein
+
+itemGroup.waystones=Waystones
+
+waystones:noDimensionWarp=Du kannst nicht zwischen Welten springen.
+waystones:waystoneBroken=Der verbundene Wegstein wurde bewegt oder zerstört.
+waystones:scrollNotBound=Du hast bisher noch keine Wegsteine aktiviert.
+waystones:stoneNotCharged=Der Warpstein ist noch nicht vollständig aufgeladen.
+waystones:activatedWaystone=Wegstein aktiviert: %s
+waystones:nameOccupied=Der Name %s wird bereits verwendet.
+waystones:notTheOwner=Wegsteine können nur von ihrem Errichter umbenannt werden.
+waystones:creativeRequired=Du musst im Kreativmodus sein um einen globalen Wegstein zu bearbeiten.
+
+gui.waystones:warpStone.selectDestination=Wähle dein Ziel:
+gui.waystones:warpStone.nextPage=Nächste
+gui.waystones:warpStone.previousPage=Vorherige
+gui.waystones:confirmReturn=Möchtest du wirklich zu deinem letzten Wegstein zurückspringen?
+gui.waystones:confirmReturn.boundTo=Gebunden an: %s
+gui.waystones:confirmReturn.noWaystoneActive=Kein Wegstein aktiv.
+gui.waystones:editWaystone.enterName=Gebe den Namen ein:
+gui.waystones:editWaystone.isGlobal=ist Global
+
+tooltip.waystones:cooldownLeft=Abkühlung: %d Sekunden
+tooltip.waystones:boundTo=Gebunden an: %s
+tooltip.waystones:none=keinen
+tooltip.waystones:returnToWaystone=Zum Wegstein zurückkehren
+tooltip.waystones:openWaystoneMenu=Wegstein-Menü öffnen
+tooltip.waystones:levelRequirement=Benötigtes Level: %d
