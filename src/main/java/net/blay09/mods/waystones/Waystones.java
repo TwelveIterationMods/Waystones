@@ -7,7 +7,8 @@ import net.blay09.mods.waystones.item.ItemReturnScroll;
 import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.worldgen.WaystoneWorldGen;
+import net.blay09.mods.waystones.worldgen.ComponentVillageWaystone;
+import net.blay09.mods.waystones.worldgen.VillageWaystoneCreationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,6 +17,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -28,6 +30,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 @Mod(modid = Waystones.MOD_ID, name = "Waystones", acceptedMinecraftVersions = "[1.12]")
 @Mod.EventBusSubscriber
@@ -67,9 +70,8 @@ public class Waystones {
 		NetworkHandler.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
-		if(WaystoneConfig.general.worldGenChance > 0) {
-			GameRegistry.registerWorldGenerator(new WaystoneWorldGen(), 0);
-		}
+		VillagerRegistry.instance().registerVillageCreationHandler(new VillageWaystoneCreationHandler());
+		MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");
 
 		proxy.preInit(event);
 	}

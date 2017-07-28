@@ -8,6 +8,7 @@ import net.minecraftforge.common.config.Config;
 public class WaystoneConfig {
 
 	public static General general = new General();
+	public static WorldGen worldGen = new WorldGen();
 
 	public static Client client = new Client();
 
@@ -72,12 +73,13 @@ public class WaystoneConfig {
 		@Config.Name("Interdimensional Teleport on Global Waystones")
 		@Config.Comment("If enabled, waystones marked as global work inter-dimensionally.")
 		public boolean globalInterDimension = true;
+	}
 
-		@Config.Name("World Gen Chaance")
-		@Config.Comment("The chance for a waystone to spawn in world gen, per 10000 blocks. Set to 0 to disable")
-		@Config.RangeInt(min = 0, max = 10000)
-		public int worldGenChance = 0;
-
+	public static class WorldGen {
+		@Config.Name("Generate in Villages")
+		@Config.Comment("The chance for a waystone to generate in a village. Set to 1 to always generate one in villages, set to 0 to disable.")
+		@Config.RangeDouble(min = 0, max = 1)
+		public float villageChance = 1f;
 	}
 
 	public static class Client {
