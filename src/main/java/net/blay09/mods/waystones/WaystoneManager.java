@@ -7,19 +7,25 @@ import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
@@ -145,13 +151,66 @@ public class WaystoneManager {
 		if(dimensionWarp) {
 			MinecraftServer server = player.worldObj.getMinecraftServer();
 			if(server != null) {
-				server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), new TeleporterWaystone((WorldServer) player.worldObj));
+				transferPlayerToDimension((EntityPlayerMP) player, waystone.getDimensionId(), server.getPlayerList());
 			}
 		}
 		player.rotationYaw = getRotationYaw(facing);
 		player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 		sendTeleportEffect(player.worldObj, targetPos);
 		return true;
+	}
+
+	/**
+	 *  Taken from CoFHCore's EntityHelper (https://github.com/CoFH/CoFHCore/blob/1.12/src/main/java/cofh/core/util/helpers/EntityHelper.java)
+	 */
+	private static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList manager) {
+		int oldDim = player.dimension;
+		WorldServer oldWorld = manager.getServerInstance().worldServerForDimension(player.dimension);
+		player.dimension = dimension;
+		WorldServer newWorld = manager.getServerInstance().worldServerForDimension(player.dimension);
+		player.connection.sendPacket(new SPacketRespawn(player.dimension, player.worldObj.getDifficulty(), player.worldObj.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+		oldWorld.removeEntityDangerously(player);
+		if (player.isBeingRidden()) {
+			player.removePassengers();
+		}
+		if (player.isRiding()) {
+			player.dismountRidingEntity();
+		}
+		player.isDead = false;
+		transferEntityToWorld(player, oldWorld, newWorld);
+		manager.preparePlayer(player, oldWorld);
+		player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+		player.interactionManager.setWorld(newWorld);
+		manager.updateTimeAndWeatherForPlayer(player, newWorld);
+		manager.syncPlayerInventory(player);
+
+		for (PotionEffect potioneffect : player.getActivePotionEffects()) {
+			player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
+		}
+		FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
+	}
+
+	/**
+	 * Taken from CoFHCore's EntityHelper (https://github.com/CoFH/CoFHCore/blob/1.12/src/main/java/cofh/core/util/helpers/EntityHelper.java)
+	 */
+	private static void transferEntityToWorld(Entity entity, WorldServer oldWorld, WorldServer newWorld) {
+		WorldProvider oldWorldProvider = oldWorld.provider;
+		WorldProvider newWorldProvider = newWorld.provider;
+		double moveFactor = oldWorldProvider.getMovementFactor() / newWorldProvider.getMovementFactor();
+		double x = entity.posX * moveFactor;
+		double z = entity.posZ * moveFactor;
+
+		oldWorld.theProfiler.startSection("placing");
+		x = MathHelper.clamp_double(x, -29999872, 29999872);
+		z = MathHelper.clamp_double(z, -29999872, 29999872);
+		if (entity.isEntityAlive()) {
+			entity.setLocationAndAngles(x, entity.posY, z, entity.rotationYaw, entity.rotationPitch);
+			newWorld.spawnEntityInWorld(entity);
+			newWorld.updateEntityWithOptionalForce(entity, false);
+		}
+		oldWorld.theProfiler.endSection();
+
+		entity.setWorld(newWorld);
 	}
 
 	public static void sendTeleportEffect(World world, BlockPos pos) {
