@@ -23,6 +23,9 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 	private static final ResourceLocation VILLAGE_WAYSTONE_ID = new ResourceLocation(Waystones.MOD_ID, "village_waystone");
 	private static final ResourceLocation DESERT_VILLAGE_WAYSTONE_ID = new ResourceLocation(Waystones.MOD_ID, "desert_village_waystone");
 
+	public ComponentVillageWaystone() {
+	}
+
 	public ComponentVillageWaystone(StructureVillagePieces.Start start, int type, StructureBoundingBox boundingBox, EnumFacing facing) {
 		super(start, type);
 		this.boundingBox = boundingBox;
