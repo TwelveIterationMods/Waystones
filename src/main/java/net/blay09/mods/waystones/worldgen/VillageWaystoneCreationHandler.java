@@ -14,7 +14,7 @@ public class VillageWaystoneCreationHandler implements VillagerRegistry.IVillage
 
 	@Override
 	public StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int size) {
-		return new StructureVillagePieces.PieceWeight(ComponentVillageWaystone.class, 3, size + 1);
+		return new StructureVillagePieces.PieceWeight(ComponentVillageWaystone.class, 3, 1);
 	}
 
 	@Override
