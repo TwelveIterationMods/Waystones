@@ -45,7 +45,7 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 		BlockPos pos = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
 		TemplateManager templateManager = world.getSaveHandler().getStructureTemplateManager();
 		PlacementSettings settings = (new PlacementSettings()).setReplacedBlock(Blocks.STRUCTURE_VOID).setBoundingBox(boundingBox);
-		Template template = templateManager.getTemplate(world.getMinecraftServer(), componentType == 1 ? DESERT_VILLAGE_WAYSTONE_ID : VILLAGE_WAYSTONE_ID);
+		Template template = templateManager.getTemplate(world.getMinecraftServer(), structureType == 1 ? DESERT_VILLAGE_WAYSTONE_ID : VILLAGE_WAYSTONE_ID);
 		template.addBlocksToWorldChunk(world, pos, settings);
 		Map<BlockPos, String> dataBlocks = template.getDataBlocks(pos, settings);
 		System.out.println(pos);
