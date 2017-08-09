@@ -102,7 +102,7 @@ public class BlockWaystone extends BlockContainer {
 		if (WaystoneConfig.general.creativeModeOnly && !player.capabilities.isCreativeMode) {
 			return -1f;
 		}
-		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
+		TileWaystone tileWaystone = getTileWaystone(world, pos);
 		if(tileWaystone != null && tileWaystone.isGlobal() && !player.capabilities.isCreativeMode) {
 			return -1f;
 		}
@@ -233,18 +233,11 @@ public class BlockWaystone extends BlockContainer {
 	@Nullable
 	public TileWaystone getTileWaystone(World world, BlockPos pos) {
 		TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
-		if (tileWaystone == null || tileWaystone.isDummy()) {
-			TileEntity tileBelow = world.getTileEntity(pos.down());
-			if (tileBelow instanceof TileWaystone) {
-				return (TileWaystone) tileBelow;
-			} else {
-				return null;
-			}
-		}
-		return tileWaystone;
+		return tileWaystone != null ? tileWaystone.getParent() : null;
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public boolean hasCustomBreakingProgress(IBlockState state) {
 		return true;
 	}

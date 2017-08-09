@@ -98,7 +98,7 @@ public class WaystoneManager {
 		if(targetWorld != null) {
 			TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
 			if (tileEntity instanceof TileWaystone) {
-				return (TileWaystone) tileEntity;
+				return ((TileWaystone) tileEntity).getParent();
 			}
 		}
 		return null;

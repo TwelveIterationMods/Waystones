@@ -122,7 +122,7 @@ public class ClientProxy extends CommonProxy {
 		if(id == 1) {
 			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 			if(tileEntity instanceof TileWaystone) {
-				return new GuiEditWaystone((TileWaystone) tileEntity);
+				return new GuiEditWaystone(((TileWaystone) tileEntity).getParent());
 			}
 		}
 		return null;

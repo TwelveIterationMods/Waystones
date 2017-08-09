@@ -38,14 +38,11 @@ public class TheOneProbeAddon implements Function<ITheOneProbe, Void> {
 
 		@Override
 		public void addProbeInfo(ProbeMode mode, IProbeInfo info, EntityPlayer player, World world, IBlockState state, IProbeHitData data) {
-			// NOTE no lang support in The One Probe atm...
+			// no lang support in The One Probe atm...
 			if(state.getBlock() instanceof BlockWaystone) {
 				TileWaystone tileEntity = tryGetTileEntity(world, data.getPos(), TileWaystone.class);
-				if(tileEntity == null) {
-					tileEntity = tryGetTileEntity(world, data.getPos().down(), TileWaystone.class);
-				}
 				if(tileEntity != null) {
-					info.text(TextFormatting.DARK_AQUA + tileEntity.getWaystoneName());
+					info.text(TextFormatting.DARK_AQUA + tileEntity.getParent().getWaystoneName());
 				}
 			}
 		}

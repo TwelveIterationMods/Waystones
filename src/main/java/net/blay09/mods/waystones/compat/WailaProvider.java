@@ -41,11 +41,8 @@ public class WailaProvider implements IWailaPlugin {
 		@Override
 		public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler config) {
 			TileEntity tileEntity = accessor.getTileEntity();
-			if(tileEntity == null) {
-				tileEntity = accessor.getWorld().getTileEntity(accessor.getPosition().down());
-			}
 			if(tileEntity instanceof TileWaystone) {
-				list.add(TextFormatting.DARK_AQUA + ((TileWaystone) tileEntity).getWaystoneName());
+				list.add(TextFormatting.DARK_AQUA + ((TileWaystone) tileEntity).getParent().getWaystoneName());
 			}
 			return list;
 		}

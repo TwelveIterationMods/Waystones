@@ -36,7 +36,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 			GlobalWaystones globalWaystones = GlobalWaystones.get(ctx.getServerHandler().player.world);
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof TileWaystone) {
-				TileWaystone tileWaystone = (TileWaystone) tileEntity;
+				TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
 				if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode) {
 					return;
 				}

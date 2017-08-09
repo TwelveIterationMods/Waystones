@@ -24,6 +24,7 @@ public class GuiWaystoneList extends GuiScreen {
 	private GuiButton btnPrevPage;
 	private GuiButton btnNextPage;
 	private int pageOffset;
+	private int headerY;
 
 	public GuiWaystoneList(WaystoneEntry[] entries, WarpMode warpMode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
 		this.entries = entries;
@@ -44,7 +45,15 @@ public class GuiWaystoneList extends GuiScreen {
 	}
 
 	public void updateList() {
-		final int buttonsPerPage = 4;
+		final int maxContentHeight = (int) (height * 0.8f);
+		final int headerHeight = 20;
+		final int footerHeight = 25;
+		final int entryHeight = 25;
+		final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
+
+		final int buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, entries.length));
+		final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
+		headerY = height / 2 - contentHeight / 2;
 
 		btnPrevPage.enabled = pageOffset > 0;
 		btnNextPage.enabled = pageOffset < (entries.length - 1) / buttonsPerPage;
@@ -52,22 +61,22 @@ public class GuiWaystoneList extends GuiScreen {
 		buttonList.removeIf(button -> button instanceof GuiButtonWaystoneEntry || button instanceof GuiButtonSortWaystone);
 
 		int id = 2;
-		int y = 0;
+		int y = headerHeight;
 		for(int i = 0; i < buttonsPerPage; i++) {
 			int entryIndex = pageOffset * buttonsPerPage + i;
 			if(entryIndex >= 0 && entryIndex < entries.length) {
-				GuiButtonWaystoneEntry btnWaystone = new GuiButtonWaystoneEntry(id, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex], warpMode);
+				GuiButtonWaystoneEntry btnWaystone = new GuiButtonWaystoneEntry(id, width / 2 - 100, headerY + y, entries[entryIndex], warpMode);
 				buttonList.add(btnWaystone);
 				id++;
 
-				GuiButtonSortWaystone sortUp = new GuiButtonSortWaystone(id, width / 2 + 108, height / 2 - 60 + y + 2, btnWaystone, -1);
+				GuiButtonSortWaystone sortUp = new GuiButtonSortWaystone(id, width / 2 + 108, headerY + y + 2, btnWaystone, -1);
 				if(entryIndex == 0) {
 					sortUp.visible = false;
 				}
 				buttonList.add(sortUp);
 				id++;
 
-				GuiButtonSortWaystone sortDown = new GuiButtonSortWaystone(id, width / 2 + 108, height / 2 - 60 + y + 11, btnWaystone, 1);
+				GuiButtonSortWaystone sortDown = new GuiButtonSortWaystone(id, width / 2 + 108, headerY + y + 11, btnWaystone, 1);
 				if(entryIndex == entries.length - 1) {
 					sortDown.visible = false;
 				}
@@ -77,6 +86,9 @@ public class GuiWaystoneList extends GuiScreen {
 				y += 22;
 			}
 		}
+
+		btnPrevPage.y = headerY + headerHeight + buttonsPerPage * 22 + (entries.length > 0 ? 10 : 0);
+		btnNextPage.y = headerY + headerHeight + buttonsPerPage * 22 + (entries.length > 0 ? 10 : 0);
 	}
 
 	@Override
@@ -111,8 +123,7 @@ public class GuiWaystoneList extends GuiScreen {
 		drawWorldBackground(0);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		GL11.glColor4f(1f, 1f, 1f, 1f);
-		drawRect(width / 2 - 50, height / 2 - 50, width / 2 + 50, height / 2 + 50, 0xFFFFFF);
-		drawCenteredString(fontRenderer, I18n.format("gui.waystones:warpStone.selectDestination"), width / 2, height / 2 - 85, 0xFFFFFF);
+		drawCenteredString(fontRenderer, I18n.format("gui.waystones:warpStone.selectDestination"), width / 2, headerY, 0xFFFFFF);
 		if(entries.length == 0) {
 			drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
 		}

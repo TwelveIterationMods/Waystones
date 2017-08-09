@@ -120,7 +120,13 @@ public class TileWaystone extends TileEntity {
 		markDirty();
 	}
 
-	public boolean isDummy() {
-		return isDummy;
+	public TileWaystone getParent() {
+		if (isDummy) {
+			TileEntity tileBelow = world.getTileEntity(pos.down());
+			if (tileBelow instanceof TileWaystone) {
+				return (TileWaystone) tileBelow;
+			}
+		}
+		return this;
 	}
 }
