@@ -1,7 +1,7 @@
 {
   "result": {
     "item": "waystones:warp_scroll",
-    "amount": 3
+    "count": 3
   },
   "type": "forge:ore_shaped",
   "pattern": [

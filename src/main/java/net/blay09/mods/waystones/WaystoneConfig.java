@@ -64,7 +64,7 @@ public class WaystoneConfig {
 
 		@Config.Name("Allow Global Waystones for Everyone")
 		@Config.Comment("If enabled, everyone can create global waystones, not just players in creative mode.")
-		public boolean allowEveryoneGlobal = true;
+		public boolean allowEveryoneGlobal = false;
 	}
 
 	public static class WorldGen {
