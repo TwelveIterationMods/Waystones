@@ -103,7 +103,7 @@ public class BlockWaystone extends BlockContainer {
 			return -1f;
 		}
 		TileWaystone tileWaystone = getTileWaystone(world, pos);
-		if(tileWaystone != null && tileWaystone.isGlobal() && !player.capabilities.isCreativeMode) {
+		if(tileWaystone != null && tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
 			return -1f;
 		}
 		return super.getPlayerRelativeBlockHardness(state, player, world, pos);
@@ -173,7 +173,7 @@ public class BlockWaystone extends BlockContainer {
 					player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
 					return true;
 				}
-				if(tileWaystone.isGlobal() && !player.capabilities.isCreativeMode) {
+				if(tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
 					player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
 					return true;
 				}

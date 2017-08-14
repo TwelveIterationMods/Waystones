@@ -26,24 +26,12 @@ public class WaystoneConfig {
 		@Config.Comment("If enabled, the teleport button will only let you return to the last activated waystone, instead of allowing to choose.")
 		public boolean teleportButtonReturnOnly = true;
 
-		@Config.Name("Allow Return Scrolls")
-		@Config.Comment("If enabled, return scrolls will be craftable.")
-		public boolean allowReturnScrolls = true;
-
-		@Config.Name("Allow Warp Scrolls")
-		@Config.Comment("If enabled, warp scrolls will be craftable.")
-		public boolean allowWarpScrolls = true;
-
-		@Config.Name("Allow Warp Stone")
-		@Config.Comment("If enabled, the warp stone will be craftable.")
-		public boolean allowWarpStone = true;
-
 		@Config.Name("Blocks per XP Level")
 		@Config.Comment("The amount of blocks per xp level requirement (for inventory button & waystone-to-waystone teleport). Set to 0 to disable xp requirement.")
 		public int blocksPerXPLevel = 500;
 
 		@Config.Name("Warp Stone Costs XP")
-		@Config.Comment("If enabled, the warp stone costs experience when used as well.")
+		@Config.Comment("If enabled, the warp stone costs experience when used as well. THIS IS FOR THE WARP STONE, NOT WAYSTONES. See blocksPerXPLevel for those.")
 		public boolean warpStoneXpCost = false;
 
 		@Config.Name("Warp Stone Cooldown")
@@ -73,6 +61,10 @@ public class WaystoneConfig {
 		@Config.Name("Interdimensional Teleport on Global Waystones")
 		@Config.Comment("If enabled, waystones marked as global work inter-dimensionally.")
 		public boolean globalInterDimension = true;
+
+		@Config.Name("Allow Global Waystones for Everyone")
+		@Config.Comment("If enabled, everyone can create global waystones, not just players in creative mode.")
+		public boolean allowEveryoneGlobal = true;
 	}
 
 	public static class WorldGen {

@@ -18,10 +18,5 @@
     "P": {
       "item": "minecraft:paper"
     }
-  },
-  "conditions": [
-    {
-      "type": "allow_return_scroll"
-    }
-  ]
+  }
 }

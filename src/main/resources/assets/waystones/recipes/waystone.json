@@ -19,10 +19,5 @@
     "O": {
       "item": "minecraft:obsidian"
     }
-  },
-  "conditions": [
-    {
-      "type": "allow_waystone"
-    }
-  ]
+  }
 }

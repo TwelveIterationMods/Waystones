@@ -1,8 +1,0 @@
-{
-  "conditions": {
-    "allow_return_scroll": "net.blay09.mods.waystones.crafting.CustomConditions$AllowReturnScroll",
-    "allow_warp_scroll": "net.blay09.mods.waystones.crafting.CustomConditions$AllowWarpScroll",
-    "allow_warp_stone": "net.blay09.mods.waystones.crafting.CustomConditions$AllowWarpStone",
-    "allow_waystone": "net.blay09.mods.waystones.crafting.CustomConditions$AllowWaystone"
-  }
-}

@@ -18,10 +18,5 @@
     "D": {
       "item": "#PURPLE_DYE"
     }
-  },
-  "conditions": [
-    {
-      "type": "allow_warp_stone"
-    }
-  ]
+  }
 }

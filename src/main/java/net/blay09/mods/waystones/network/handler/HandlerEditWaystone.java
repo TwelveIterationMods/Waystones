@@ -37,7 +37,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof TileWaystone) {
 				TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
-				if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode) {
+				if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
 					return;
 				}
 				if(WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(ctx.getServerHandler().player)) {
@@ -55,7 +55,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 
 				WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
 
-				if(message.isGlobal() && ctx.getServerHandler().player.capabilities.isCreativeMode) {
+				if(message.isGlobal() && (ctx.getServerHandler().player.capabilities.isCreativeMode || WaystoneConfig.general.allowEveryoneGlobal)) {
 					tileWaystone.setGlobal(true);
 					newWaystone.setGlobal(true);
 					globalWaystones.addGlobalWaystone(newWaystone);
