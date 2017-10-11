@@ -130,6 +130,13 @@ public class WaystoneManager {
 			if(server != null) {
 				transferPlayerToDimension((EntityPlayerMP) player, dimensionId, server.getPlayerList());
 			}
+		} else {
+			if (player.isBeingRidden()) {
+				player.removePassengers();
+			}
+			if (player.isRiding()) {
+				player.dismountRidingEntity();
+			}
 		}
 		player.rotationYaw = getRotationYaw(facing);
 		player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -144,7 +151,7 @@ public class WaystoneManager {
 		WorldServer oldWorld = manager.getServerInstance().getWorld(player.dimension);
 		player.dimension = dimension;
 		WorldServer newWorld = manager.getServerInstance().getWorld(player.dimension);
-		player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), player.world.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+		player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 		oldWorld.removeEntityDangerously(player);
 		if (player.isBeingRidden()) {
 			player.removePassengers();
