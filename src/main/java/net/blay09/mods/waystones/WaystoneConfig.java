@@ -30,6 +30,11 @@ public class WaystoneConfig {
 		@Config.Comment("The amount of blocks per xp level requirement (for inventory button & waystone-to-waystone teleport). Set to 0 to disable xp requirement.")
 		public int blocksPerXPLevel = 500;
 
+		@Config.Name("Maximum XP Cost")
+		@Config.Comment("The maximum xp cost when Blocks per XP Level is enabled.")
+		@Config.RangeInt(min = 1)
+		public int maximumXpCost = 3;
+
 		@Config.Name("Warp Stone Costs XP")
 		@Config.Comment("If enabled, the warp stone costs experience when used as well. THIS IS FOR THE WARP STONE, NOT WAYSTONES. See blocksPerXPLevel for those.")
 		public boolean warpStoneXpCost = false;
@@ -107,6 +112,7 @@ public class WaystoneConfig {
 		general.setSpawnPoint = buf.readBoolean();
 		general.restrictRenameToOwner = buf.readBoolean();
 		general.blocksPerXPLevel = buf.readInt();
+		general.maximumXpCost = buf.readInt();
 	}
 
 	public static void write(ByteBuf buf) {
@@ -119,5 +125,6 @@ public class WaystoneConfig {
 		buf.writeBoolean(general.setSpawnPoint);
 		buf.writeBoolean(general.restrictRenameToOwner);
 		buf.writeInt(general.blocksPerXPLevel);
+		buf.writeInt(general.maximumXpCost);
 	}
 }

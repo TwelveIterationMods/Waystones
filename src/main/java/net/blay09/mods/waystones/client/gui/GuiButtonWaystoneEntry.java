@@ -27,7 +27,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 		this.waystone = waystone;
 		EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 		boolean enableXPCost = (mode != WarpMode.WARP_STONE || WaystoneConfig.general.warpStoneXpCost);
-		this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, 3) : 0;
+		this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 
 		if(waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
 			if(!WaystoneConfig.general.interDimension && !(!waystone.isGlobal() || !WaystoneConfig.general.globalInterDimension)) {
@@ -52,7 +52,11 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 		if(xpLevelCost > 0) {
 			boolean canAfford = mc.player.experienceLevel >= xpLevelCost;
 			mc.getTextureManager().bindTexture(ENCHANTMENT_TABLE_GUI_TEXTURE);
-			drawTexturedModalRect(x + 2, y + 2, (xpLevelCost - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+			drawTexturedModalRect(x + 2, y + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+
+			if(xpLevelCost > 3) {
+				mc.fontRenderer.drawString("+", x + 17, y + 6, 0xC8FF8F, true);
+			}
 
 			if(hovered && mouseX <= x + 16) {
 				GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.displayWidth, mc.displayHeight, 200, mc.fontRenderer);

@@ -23,7 +23,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
 			EntityPlayer player = ctx.getServerHandler().player;
 			int dist = (int) Math.sqrt(player.getDistanceSqToCenter(message.getWaystone().getPos()));
-			int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, 3) : 0;
+			int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 			ItemStack heldItem = player.getHeldItem(message.getHand());
 			switch(message.getWarpMode()) {
 				case INVENTORY_BUTTON:
