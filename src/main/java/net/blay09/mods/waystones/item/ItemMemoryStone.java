@@ -39,6 +39,7 @@ public class ItemMemoryStone extends Item {
 		setCreativeTab(Waystones.creativeTab);
 		setRegistryName(name);
 		setUnlocalizedName(registryName.toString());
+		setMaxStackSize(1);
 	}
 
 	private WaystoneEntry getBoundWaystone(ItemStack stack) {
