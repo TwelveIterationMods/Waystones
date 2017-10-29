@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.ClientWaystones;
+import net.blay09.mods.waystones.item.ItemMemoryStone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -15,6 +16,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -187,9 +189,25 @@ public class BlockWaystone extends BlockContainer {
 		}
 		WaystoneEntry knownWaystone = world.isRemote ? ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) : null;
 		if(knownWaystone != null) {
-			Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+
+			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Waystones.itemMemoryStone) {
+				ItemMemoryStone.imprintWaystone(player, player.getHeldItemMainhand(), knownWaystone);
+				player.setHeldItem(EnumHand.MAIN_HAND, player.getHeldItemMainhand());
+			}
+			else {
+				Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+			}
+
 		} else if (!world.isRemote) {
 			WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
+
+//			// DEBUG ONLY
+//			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Waystones.itemMemoryStone) {
+//				ItemMemoryStone.imprintWaystone(player, player.getHeldItemMainhand(), waystone);
+//				player.setHeldItem(EnumHand.MAIN_HAND, player.getHeldItemMainhand());
+//				return true;
+//			}
+
 			if(!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
 				TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
 				nameComponent.getStyle().setColor(TextFormatting.WHITE);
