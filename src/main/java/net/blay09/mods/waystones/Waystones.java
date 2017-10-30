@@ -3,6 +3,7 @@ package net.blay09.mods.waystones;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.waystones.item.ItemMemoryStone;
 import net.blay09.mods.waystones.item.ItemReturnScroll;
 import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
@@ -12,7 +13,6 @@ import net.blay09.mods.waystones.worldgen.VillageWaystoneCreationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -50,6 +50,9 @@ public class Waystones {
 
 	@GameRegistry.ObjectHolder(ItemReturnScroll.name)
 	public static final Item itemReturnScroll = Items.AIR;
+
+	@GameRegistry.ObjectHolder(ItemMemoryStone.name)
+	public static final Item itemMemoryStone = Items.AIR;
 
 	@GameRegistry.ObjectHolder(ItemWarpScroll.name)
 	public static final Item itemWarpScroll = Items.AIR;
@@ -93,6 +96,7 @@ public class Waystones {
 		event.getRegistry().registerAll(
 				new ItemReturnScroll(),
 				new ItemWarpScroll(),
+				new ItemMemoryStone(),
 				new ItemWarpStone()
 		);
 	}
@@ -102,6 +106,7 @@ public class Waystones {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(Waystones.blockWaystone), 0, new ModelResourceLocation(BlockWaystone.registryName, "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Waystones.itemWarpStone, 0, new ModelResourceLocation(ItemWarpStone.registryName, "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Waystones.itemReturnScroll, 0, new ModelResourceLocation(ItemReturnScroll.registryName, "inventory"));
+		ModelLoader.setCustomModelResourceLocation(Waystones.itemMemoryStone, 0, new ModelResourceLocation(ItemMemoryStone.registryName, "inventory"));
 		ModelLoader.setCustomModelResourceLocation(Waystones.itemWarpScroll, 0, new ModelResourceLocation(ItemWarpScroll.registryName, "inventory"));
 
 		ForgeHooksClient.registerTESRItemStack(Item.getItemFromBlock(Waystones.blockWaystone), 0, TileWaystone.class);

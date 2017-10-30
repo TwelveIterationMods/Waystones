@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "waystones:memory_stone",
+    "count": 1
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "GPG",
+    "PWP",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "W": {
+      "item": "waystones:warp_stone"
+    },
+    "P": {
+      "item": "minecraft:book"
+    }
+  }
+}
