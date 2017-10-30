@@ -4,7 +4,6 @@ item.waystones:warp_scroll.name=Warp Scroll
 item.waystones:warp_scroll_bound.name=Warp Scroll (Bound)
 item.waystones:return_scroll.name=Return Scroll
 item.waystones:memory_stone.name=Memory Stone
-item.waystones:memory_stone.name.bound=Memory Stone: %s
 item.waystones:warp_stone.name=Warp Stone
 
 itemGroup.waystones=Waystones
@@ -15,7 +14,7 @@ waystones:scrollNotBound=You have not activated any waystones yet.
 waystones:emptyMemoryStone=This memory stone is empty.
 waystones:waystoneIsKnown=You already know this waystone.
 waystones:filledMemoryStone=This memory stone is already filled.
-waystones:filledMemoryStoneWith=Memory stone contains essence of waypoint %s
+waystones:filledMemoryStoneWith=The stone now contains a memory of waypoint %s
 waystones:stoneNotCharged=The Warp Stone is not fully charged yet.
 waystones:activatedWaystone=Activated Waystone: %s
 waystones:knowNewWaystone=You know a new Waystone: %s

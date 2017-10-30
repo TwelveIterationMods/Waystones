@@ -68,11 +68,11 @@ public class ItemMemoryStone extends Item {
 		}
 		stack.getTagCompound().setTag(NBT_MEMORY_STONE_TARGET, entry.writeToNBT());
 
-		Waystones.proxy.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, new BlockPos(player.posX, player.posY, player.posZ), 2f);
-		Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 3f);
-		player.sendStatusMessage(new TextComponentString(I18n.format("waystones:filledMemoryStoneWith", TextFormatting.DARK_AQUA + entry.getName())), true);
+		player.sendStatusMessage(new TextComponentTranslation("waystones:filledMemoryStoneWith", TextFormatting.DARK_AQUA + entry.getName()), true);
 
-		stack.setStackDisplayName(I18n.format("item.waystones:memory_stone.name.bound", entry.getName()));
+		// WHY U NO WORK
+		player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 2f);
+		player.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, 1f, 3f);
 
 		return true;
 	}
@@ -130,6 +130,12 @@ public class ItemMemoryStone extends Item {
 
 		if(boundEntry != null) {
 			if(!player.isHandActive() && world.isRemote) {
+
+				if(ClientWaystones.getKnownWaystone(boundEntry.getName()) != null) {
+					player.sendStatusMessage(new TextComponentTranslation("waystones:waystoneIsKnown"), true);
+					return new ActionResult<>(EnumActionResult.FAIL, itemStack);
+				}
+
 				Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 3f);
 			}
 			player.setActiveHand(hand);

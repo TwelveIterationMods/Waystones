@@ -189,24 +189,12 @@ public class BlockWaystone extends BlockContainer {
 		}
 		WaystoneEntry knownWaystone = world.isRemote ? ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) : null;
 		if(knownWaystone != null) {
-
-			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Waystones.itemMemoryStone) {
-				ItemMemoryStone.imprintWaystone(player, player.getHeldItemMainhand(), knownWaystone);
-				player.setHeldItem(EnumHand.MAIN_HAND, player.getHeldItemMainhand());
-			}
-			else {
+			if(player.getHeldItemMainhand() == null || player.getHeldItemMainhand().getItem() != Waystones.itemMemoryStone) {
 				Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
 			}
-
 		} else if (!world.isRemote) {
 			WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
 
-//			// DEBUG ONLY
-//			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Waystones.itemMemoryStone) {
-//				ItemMemoryStone.imprintWaystone(player, player.getHeldItemMainhand(), waystone);
-//				player.setHeldItem(EnumHand.MAIN_HAND, player.getHeldItemMainhand());
-//				return true;
-//			}
 
 			if(!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
 				TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
@@ -224,6 +212,11 @@ public class BlockWaystone extends BlockContainer {
 				EnumFacing blockFacing = state.getValue(FACING);
 				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true, world.provider.getDimension());
 			}
+
+			if(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Waystones.itemMemoryStone) {
+				ItemMemoryStone.imprintWaystone(player, player.getHeldItemMainhand(), waystone);
+			}
+
 		} else {
 			Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
 			for (int i = 0; i < 32; i++) {
