@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import io.netty.buffer.ByteBuf;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -36,7 +37,7 @@ public class MessageWaystones implements IMessage {
 			entry.write(buf);
 		}
 		buf.writeLong(lastFreeWarp);
-		buf.writeLong(lastWarpStoneUse);
+		buf.writeLong(Math.max(0, WaystoneConfig.general.warpStoneCooldown * 1000 - (System.currentTimeMillis() - lastWarpStoneUse)));
 	}
 
 	public WaystoneEntry[] getEntries() {

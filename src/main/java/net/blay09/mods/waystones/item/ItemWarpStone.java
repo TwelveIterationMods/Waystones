@@ -33,6 +33,8 @@ public class ItemWarpStone extends Item {
 	public static final String name = "warp_stone";
 	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
 
+	public static long lastTimerUpdate;
+
 	public ItemWarpStone() {
 		setRegistryName(name);
 		setUnlocalizedName(registryName.toString());
@@ -104,8 +106,9 @@ public class ItemWarpStone extends Item {
 		if(player == null) {
 			return;
 		}
-		long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(player);
-		int secondsLeft = (int) ((WaystoneConfig.general.warpStoneCooldown * 1000 - timeSince) / 1000);
+		long timeLeft = PlayerWaystoneHelper.getLastWarpStoneUse(player);
+		long timeSince = System.currentTimeMillis() - lastTimerUpdate;
+		int secondsLeft = (int) ((timeLeft - timeSince) / 1000);
 		if(secondsLeft > 0) {
 			tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
 		}

@@ -9,7 +9,9 @@ import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -77,6 +79,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 						if (WaystoneConfig.general.warpStoneXpCost) {
 							player.addExperienceLevel(-xpLevelCost);
 						}
+
 						if (shouldCooldown) {
 							PlayerWaystoneHelper.setLastWarpStoneUse(ctx.getServerHandler().player, System.currentTimeMillis());
 						}
