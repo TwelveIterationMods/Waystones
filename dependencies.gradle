@@ -1,4 +1,4 @@
 dependencies {
-    deobfCompile "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
+    provided "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
     provided "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.8-2"
 }
