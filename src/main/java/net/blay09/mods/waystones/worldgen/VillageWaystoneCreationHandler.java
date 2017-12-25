@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
@@ -14,21 +15,22 @@ public class VillageWaystoneCreationHandler implements VillagerRegistry.IVillage
 
 	@Override
 	public StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int size) {
+		if (random.nextFloat() > WaystoneConfig.worldGen.villageChance) {
+			return new StructureVillagePieces.PieceWeight(getComponentClass(), 0, 0);
+		}
+
 		return new StructureVillagePieces.PieceWeight(ComponentVillageWaystone.class, 3, 1);
 	}
 
 	@Override
-	public Class<?> getComponentClass() {
+	public Class<? extends StructureVillagePieces.Village> getComponentClass() {
 		return ComponentVillageWaystone.class;
 	}
 
 	@Override
 	@Nullable
 	public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int x, int y, int z, EnumFacing facing, int type) {
-		if(random.nextFloat() <= WaystoneConfig.worldGen.villageChance) {
-			return ComponentVillageWaystone.buildComponent(villagePiece, startPiece, pieces, random, x, y, z, facing, type);
-		}
-		return null;
+		return ComponentVillageWaystone.buildComponent(villagePiece, startPiece, pieces, random, x, y, z, facing, type);
 	}
 
 }

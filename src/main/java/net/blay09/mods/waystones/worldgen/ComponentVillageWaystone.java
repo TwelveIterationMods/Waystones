@@ -40,15 +40,14 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 				return true;
 			}
 
-			boundingBox.offset(0, averageGroundLvl - boundingBox.minY, 0);
+			this.boundingBox.offset(0, averageGroundLvl - this.boundingBox.minY, 0);
 		}
-		BlockPos pos = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+		BlockPos pos = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
 		TemplateManager templateManager = world.getSaveHandler().getStructureTemplateManager();
 		PlacementSettings settings = (new PlacementSettings()).setReplacedBlock(Blocks.STRUCTURE_VOID).setBoundingBox(boundingBox);
 		Template template = templateManager.getTemplate(world.getMinecraftServer(), structureType == 1 ? DESERT_VILLAGE_WAYSTONE_ID : VILLAGE_WAYSTONE_ID);
 		template.addBlocksToWorldChunk(world, pos, settings);
 		Map<BlockPos, String> dataBlocks = template.getDataBlocks(pos, settings);
-		System.out.println(pos);
 		for (Map.Entry<BlockPos, String> entry : dataBlocks.entrySet()) {
 			if ("Waystone".equals(entry.getValue())) {
 				world.setBlockState(entry.getKey(), Waystones.blockWaystone.getDefaultState().withProperty(BlockWaystone.BASE, true), 3);
@@ -60,10 +59,11 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 
 	@Nullable
 	public static StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int x, int y, int z, EnumFacing facing, int type) {
-		StructureBoundingBox boundingBox = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, 5, 6, 5, facing);
+		StructureBoundingBox boundingBox = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, 7, 6, 7, facing);
 		if (canVillageGoDeeper(boundingBox) && findIntersecting(pieces, boundingBox) == null) {
 			return new ComponentVillageWaystone(startPiece, type, boundingBox, facing);
 		}
+
 		return null;
 	}
 }

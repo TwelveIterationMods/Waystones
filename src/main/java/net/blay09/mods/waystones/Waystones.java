@@ -22,7 +22,10 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -75,6 +78,13 @@ public class Waystones {
 		MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");
 
 		proxy.preInit(event);
+	}
+
+	@SubscribeEvent
+	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		if (MOD_ID.equals(event.getModID())) {
+			ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
+		}
 	}
 
 	@SubscribeEvent
