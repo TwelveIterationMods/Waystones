@@ -3,7 +3,7 @@ repositories {
     mavenCentral()
     
     maven {
-        url "http://blay09.net:8081/artifactory/repo/"
+        url "https://minecraft.curseforge.com/api/maven/"
     }
 }
 

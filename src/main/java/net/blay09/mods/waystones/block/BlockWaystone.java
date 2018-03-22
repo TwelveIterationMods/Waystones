@@ -204,7 +204,7 @@ public class BlockWaystone extends BlockContainer {
 
 			if (WaystoneConfig.general.setSpawnPoint) {
 				EnumFacing blockFacing = state.getValue(FACING);
-				player.setSpawnChunk(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true, world.provider.getDimension());
+				player.setSpawnPoint(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true);
 			}
 		} else {
 			Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);

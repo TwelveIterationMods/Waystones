@@ -1,4 +1,4 @@
 dependencies {
-    provided "mcp.mobius.waila:Hwyla:1.8.20-B35_1.12"
-    provided "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.8-2"
+    provided "hwyla:Hwyla:1.8.23:B38_1.12"
+    provided "the-one-probe:theoneprobe:1.12:1.4.19"
 }
