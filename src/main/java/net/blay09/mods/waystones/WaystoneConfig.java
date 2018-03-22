@@ -113,6 +113,7 @@ public class WaystoneConfig {
 		general.restrictRenameToOwner = buf.readBoolean();
 		general.blocksPerXPLevel = buf.readInt();
 		general.maximumXpCost = buf.readInt();
+		general.allowEveryoneGlobal = buf.readBoolean();
 	}
 
 	public static void write(ByteBuf buf) {
@@ -126,5 +127,6 @@ public class WaystoneConfig {
 		buf.writeBoolean(general.restrictRenameToOwner);
 		buf.writeInt(general.blocksPerXPLevel);
 		buf.writeInt(general.maximumXpCost);
+		buf.writeBoolean(general.allowEveryoneGlobal);
 	}
 }
