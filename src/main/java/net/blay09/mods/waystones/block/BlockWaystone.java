@@ -19,6 +19,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatBase;
+import net.minecraft.stats.StatBasic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -42,6 +44,8 @@ public class BlockWaystone extends BlockContainer {
 
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
     public static final PropertyBool BASE = PropertyBool.create("base");
+
+    private static final StatBase WAYSTONE_ACTIVATED = (new StatBasic("stat.waystones:waystonesActivated", new TextComponentTranslation("stat.waystones:waystonesActivated"))).registerStat();
 
     public BlockWaystone() {
         super(Material.ROCK);
@@ -181,10 +185,12 @@ public class BlockWaystone extends BlockContainer {
             }
             return true;
         }
+
         TileWaystone tileWaystone = getTileWaystone(world, pos);
         if (tileWaystone == null) {
             return true;
         }
+
         WaystoneEntry knownWaystone = world.isRemote ? ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) : null;
         if (knownWaystone != null) {
             Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
@@ -196,6 +202,7 @@ public class BlockWaystone extends BlockContainer {
                 TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:activatedWaystone", nameComponent);
                 chatComponent.getStyle().setColor(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent);
+                player.addStat(WAYSTONE_ACTIVATED);
                 WaystoneManager.addPlayerWaystone(player, waystone);
                 WaystoneManager.sendPlayerWaystones(player);
             }
@@ -211,6 +218,7 @@ public class BlockWaystone extends BlockContainer {
                 world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, pos.getY() + 4, pos.getZ() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, 0, -5, 0);
             }
         }
+
         return true;
     }
 
