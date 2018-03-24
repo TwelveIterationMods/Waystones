@@ -26,7 +26,18 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 		super(id, x, y, (waystone.isGlobal() ? TextFormatting.YELLOW : "") +  waystone.getName());
 		this.waystone = waystone;
 		EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-		boolean enableXPCost = (mode != WarpMode.WARP_STONE || WaystoneConfig.general.warpStoneXpCost);
+		boolean enableXPCost = false;
+		switch(mode) {
+			case WARP_STONE:
+				enableXPCost = WaystoneConfig.general.warpStoneXpCost;
+				break;
+			case INVENTORY_BUTTON:
+				enableXPCost = WaystoneConfig.general.inventoryButtonXpCost;
+				break;
+			case WAYSTONE:
+				enableXPCost = WaystoneConfig.general.waystoneXpCost;
+				break;
+		}
 		this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 
 		if(waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {

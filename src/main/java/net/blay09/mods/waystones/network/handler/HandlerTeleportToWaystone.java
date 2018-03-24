@@ -29,37 +29,45 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 			ItemStack heldItem = player.getHeldItem(message.getHand());
 			switch (message.getWarpMode()) {
 				case INVENTORY_BUTTON:
-					if (!WaystoneConfig.general.teleportButtonReturnOnly && player.experienceLevel < xpLevelCost) {
+					if (!WaystoneConfig.general.teleportButtonReturnOnly && (!WaystoneConfig.general.inventoryButtonXpCost || player.experienceLevel < xpLevelCost)) {
 						return;
 					}
+
 					if (!WaystoneConfig.general.teleportButton || WaystoneConfig.general.teleportButtonReturnOnly || !PlayerWaystoneHelper.canFreeWarp(ctx.getServerHandler().player)) {
 						return;
 					}
+
 					break;
 				case WARP_SCROLL:
 					if (heldItem.isEmpty() || heldItem.getItem() != Waystones.itemWarpScroll) {
 						return;
 					}
+
 					break;
 				case WARP_STONE:
 					if (WaystoneConfig.general.warpStoneXpCost && player.experienceLevel < xpLevelCost) {
 						return;
 					}
+
 					if (heldItem.isEmpty() || heldItem.getItem() != Waystones.itemWarpStone) {
 						return;
 					}
+
 					if (!PlayerWaystoneHelper.canUseWarpStone(player)) {
 						return;
 					}
+
 					break;
 				case WAYSTONE:
-					if (player.experienceLevel < xpLevelCost) {
+					if (WaystoneConfig.general.waystoneXpCost && player.experienceLevel < xpLevelCost) {
 						return;
 					}
+
 					WaystoneEntry fromWaystone = message.getFromWaystone();
 					if (fromWaystone == null || WaystoneManager.getWaystoneInWorld(fromWaystone) == null) {
 						return;
 					}
+
 					break;
 			}
 
@@ -70,7 +78,10 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 						if (shouldCooldown) {
 							PlayerWaystoneHelper.setLastFreeWarp(ctx.getServerHandler().player, System.currentTimeMillis());
 						}
-						player.addExperienceLevel(-xpLevelCost);
+
+						if (WaystoneConfig.general.inventoryButtonXpCost) {
+							player.addExperienceLevel(-xpLevelCost);
+						}
 						break;
 					case WARP_SCROLL:
 						heldItem.shrink(1);
@@ -85,7 +96,9 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 						}
 						break;
 					case WAYSTONE:
-						player.addExperienceLevel(-xpLevelCost);
+						if (WaystoneConfig.general.waystoneXpCost) {
+							player.addExperienceLevel(-xpLevelCost);
+						}
 						break;
 				}
 			}

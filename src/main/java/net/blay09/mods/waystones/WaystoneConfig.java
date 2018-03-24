@@ -27,7 +27,7 @@ public class WaystoneConfig {
 		public boolean teleportButtonReturnOnly = true;
 
 		@Config.Name("Blocks per XP Level")
-		@Config.Comment("The amount of blocks per xp level requirement (for inventory button & waystone-to-waystone teleport). Set to 0 to disable xp requirement.")
+		@Config.Comment("The amount of blocks per xp level requirement.")
 		public int blocksPerXPLevel = 500;
 
 		@Config.Name("Maximum XP Cost")
@@ -35,8 +35,16 @@ public class WaystoneConfig {
 		@Config.RangeInt(min = 1)
 		public int maximumXpCost = 3;
 
+		@Config.Name("Waystone Costs XP")
+		@Config.Comment("If enabled, waystones cost experience when used, based on the distance travelled.")
+		public boolean waystoneXpCost = true;
+
+		@Config.Name("Inventory Button Costs XP")
+		@Config.Comment("If enabled, the inventory button cost experience when used, based on the distance travelled.")
+		public boolean inventoryButtonXpCost = false;
+
 		@Config.Name("Warp Stone Costs XP")
-		@Config.Comment("If enabled, the warp stone costs experience when used as well. THIS IS FOR THE WARP STONE, NOT WAYSTONES. See blocksPerXPLevel for those.")
+		@Config.Comment("If enabled, the warp stone costs experience when used, based on the distance travelled.")
 		public boolean warpStoneXpCost = false;
 
 		@Config.Name("Warp Stone Cooldown")
