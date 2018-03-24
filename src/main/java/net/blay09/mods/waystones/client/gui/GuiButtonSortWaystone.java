@@ -31,9 +31,9 @@ public class GuiButtonSortWaystone extends GuiButtonExt {
 
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partial) {
-		GlStateManager.color(1f, 1f, 1f, 1f);
-		mc.getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
 		if (this.visible && mouseY >= parentButton.y && mouseY < parentButton.y + parentButton.height) {
+			GlStateManager.color(1f, 1f, 1f, 1f);
+			mc.getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
 			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 			if (hovered) {
 				Gui.drawModalRectWithCustomSizedTexture(x - 5, y - 5 - (sortDir == 1 ? 15 : 0), 96f - (sortDir == 1 ? 32f : 0f), 32f, 32, 32, 256f, 256f);

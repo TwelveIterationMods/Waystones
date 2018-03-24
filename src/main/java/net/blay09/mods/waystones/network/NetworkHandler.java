@@ -1,20 +1,8 @@
 package net.blay09.mods.waystones.network;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.network.handler.HandlerConfig;
-import net.blay09.mods.waystones.network.handler.HandlerFreeWarpReturn;
-import net.blay09.mods.waystones.network.handler.HandlerSortWaystone;
-import net.blay09.mods.waystones.network.handler.HandlerTeleportEffect;
-import net.blay09.mods.waystones.network.handler.HandlerTeleportToWaystone;
-import net.blay09.mods.waystones.network.handler.HandlerEditWaystone;
-import net.blay09.mods.waystones.network.handler.HandlerWaystones;
-import net.blay09.mods.waystones.network.message.MessageConfig;
-import net.blay09.mods.waystones.network.message.MessageSortWaystone;
-import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
-import net.blay09.mods.waystones.network.message.MessageWarpReturn;
-import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
-import net.blay09.mods.waystones.network.message.MessageEditWaystone;
-import net.blay09.mods.waystones.network.message.MessageWaystones;
+import net.blay09.mods.waystones.network.handler.*;
+import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
@@ -36,6 +24,7 @@ public class NetworkHandler {
 		channel.registerMessage(HandlerTeleportToWaystone.class, MessageTeleportToWaystone.class, 4, Side.SERVER);
 		channel.registerMessage(HandlerTeleportEffect.class, MessageTeleportEffect.class, 5, Side.CLIENT);
 		channel.registerMessage(HandlerSortWaystone.class, MessageSortWaystone.class, 6, Side.SERVER);
+		channel.registerMessage(HandlerRemoveWaystone.class, MessageRemoveWaystone.class, 7, Side.SERVER);
 	}
 
 	public static IThreadListener getThreadListener(MessageContext ctx) {
