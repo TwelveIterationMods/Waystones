@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -24,7 +22,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemWarpScroll extends Item {
+public class ItemWarpScroll extends Item implements IResetUseOnDamage {
 
 	private static final String NBT_WARP_SCROLL_TARGET = "WarpScrollTarget";
 

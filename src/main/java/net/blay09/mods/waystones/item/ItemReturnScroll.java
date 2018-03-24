@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemReturnScroll extends Item {
+public class ItemReturnScroll extends Item implements IResetUseOnDamage {
 
 	public static final String name = "return_scroll";
 	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);

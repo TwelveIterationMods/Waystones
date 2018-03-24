@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemWarpStone extends Item {
+public class ItemWarpStone extends Item implements IResetUseOnDamage {
 
 	public static final String name = "warp_stone";
 	public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);

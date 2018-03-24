@@ -22,6 +22,7 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -78,6 +79,8 @@ public class Waystones {
 		MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");
 
 		proxy.preInit(event);
+
+		MinecraftForge.EVENT_BUS.register(new WarpDamageResetHandler());
 	}
 
 	@SubscribeEvent

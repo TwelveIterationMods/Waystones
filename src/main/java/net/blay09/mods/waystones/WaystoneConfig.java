@@ -70,6 +70,10 @@ public class WaystoneConfig {
 		@Config.Name("Allow Global Waystones for Everyone")
 		@Config.Comment("If enabled, everyone can create global waystones, not just players in creative mode.")
 		public boolean allowEveryoneGlobal = false;
+
+		@Config.Name("Reset Use On Damage")
+		@Config.Comment("Whether the use of a warp stone or warp scroll should be interrupted by damage.")
+		public boolean resetUseOnDamage = false;
 	}
 
 	public static class WorldGen {
