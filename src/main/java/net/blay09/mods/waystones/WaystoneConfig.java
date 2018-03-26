@@ -80,7 +80,7 @@ public class WaystoneConfig {
 		public boolean allowEveryoneGlobal = false;
 
 		@Config.Name("Reset Use On Damage")
-		@Config.Comment("Whether the use of a warp stone or warp scroll should be interrupted by damage.")
+		@Config.Comment("Whether the use of a warp stone or warp scroll should be interrupted by damage. Not supported when playing with Vivecraft!")
 		public boolean resetUseOnDamage = false;
 	}
 
