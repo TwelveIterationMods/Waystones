@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.client.gui.GuiEditWaystone;
 import net.blay09.mods.waystones.client.gui.GuiWaystoneList;
 import net.blay09.mods.waystones.client.render.RenderWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -40,10 +41,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 public class ClientProxy extends CommonProxy {
 
 	private GuiButtonInventoryWarp buttonWarp;
+	private boolean isVivecraftInstalled;
 
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -51,6 +54,8 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileWaystone.class, new RenderWaystone());
+
+		isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains("vivecraft");
 	}
 
 	@SubscribeEvent
@@ -139,4 +144,8 @@ public class ClientProxy extends CommonProxy {
 		Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.client.soundVolume, pitch, pos));
 	}
 
+	@Override
+	public boolean isVivecraftInstalled() {
+		return isVivecraftInstalled;
+	}
 }

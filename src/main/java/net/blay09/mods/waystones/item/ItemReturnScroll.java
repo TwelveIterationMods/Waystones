@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.compat.Vivecraft;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -46,7 +45,7 @@ public class ItemReturnScroll extends Item implements IResetUseOnDamage {
 
     @Override
     public EnumAction getItemUseAction(ItemStack itemStack) {
-        if (Vivecraft.isInstalled()) {
+        if (Waystones.proxy.isVivecraftInstalled()) {
             return EnumAction.NONE;
         }
 
@@ -75,7 +74,7 @@ public class ItemReturnScroll extends Item implements IResetUseOnDamage {
             if (!player.isHandActive() && world.isRemote) {
                 Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
             }
-            if (Vivecraft.isInstalled()) {
+            if (Waystones.proxy.isVivecraftInstalled()) {
                 onItemUseFinish(itemStack, world, player);
             } else {
                 player.setActiveHand(hand);

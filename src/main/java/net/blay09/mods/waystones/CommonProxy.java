@@ -82,4 +82,8 @@ public class CommonProxy implements IGuiHandler {
 		return null;
 	}
 
+	public boolean isVivecraftInstalled() {
+		return false;
+	}
+
 }
