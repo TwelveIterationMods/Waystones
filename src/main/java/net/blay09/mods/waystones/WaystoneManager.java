@@ -115,7 +115,10 @@ public class WaystoneManager {
 		EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
 		BlockPos targetPos = waystone.getPos().offset(facing);
 		boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
-		if (dimensionWarp && !Waystones.getConfig().interDimension && !(waystone.isGlobal() && Waystones.getConfig().globalInterDimension)) {
+		if (dimensionWarp && !(
+			(!waystone.isGlobal() && Waystones.getConfig().interDimension) ||
+			(waystone.isGlobal() && Waystones.getConfig().globalInterDimension)
+			)) {
 			player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
 			return false;
 		}
