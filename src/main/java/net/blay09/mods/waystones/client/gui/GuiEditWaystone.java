@@ -68,7 +68,10 @@ public class GuiEditWaystone extends GuiContainer {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        textField.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (textField.mouseClicked(mouseX, mouseY, mouseButton)) {
+            mouseHandled = true;
+        }
     }
 
     @Override
@@ -77,9 +80,12 @@ public class GuiEditWaystone extends GuiContainer {
             actionPerformed(btnDone);
             return;
         }
+
         if (textField.textboxKeyTyped(typedChar, keyCode)) {
+            keyHandled = true;
             return;
         }
+
         super.keyTyped(typedChar, keyCode);
     }
 
