@@ -34,3 +34,5 @@ tooltip.waystones:openWaystoneMenu=Open Waystone Menu
 tooltip.waystones:levelRequirement=Level Requirement: %d
 
 stat.waystones:waystonesActivated=Waystones Activated
+
+waystones.general.globalinterdimension=Interdim. Teleport (Global Waystones)
