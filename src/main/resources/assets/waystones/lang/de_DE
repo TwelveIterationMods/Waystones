@@ -1,0 +1,38 @@
+tile.waystones:waystone.name=Wegstein
+
+item.waystones:warp_scroll.name=Warp Schriftrolle
+item.waystones:warp_scroll_bound.name=Warp Schriftrolle (Gebunden)
+item.waystones:return_scroll.name=Rückkehr Schriftrolle
+item.waystones:warp_stone.name=Warp Stein
+
+itemGroup.waystones=Wegsteine
+
+waystones:noDimensionWarp=Du kannst nicht zwischen den Welten wechseln.
+waystones:waystoneBroken=Der gebundene Wegstein wurde verschoben oder zerstört.
+waystones:scrollNotBound=Du hast noch keine Wegsteine aktiviert.
+waystones:stoneNotCharged=Der Warp Stein ist noch nicht vollständig aufgeladen.
+waystones:activatedWaystone=Aktivierter Wegstein: %s
+waystones:nameOccupied=Der Name %s wird bereits verwendet.
+waystones:notTheOwner=Wegsteine können nur von demjenigen umbenannt werden, der sie platziert hat.
+waystones:creativeRequired=Du musst dich im Kreativmodus befinden um einen weltweiten Wegstein zu bearbeiten.
+
+gui.waystones:current_location=Aktueller Standort:
+gui.waystones:warpStone.selectDestination=Wähle dein Zielort:
+gui.waystones:warpStone.nextPage=Weitere
+gui.waystones:warpStone.previousPage=Zurück
+gui.waystones:confirmReturn=Möchtest du wirklich zu deinem letzten Wegstein zurückkehren?
+gui.waystones:confirmReturn.boundTo=Gebunden an: %s
+gui.waystones:confirmReturn.noWaystoneActive=Kein Wegstein aktiv.
+gui.waystones:editWaystone.enterName=Name des Wegsteins:
+gui.waystones:editWaystone.isGlobal=ist weltweit
+
+tooltip.waystones:cooldownLeft=Abkühlung: %d Sekunden
+tooltip.waystones:boundTo=Gebunden an: %s
+tooltip.waystones:none=Leer
+tooltip.waystones:returnToWaystone=Rückkehr zu Wegstein
+tooltip.waystones:openWaystoneMenu=Öffne Wegstein-Menü
+tooltip.waystones:levelRequirement=Level Anforderung: %d
+
+stat.waystones:waystonesActivated=Wegsteine aktiviert
+
+waystones.general.globalinterdimension=Interdim. Teleportieren (Weltweite Wegsteine)
