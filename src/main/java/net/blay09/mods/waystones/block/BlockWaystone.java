@@ -139,7 +139,7 @@ public class BlockWaystone extends BlockContainer {
             TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
             if (tileWaystone != null) {
                 tileWaystone.setOwner((EntityPlayer) placer);
-                ((EntityPlayer) placer).openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
+                Waystones.proxy.openWaystoneSettings(tileWaystone);
             }
         }
     }
@@ -173,15 +173,18 @@ public class BlockWaystone extends BlockContainer {
                 if (tileWaystone == null) {
                     return true;
                 }
+
                 if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
                     player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
                     return true;
                 }
+
                 if (tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
                     player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
                     return true;
                 }
-                player.openGui(Waystones.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
+
+                Waystones.proxy.openWaystoneSettings(tileWaystone);
             }
             return true;
         }

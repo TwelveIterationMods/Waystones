@@ -73,7 +73,6 @@ public class Waystones {
 		GameRegistry.registerTileEntity(TileWaystone.class, MOD_ID + ":waystone");
 
 		NetworkHandler.init();
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageWaystoneCreationHandler());
 		MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");

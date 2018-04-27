@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones;
 
 import com.google.common.collect.Lists;
+import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageConfig;
 import net.blay09.mods.waystones.util.WaystoneEntry;
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class CommonProxy implements IGuiHandler {
+public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -63,27 +64,15 @@ public class CommonProxy implements IGuiHandler {
 
 	}
 
+	public void openWaystoneSettings(TileWaystone tileWaystone) {
+
+	}
+
 	public void playSound(SoundEvent soundEvent, BlockPos pos, float pitch) {
 
-	}
-
-	@Override
-	@Nullable
-	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-		if(id == 1) {
-			return new ContainerEditWaystoneNameDummy();
-		}
-		return null;
-	}
-
-	@Override
-	@Nullable
-	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-		return null;
 	}
 
 	public boolean isVivecraftInstalled() {
 		return false;
 	}
-
 }

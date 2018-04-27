@@ -1,23 +1,21 @@
 package net.blay09.mods.waystones.client.gui;
 
-import net.blay09.mods.waystones.ContainerEditWaystoneNameDummy;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class GuiEditWaystone extends GuiContainer {
+public class GuiEditWaystone extends GuiScreen {
 
     private final TileWaystone tileWaystone;
     private GuiTextField textField;
@@ -25,7 +23,6 @@ public class GuiEditWaystone extends GuiContainer {
     private GuiCheckBox chkGlobal;
 
     public GuiEditWaystone(TileWaystone tileWaystone) {
-        super(new ContainerEditWaystoneNameDummy());
         this.tileWaystone = tileWaystone;
     }
 
@@ -101,10 +98,6 @@ public class GuiEditWaystone extends GuiContainer {
 
         fontRenderer.drawString(I18n.format("gui.waystones:editWaystone.enterName"), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
         textField.drawTextBox();
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
     }
 
 }
