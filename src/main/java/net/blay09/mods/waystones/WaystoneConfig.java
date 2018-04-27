@@ -18,6 +18,10 @@ public class WaystoneConfig {
 		@Config.Comment("Should there be a button in the inventory to access the waystone menu?")
 		public boolean teleportButton = false;
 
+		@Config.Name("Teleport Button Target")
+		@Config.Comment("Set this to a global waystone name to lock the inventory button to that specific waystone. Leave empty for default behaviour.")
+		public String teleportButtonTarget = "";
+
 		@Config.Name("Teleport Button Cooldown")
 		@Config.Comment("The cooldown between usages of the teleport button in seconds.")
 		public int teleportButtonCooldown = 300;

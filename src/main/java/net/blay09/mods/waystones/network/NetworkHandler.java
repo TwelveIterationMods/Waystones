@@ -19,12 +19,13 @@ public class NetworkHandler {
 	public static void init() {
 		channel.registerMessage(HandlerConfig.class, MessageConfig.class, 0, Side.CLIENT);
 		channel.registerMessage(HandlerWaystones.class, MessageWaystones.class, 1, Side.CLIENT);
-		channel.registerMessage(HandlerFreeWarpReturn.class, MessageWarpReturn.class, 2, Side.SERVER);
+		channel.registerMessage(HandlerFreeWarpReturn.class, MessageFreeWarpReturn.class, 2, Side.SERVER);
 		channel.registerMessage(HandlerEditWaystone.class, MessageEditWaystone.class, 3, Side.SERVER);
 		channel.registerMessage(HandlerTeleportToWaystone.class, MessageTeleportToWaystone.class, 4, Side.SERVER);
 		channel.registerMessage(HandlerTeleportEffect.class, MessageTeleportEffect.class, 5, Side.CLIENT);
 		channel.registerMessage(HandlerSortWaystone.class, MessageSortWaystone.class, 6, Side.SERVER);
 		channel.registerMessage(HandlerRemoveWaystone.class, MessageRemoveWaystone.class, 7, Side.SERVER);
+		channel.registerMessage(HandlerTeleportToGlobal.class, MessageTeleportToGlobal.class, 8, Side.SERVER);
 	}
 
 	public static IThreadListener getThreadListener(MessageContext ctx) {

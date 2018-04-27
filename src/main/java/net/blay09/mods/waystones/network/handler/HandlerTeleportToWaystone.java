@@ -29,7 +29,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
             ItemStack heldItem = player.getHeldItem(message.getHand());
             switch (message.getWarpMode()) {
                 case INVENTORY_BUTTON:
-                    if (!WaystoneConfig.general.teleportButton || WaystoneConfig.general.teleportButtonReturnOnly) {
+                    if (!WaystoneConfig.general.teleportButton || WaystoneConfig.general.teleportButtonReturnOnly || !WaystoneConfig.general.teleportButtonTarget.isEmpty()) {
                         return;
                     }
 
