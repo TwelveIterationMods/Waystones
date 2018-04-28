@@ -173,14 +173,16 @@ public class BlockWaystone extends BlockContainer {
                 return true;
             }
 
-            if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
-                player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
-                return true;
-            }
+            if (!world.isRemote) {
+                if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
+                    player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
+                    return true;
+                }
 
-            if (tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
-                player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
-                return true;
+                if (tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
+                    player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
+                    return true;
+                }
             }
 
             Waystones.proxy.openWaystoneSettings(tileWaystone);
