@@ -135,7 +135,7 @@ public class BlockWaystone extends BlockContainer {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false));
-        if (!world.isRemote && placer instanceof EntityPlayer && (!WaystoneConfig.general.creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
+        if (placer instanceof EntityPlayer && (!WaystoneConfig.general.creativeModeOnly || ((EntityPlayer) placer).capabilities.isCreativeMode)) {
             TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
             if (tileWaystone != null) {
                 tileWaystone.setOwner((EntityPlayer) placer);
@@ -168,24 +168,22 @@ public class BlockWaystone extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (player.isSneaking() && (player.capabilities.isCreativeMode || !WaystoneConfig.general.creativeModeOnly)) {
-            if (!world.isRemote) {
-                TileWaystone tileWaystone = getTileWaystone(world, pos);
-                if (tileWaystone == null) {
-                    return true;
-                }
-
-                if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
-                    player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
-                    return true;
-                }
-
-                if (tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
-                    player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
-                    return true;
-                }
-
-                Waystones.proxy.openWaystoneSettings(tileWaystone);
+            TileWaystone tileWaystone = getTileWaystone(world, pos);
+            if (tileWaystone == null) {
+                return true;
             }
+
+            if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
+                player.sendStatusMessage(new TextComponentTranslation("waystones:notTheOwner"), true);
+                return true;
+            }
+
+            if (tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
+                player.sendStatusMessage(new TextComponentTranslation("waystones:creativeRequired"), true);
+                return true;
+            }
+
+            Waystones.proxy.openWaystoneSettings(tileWaystone);
             return true;
         }
 
