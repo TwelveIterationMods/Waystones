@@ -58,7 +58,7 @@ public class GuiWarpStone extends GuiScreen {
 			if(entryIndex >= 0 && entryIndex < entries.length) {
 				GuiButtonWaystone btnWaystone = new GuiButtonWaystone(2 + i, width / 2 - 100, height / 2 - 60 + y, entries[entryIndex]);
 				if(entries[entryIndex].getDimensionId() != Minecraft.getMinecraft().theWorld.provider.dimensionId) {
-					if(!Waystones.getConfig().interDimension && !(!entries[entryIndex].isGlobal() || !Waystones.getConfig().globalInterDimension)) {
+					if(!WaystoneManager.isDimensionWarpAllowed(entries[entryIndex])) {
 						btnWaystone.enabled = false;
 					}
 				}

@@ -26,6 +26,10 @@ apply plugin: 'maven'
 version = "1.0." + BUILD_NUMBER
 group = "net.blay09.mods"
 archivesBaseName = "Waystones"
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
