@@ -32,6 +32,11 @@ public class CommonProxy {
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
+	@SubscribeEvent
+	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+		WaystoneManager.sendPlayerWaystones(event.player);
+	}
+
 	public void openWaystoneNameEdit(TileWaystone tileEntity) {
 
 	}
