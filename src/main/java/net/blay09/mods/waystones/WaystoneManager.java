@@ -105,6 +105,10 @@ public class WaystoneManager {
         return null;
     }
 
+    public static boolean isDimensionWarpAllowed(WaystoneEntry waystone) {
+        return waystone.isGlobal() ? WaystoneConfig.general.globalInterDimension : WaystoneConfig.general.interDimension;
+    }
+
     public static boolean teleportToWaystone(EntityPlayer player, WaystoneEntry waystone) {
         if (!checkAndUpdateWaystone(player, waystone)) {
             TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:waystoneBroken");
@@ -116,10 +120,7 @@ public class WaystoneManager {
         EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
         BlockPos targetPos = waystone.getPos().offset(facing);
         boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
-        if (dimensionWarp && !(
-            (!waystone.isGlobal() && WaystoneConfig.general.interDimension) ||
-            (waystone.isGlobal() && WaystoneConfig.general.globalInterDimension)
-            )) {
+        if (dimensionWarp && !isDimensionWarpAllowed(waystone)) {
             player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
             return false;
         }
