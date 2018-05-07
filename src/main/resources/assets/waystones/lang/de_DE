@@ -1,9 +1,9 @@
 tile.waystones:waystone.name=Wegstein
 
-item.waystones:warp_scroll.name=Warp Schriftrolle
-item.waystones:warp_scroll_bound.name=Warp Schriftrolle (Gebunden)
-item.waystones:return_scroll.name=Rückkehr Schriftrolle
-item.waystones:warp_stone.name=Warp Stein
+item.waystones:warp_scroll.name=Schriftrolle des Teleports
+item.waystones:warp_scroll_bound.name=Schriftrolle des Teleports (Gebunden)
+item.waystones:return_scroll.name=Schriftrolle der Rückkehr
+item.waystones:warp_stone.name=Teleport-Stein
 
 itemGroup.waystones=Wegsteine
 
@@ -26,7 +26,7 @@ gui.waystones:confirmReturn.noWaystoneActive=Kein Wegstein aktiv.
 gui.waystones:editWaystone.enterName=Name des Wegsteins:
 gui.waystones:editWaystone.isGlobal=ist weltweit
 
-tooltip.waystones:cooldownLeft=Abkühlung: %d Sekunden
+tooltip.waystones:cooldownLeft=Abklingzeit: %d Sekunden
 tooltip.waystones:boundTo=Gebunden an: %s
 tooltip.waystones:none=Leer
 tooltip.waystones:returnToWaystone=Rückkehr zu Wegstein
