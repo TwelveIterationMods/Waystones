@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +38,7 @@ public class ItemWarpScroll extends Item implements IResetUseOnDamage {
 
     @Override
     public int getMaxItemUseDuration(ItemStack itemStack) {
-        return 32;
+        return WaystoneConfig.general.warpScrollUseTime;
     }
 
     @Override

@@ -90,6 +90,16 @@ public class WaystoneConfig {
 		@Config.Name("Disallow Breaking Generated")
 		@Config.Comment("Whether generated waystones should not be breakable by players.")
 		public boolean disallowBreakingGenerated = false;
+
+		@Config.Name("Warp Stone Use Time")
+		@Config.Comment("The time it takes to use a warp stone in ticks. This is the charge-up time when holding right-click.")
+		@Config.RangeInt(min = 1, max = 127)
+		public int warpStoneUseTime = 32;
+
+		@Config.Name("Warp Scroll Use Time")
+		@Config.Comment("The time it takes to use a warp scroll in ticks. This is the charge-up time when holding right-click.")
+		@Config.RangeInt(min = 1, max = 127)
+		public int warpScrollUseTime = 32;
 	}
 
 	public static class WorldGen {
@@ -134,6 +144,8 @@ public class WaystoneConfig {
 		general.blocksPerXPLevel = buf.readInt();
 		general.maximumXpCost = buf.readInt();
 		general.allowEveryoneGlobal = buf.readBoolean();
+		general.warpStoneUseTime = buf.readByte();
+		general.warpScrollUseTime = buf.readByte();
 	}
 
 	public static void write(ByteBuf buf) {
@@ -148,5 +160,7 @@ public class WaystoneConfig {
 		buf.writeInt(general.blocksPerXPLevel);
 		buf.writeInt(general.maximumXpCost);
 		buf.writeBoolean(general.allowEveryoneGlobal);
+		buf.writeByte(general.warpStoneUseTime);
+		buf.writeByte(general.warpScrollUseTime);
 	}
 }
