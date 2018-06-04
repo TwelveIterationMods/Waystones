@@ -21,6 +21,7 @@ public class TileWaystone extends TileEntity {
     private String waystoneName = "";
     private UUID owner;
     private boolean isGlobal;
+    private boolean wasGenerated;
 
     public TileWaystone() {
     }
@@ -36,6 +37,9 @@ public class TileWaystone extends TileEntity {
         if (!isDummy) {
             if (!waystoneName.equals("%RANDOM%")) {
                 tagCompound.setString("WaystoneName", waystoneName);
+                tagCompound.setBoolean("WasGenerated", wasGenerated);
+            } else {
+                tagCompound.setBoolean("WasGenerated", true);
             }
             if (owner != null) {
                 tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
@@ -51,6 +55,7 @@ public class TileWaystone extends TileEntity {
         isDummy = tagCompound.getBoolean("IsDummy");
         if (!isDummy) {
             waystoneName = tagCompound.getString("WaystoneName");
+            wasGenerated = tagCompound.getBoolean("WasGenerated");
             if (tagCompound.hasKey("Owner")) {
                 owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
             }
@@ -89,6 +94,14 @@ public class TileWaystone extends TileEntity {
 
     public boolean isOwner(EntityPlayer player) {
         return owner == null || player.getGameProfile().getId().equals(owner) || player.capabilities.isCreativeMode;
+    }
+
+    public boolean wasGenerated() {
+        return wasGenerated;
+    }
+
+    public void setWasGenerated(boolean wasGenerated) {
+        this.wasGenerated = wasGenerated;
     }
 
     public void setWaystoneName(String waystoneName) {

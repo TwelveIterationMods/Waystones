@@ -86,6 +86,10 @@ public class WaystoneConfig {
 		@Config.Name("Reset Use On Damage")
 		@Config.Comment("Whether the use of a warp stone or warp scroll should be interrupted by damage. Not supported when playing with Vivecraft!")
 		public boolean resetUseOnDamage = false;
+
+		@Config.Name("Disallow Breaking Generated")
+		@Config.Comment("Whether generated waystones should not be breakable by players.")
+		public boolean disallowBreakingGenerated = false;
 	}
 
 	public static class WorldGen {

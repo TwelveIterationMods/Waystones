@@ -106,10 +106,18 @@ public class BlockWaystone extends BlockContainer {
         if (WaystoneConfig.general.creativeModeOnly && !player.capabilities.isCreativeMode) {
             return -1f;
         }
+
         TileWaystone tileWaystone = getTileWaystone(world, pos);
-        if (tileWaystone != null && tileWaystone.isGlobal() && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
-            return -1f;
+        if (tileWaystone != null && !player.capabilities.isCreativeMode) {
+            if (tileWaystone.wasGenerated() && WaystoneConfig.general.disallowBreakingGenerated) {
+                return -1f;
+            }
+
+            if (tileWaystone.isGlobal() && !WaystoneConfig.general.allowEveryoneGlobal) {
+                return -1f;
+            }
         }
+
         return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
 
@@ -139,6 +147,7 @@ public class BlockWaystone extends BlockContainer {
             TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
             if (tileWaystone != null) {
                 tileWaystone.setOwner((EntityPlayer) placer);
+                tileWaystone.setWasGenerated(false);
                 Waystones.proxy.openWaystoneSettings(tileWaystone);
             }
         }
