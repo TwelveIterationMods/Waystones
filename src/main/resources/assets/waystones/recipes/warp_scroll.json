@@ -14,10 +14,10 @@
       "item": "#GOLD_NUGGET"
     },
     "E": {
-      "item": "minecraft:ender_pearl"
+      "item": "#ENDER_PEARL"
     },
     "P": {
-      "item": "minecraft:paper"
+      "item": "#PAPER"
     },
     "D": {
       "item": "#PURPLE_DYE"

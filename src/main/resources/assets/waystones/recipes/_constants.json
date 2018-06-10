@@ -19,5 +19,19 @@
       "type": "forge:ore_dict",
       "ore": "gemEmerald"
     }
+  },
+  {
+    "name": "ENDER_PEARL",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "enderpearl"
+    }
+  },
+  {
+    "name": "PAPER",
+    "ingredient": {
+      "type": "forge:ore_dict",
+      "ore": "paper"
+    }
   }
 ]
