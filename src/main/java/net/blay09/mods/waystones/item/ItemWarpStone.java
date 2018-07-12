@@ -88,11 +88,13 @@ public class ItemWarpStone extends Item implements IResetUseOnDamage {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean showDurabilityBar(ItemStack itemStack) {
         return getDurabilityForDisplay(itemStack) > 0;
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public double getDurabilityForDisplay(ItemStack stack) {
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
         if (player == null) {
