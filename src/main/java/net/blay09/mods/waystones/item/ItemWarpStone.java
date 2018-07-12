@@ -96,7 +96,12 @@ public class ItemWarpStone extends Item implements IResetUseOnDamage {
     @Override
     @SideOnly(Side.CLIENT)
     public double getDurabilityForDisplay(ItemStack stack) {
-        long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(FMLClientHandler.instance().getClientPlayerEntity());
+        EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
+        if (player == null) {
+            return 0.0;
+        }
+
+        long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(player);
         float percentage = (float) timeSince / (float) (WaystoneConfig.general.warpStoneCooldown * 1000);
         return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
     }
