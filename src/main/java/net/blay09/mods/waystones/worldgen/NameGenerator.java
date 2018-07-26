@@ -2,9 +2,7 @@ package net.blay09.mods.waystones.worldgen;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -14,8 +12,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.Map;
 import java.util.Random;
@@ -61,39 +57,12 @@ public class NameGenerator extends WorldSavedData {
     }
     // ^^^^^^
 
-    private Map<String, String> SPECIAL_NAMES;
     private Map<String, String> BIOME_NAMES;
 
     private final Set<String> usedNames = Sets.newHashSet();
 
     public void init() {
-        SPECIAL_NAMES = Maps.newHashMap();
         BIOME_NAMES = Maps.newHashMap();
-        addSpecialName(Biomes.BEACH, "Dusty Beach");
-        addSpecialName(Biomes.FOREST, "Spectacular Forest");
-        addSpecialName(Biomes.EXTREME_HILLS, "Smart Hills");
-        addSpecialName(Biomes.DESERT, "Fiery Sands");
-        addSpecialName(Biomes.OCEAN, "Dubzian Ocean");
-        addSpecialName(Biomes.JUNGLE, "Senroht Jungles");
-        addSpecialName(Biomes.ICE_MOUNTAINS, "Azra Mountain");
-        addSpecialName(Biomes.MESA, "Black Mesa");
-        addSpecialName(Biomes.TAIGA, "Aisaka Taiga");
-        addSpecialName(Biomes.SWAMPLAND, "Darkon Swamps");
-        addSpecialName(Biomes.REDWOOD_TAIGA, "Foxglove Woods");
-        addSpecialName(Biomes.DESERT_HILLS, "Medabi Desert");
-        addSpecialName(Biomes.STONE_BEACH, "Suton Beach");
-        addSpecialName(Biomes.SAVANNA, "Mystic's Sogen");
-        addSpecialName(Biomes.BIRCH_FOREST_HILLS, "Hizuru Bachi");
-        addSpecialName(Biomes.ICE_PLAINS, "The Zero");
-        addSpecialName(Biomes.ROOFED_FOREST, "Moriyane");
-        addSpecialName(Biomes.MUTATED_EXTREME_HILLS_WITH_TREES, "The Movie");
-        addSpecialName(Biomes.RIVER, "Kawa River");
-        addSpecialName(Biomes.MUSHROOM_ISLAND, "Hemara Island");
-        addSpecialName(Biomes.PLAINS, "Orilis Plains");
-        addSpecialName(Biomes.REDWOOD_TAIGA_HILLS, "Caeril");
-        addSpecialName(Biomes.DEFAULT, "Maldor");
-        addSpecialName(Biomes.SKY, "The Nocturne");
-        addSpecialName(Biomes.VOID, "The Nihilus");
 
         addBiomeName(Biomes.COLD_TAIGA, "Taiga");
         addBiomeName(Biomes.REDWOOD_TAIGA, "Taiga");
@@ -172,26 +141,18 @@ public class NameGenerator extends WorldSavedData {
         BIOME_NAMES.put(biome.biomeName, name);
     }
 
-    private void addSpecialName(Biome biome, String name) {
-        SPECIAL_NAMES.put(biome.biomeName, name);
-    }
-
     public String getName(Biome biome, Random rand) {
-        if (SPECIAL_NAMES == null) {
-            init();
+        String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
+        String name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
+        String tryName = name;
+        int i = 1;
+        while (usedNames.contains(tryName)) {
+            tryName = name + " " + RomanNumber.toRoman(i);
+            i++;
         }
-        String name = SPECIAL_NAMES.get(biome.biomeName);
-        if (name == null || usedNames.contains(name)) {
-            String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
-            name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
-            String tryName = name;
-            int i = 1;
-            while (usedNames.contains(tryName)) {
-                tryName = name + " " + RomanNumber.toRoman(i);
-                i++;
-            }
-            name = tryName;
-        }
+
+        name = tryName;
+
         usedNames.add(name);
         markDirty();
         return name;
