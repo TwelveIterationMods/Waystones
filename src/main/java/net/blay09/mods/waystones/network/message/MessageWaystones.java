@@ -22,7 +22,7 @@ public class MessageWaystones implements IMessage {
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		entries = new WaystoneEntry[buf.readByte()];
+		entries = new WaystoneEntry[buf.readShort()];
 		for(int i = 0; i < entries.length; i++) {
 			entries[i] = WaystoneEntry.read(buf);
 		}
@@ -32,7 +32,7 @@ public class MessageWaystones implements IMessage {
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeByte(entries.length);
+		buf.writeShort(entries.length);
 		for (WaystoneEntry entry : entries) {
 			entry.write(buf);
 		}
