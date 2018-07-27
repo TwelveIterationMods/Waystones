@@ -142,6 +142,10 @@ public class NameGenerator extends WorldSavedData {
     }
 
     public String getName(Biome biome, Random rand) {
+        if (BIOME_NAMES == null) {
+            init();
+        }
+
         String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
         String name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
         String tryName = name;
