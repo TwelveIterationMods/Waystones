@@ -69,7 +69,7 @@ public class ClientProxy extends CommonProxy {
                         event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn());
                     }
                 } else {
-                    Waystones.proxy.openWaystoneSelection(WarpMode.INVENTORY_BUTTON, EnumHand.MAIN_HAND, null);
+                    Waystones.proxy.openWaystoneSelection(entityPlayer, WarpMode.INVENTORY_BUTTON, EnumHand.MAIN_HAND, null);
                 }
             } else {
                 event.getGui().mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -121,14 +121,18 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openWaystoneSelection(WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
-        WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
-        Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(waystones, mode, hand, fromWaystone));
+    public void openWaystoneSelection(EntityPlayer player, WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
+        if (player == Minecraft.getMinecraft().player) {
+            WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
+            Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(waystones, mode, hand, fromWaystone));
+        }
     }
 
     @Override
-    public void openWaystoneSettings(TileWaystone tileWaystone) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditWaystone(tileWaystone.getParent()));
+    public void openWaystoneSettings(EntityPlayer player, TileWaystone tileWaystone) {
+        if (player == Minecraft.getMinecraft().player) {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditWaystone(tileWaystone.getParent()));
+        }
     }
 
     @Override

@@ -60,11 +60,11 @@ public class CommonProxy {
 		WaystoneManager.sendPlayerWaystones(event.player);
 	}
 
-	public void openWaystoneSelection(WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
+	public void openWaystoneSelection(EntityPlayer player, WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
 
 	}
 
-	public void openWaystoneSettings(TileWaystone tileWaystone) {
+	public void openWaystoneSettings(EntityPlayer player, TileWaystone tileWaystone) {
 
 	}
 

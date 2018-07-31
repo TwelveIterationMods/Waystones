@@ -75,9 +75,10 @@ public class ItemWarpScroll extends Item implements IResetUseOnDamage {
                     itemStack.shrink(1);
                 }
             }
-        } else if (world.isRemote) {
-            Waystones.proxy.openWaystoneSelection(WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
+        } else if (world.isRemote && entityLiving instanceof EntityPlayer) {
+            Waystones.proxy.openWaystoneSelection((EntityPlayer) entityLiving, WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
         }
+
         return itemStack;
     }
 

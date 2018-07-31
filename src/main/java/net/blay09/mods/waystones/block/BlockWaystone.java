@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -148,7 +147,7 @@ public class BlockWaystone extends BlockContainer {
             if (tileWaystone != null) {
                 tileWaystone.setOwner((EntityPlayer) placer);
                 tileWaystone.setWasGenerated(false);
-                Waystones.proxy.openWaystoneSettings(tileWaystone);
+                Waystones.proxy.openWaystoneSettings((EntityPlayer) placer, tileWaystone);
             }
         }
     }
@@ -194,7 +193,7 @@ public class BlockWaystone extends BlockContainer {
                 }
             }
 
-            Waystones.proxy.openWaystoneSettings(tileWaystone);
+            Waystones.proxy.openWaystoneSettings(player, tileWaystone);
             return true;
         }
 
@@ -205,7 +204,7 @@ public class BlockWaystone extends BlockContainer {
 
         WaystoneEntry knownWaystone = world.isRemote ? ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) : null;
         if (knownWaystone != null) {
-            Waystones.proxy.openWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
+            Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
         } else if (!world.isRemote) {
             WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
             if (!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
