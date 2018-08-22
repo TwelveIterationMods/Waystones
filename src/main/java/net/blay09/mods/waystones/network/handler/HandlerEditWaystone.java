@@ -20,52 +20,63 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import javax.annotation.Nullable;
 
 public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone, IMessage> {
-	@Override
-	@Nullable
-	public IMessage onMessage(final MessageEditWaystone message, final MessageContext ctx) {
-		NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-			EntityPlayer entityPlayer = ctx.getServerHandler().player;
-			if(WaystoneConfig.general.creativeModeOnly && !entityPlayer.capabilities.isCreativeMode) {
-				return;
-			}
-			World world = entityPlayer.getEntityWorld();
-			BlockPos pos = message.getPos();
-			if(entityPlayer.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
-				return;
-			}
-			GlobalWaystones globalWaystones = GlobalWaystones.get(ctx.getServerHandler().player.world);
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof TileWaystone) {
-				TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
-				if(globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
-					return;
-				}
-				if(WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(ctx.getServerHandler().player)) {
-					ctx.getServerHandler().player.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
-					return;
-				}
-				if(globalWaystones.getGlobalWaystone(message.getName()) != null && !ctx.getServerHandler().player.capabilities.isCreativeMode) {
-					ctx.getServerHandler().player.sendMessage(new TextComponentTranslation("waystones:nameOccupied", message.getName()));
-					return;
-				}
-				WaystoneEntry oldWaystone = new WaystoneEntry(tileWaystone);
-				globalWaystones.removeGlobalWaystone(oldWaystone);
+    @Override
+    @Nullable
+    public IMessage onMessage(final MessageEditWaystone message, final MessageContext ctx) {
+        NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
+            EntityPlayer entityPlayer = ctx.getServerHandler().player;
+            if (WaystoneConfig.general.creativeModeOnly && !entityPlayer.capabilities.isCreativeMode) {
+                return;
+            }
 
-				tileWaystone.setWaystoneName(message.getName());
+            World world = entityPlayer.getEntityWorld();
+            BlockPos pos = message.getPos();
+            if (entityPlayer.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
+                return;
+            }
 
-				WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
+            GlobalWaystones globalWaystones = GlobalWaystones.get(entityPlayer.world);
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileWaystone) {
+                TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
+                if (globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !entityPlayer.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
+                    return;
+                }
 
-				if(message.isGlobal() && (ctx.getServerHandler().player.capabilities.isCreativeMode || WaystoneConfig.general.allowEveryoneGlobal)) {
-					tileWaystone.setGlobal(true);
-					newWaystone.setGlobal(true);
-					globalWaystones.addGlobalWaystone(newWaystone);
-					for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
-						WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
-					}
-				}
-			}
+                if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(entityPlayer)) {
+                    ctx.getServerHandler().player.sendMessage(new TextComponentTranslation("waystones:notTheOwner"));
+                    return;
+                }
 
-		});
-		return null;
-	}
+                String newName = message.getName();
+                // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
+                if (newName.equals("%RANDOM%") && entityPlayer.capabilities.isCreativeMode) {
+                    newName = "RANDOM";
+                }
+
+                if (globalWaystones.getGlobalWaystone(newName) != null && !entityPlayer.capabilities.isCreativeMode) {
+                    ctx.getServerHandler().player.sendMessage(new TextComponentTranslation("waystones:nameOccupied", newName));
+                    return;
+                }
+
+                WaystoneEntry oldWaystone = new WaystoneEntry(tileWaystone);
+                globalWaystones.removeGlobalWaystone(oldWaystone);
+
+                tileWaystone.setWaystoneName(newName);
+
+                WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
+
+                if (message.isGlobal() && (entityPlayer.capabilities.isCreativeMode || WaystoneConfig.general.allowEveryoneGlobal)) {
+                    tileWaystone.setGlobal(true);
+                    newWaystone.setGlobal(true);
+                    globalWaystones.addGlobalWaystone(newWaystone);
+                    for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+                        WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
+                    }
+                }
+            }
+
+        });
+        return null;
+    }
 }

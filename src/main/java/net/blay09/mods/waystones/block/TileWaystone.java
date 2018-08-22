@@ -21,7 +21,7 @@ public class TileWaystone extends TileEntity {
     private String waystoneName = "";
     private UUID owner;
     private boolean isGlobal;
-    private boolean wasGenerated;
+    private boolean wasGenerated = true;
 
     public TileWaystone() {
     }
