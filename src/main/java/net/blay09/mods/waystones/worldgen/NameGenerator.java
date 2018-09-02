@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.worldgen;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -146,16 +147,26 @@ public class NameGenerator extends WorldSavedData {
             init();
         }
 
-        String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
-        String name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
-        String tryName = name;
-        int i = 1;
-        while (usedNames.contains(tryName)) {
-            tryName = name + " " + RomanNumber.toRoman(i);
-            i++;
+        String name = null;
+        for (String customName : WaystoneConfig.worldGen.customNames) {
+            if (!usedNames.contains(customName)) {
+                name = customName;
+                break;
+            }
         }
 
-        name = tryName;
+        if (name == null) {
+            String biomeSuffix = BIOME_NAMES.get(biome.biomeName);
+            name = randomName(rand) + (biomeSuffix != null ? " " + biomeSuffix : "");
+            String tryName = name;
+            int i = 1;
+            while (usedNames.contains(tryName)) {
+                tryName = name + " " + RomanNumber.toRoman(i);
+                i++;
+            }
+
+            name = tryName;
+        }
 
         usedNames.add(name);
         markDirty();

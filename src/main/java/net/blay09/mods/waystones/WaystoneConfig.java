@@ -111,6 +111,10 @@ public class WaystoneConfig {
         @Config.Comment("The chance for a waystone to generate in a village. Set to 1 to always generate one in villages, set to 0 to disable.")
         @Config.RangeDouble(min = 0, max = 1)
         public float villageChance = 1f;
+
+        @Config.Name("Custom Names")
+        @Config.Comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
+        public String[] customNames = new String[0];
     }
 
     public static class Client {

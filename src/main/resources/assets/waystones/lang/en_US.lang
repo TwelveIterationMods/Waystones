@@ -36,3 +36,4 @@ tooltip.waystones:levelRequirement=Level Requirement: %d
 stat.waystones:waystonesActivated=Waystones Activated
 
 waystones.general.globalinterdimension=Interdim. Teleport (Global Waystones)
+waystones.worldgen.customnames=Custom Names
