@@ -1,10 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.waystones.GlobalWaystones;
-import net.blay09.mods.waystones.WarpMode;
-import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.*;
 import net.blay09.mods.waystones.client.ClientWaystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.block.Block;
@@ -126,6 +122,7 @@ public class BlockWaystone extends BlockContainer {
         if (blockBelow == this) {
             return false;
         }
+
         Block blockAbove = world.getBlockState(pos.up(2)).getBlock();
         return blockAbove != this && super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
     }
@@ -136,6 +133,7 @@ public class BlockWaystone extends BlockContainer {
         if (facing.getAxis() == EnumFacing.Axis.Y) {
             facing = EnumFacing.NORTH;
         }
+
         return getDefaultState().withProperty(FACING, facing).withProperty(BASE, true);
     }
 
@@ -165,7 +163,9 @@ public class BlockWaystone extends BlockContainer {
                 WaystoneManager.sendPlayerWaystones(player);
             }
         }
+
         super.breakBlock(world, pos, state);
+
         if (world.getBlockState(pos.up()).getBlock() == this) {
             world.setBlockToAir(pos.up());
         } else if (world.getBlockState(pos.down()).getBlock() == this) {
@@ -222,6 +222,8 @@ public class BlockWaystone extends BlockContainer {
                 EnumFacing blockFacing = state.getValue(FACING);
                 player.setSpawnPoint(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true);
             }
+
+            world.updateObservingBlocksAt(pos, this);
         } else {
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
             for (int i = 0; i < 32; i++) {
