@@ -9,7 +9,7 @@ public class WaystoneConfig {
 
     public static General general = new General();
     public static WorldGen worldGen = new WorldGen();
-
+    public static Compat compat = new Compat();
     public static Client client = new Client();
 
     public static class General {
@@ -115,6 +115,12 @@ public class WaystoneConfig {
         @Config.Name("Custom Names")
         @Config.Comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
         public String[] customNames = new String[0];
+    }
+
+    public static class Compat {
+        @Config.Name("Create JourneyMap Waypoint")
+        @Config.Comment("If this is true, activating a waystone will cause a JourneyMap waypoint to be created at its position.")
+        public boolean createJourneyMapWaypoint = false;
     }
 
     public static class Client {

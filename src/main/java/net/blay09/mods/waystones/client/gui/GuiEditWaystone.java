@@ -4,11 +4,13 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
+import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
@@ -62,8 +64,13 @@ public class GuiEditWaystone extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         if (button == btnDone) {
             NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
+
             if (!fromSelectionGui) {
                 FMLClientHandler.instance().getClientPlayerEntity().closeScreen();
+            }
+
+            if (tileWaystone.getWaystoneName().isEmpty()) {
+                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getWorld().provider.getDimension()));
             }
         }
     }

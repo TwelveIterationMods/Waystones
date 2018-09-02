@@ -2,4 +2,5 @@ dependencies {
     deobfCompile "jei:jei_1.12.2:4.8.5.157"
     provided "hwyla:Hwyla:1.8.23:B38_1.12"
     provided "the-one-probe:theoneprobe:1.12:1.4.19"
+    provided "journeymap:journeymap:1.12.2:5.5.2"
 }
