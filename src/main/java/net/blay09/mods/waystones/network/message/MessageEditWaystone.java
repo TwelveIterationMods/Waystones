@@ -7,42 +7,50 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class MessageEditWaystone implements IMessage {
 
-	private BlockPos pos;
-	private String name;
-	private boolean isGlobal;
+    private BlockPos pos;
+    private String name;
+    private boolean isGlobal;
+    private boolean fromSelectionGui;
 
-	public MessageEditWaystone() {
-	}
+    public MessageEditWaystone() {
+    }
 
-	public MessageEditWaystone(BlockPos pos, String name, boolean isGlobal) {
-		this.pos = pos;
-		this.name = name;
-		this.isGlobal = isGlobal;
-	}
+    public MessageEditWaystone(BlockPos pos, String name, boolean isGlobal, boolean fromSelectionGui) {
+        this.pos = pos;
+        this.name = name;
+        this.isGlobal = isGlobal;
+        this.fromSelectionGui = fromSelectionGui;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		pos = BlockPos.fromLong(buf.readLong());
-		name = ByteBufUtils.readUTF8String(buf);
-		isGlobal = buf.readBoolean();
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        pos = BlockPos.fromLong(buf.readLong());
+        name = ByteBufUtils.readUTF8String(buf);
+        isGlobal = buf.readBoolean();
+        fromSelectionGui = buf.readBoolean();
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeLong(pos.toLong());
-		ByteBufUtils.writeUTF8String(buf, name);
-		buf.writeBoolean(isGlobal);
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeLong(pos.toLong());
+        ByteBufUtils.writeUTF8String(buf, name);
+        buf.writeBoolean(isGlobal);
+        buf.writeBoolean(fromSelectionGui);
+    }
 
-	public BlockPos getPos() {
-		return pos;
-	}
+    public BlockPos getPos() {
+        return pos;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean isGlobal() {
-		return isGlobal;
-	}
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public boolean isFromSelectionGui() {
+        return fromSelectionGui;
+    }
 }

@@ -102,8 +102,9 @@ public class ItemWarpStone extends Item implements IResetUseOnDamage {
             return 0.0;
         }
 
-        long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastWarpStoneUse(player);
-        float percentage = (float) timeSince / (float) (WaystoneConfig.general.warpStoneCooldown * 1000);
+        long timeLeft = PlayerWaystoneHelper.getLastWarpStoneUse(player);
+        long timeSince = (System.currentTimeMillis() - lastTimerUpdate);
+        float percentage = (float) timeSince / timeLeft;
         return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
     }
 

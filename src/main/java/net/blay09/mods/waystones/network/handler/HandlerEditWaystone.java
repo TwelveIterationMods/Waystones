@@ -1,14 +1,18 @@
 package net.blay09.mods.waystones.network.handler;
 
 import net.blay09.mods.waystones.GlobalWaystones;
+import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
+import net.blay09.mods.waystones.network.message.MessageOpenWaystoneSelection;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -24,7 +28,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
     @Nullable
     public IMessage onMessage(final MessageEditWaystone message, final MessageContext ctx) {
         NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-            EntityPlayer entityPlayer = ctx.getServerHandler().player;
+            EntityPlayerMP entityPlayer = ctx.getServerHandler().player;
             if (WaystoneConfig.general.creativeModeOnly && !entityPlayer.capabilities.isCreativeMode) {
                 return;
             }
@@ -50,7 +54,7 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
 
                 String newName = message.getName();
                 // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
-                if (newName.equals("%RANDOM%") && entityPlayer.capabilities.isCreativeMode) {
+                if (newName.equals("%RANDOM%") && !entityPlayer.capabilities.isCreativeMode) {
                     newName = "RANDOM";
                 }
 
@@ -60,11 +64,16 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
                 }
 
                 WaystoneEntry oldWaystone = new WaystoneEntry(tileWaystone);
-                globalWaystones.removeGlobalWaystone(oldWaystone);
+                if (oldWaystone.isGlobal()) {
+                    globalWaystones.removeGlobalWaystone(oldWaystone);
+                }
 
                 tileWaystone.setWaystoneName(newName);
 
                 WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
+                WaystoneManager.removePlayerWaystone(entityPlayer, oldWaystone);
+                WaystoneManager.addPlayerWaystone(entityPlayer, newWaystone);
+                WaystoneManager.sendPlayerWaystones(entityPlayer);
 
                 if (message.isGlobal() && (entityPlayer.capabilities.isCreativeMode || WaystoneConfig.general.allowEveryoneGlobal)) {
                     tileWaystone.setGlobal(true);
@@ -73,6 +82,10 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
                     for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
                         WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
                     }
+                }
+
+                if (message.isFromSelectionGui()) {
+                    NetworkHandler.channel.sendTo(new MessageOpenWaystoneSelection(WarpMode.WAYSTONE, EnumHand.MAIN_HAND, newWaystone), entityPlayer);
                 }
             }
 

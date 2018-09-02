@@ -129,9 +129,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openWaystoneSettings(EntityPlayer player, TileWaystone tileWaystone) {
+    public void openWaystoneSettings(EntityPlayer player, TileWaystone tileWaystone, boolean fromSelectionGui) {
         if (player == Minecraft.getMinecraft().player) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditWaystone(tileWaystone.getParent()));
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditWaystone(tileWaystone.getParent(), fromSelectionGui));
         }
     }
 

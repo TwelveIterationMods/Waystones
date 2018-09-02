@@ -21,9 +21,11 @@ public class GuiEditWaystone extends GuiScreen {
     private GuiTextField textField;
     private GuiButton btnDone;
     private GuiCheckBox chkGlobal;
+    private boolean fromSelectionGui;
 
-    public GuiEditWaystone(TileWaystone tileWaystone) {
+    public GuiEditWaystone(TileWaystone tileWaystone, boolean fromSelectionGui) {
         this.tileWaystone = tileWaystone;
+        this.fromSelectionGui = fromSelectionGui;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class GuiEditWaystone extends GuiScreen {
         if (textField != null) {
             oldText = textField.getText();
         }
+
         textField = new GuiTextField(2, fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20);
         textField.setMaxStringLength(128);
         textField.setText(oldText);
@@ -44,6 +47,7 @@ public class GuiEditWaystone extends GuiScreen {
         if (!WaystoneConfig.general.allowEveryoneGlobal && (!Minecraft.getMinecraft().player.capabilities.isCreativeMode)) {
             chkGlobal.visible = false;
         }
+
         buttonList.add(chkGlobal);
 
         Keyboard.enableRepeatEvents(true);
@@ -57,8 +61,10 @@ public class GuiEditWaystone extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button == btnDone) {
-            NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked()));
-            FMLClientHandler.instance().getClientPlayerEntity().closeScreen();
+            NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
+            if (!fromSelectionGui) {
+                FMLClientHandler.instance().getClientPlayerEntity().closeScreen();
+            }
         }
     }
 

@@ -26,6 +26,7 @@ public class NetworkHandler {
 		channel.registerMessage(HandlerSortWaystone.class, MessageSortWaystone.class, 6, Side.SERVER);
 		channel.registerMessage(HandlerRemoveWaystone.class, MessageRemoveWaystone.class, 7, Side.SERVER);
 		channel.registerMessage(HandlerTeleportToGlobal.class, MessageTeleportToGlobal.class, 8, Side.SERVER);
+		channel.registerMessage(HandlerOpenWaystoneSelection.class, MessageOpenWaystoneSelection.class, 9, Side.CLIENT);
 	}
 
 	public static IThreadListener getThreadListener(MessageContext ctx) {

@@ -2,6 +2,8 @@ package net.blay09.mods.waystones.client.gui;
 
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneManager;
+import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageRemoveWaystone;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;
@@ -9,13 +11,19 @@ import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 public class GuiWaystoneList extends GuiScreen {
 
@@ -27,6 +35,7 @@ public class GuiWaystoneList extends GuiScreen {
     private GuiButton btnNextPage;
     private int pageOffset;
     private int headerY;
+    private boolean isLocationHeaderHovered;
 
     public GuiWaystoneList(WaystoneEntry[] entries, WarpMode warpMode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
         this.entries = entries;
@@ -126,12 +135,26 @@ public class GuiWaystoneList extends GuiScreen {
             NetworkHandler.channel.sendToServer(new MessageSortWaystone(index, otherIndex));
             updateList();
         } else if (button instanceof GuiButtonRemoveWaystone) {
-			WaystoneEntry waystoneEntry = ((GuiButtonRemoveWaystone) button).getWaystone();
-			int index = ArrayUtils.indexOf(entries, waystoneEntry);
+            WaystoneEntry waystoneEntry = ((GuiButtonRemoveWaystone) button).getWaystone();
+            int index = ArrayUtils.indexOf(entries, waystoneEntry);
             entries = ArrayUtils.remove(entries, index);
             NetworkHandler.channel.sendToServer(new MessageRemoveWaystone(index));
             updateList();
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (isLocationHeaderHovered && fromWaystone != null) {
+            TileWaystone waystone = WaystoneManager.getWaystoneInWorld(fromWaystone);
+            if (waystone != null) {
+                Waystones.proxy.openWaystoneSettings(mc.player, waystone, true);
+            }
+
+            mouseHandled = true;
+        }
+
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -141,11 +164,46 @@ public class GuiWaystoneList extends GuiScreen {
         GL11.glColor4f(1f, 1f, 1f, 1f);
         drawCenteredString(fontRenderer, I18n.format("gui.waystones:warpStone.selectDestination"), width / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawCenteredString(fontRenderer, TextFormatting.YELLOW + I18n.format("gui.waystones:current_location") + TextFormatting.WHITE + " " + fromWaystone.getName(), width / 2, headerY, 0xFFFFFF);
+            drawLocationHeader(fromWaystone.getName(), mouseX, mouseY, width / 2, headerY);
         }
 
         if (entries.length == 0) {
             drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
+        }
+    }
+
+    public void drawLocationHeader(String locationName, int mouseX, int mouseY, int x, int y) {
+        String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones:current_location") + " ";
+        int locationPrefixWidth = fontRenderer.getStringWidth(locationPrefix);
+
+        int locationWidth = fontRenderer.getStringWidth(locationName);
+
+        int fullWidth = locationPrefixWidth + locationWidth;
+
+        int startX = x - fullWidth / 2 + locationPrefixWidth;
+        if (mouseX >= startX && mouseX < startX + locationWidth + 16
+                && mouseY >= y && mouseY < y + fontRenderer.FONT_HEIGHT) {
+            isLocationHeaderHovered = true;
+        } else {
+            isLocationHeaderHovered = false;
+        }
+
+        String fullText = locationPrefix + TextFormatting.WHITE;
+        if (isLocationHeaderHovered) {
+            fullText += TextFormatting.UNDERLINE;
+        }
+        fullText += locationName;
+
+        drawString(fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
+
+        if (isLocationHeaderHovered) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x + fullWidth / 2 + 4, y, 0f);
+            float scale = 0.5f;
+            GlStateManager.scale(scale, scale, scale);
+            mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            itemRender.renderItemAndEffectIntoGUI(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
+            GlStateManager.popMatrix();
         }
     }
 
