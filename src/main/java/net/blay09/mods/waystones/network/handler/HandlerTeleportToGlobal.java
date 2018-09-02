@@ -38,7 +38,8 @@ public class HandlerTeleportToGlobal implements IMessageHandler<MessageTeleportT
                 return;
             }
 
-            if (WaystoneConfig.general.inventoryButtonXpCost && player.experienceLevel < xpLevelCost) {
+            boolean enableXPCost = WaystoneConfig.general.globalWaystonesCostXp && WaystoneConfig.general.inventoryButtonXpCost;
+            if (enableXPCost && player.experienceLevel < xpLevelCost) {
                 return;
             }
 
@@ -51,7 +52,7 @@ public class HandlerTeleportToGlobal implements IMessageHandler<MessageTeleportT
                     PlayerWaystoneHelper.setLastFreeWarp(ctx.getServerHandler().player, System.currentTimeMillis());
                 }
 
-                if (WaystoneConfig.general.inventoryButtonXpCost) {
+                if (enableXPCost) {
                     player.addExperienceLevel(-xpLevelCost);
                 }
             }

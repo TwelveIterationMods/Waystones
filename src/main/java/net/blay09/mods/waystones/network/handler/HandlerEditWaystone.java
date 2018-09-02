@@ -71,10 +71,6 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
                 tileWaystone.setWaystoneName(newName);
 
                 WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
-                WaystoneManager.removePlayerWaystone(entityPlayer, oldWaystone);
-                WaystoneManager.addPlayerWaystone(entityPlayer, newWaystone);
-                WaystoneManager.sendPlayerWaystones(entityPlayer);
-
                 if (message.isGlobal() && (entityPlayer.capabilities.isCreativeMode || WaystoneConfig.general.allowEveryoneGlobal)) {
                     tileWaystone.setGlobal(true);
                     newWaystone.setGlobal(true);
@@ -82,6 +78,12 @@ public class HandlerEditWaystone implements IMessageHandler<MessageEditWaystone,
                     for (Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
                         WaystoneManager.sendPlayerWaystones((EntityPlayer) obj);
                     }
+                }
+
+                if (!newWaystone.isGlobal()) {
+                    WaystoneManager.removePlayerWaystone(entityPlayer, oldWaystone);
+                    WaystoneManager.addPlayerWaystone(entityPlayer, newWaystone);
+                    WaystoneManager.sendPlayerWaystones(entityPlayer);
                 }
 
                 if (message.isFromSelectionGui()) {

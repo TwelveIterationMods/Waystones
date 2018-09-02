@@ -4,14 +4,13 @@ import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -25,6 +24,8 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
         NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
             EntityPlayer player = ctx.getServerHandler().player;
             int dist = (int) Math.sqrt(player.getDistanceSqToCenter(message.getWaystone().getPos()));
+            TileWaystone tileWaystone = WaystoneManager.getWaystoneInWorld(message.getWaystone());
+            boolean enableXPCost = WaystoneConfig.general.globalWaystonesCostXp || (tileWaystone != null && !tileWaystone.isGlobal());
             int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
             ItemStack heldItem = player.getHeldItem(message.getHand());
             switch (message.getWarpMode()) {
@@ -33,7 +34,8 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
                         return;
                     }
 
-                    if (WaystoneConfig.general.inventoryButtonXpCost && player.experienceLevel < xpLevelCost) {
+                    enableXPCost = enableXPCost && WaystoneConfig.general.inventoryButtonXpCost;
+                    if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }
 
@@ -49,7 +51,8 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 
                     break;
                 case WARP_STONE:
-                    if (WaystoneConfig.general.warpStoneXpCost && player.experienceLevel < xpLevelCost) {
+                    enableXPCost = enableXPCost && WaystoneConfig.general.warpStoneXpCost;
+                    if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }
 
@@ -63,7 +66,8 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 
                     break;
                 case WAYSTONE:
-                    if (WaystoneConfig.general.waystoneXpCost && player.experienceLevel < xpLevelCost) {
+                    enableXPCost = enableXPCost && WaystoneConfig.general.waystoneXpCost;
+                    if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }
 
@@ -76,33 +80,26 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
             }
 
             if (WaystoneManager.teleportToWaystone(ctx.getServerHandler().player, message.getWaystone())) {
+                if (enableXPCost) {
+                    player.addExperienceLevel(-xpLevelCost);
+                }
+
                 boolean shouldCooldown = !(message.getWaystone().isGlobal() && WaystoneConfig.general.globalNoCooldown);
                 switch (message.getWarpMode()) {
                     case INVENTORY_BUTTON:
                         if (shouldCooldown) {
                             PlayerWaystoneHelper.setLastFreeWarp(ctx.getServerHandler().player, System.currentTimeMillis());
                         }
-
-                        if (WaystoneConfig.general.inventoryButtonXpCost) {
-                            player.addExperienceLevel(-xpLevelCost);
-                        }
                         break;
                     case WARP_SCROLL:
                         heldItem.shrink(1);
                         break;
                     case WARP_STONE:
-                        if (WaystoneConfig.general.warpStoneXpCost) {
-                            player.addExperienceLevel(-xpLevelCost);
-                        }
-
                         if (shouldCooldown) {
                             PlayerWaystoneHelper.setLastWarpStoneUse(ctx.getServerHandler().player, System.currentTimeMillis());
                         }
                         break;
                     case WAYSTONE:
-                        if (WaystoneConfig.general.waystoneXpCost) {
-                            player.addExperienceLevel(-xpLevelCost);
-                        }
                         break;
                 }
             }
