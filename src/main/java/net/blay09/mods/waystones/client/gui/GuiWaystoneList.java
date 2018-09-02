@@ -146,10 +146,7 @@ public class GuiWaystoneList extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (isLocationHeaderHovered && fromWaystone != null) {
-            TileWaystone waystone = WaystoneManager.getWaystoneInWorld(fromWaystone);
-            if (waystone != null) {
-                Waystones.proxy.openWaystoneSettings(mc.player, waystone, true);
-            }
+            Waystones.proxy.openWaystoneSettings(mc.player, fromWaystone, true);
 
             mouseHandled = true;
         }

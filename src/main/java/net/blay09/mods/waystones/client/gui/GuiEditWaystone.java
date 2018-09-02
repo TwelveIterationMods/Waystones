@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.client.gui;
 
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,21 +19,21 @@ import java.io.IOException;
 
 public class GuiEditWaystone extends GuiScreen {
 
-    private final TileWaystone tileWaystone;
+    private final WaystoneEntry tileWaystone;
     private GuiTextField textField;
     private GuiButton btnDone;
     private GuiCheckBox chkGlobal;
     private boolean fromSelectionGui;
 
-    public GuiEditWaystone(TileWaystone tileWaystone, boolean fromSelectionGui) {
-        this.tileWaystone = tileWaystone;
+    public GuiEditWaystone(WaystoneEntry waystone, boolean fromSelectionGui) {
+        this.tileWaystone = waystone;
         this.fromSelectionGui = fromSelectionGui;
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        String oldText = tileWaystone.getWaystoneName();
+        String oldText = tileWaystone.getName();
         if (textField != null) {
             oldText = textField.getText();
         }
@@ -74,8 +74,8 @@ public class GuiEditWaystone extends GuiScreen {
                 FMLClientHandler.instance().getClientPlayerEntity().closeScreen();
             }
 
-            if (tileWaystone.getWaystoneName().isEmpty()) {
-                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getWorld().provider.getDimension()));
+            if (tileWaystone.getName().isEmpty()) {
+                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionId()));
             }
         }
     }

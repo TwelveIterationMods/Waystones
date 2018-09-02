@@ -64,7 +64,7 @@ public class CommonProxy {
 
 	}
 
-	public void openWaystoneSettings(EntityPlayer player, TileWaystone tileWaystone, boolean fromSelectionGui) {
+	public void openWaystoneSettings(EntityPlayer player, WaystoneEntry waystone, boolean fromSelectionGui) {
 
 	}
 

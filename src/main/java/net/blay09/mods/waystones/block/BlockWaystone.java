@@ -147,7 +147,7 @@ public class BlockWaystone extends BlockContainer {
             if (tileWaystone != null) {
                 tileWaystone.setOwner((EntityPlayer) placer);
                 tileWaystone.setWasGenerated(false);
-                Waystones.proxy.openWaystoneSettings((EntityPlayer) placer, tileWaystone, false);
+                Waystones.proxy.openWaystoneSettings((EntityPlayer) placer, new WaystoneEntry(tileWaystone.getParent()), false);
             }
         }
     }
@@ -195,7 +195,7 @@ public class BlockWaystone extends BlockContainer {
                 }
             }
 
-            Waystones.proxy.openWaystoneSettings(player, tileWaystone, false);
+            Waystones.proxy.openWaystoneSettings(player, new WaystoneEntry(tileWaystone.getParent()), false);
             return true;
         }
 
