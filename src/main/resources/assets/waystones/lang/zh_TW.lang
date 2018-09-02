@@ -9,7 +9,7 @@ itemGroup.waystones=座標石碑
 
 waystones:noDimensionWarp=你不能夠跨世界瞬移。
 waystones:waystoneBroken=已綁定的座標石碑已經被移動或破壞。
-waystones:scrollNotBound=你還沒有激活任何座標石碑。
+waystones:returnImpossible=你還沒有激活任何座標石碑。
 waystones:stoneNotCharged=瞬移石塊還沒有完成充能。
 waystones:activatedWaystone=已激活的座標石碑：%s
 waystones:nameOccupied=名稱「%s」已經被使用了。

@@ -116,6 +116,7 @@ public class WaystoneManager {
             player.sendMessage(chatComponent);
             return false;
         }
+
         World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
         EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
         BlockPos targetPos = waystone.getPos().offset(facing);
@@ -124,6 +125,7 @@ public class WaystoneManager {
             player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
             return false;
         }
+
         teleportToPosition(player, targetWorld, targetPos, facing, waystone.getDimensionId());
         return true;
     }

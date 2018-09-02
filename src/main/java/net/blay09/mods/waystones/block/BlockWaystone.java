@@ -207,7 +207,16 @@ public class BlockWaystone extends BlockContainer {
         WaystoneEntry knownWaystone = world.isRemote ? ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) : null;
         if (knownWaystone != null) {
             Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, EnumHand.MAIN_HAND, knownWaystone);
-        } else if (!world.isRemote) {
+        } else {
+            activateWaystone(player, world, tileWaystone);
+        }
+
+        return true;
+    }
+
+    public void activateWaystone(EntityPlayer player, World world, TileWaystone tileWaystone) {
+        BlockPos pos = tileWaystone.getPos();
+        if (!world.isRemote) {
             WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
             if (!WaystoneManager.checkAndUpdateWaystone(player, waystone)) {
                 TextComponentString nameComponent = new TextComponentString(tileWaystone.getWaystoneName());
@@ -221,6 +230,7 @@ public class BlockWaystone extends BlockContainer {
             }
 
             if (WaystoneConfig.general.setSpawnPoint) {
+                IBlockState state = world.getBlockState(pos);
                 EnumFacing blockFacing = state.getValue(FACING);
                 player.setSpawnPoint(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true);
             }
@@ -235,8 +245,6 @@ public class BlockWaystone extends BlockContainer {
                 world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, pos.getX() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, pos.getY() + 4, pos.getZ() + 0.5 + (world.rand.nextDouble() - 0.5) * 2, 0, -5, 0);
             }
         }
-
-        return true;
     }
 
     @Override

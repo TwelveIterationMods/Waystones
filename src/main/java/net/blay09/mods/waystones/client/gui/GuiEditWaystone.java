@@ -63,6 +63,11 @@ public class GuiEditWaystone extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button == btnDone) {
+            if (textField.getText().isEmpty()) {
+                textField.setFocused(true);
+                return;
+            }
+
             NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
 
             if (!fromSelectionGui) {

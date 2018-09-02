@@ -33,6 +33,10 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @SubscribeEvent
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
+        if (event.getWaystoneName().isEmpty()) {
+            return;
+        }
+
         try {
             api.show(new Waypoint(Waystones.MOD_ID, event.getWaystoneName(), event.getDimension(), event.getPos()));
         } catch (Exception e) {

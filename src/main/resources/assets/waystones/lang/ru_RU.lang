@@ -9,7 +9,7 @@ itemGroup.waystones=Waystones
 
 waystones:noDimensionWarp=Вы не можете перемещаться между мирами.
 waystones:waystoneBroken=Привязанный обелиск был перемещён или уничтожен.
-waystones:scrollNotBound=Вы ещё не активировали ни одного обелиска.
+waystones:returnImpossible=Вы ещё не активировали ни одного обелиска.
 waystones:stoneNotCharged=Камень Перемещения ещё не перезарядился.
 waystones:activatedWaystone=Активированный обелиск: %s
 waystones:nameOccupied=Название %s уже используется.

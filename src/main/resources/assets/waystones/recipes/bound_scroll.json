@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "waystones:bound_scroll",
+    "count": 3
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "DDD",
+    "GEG",
+    "PPP"
+  ],
+  "key": {
+    "D": {
+      "item": "#PURPLE_DYE"
+    },
+    "G": {
+      "item": "#GOLD_NUGGET"
+    },
+    "E": {
+      "item": "#ENDER_PEARL"
+    },
+    "P": {
+      "item": "#PAPER"
+    }
+  }
+}
