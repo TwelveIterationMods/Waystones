@@ -5,6 +5,7 @@ import journeymap.client.api.IClientAPI;
 import journeymap.client.api.IClientPlugin;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.event.ClientEvent;
+import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +34,10 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @SubscribeEvent
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
+        if (!WaystoneConfig.compat.createJourneyMapWaypoint) {
+            return;
+        }
+
         if (event.getWaystoneName().isEmpty()) {
             return;
         }
