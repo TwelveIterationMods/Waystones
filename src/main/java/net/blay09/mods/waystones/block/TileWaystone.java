@@ -22,6 +22,7 @@ public class TileWaystone extends TileEntity {
     private UUID owner;
     private boolean isGlobal;
     private boolean wasGenerated = true;
+    private boolean isMossy;
 
     public TileWaystone() {
     }
@@ -41,10 +42,13 @@ public class TileWaystone extends TileEntity {
             } else {
                 tagCompound.setBoolean("WasGenerated", true);
             }
+
             if (owner != null) {
                 tagCompound.setTag("Owner", NBTUtil.createUUIDTag(owner));
             }
+
             tagCompound.setBoolean("IsGlobal", isGlobal);
+            tagCompound.setBoolean("IsMossy", isMossy);
         }
         return tagCompound;
     }
@@ -59,7 +63,10 @@ public class TileWaystone extends TileEntity {
             if (tagCompound.hasKey("Owner")) {
                 owner = NBTUtil.getUUIDFromTag(tagCompound.getCompoundTag("Owner"));
             }
+
             isGlobal = tagCompound.getBoolean("IsGlobal");
+
+            isMossy = tagCompound.getBoolean("IsMossy");
         }
     }
 
@@ -94,6 +101,14 @@ public class TileWaystone extends TileEntity {
 
     public boolean isOwner(EntityPlayer player) {
         return owner == null || player.getGameProfile().getId().equals(owner) || player.capabilities.isCreativeMode;
+    }
+
+    public boolean isMossy() {
+        return isMossy;
+    }
+
+    public void setMossy(boolean mossy) {
+        isMossy = mossy;
     }
 
     public boolean wasGenerated() {

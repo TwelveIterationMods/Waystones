@@ -74,7 +74,7 @@ public class Waystones {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        GameRegistry.registerTileEntity(TileWaystone.class, new ResourceLocation(MOD_ID, ":waystone"));
+        GameRegistry.registerTileEntity(TileWaystone.class, new ResourceLocation(MOD_ID, "waystone"));
 
         NetworkHandler.init();
 

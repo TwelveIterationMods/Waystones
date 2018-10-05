@@ -49,6 +49,7 @@ public class LegacyWorldGen implements IWorldGenerator {
                 TileEntity tileEntity = world.getTileEntity(pos);
                 if (tileEntity instanceof TileWaystone) {
                     ((TileWaystone) tileEntity).setWaystoneName(NameGenerator.get(world).getName(world.getBiome(pos), random));
+                    ((TileWaystone) tileEntity).setMossy(true);
                 }
 
                 break;
