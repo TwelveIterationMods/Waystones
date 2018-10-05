@@ -112,6 +112,11 @@ public class WaystoneConfig {
         @Config.RangeDouble(min = 0, max = 1)
         public float villageChance = 1f;
 
+        @Config.Name("Change to generate just anywhere")
+        @Config.Comment("The chance for a waystone to generate just anywhere (without a structure), scaled by 1/10000.")
+        @Config.RangeDouble(min = 0, max = 10000)
+        public float legacyChance = 0f;
+
         @Config.Name("Custom Names")
         @Config.Comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
         public String[] customNames = new String[0];

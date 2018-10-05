@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.item.ItemWarpScroll;
 import net.blay09.mods.waystones.item.ItemWarpStone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.worldgen.ComponentVillageWaystone;
+import net.blay09.mods.waystones.worldgen.LegacyWorldGen;
 import net.blay09.mods.waystones.worldgen.VillageWaystoneCreationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -18,6 +19,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -72,12 +74,13 @@ public class Waystones {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        GameRegistry.registerTileEntity(TileWaystone.class, MOD_ID + ":waystone");
+        GameRegistry.registerTileEntity(TileWaystone.class, new ResourceLocation(MOD_ID, ":waystone"));
 
         NetworkHandler.init();
 
         VillagerRegistry.instance().registerVillageCreationHandler(new VillageWaystoneCreationHandler());
         MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");
+        GameRegistry.registerWorldGenerator(new LegacyWorldGen(), 0);
 
         proxy.preInit(event);
 
