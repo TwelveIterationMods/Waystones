@@ -34,7 +34,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
                         return;
                     }
 
-                    enableXPCost = enableXPCost && WaystoneConfig.general.inventoryButtonXpCost;
+                    enableXPCost = enableXPCost && WaystoneConfig.general.inventoryButtonXpCost && !player.capabilities.isCreativeMode;
                     if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }
@@ -51,7 +51,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 
                     break;
                 case WARP_STONE:
-                    enableXPCost = enableXPCost && WaystoneConfig.general.warpStoneXpCost;
+                    enableXPCost = enableXPCost && WaystoneConfig.general.warpStoneXpCost && !player.capabilities.isCreativeMode;
                     if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }
@@ -66,7 +66,7 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 
                     break;
                 case WAYSTONE:
-                    enableXPCost = enableXPCost && WaystoneConfig.general.waystoneXpCost;
+                    enableXPCost = enableXPCost && WaystoneConfig.general.waystoneXpCost && !player.capabilities.isCreativeMode;
                     if (enableXPCost && player.experienceLevel < xpLevelCost) {
                         return;
                     }

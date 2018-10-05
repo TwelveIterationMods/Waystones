@@ -38,7 +38,7 @@ public class HandlerTeleportToGlobal implements IMessageHandler<MessageTeleportT
                 return;
             }
 
-            boolean enableXPCost = WaystoneConfig.general.globalWaystonesCostXp && WaystoneConfig.general.inventoryButtonXpCost;
+            boolean enableXPCost = WaystoneConfig.general.globalWaystonesCostXp && WaystoneConfig.general.inventoryButtonXpCost && !player.capabilities.isCreativeMode;
             if (enableXPCost && player.experienceLevel < xpLevelCost) {
                 return;
             }

@@ -52,7 +52,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
             }
         }
 
-        if (player.experienceLevel < xpLevelCost) {
+        if (player.experienceLevel < xpLevelCost && !player.capabilities.isCreativeMode) {
             enabled = false;
         }
     }
@@ -67,7 +67,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
         GlStateManager.color(1f, 1f, 1f, 1f);
 
         if (xpLevelCost > 0) {
-            boolean canAfford = mc.player.experienceLevel >= xpLevelCost;
+            boolean canAfford = mc.player.experienceLevel >= xpLevelCost || mc.player.capabilities.isCreativeMode;
             mc.getTextureManager().bindTexture(ENCHANTMENT_TABLE_GUI_TEXTURE);
             drawTexturedModalRect(x + 2, y + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
