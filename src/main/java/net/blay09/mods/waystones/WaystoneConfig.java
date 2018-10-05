@@ -149,6 +149,10 @@ public class WaystoneConfig {
         @Config.Name("Disable Text Glow")
         @Config.Comment("If enabled, the text overlay on waystones will no longer always render at full brightness.")
         public boolean disableTextGlow = false;
+
+        @Config.Name("Mossy Look for World Gen Waystones")
+        @Config.Comment("If enabled, waystones spawned using the legacy spawn-just-anywhere mode will look mossy ingame.")
+        public boolean randomlySpawnedLookMossy = true;
     }
 
     public static void read(ByteBuf buf) {

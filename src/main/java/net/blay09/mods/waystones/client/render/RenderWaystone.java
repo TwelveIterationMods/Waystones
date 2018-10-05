@@ -41,7 +41,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
             GlStateManager.translate(0.0625f, 0.0625f, 0.0625f);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         } else {
-            boolean isMossy = tileEntity != null && tileEntity.isMossy();
+            boolean isMossy = tileEntity != null && tileEntity.isMossy() && WaystoneConfig.client.randomlySpawnedLookMossy;
             bindTexture(isMossy ? textureMossy : texture);
         }
 
