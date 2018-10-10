@@ -85,7 +85,14 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
             ((BlockWaystone) Waystones.blockWaystone).activateWaystone(player, world, tileWaystone);
 
             if (!world.isRemote) {
-                setBoundTo(heldItem, new WaystoneEntry(tileWaystone));
+                ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.splitStack(1);
+                setBoundTo(boundItem, new WaystoneEntry(tileWaystone));
+                if (boundItem != heldItem) {
+                    if (!player.addItemStackToInventory(boundItem)) {
+                        player.dropItem(boundItem, false);
+                    }
+                }
+
                 player.sendStatusMessage(new TextComponentTranslation("waystones:scrollBound", tileWaystone.getWaystoneName()), true);
             }
 
