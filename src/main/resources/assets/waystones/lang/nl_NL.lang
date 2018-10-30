@@ -1,0 +1,42 @@
+tile.waystones:waystone.name=Waystone
+
+item.waystones:warp_scroll.name=Warp Perkamentrol
+item.waystones:warp_scroll_bound.name=Warp Perkamentrol (Gebonden)
+item.waystones:return_scroll.name=Terug Perkamentrol
+item.waystones:warp_stone.name=Warp Steen
+item.waystones:bound_scroll.name=Gebonden Perkamentrol
+
+itemGroup.waystones=Waystones
+
+waystones:noDimensionWarp=Je kunt niet warpen tussen werelden.
+waystones:waystoneBroken=De gebonden waystone is verplaatst of vernietigd.
+waystones:returnImpossible=Je hebt nog geen waystones geactiveerd.
+waystones:scrollNotBound=Deze schuif is niet aan een waystone gebonden.
+waystones:stoneNotCharged=De Warp Steen is nog niet volledig opgeladen.
+waystones:activatedWaystone=Geactiveerde waystone: %s
+waystones:nameOccupied= De naam %s is al in gebruik.
+waystones:notTheOwner=Waystones kunnen alleen worden hernoemd door degene die ze geplaatst heeft.
+waystones:creativeRequired=U moet zich in de creatieve modus bevinden om een globale waystone te bewerken.
+waystones:scrollBound=Scroll gebonden aan: %s
+
+gui.waystones:current_location=Huidige locatie:
+gui.waystones:warpStone.selectDestination=Selecteer uw bestemming:
+gui.waystones:warpStone.nextPage=Volgende
+gui.waystones:warpStone.previousPage=Vorige
+gui.waystones:confirmReturn=Wil je echt terug warpen naar deze waystone?
+gui.waystones:confirmReturn.boundTo=Gebonden aan: %s
+gui.waystones:confirmReturn.noWaystoneActive=Geen waystone actief.
+gui.waystones:editWaystone.enterName=Waystone-naam invoeren:
+gui.waystones:editWaystone.isGlobal=is Globaal
+
+tooltip.waystones:cooldownLeft=Cooldown: %d seconden
+tooltip.waystones:boundTo=Gebonden aan: %s
+tooltip.waystones:none=Geen
+tooltip.waystones:returnToWaystone=Ga terug naar Waystone
+tooltip.waystones:openWaystoneMenu=Open Waystone-menu
+tooltip.waystones:levelRequirement=Vereiste Level: %d
+
+stat.waystones:waystonesActivated=Waystones geactiveerd
+
+waystones.general.globalinterdimension=Interdim. Teleport (Global Waystones)
+waystones.worldgen.customnames=Aangepaste namen
