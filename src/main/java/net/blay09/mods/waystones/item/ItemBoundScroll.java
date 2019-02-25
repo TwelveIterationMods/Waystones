@@ -107,30 +107,23 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity)
     {
-        if (!world.isRemote && entity instanceof EntityPlayer)
-        {
+        if (!world.isRemote && entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
 
             WaystoneEntry boundTo = getBoundTo(player, itemStack);
-            if (boundTo != null)
-            {
+            if (boundTo != null) {
                 double distance = entity.getDistance(boundTo.getPos().getX(), boundTo.getPos().getY(), boundTo.getPos().getZ());
-                if (distance <= 2)
-                {
+                if (distance <= 2) {
                     return itemStack;
                 }
 
                 TileWaystone tileWaystone = WaystoneManager.getWaystoneInWorld(boundTo);
-                if (tileWaystone != null) //If it's going to fail, it should fail here.  If it fails inside this block, I (Laike Endaril) messed up Blay's mod :P
-                {
-                    if (!player.capabilities.isCreativeMode) itemStack.shrink(1);
-
+                if (tileWaystone != null) {
                     WaystoneManager.addPlayerWaystone(player, boundTo);
                     WaystoneManager.sendPlayerWaystones(player);
 
-                    if (!WaystoneManager.teleportToWaystone(player, boundTo))
-                    {
-                        System.err.println("Bound scroll failed in the wrong way!  This should never happen, and you should go find Laike Endaril and tell him that he sucks.");
+                    if (WaystoneManager.teleportToWaystone(player, boundTo)) {
+                        if (!player.capabilities.isCreativeMode) itemStack.shrink(1);
                     }
                 }
             }
