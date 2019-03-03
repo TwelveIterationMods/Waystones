@@ -105,8 +105,7 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity)
-    {
+    public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
         if (!world.isRemote && entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
 
