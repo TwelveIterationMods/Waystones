@@ -107,16 +107,22 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
         if (!world.isRemote && entity instanceof EntityPlayer) {
-            WaystoneEntry boundTo = getBoundTo((EntityPlayer) entity, itemStack);
+            EntityPlayer player = (EntityPlayer) entity;
+
+            WaystoneEntry boundTo = getBoundTo(player, itemStack);
             if (boundTo != null) {
                 double distance = entity.getDistance(boundTo.getPos().getX(), boundTo.getPos().getY(), boundTo.getPos().getZ());
-                if (distance <= 2.0) {
+                if (distance <= 2) {
                     return itemStack;
                 }
 
-                if (WaystoneManager.teleportToWaystone((EntityPlayer) entity, boundTo)) {
-                    if (!((EntityPlayer) entity).capabilities.isCreativeMode) {
-                        itemStack.shrink(1);
+                TileWaystone tileWaystone = WaystoneManager.getWaystoneInWorld(boundTo);
+                if (tileWaystone != null) {
+                    WaystoneManager.addPlayerWaystone(player, boundTo);
+                    WaystoneManager.sendPlayerWaystones(player);
+
+                    if (WaystoneManager.teleportToWaystone(player, boundTo)) {
+                        if (!player.capabilities.isCreativeMode) itemStack.shrink(1);
                     }
                 }
             }
