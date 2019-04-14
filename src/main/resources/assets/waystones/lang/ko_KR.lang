@@ -1,0 +1,42 @@
+tile.waystones:waystone.name=웨이스톤
+
+item.waystones:warp_scroll.name=워프 스크롤
+item.waystones:warp_scroll_bound.name=워프 스크롤 (바운드)
+item.waystones:return_scroll.name=리턴 스크롤
+item.waystones:warp_stone.name=워프 스톤
+item.waystones:bound_scroll.name=바운드 스크롤
+
+itemGroup.waystones=Waystones
+
+waystones:noDimensionWarp=세계 사이를 워프할 수 없습니다.
+waystones:waystoneBroken=바운드 된 웨이스톤이 움직이거나 파괴 되었습니다.
+waystones:returnImpossible=아직 어떤 웨이스톤도 활성화 하지 않았습니다.
+waystones:scrollNotBound=이 스크롤은 웨이스톤에 바운드 되어있지 않습니다.
+waystones:stoneNotCharged=워프 스톤이 아직 완전히 충전되지 않았습니다.
+waystones:activatedWaystone=활성화 된 웨이스톤: %s
+waystones:nameOccupied=%s 이름은 이미 사용되고 있습니다.
+waystones:notTheOwner=웨이스톤은 누가 놓았든 간에 이름을 바꿀 수 있습니다.
+waystones:creativeRequired=글로벌 웨이스톤을 편집하려면 크리에이티브 모드에 있어야 합니다.
+waystones:scrollBound=스크롤 바운드: %s
+
+gui.waystones:current_location=현재 장소:
+gui.waystones:warpStone.selectDestination=당신의 목적지를 선택하십시오:
+gui.waystones:warpStone.nextPage=다음
+gui.waystones:warpStone.previousPage=이전
+gui.waystones:confirmReturn=정말 이 웨이스톤으로 돌아가길 원합니까?
+gui.waystones:confirmReturn.boundTo=바운드: %s
+gui.waystones:confirmReturn.noWaystoneActive=웨이스톤이 활성화 되지 않았습니다.
+gui.waystones:editWaystone.enterName=웨이스톤 이름을 입력하세요:
+gui.waystones:editWaystone.isGlobal=글로벌
+
+tooltip.waystones:cooldownLeft=Cooldown: %d 초
+tooltip.waystones:boundTo=바운드: %s
+tooltip.waystones:none=없음
+tooltip.waystones:returnToWaystone=웨이스톤으로 돌아갑니다
+tooltip.waystones:openWaystoneMenu=웨이스톤 메뉴 열기
+tooltip.waystones:levelRequirement=레벨 필요: %d
+
+stat.waystones:waystonesActivated=웨이스톤이 활성화 되었습니다
+
+waystones.general.globalinterdimension=차원간. 텔레포트 (글로벌 웨이스톤)
+waystones.worldgen.customnames=사용자 지정 이름
