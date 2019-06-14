@@ -7,22 +7,26 @@ import net.blay09.mods.waystones.network.message.MessageWaystones;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.MobEffects;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SRespawnPacket;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -35,27 +39,27 @@ import javax.annotation.Nullable;
 
 public class WaystoneManager {
 
-    public static void sendPlayerWaystones(EntityPlayer player) {
-        if (player instanceof EntityPlayerMP) {
+    public static void sendPlayerWaystones(PlayerEntity player) {
+        if (player instanceof ServerPlayerEntity) {
             PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-            NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (EntityPlayerMP) player);
+            NetworkHandler.channel.sendTo(new MessageWaystones(waystoneData.getWaystones(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), (ServerPlayerEntity) player);
         }
     }
 
-    public static void addPlayerWaystone(EntityPlayer player, WaystoneEntry waystone) {
-        NBTTagCompound tagCompound = PlayerWaystoneHelper.getOrCreateWaystonesTag(player);
-        NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        tagList.appendTag(waystone.writeToNBT());
-        tagCompound.setTag(PlayerWaystoneHelper.WAYSTONE_LIST, tagList);
+    public static void addPlayerWaystone(PlayerEntity player, WaystoneEntry waystone) {
+        CompoundNBT tagCompound = PlayerWaystoneHelper.getOrCreateWaystonesTag(player);
+        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+        tagList.add(waystone.writeToNBT());
+        tagCompound.put(PlayerWaystoneHelper.WAYSTONE_LIST, tagList);
     }
 
-    public static boolean removePlayerWaystone(EntityPlayer player, WaystoneEntry waystone) {
-        NBTTagCompound tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
-        NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound entryCompound = tagList.getCompoundTagAt(i);
+    public static boolean removePlayerWaystone(PlayerEntity player, WaystoneEntry waystone) {
+        CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
+        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < tagList.size(); i++) {
+            CompoundNBT entryCompound = tagList.getCompound(i);
             if (WaystoneEntry.read(entryCompound).equals(waystone)) {
-                tagList.removeTag(i);
+                tagList.remove(i);
                 return true;
             }
         }
@@ -63,16 +67,16 @@ public class WaystoneManager {
         return false;
     }
 
-    public static boolean checkAndUpdateWaystone(EntityPlayer player, WaystoneEntry waystone) {
-        NBTTagCompound tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
-        NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound entryCompound = tagList.getCompoundTagAt(i);
+    public static boolean checkAndUpdateWaystone(PlayerEntity player, WaystoneEntry waystone) {
+        CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
+        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < tagList.size(); i++) {
+            CompoundNBT entryCompound = tagList.getCompound(i);
             if (WaystoneEntry.read(entryCompound).equals(waystone)) {
                 TileWaystone tileEntity = getWaystoneInWorld(waystone);
                 if (tileEntity != null) {
                     if (!entryCompound.getString("Name").equals(tileEntity.getWaystoneName())) {
-                        entryCompound.setString("Name", tileEntity.getWaystoneName());
+                        entryCompound.putString("Name", tileEntity.getWaystoneName());
                         sendPlayerWaystones(player);
                     }
                     return true;
@@ -109,20 +113,20 @@ public class WaystoneManager {
         return waystone.isGlobal() ? WaystoneConfig.general.globalInterDimension : WaystoneConfig.general.interDimension;
     }
 
-    public static boolean teleportToWaystone(EntityPlayer player, WaystoneEntry waystone) {
+    public static boolean teleportToWaystone(PlayerEntity player, WaystoneEntry waystone) {
         if (!checkAndUpdateWaystone(player, waystone)) {
-            TextComponentTranslation chatComponent = new TextComponentTranslation("waystones:waystoneBroken");
+            TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:waystoneBroken");
             chatComponent.getStyle().setColor(TextFormatting.RED);
             player.sendMessage(chatComponent);
             return false;
         }
 
         World targetWorld = DimensionManager.getWorld(waystone.getDimensionId());
-        EnumFacing facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
+        Direction facing = targetWorld.getBlockState(waystone.getPos()).getValue(BlockWaystone.FACING);
         BlockPos targetPos = waystone.getPos().offset(facing);
         boolean dimensionWarp = waystone.getDimensionId() != player.getEntityWorld().provider.getDimension();
         if (dimensionWarp && !isDimensionWarpAllowed(waystone)) {
-            player.sendMessage(new TextComponentTranslation("waystones:noDimensionWarp"));
+            player.sendMessage(new TranslationTextComponent("waystones:noDimensionWarp"));
             return false;
         }
 
@@ -130,19 +134,19 @@ public class WaystoneManager {
         return true;
     }
 
-    public static void teleportToPosition(EntityPlayer player, World world, BlockPos pos, EnumFacing facing, int dimensionId) {
+    public static void teleportToPosition(PlayerEntity player, World world, BlockPos pos, Direction facing, int dimensionId) {
         sendTeleportEffect(player.world, new BlockPos(player));
         if (dimensionId != player.getEntityWorld().provider.getDimension()) {
-            MinecraftServer server = player.world.getMinecraftServer();
+            MinecraftServer server = player.world.getServer();
             if (server != null) {
-                transferPlayerToDimension((EntityPlayerMP) player, dimensionId, server.getPlayerList());
+                transferPlayerToDimension((ServerPlayerEntity) player, dimensionId, server.getPlayerList());
             }
         } else {
             if (player.isBeingRidden()) {
                 player.removePassengers();
             }
-            if (player.isRiding()) {
-                player.dismountRidingEntity();
+            if (player.isPassenger()) {
+                player.stopRiding();
             }
         }
         player.rotationYaw = getRotationYaw(facing);
@@ -152,13 +156,14 @@ public class WaystoneManager {
 
     /**
      * Taken from CoFHCore's EntityHelper (https://github.com/CoFH/CoFHCore/blob/1.12/src/main/java/cofh/core/util/helpers/EntityHelper.java)
+     * TODO We need ITeleporter for this and then get rid of these methods
      */
-    private static void transferPlayerToDimension(EntityPlayerMP player, int dimension, PlayerList manager) {
+    private static void transferPlayerToDimension(ServerPlayerEntity player, int dimension, PlayerList manager) {
         int oldDim = player.dimension;
-        WorldServer oldWorld = manager.getServerInstance().getWorld(player.dimension);
+        ServerWorld oldWorld = manager.getServer().getWorld(player.dimension);
         player.dimension = dimension;
-        WorldServer newWorld = manager.getServerInstance().getWorld(player.dimension);
-        player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+        ServerWorld newWorld = manager.getServer().getWorld(player.dimension);
+        player.connection.sendPacket(new SRespawnPacket(player.dimension, newWorld.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
         oldWorld.removeEntityDangerously(player);
         if (player.isBeingRidden()) {
             player.removePassengers();
@@ -207,7 +212,7 @@ public class WaystoneManager {
         NetworkHandler.channel.sendToAllAround(new MessageTeleportEffect(pos), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64));
     }
 
-    public static float getRotationYaw(EnumFacing facing) {
+    public static float getRotationYaw(Direction facing) {
         switch (facing) {
             case NORTH:
                 return 180f;

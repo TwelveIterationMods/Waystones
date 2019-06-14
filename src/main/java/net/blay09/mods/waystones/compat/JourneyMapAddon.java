@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @ClientPlugin
 public class JourneyMapAddon implements IClientPlugin {

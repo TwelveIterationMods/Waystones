@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 
 public class PlayerWaystoneData {
@@ -31,16 +31,16 @@ public class PlayerWaystoneData {
 		return lastWarpStoneUse;
 	}
 
-	public void store(EntityPlayerMP player) {
+	public void store(ServerPlayerEntity player) {
 		PlayerWaystoneHelper.store(player, entries, lastFreeWarp, lastWarpStoneUse);
 	}
 
-	public static PlayerWaystoneData fromPlayer(EntityPlayer player) {
-		NBTTagCompound tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
-		NBTTagList tagList = tagCompound.getTagList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-		WaystoneEntry[] entries = new WaystoneEntry[tagList.tagCount()];
+	public static PlayerWaystoneData fromPlayer(PlayerEntity player) {
+		CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
+		ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
+		WaystoneEntry[] entries = new WaystoneEntry[tagList.size()];
 		for (int i = 0; i < entries.length; i++) {
-			entries[i] = WaystoneEntry.read(tagList.getCompoundTagAt(i));
+			entries[i] = WaystoneEntry.read(tagList.getCompound(i));
 		}
 		long lastFreeWarp = tagCompound.getLong(PlayerWaystoneHelper.LAST_FREE_WARP);
 		long lastWarpStoneUse = tagCompound.getLong(PlayerWaystoneHelper.LAST_WARP_STONE_USE);

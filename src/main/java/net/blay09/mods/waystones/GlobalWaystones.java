@@ -2,14 +2,13 @@ package net.blay09.mods.waystones;
 
 import com.google.common.collect.Maps;
 import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -34,7 +33,7 @@ public class GlobalWaystones extends WorldSavedData {
 		globalWaystones.put(entry.getName(), entry);
 		markDirty();
 
-		for(EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+		for(PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 			WaystoneManager.addPlayerWaystone(player, entry);
 		}
 	}
@@ -43,7 +42,7 @@ public class GlobalWaystones extends WorldSavedData {
 		globalWaystones.remove(entry.getName());
 		markDirty();
 
-		for(EntityPlayer player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+		for(PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
 			WaystoneManager.removePlayerWaystone(player, entry);
 		}
 	}
@@ -59,21 +58,21 @@ public class GlobalWaystones extends WorldSavedData {
 
 
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound) {
-		NBTTagList tagList = tagCompound.getTagList(TAG_LIST_NAME, Constants.NBT.TAG_COMPOUND);
-		for(int i = 0; i < tagList.tagCount(); i++) {
-			WaystoneEntry entry = WaystoneEntry.read((NBTTagCompound) tagList.get(i));
+	public void readFromNBT(CompoundNBT tagCompound) {
+		ListNBT tagList = tagCompound.getList(TAG_LIST_NAME, Constants.NBT.TAG_COMPOUND);
+		for(int i = 0; i < tagList.size(); i++) {
+			WaystoneEntry entry = WaystoneEntry.read((CompoundNBT) tagList.get(i));
 			globalWaystones.put(entry.getName(), entry);
 		}
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
-		NBTTagList tagList = new NBTTagList();
+	public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
+		ListNBT tagList = new ListNBT();
 		for(WaystoneEntry entry : globalWaystones.values()) {
-			tagList.appendTag(entry.writeToNBT());
+			tagList.add(entry.writeToNBT());
 		}
-		tagCompound.setTag(TAG_LIST_NAME, tagList);
+		tagCompound.put(TAG_LIST_NAME, tagList);
 		return tagCompound;
 	}
 

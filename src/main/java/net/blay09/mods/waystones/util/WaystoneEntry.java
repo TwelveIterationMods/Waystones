@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.util;
 
 import io.netty.buffer.ByteBuf;
 import net.blay09.mods.waystones.block.TileWaystone;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -51,8 +51,8 @@ public class WaystoneEntry {
 		return new WaystoneEntry(ByteBufUtils.readUTF8String(buf), buf.readInt(), BlockPos.fromLong(buf.readLong()), buf.readBoolean());
 	}
 
-	public static WaystoneEntry read(NBTTagCompound tagCompound) {
-		return new WaystoneEntry(tagCompound.getString("Name"), tagCompound.getInteger("Dimension"), BlockPos.fromLong(tagCompound.getLong("Position")), tagCompound.getBoolean("IsGlobal"));
+	public static WaystoneEntry read(CompoundNBT tagCompound) {
+		return new WaystoneEntry(tagCompound.getString("Name"), tagCompound.getInt("Dimension"), BlockPos.fromLong(tagCompound.getLong("Position")), tagCompound.getBoolean("IsGlobal"));
 	}
 
 	public void write(ByteBuf buf) {
@@ -62,12 +62,12 @@ public class WaystoneEntry {
 		buf.writeBoolean(isGlobal);
 	}
 
-	public NBTTagCompound writeToNBT() {
-		NBTTagCompound tagCompound = new NBTTagCompound();
-		tagCompound.setString("Name", name);
-		tagCompound.setInteger("Dimension", dimensionId);
-		tagCompound.setLong("Position", pos.toLong());
-		tagCompound.setBoolean("IsGlobal", isGlobal);
+	public CompoundNBT writeToNBT() {
+		CompoundNBT tagCompound = new CompoundNBT();
+		tagCompound.putString("Name", name);
+		tagCompound.putInt("Dimension", dimensionId);
+		tagCompound.putLong("Position", pos.toLong());
+		tagCompound.putBoolean("IsGlobal", isGlobal);
 		return tagCompound;
 	}
 

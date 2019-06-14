@@ -10,18 +10,24 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -34,7 +40,7 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
 
     public ItemBoundScroll() {
-        setCreativeTab(Waystones.creativeTab);
+        setCreativeTab(Waystones.itemGroup);
         setUnlocalizedName(registryName.toString());
     }
 
@@ -53,31 +59,31 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     }
 
     private void setBoundTo(ItemStack itemStack, @Nullable WaystoneEntry entry) {
-        NBTTagCompound tagCompound = itemStack.getTagCompound();
+        CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound == null) {
-            tagCompound = new NBTTagCompound();
-            itemStack.setTagCompound(tagCompound);
+            tagCompound = new CompoundNBT();
+            itemStack.setTag(tagCompound);
         }
 
         if (entry != null) {
-            tagCompound.setTag("WaystonesBoundTo", entry.writeToNBT());
+            tagCompound.put("WaystonesBoundTo", entry.writeToNBT());
         } else {
-            tagCompound.removeTag("WaystonesBoundTo");
+            tagCompound.remove("WaystonesBoundTo");
         }
     }
 
     @Nullable
-    protected WaystoneEntry getBoundTo(EntityPlayer player, ItemStack itemStack) {
-        NBTTagCompound tagCompound = itemStack.getTagCompound();
+    protected WaystoneEntry getBoundTo(PlayerEntity player, ItemStack itemStack) {
+        CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound != null) {
-            return WaystoneEntry.read(tagCompound.getCompoundTag("WaystonesBoundTo"));
+            return WaystoneEntry.read(tagCompound.getCompound("WaystonesBoundTo"));
         }
 
         return null;
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(PlayerEntity player, World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, Hand hand) {
         ItemStack heldItem = player.getHeldItem(hand);
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileWaystone) {
@@ -93,7 +99,7 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
                     }
                 }
 
-                player.sendStatusMessage(new TextComponentTranslation("waystones:scrollBound", tileWaystone.getWaystoneName()), true);
+                player.sendStatusMessage(new TranslationTextComponent("waystones:scrollBound", tileWaystone.getWaystoneName()), true);
             }
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 2f);
@@ -105,17 +111,17 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
-        if (!world.isRemote && entity instanceof EntityPlayer) {
-            WaystoneEntry boundTo = getBoundTo((EntityPlayer) entity, itemStack);
+    public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entity) {
+        if (!world.isRemote && entity instanceof PlayerEntity) {
+            WaystoneEntry boundTo = getBoundTo((PlayerEntity) entity, itemStack);
             if (boundTo != null) {
                 double distance = entity.getDistance(boundTo.getPos().getX(), boundTo.getPos().getY(), boundTo.getPos().getZ());
                 if (distance <= 2.0) {
                     return itemStack;
                 }
 
-                if (WaystoneManager.teleportToWaystone((EntityPlayer) entity, boundTo)) {
-                    if (!((EntityPlayer) entity).capabilities.isCreativeMode) {
+                if (WaystoneManager.teleportToWaystone((PlayerEntity) entity, boundTo)) {
+                    if (!((PlayerEntity) entity).capabilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
                 }
@@ -126,7 +132,7 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         WaystoneEntry boundTo = getBoundTo(player, itemStack);
         if (boundTo != null) {
@@ -142,16 +148,16 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
 
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TextComponentTranslation("waystones:scrollNotBound"), true);
+            player.sendStatusMessage(new TranslationTextComponent("waystones:scrollNotBound"), true);
             return new ActionResult<>(EnumActionResult.FAIL, itemStack);
         }
 
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemStack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }

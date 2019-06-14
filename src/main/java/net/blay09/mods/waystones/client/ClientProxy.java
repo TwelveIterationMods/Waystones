@@ -11,13 +11,10 @@ import net.blay09.mods.waystones.client.render.RenderWaystone;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -25,10 +22,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -60,16 +55,16 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.getButton() instanceof GuiButtonInventoryWarp) {
-            EntityPlayer entityPlayer = FMLClientHandler.instance().getClientPlayerEntity();
-            if (PlayerWaystoneHelper.canFreeWarp(entityPlayer)) {
+            PlayerEntity PlayerEntity = Minecraft.getInstance().player;
+            if (PlayerWaystoneHelper.canFreeWarp(PlayerEntity)) {
                 if (!WaystoneConfig.general.teleportButtonTarget.isEmpty()) {
                     event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn(WaystoneConfig.general.teleportButtonTarget));
                 } else if (WaystoneConfig.general.teleportButtonReturnOnly) {
-                    if (PlayerWaystoneHelper.getLastWaystone(entityPlayer) != null) {
+                    if (PlayerWaystoneHelper.getLastWaystone(PlayerEntity) != null) {
                         event.getGui().mc.displayGuiScreen(new GuiConfirmInventoryButtonReturn());
                     }
                 } else {
-                    Waystones.proxy.openWaystoneSelection(entityPlayer, WarpMode.INVENTORY_BUTTON, EnumHand.MAIN_HAND, null);
+                    Waystones.proxy.openWaystoneSelection(PlayerEntity, WarpMode.INVENTORY_BUTTON, Hand.MAIN_HAND, null);
                 }
             } else {
                 event.getGui().mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -82,9 +77,9 @@ public class ClientProxy extends CommonProxy {
 
     @SubscribeEvent
     public void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (event.getGui() instanceof GuiInventory && buttonWarp != null && buttonWarp.isHovered()) {
+        if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             tmpTooltip.clear();
-            long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastFreeWarp(FMLClientHandler.instance().getClientPlayerEntity());
+            long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastFreeWarp(Minecraft.getInstance().player);
             int secondsLeft = (int) ((WaystoneConfig.general.teleportButtonCooldown * 1000 - timeSince) / 1000);
             if (!WaystoneConfig.general.teleportButtonTarget.isEmpty()) {
                 tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
@@ -94,7 +89,7 @@ public class ClientProxy extends CommonProxy {
                 }
             } else if (WaystoneConfig.general.teleportButtonReturnOnly) {
                 tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
-                WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
+                WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(Minecraft.getInstance().player);
                 if (lastEntry != null) {
                     tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
                 } else {
@@ -109,7 +104,7 @@ public class ClientProxy extends CommonProxy {
             if (secondsLeft > 0) {
                 tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
             }
-            event.getGui().drawHoveringText(tmpTooltip, event.getMouseX(), event.getMouseY());
+            event.getGui().renderTooltip(tmpTooltip, event.getMouseX(), event.getMouseY());
         }
     }
 
@@ -121,23 +116,23 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openWaystoneSelection(EntityPlayer player, WarpMode mode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
-        if (player == Minecraft.getMinecraft().player) {
-            WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(FMLClientHandler.instance().getClientPlayerEntity()).getWaystones();
-            Minecraft.getMinecraft().displayGuiScreen(new GuiWaystoneList(waystones, mode, hand, fromWaystone));
+    public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable WaystoneEntry fromWaystone) {
+        if (player == Minecraft.getInstance().player) {
+            WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(Minecraft.getInstance().player).getWaystones();
+            Minecraft.getInstance().displayGuiScreen(new GuiWaystoneList(waystones, mode, hand, fromWaystone));
         }
     }
 
     @Override
-    public void openWaystoneSettings(EntityPlayer player, WaystoneEntry waystone, boolean fromSelectionGui) {
-        if (player == Minecraft.getMinecraft().player) {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditWaystone(waystone, fromSelectionGui));
+    public void openWaystoneSettings(PlayerEntity player, WaystoneEntry waystone, boolean fromSelectionGui) {
+        if (player == Minecraft.getInstance().player) {
+            Minecraft.getInstance().displayGuiScreen(new GuiEditWaystone(waystone, fromSelectionGui));
         }
     }
 
     @Override
     public void playSound(SoundEvent sound, BlockPos pos, float pitch) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.client.soundVolume, pitch, pos));
+        Minecraft.getInstance().getSoundHandler().playSound(new PositionedSoundRecord(sound, SoundCategory.AMBIENT, WaystoneConfig.client.soundVolume, pitch, pos));
     }
 
     @Override

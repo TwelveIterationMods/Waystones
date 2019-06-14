@@ -3,8 +3,6 @@ package net.blay09.mods.waystones;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Config;
 
-@Config(modid = Waystones.MOD_ID, type = Config.Type.INSTANCE, name = "Waystones", category = "")
-@Config.LangKey("waystones.config")
 public class WaystoneConfig {
 
     public static General general = new General();
