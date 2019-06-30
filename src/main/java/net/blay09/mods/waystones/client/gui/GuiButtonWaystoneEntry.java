@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui;
 
 import com.google.common.collect.Lists;
+import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -44,7 +44,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
             enableXPCost = false;
         }
 
-        this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
+        this.xpLevelCost = enableXPCost ? PlayerWaystoneHelper.getTravelCostByDistance(player, waystone) : 0;
 
         if (waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
             if (!WaystoneManager.isDimensionWarpAllowed(waystone)) {

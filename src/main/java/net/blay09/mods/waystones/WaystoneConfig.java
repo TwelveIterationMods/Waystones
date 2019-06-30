@@ -34,6 +34,10 @@ public class WaystoneConfig {
         @Config.Comment("The amount of blocks per xp level requirement.")
         public int blocksPerXPLevel = 500;
 
+        @Config.Name("Short Travel is Free")
+        @Config.Comment("If set to true, XP cost by distance travelled will only start beyond the distance-per-level distance, and shorter travel will be free.")
+        public boolean shortTravelFree = true;
+
         @Config.Name("Maximum XP Cost")
         @Config.Comment("The maximum xp cost when Blocks per XP Level is enabled.")
         @Config.RangeInt(min = 1)
