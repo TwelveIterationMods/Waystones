@@ -174,6 +174,8 @@ public class WaystoneConfig {
         general.warpStoneUseTime = buf.readByte();
         general.warpScrollUseTime = buf.readByte();
         general.globalWaystonesCostXp = buf.readBoolean();
+        general.warpStoneXpCost = buf.readBoolean();
+        general.shortTravelFree = buf.readBoolean();
     }
 
     public static void write(ByteBuf buf) {
@@ -191,5 +193,7 @@ public class WaystoneConfig {
         buf.writeByte(general.warpStoneUseTime);
         buf.writeByte(general.warpScrollUseTime);
         buf.writeBoolean(general.globalWaystonesCostXp);
+        buf.writeBoolean(general.warpStoneXpCost);
+        buf.writeBoolean(general.shortTravelFree);
     }
 }
