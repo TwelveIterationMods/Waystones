@@ -2,24 +2,24 @@ tile.waystones:waystone.name=Путеводный обелиск
 
 item.waystones:warp_scroll.name=Свиток перемещения
 item.waystones:warp_scroll_bound.name=Свиток перемещения (привязан)
-item.waystones:return_scroll.name=Свиток возврата
+item.waystones:return_scroll.name=Свиток позврата
 item.waystones:warp_stone.name=Камень перемещения
-item.waystones:bound_scroll.name=Свиток связи
+item.waystones:bound_scroll.name=Связанный свиток
 
-itemGroup.waystones=Обелиски
+itemGroup.waystones=Waystones
 
 waystones:noDimensionWarp=Вы не можете перемещаться между мирами.
 waystones:waystoneBroken=Привязанный обелиск был перемещён или уничтожен.
 waystones:returnImpossible=Вы ещё не активировали ни одного обелиска.
 waystones:scrollNotBound=Этот свиток не привязан к обелиску.
-waystones:stoneNotCharged=Камень перемещения ещё не перезарядился.
+waystones:stoneNotCharged=Камень Перемещения ещё не перезарядился.
 waystones:activatedWaystone=Активированный обелиск: %s
 waystones:nameOccupied=Название %s уже используется.
 waystones:notTheOwner=Только игрок поставивший обелиск может его переименовывать.
 waystones:creativeRequired=Нужно быть в Творческом режиме чтобы редактировать глобальные обелиски.
-waystones:scrollBound=Свиток привязан к %s
+waystones:scrollBound=Свиток привязан: %s
 
-gui.waystones:current_location=Текущее местоположение:
+gui.waystones:current_location=Текущее Местоположение:
 gui.waystones:warpStone.selectDestination=Выберите пункт назначения:
 gui.waystones:warpStone.nextPage=Далее
 gui.waystones:warpStone.previousPage=Назад
@@ -36,7 +36,7 @@ tooltip.waystones:returnToWaystone=Вернуться к обелиску
 tooltip.waystones:openWaystoneMenu=Открыть меню перемещений
 tooltip.waystones:levelRequirement=Стоит уровней: %d
 
-stat.waystones:waystonesActivated=Обелиски активированы
+stat.waystones:waystonesActivated=Активировано путеводных обелисков
 
-waystones.general.globalinterdimension=Телепорт между измерениями (глобальные обелиски)
-waystones.worldgen.customnames=Пользовательские имена
+waystones.general.globalinterdimension=Межпространственная телепортация (глобальные обелиски)
+waystones.worldgen.customnames=Произвольные названия
