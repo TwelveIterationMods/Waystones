@@ -2,7 +2,6 @@ package net.blay09.mods.waystones;
 
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageConfig;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

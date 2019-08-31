@@ -75,7 +75,7 @@ public class GuiEditWaystone extends GuiScreen {
             }
 
             if (tileWaystone.getName().isEmpty()) {
-                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionId()));
+                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimension()));
             }
         }
     }

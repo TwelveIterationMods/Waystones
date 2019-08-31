@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.client.render;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.client.ClientWaystones;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
+public class RenderWaystone extends TileEntitySpecialRenderer<WaystoneTileEntity> {
 
     private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone.png");
     private static final ResourceLocation textureMossy = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_mossy.png");
@@ -22,13 +22,13 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
     private final ModelWaystone model = new ModelWaystone();
 
     @Override
-    public void render(TileWaystone tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(WaystoneTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         IBlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
         if (state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
             return;
         }
 
-        boolean isDummy = state != null && !state.getValue(BlockWaystone.BASE);
+        boolean isDummy = state != null && !state.getValue(WaystoneBlock.BASE);
         if (isDummy && destroyStage < 0) {
             return;
         }
@@ -45,7 +45,7 @@ public class RenderWaystone extends TileEntitySpecialRenderer<TileWaystone> {
             bindTexture(isMossy ? textureMossy : texture);
         }
 
-        float angle = state != null ? WaystoneManager.getRotationYaw(state.getValue(BlockWaystone.FACING)) : 0f;
+        float angle = state != null ? WaystoneManager.getRotationYaw(state.getValue(WaystoneBlock.FACING)) : 0f;
         GlStateManager.pushMatrix();
 //		GlStateManager.enableLighting();
         GlStateManager.color(1f, 1f, 1f, 1f);

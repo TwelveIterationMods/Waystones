@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import mcjty.theoneprobe.api.*;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.tileentity.TileWaystone;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;

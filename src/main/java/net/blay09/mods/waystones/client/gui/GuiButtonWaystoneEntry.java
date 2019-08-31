@@ -46,7 +46,7 @@ public class GuiButtonWaystoneEntry extends GuiButton {
 
         this.xpLevelCost = (enableXPCost && WaystoneConfig.general.blocksPerXPLevel > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSqToCenter(waystone.getPos())) / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 
-        if (waystone.getDimensionId() != Minecraft.getMinecraft().world.provider.getDimension()) {
+        if (waystone.getDimension() != Minecraft.getMinecraft().world.provider.getDimension()) {
             if (!WaystoneManager.isDimensionWarpAllowed(waystone)) {
                 enabled = false;
             }

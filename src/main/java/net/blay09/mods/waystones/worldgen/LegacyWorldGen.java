@@ -2,8 +2,8 @@ package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -39,17 +39,17 @@ public class LegacyWorldGen implements IWorldGenerator {
             EnumFacing facing = EnumFacing.values()[2 + random.nextInt(4)];
             if (prev.getBlock() != Blocks.WATER && prev.getBlock().isReplaceable(world, pos) && prevUp.getBlock().isAir(prevUp, world, pos)) {
                 world.setBlockState(pos, Waystones.blockWaystone.getDefaultState()
-                        .withProperty(BlockWaystone.BASE, true)
-                        .withProperty(BlockWaystone.FACING, facing), 2);
+                        .withProperty(WaystoneBlock.BASE, true)
+                        .withProperty(WaystoneBlock.FACING, facing), 2);
 
                 world.setBlockState(posUp, Waystones.blockWaystone.getDefaultState()
-                        .withProperty(BlockWaystone.BASE, false)
-                        .withProperty(BlockWaystone.FACING, facing), 2);
+                        .withProperty(WaystoneBlock.BASE, false)
+                        .withProperty(WaystoneBlock.FACING, facing), 2);
 
                 TileEntity tileEntity = world.getTileEntity(pos);
-                if (tileEntity instanceof TileWaystone) {
-                    ((TileWaystone) tileEntity).setWaystoneName(NameGenerator.get(world).getName(world.getBiome(pos), random));
-                    ((TileWaystone) tileEntity).setMossy(true);
+                if (tileEntity instanceof WaystoneTileEntity) {
+                    ((WaystoneTileEntity) tileEntity).setWaystoneName(NameGenerator.get(world).getName(world.getBiome(pos), random));
+                    ((WaystoneTileEntity) tileEntity).setMossy(true);
                 }
 
                 break;

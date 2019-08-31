@@ -23,6 +23,6 @@ public class ClientWaystones {
 	}
 
 	public static WaystoneEntry[] getKnownWaystones() {
-		return knownWaystones.values().toArray(new WaystoneEntry[knownWaystones.size()]);
+		return knownWaystones.values().toArray(new WaystoneEntry[0]);
 	}
 }

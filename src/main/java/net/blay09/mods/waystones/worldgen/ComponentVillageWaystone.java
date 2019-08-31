@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.BlockWaystone;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -50,8 +50,8 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 		Map<BlockPos, String> dataBlocks = template.getDataBlocks(pos, settings);
 		for (Map.Entry<BlockPos, String> entry : dataBlocks.entrySet()) {
 			if ("Waystone".equals(entry.getValue())) {
-				world.setBlockState(entry.getKey(), Waystones.blockWaystone.getDefaultState().withProperty(BlockWaystone.BASE, true), 3);
-				world.setBlockState(entry.getKey().up(), Waystones.blockWaystone.getDefaultState().withProperty(BlockWaystone.BASE, false), 3);
+				world.setBlockState(entry.getKey(), Waystones.blockWaystone.getDefaultState().withProperty(WaystoneBlock.BASE, true), 3);
+				world.setBlockState(entry.getKey().up(), Waystones.blockWaystone.getDefaultState().withProperty(WaystoneBlock.BASE, false), 3);
 			}
 		}
 		return true;

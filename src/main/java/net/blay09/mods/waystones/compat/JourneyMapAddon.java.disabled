@@ -34,7 +34,7 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @SubscribeEvent
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
-        if (!WaystoneConfig.compat.createJourneyMapWaypoint) {
+        if (!WaystoneConfig.COMMON.createJourneyMapWaypoint.get()) {
             return;
         }
 

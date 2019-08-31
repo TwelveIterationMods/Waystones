@@ -1,0 +1,36 @@
+{
+    "block.waystones:waystone": "Путеводный Обелиск",
+
+    "item.waystones:warp_scroll": "Свиток Перемещения",
+    "item.waystones:warp_scroll_bound": "Свиток Перемещения (Привязан)",
+    "item.waystones:return_scroll": "Свиток Возврата",
+    "item.waystones:warp_stone": "Камень Перемещения",
+
+    "itemGroup.waystones": "Waystones",
+
+    "waystones:noDimensionWarp": "Вы не можете перемещаться между мирами.",
+    "waystones:waystoneBroken": "Привязанный обелиск был перемещён или уничтожен.",
+    "waystones:returnImpossible": "Вы ещё не активировали ни одного обелиска.",
+    "waystones:stoneNotCharged": "Камень Перемещения ещё не перезарядился.",
+    "waystones:activatedWaystone": "Активированный обелиск: %s",
+    "waystones:nameOccupied": "Название %s уже используется.",
+    "waystones:notTheOwner": "Только игрок поставивший обелиск может его переименовывать.",
+    "waystones:creativeRequired": "Нужно быть в Творческом режиме чтобы редактировать глобальные обелиски.",
+
+    "gui.waystones:current_location": "Текущее Местоположение:",
+    "gui.waystones:warpStone.selectDestination": "Выберите пункт назначения:",
+    "gui.waystones:warpStone.nextPage": "Далее",
+    "gui.waystones:warpStone.previousPage": "Назад",
+    "gui.waystones:confirmReturn": "Вы действительно хотите переместиться к последнему обелиску?",
+    "gui.waystones:confirmReturn.boundTo": "Привязан: %s",
+    "gui.waystones:confirmReturn.noWaystoneActive": "Нет активных обелисков.",
+    "gui.waystones:editWaystone.enterName": "Введите название обелиска:",
+    "gui.waystones:editWaystone.isGlobal": "Глобальный",
+
+    "tooltip.waystones:cooldownLeft": "Перезарядка: %d секунд",
+    "tooltip.waystones:boundTo": "Привязан: %s",
+    "tooltip.waystones:none": "Нет",
+    "tooltip.waystones:returnToWaystone": "Вернуться к обелиску",
+    "tooltip.waystones:openWaystoneMenu": "Открыть меню перемещений",
+    "tooltip.waystones:levelRequirement": "Стоит уровней: %d"
+}

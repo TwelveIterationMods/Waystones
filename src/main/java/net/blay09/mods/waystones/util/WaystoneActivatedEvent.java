@@ -1,14 +1,15 @@
 package net.blay09.mods.waystones.util;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.Dimension;
 import net.minecraftforge.eventbus.api.Event;
 
 public class WaystoneActivatedEvent extends Event {
     private String waystoneName;
     private BlockPos pos;
-    private int dimension;
+    private Dimension dimension;
 
-    public WaystoneActivatedEvent(String waystoneName, BlockPos pos, int dimension) {
+    public WaystoneActivatedEvent(String waystoneName, BlockPos pos, Dimension dimension) {
         this.waystoneName = waystoneName;
         this.pos = pos;
         this.dimension = dimension;
@@ -22,7 +23,7 @@ public class WaystoneActivatedEvent extends Event {
         return pos;
     }
 
-    public int getDimension() {
+    public Dimension getDimension() {
         return dimension;
     }
 }

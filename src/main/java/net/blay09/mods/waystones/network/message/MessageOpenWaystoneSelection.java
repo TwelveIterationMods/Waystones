@@ -1,48 +1,49 @@
 package net.blay09.mods.waystones.network.message;
 
-import io.netty.buffer.ByteBuf;
 import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageOpenWaystoneSelection implements IMessage {
-    private WarpMode warpMode;
-	private EnumHand hand;
-	private WaystoneEntry waystone;
+import java.util.function.Supplier;
 
-    public MessageOpenWaystoneSelection() {
-    }
+public class MessageOpenWaystoneSelection {
+    private final WarpMode warpMode;
+    private final Hand hand;
+    private final WaystoneEntry waystone;
 
-    public MessageOpenWaystoneSelection(WarpMode warpMode, EnumHand hand, WaystoneEntry waystone) {
+    public MessageOpenWaystoneSelection(WarpMode warpMode, Hand hand, WaystoneEntry waystone) {
         this.warpMode = warpMode;
         this.hand = hand;
         this.waystone = waystone;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        warpMode = WarpMode.values()[buf.readByte()];
-        hand = EnumHand.values()[buf.readByte()];
-        waystone = WaystoneEntry.read(buf);
+
+    public static void encode(MessageOpenWaystoneSelection message, PacketBuffer buf) {
+        buf.writeByte(message.warpMode.ordinal());
+        buf.writeByte(message.hand.ordinal());
+        message.waystone.write(buf);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeByte(warpMode.ordinal());
-        buf.writeByte(hand.ordinal());
-        waystone.write(buf);
+    public static MessageOpenWaystoneSelection decode(PacketBuffer buf) {
+        WarpMode warpMode = WarpMode.values()[buf.readByte()];
+        Hand hand = Hand.values()[buf.readByte()];
+        WaystoneEntry waystone = WaystoneEntry.read(buf);
+        return new MessageOpenWaystoneSelection(warpMode, hand, waystone);
     }
 
-    public WarpMode getWarpMode() {
-        return warpMode;
-    }
+    public static void handle(MessageOpenWaystoneSelection message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            ServerPlayerEntity player = context.getSender();
+            if (player == null) {
+                return;
+            }
 
-    public EnumHand getHand() {
-        return hand;
-    }
-
-    public WaystoneEntry getWaystone() {
-        return waystone;
+            Waystones.proxy.openWaystoneSelection(player, message.warpMode, message.hand, message.waystone);
+        });
     }
 }

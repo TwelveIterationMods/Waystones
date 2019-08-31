@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client;
 
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.*;
-import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.client.gui.GuiButtonInventoryWarp;
 import net.blay09.mods.waystones.client.gui.GuiConfirmInventoryButtonReturn;
 import net.blay09.mods.waystones.client.gui.GuiEditWaystone;
@@ -39,7 +39,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MinecraftForge.EVENT_BUS.register(this);
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileWaystone.class, new RenderWaystone());
+        ClientRegistry.bindTileEntitySpecialRenderer(WaystoneTileEntity.class, new RenderWaystone());
 
         isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains("vivecraft");
     }

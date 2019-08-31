@@ -1,0 +1,40 @@
+{
+    "block.waystones:waystone": "座標石碑",
+
+    "item.waystones:warp_scroll": "瞬移卷軸",
+    "item.waystones:warp_scroll_bound": "瞬移卷軸（已綁定）",
+    "item.waystones:return_scroll": "返回卷軸",
+    "item.waystones:warp_stone": "瞬移石塊",
+
+    "itemGroup.waystones": "座標石碑",
+
+    "waystones:noDimensionWarp": "你不能夠跨世界瞬移。",
+    "waystones:waystoneBroken": "已綁定的座標石碑已經被移動或破壞。",
+    "waystones:returnImpossible": "你還沒有激活任何座標石碑。",
+    "waystones:stoneNotCharged": "瞬移石塊還沒有完成充能。",
+    "waystones:activatedWaystone": "已激活的座標石碑：%s",
+    "waystones:nameOccupied": "名稱「%s」已經被使用了。",
+    "waystones:notTheOwner": "只有放置這個座標石碑的玩家才可以重新命名。",
+    "waystones:creativeRequired": "你必須在創造模式下才可以編輯一個世界性的座標石碑。",
+
+    "gui.waystones:current_location": "現時位置：",
+    "gui.waystones:warpStone.selectDestination": "選擇目的地：",
+    "gui.waystones:warpStone.nextPage": "下一頁",
+    "gui.waystones:warpStone.previousPage": "上一頁",
+    "gui.waystones:confirmReturn": "你真的想要瞬移返回到這個座標石碑嗎？",
+    "gui.waystones:confirmReturn.boundTo": "綁定至：%s",
+    "gui.waystones:confirmReturn.noWaystoneActive": "沒有激活的座標石碑。",
+    "gui.waystones:editWaystone.enterName": "輸入座標石碑名稱：",
+    "gui.waystones:editWaystone.isGlobal": "是世界性的",
+
+    "tooltip.waystones:cooldownLeft": "冷卻：%d秒",
+    "tooltip.waystones:boundTo": "綁定至：%s",
+    "tooltip.waystones:none": "沒有",
+    "tooltip.waystones:returnToWaystone": "返回到座標石碑",
+    "tooltip.waystones:openWaystoneMenu": "打開座標石碑菜單",
+    "tooltip.waystones:levelRequirement": "需要經驗等級：%d",
+
+    "stat.waystones:waystonesActivated": "座標石碑已激活",
+
+    "waystones.general.globalinterdimension": "同一維度瞬移（世界性的座標石碑）"
+}

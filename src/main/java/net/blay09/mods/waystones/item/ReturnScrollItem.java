@@ -9,14 +9,10 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 
-public class ItemReturnScroll extends ItemBoundScroll {
+public class ReturnScrollItem extends BoundScrollItem {
 
     public static final String name = "return_scroll";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
-
-    public ItemReturnScroll() {
-        setUnlocalizedName(registryName.toString());
-    }
 
     @Nullable
     @Override

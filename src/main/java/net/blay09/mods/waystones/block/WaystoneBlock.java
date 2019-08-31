@@ -2,18 +2,21 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.waystones.*;
 import net.blay09.mods.waystones.client.ClientWaystones;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -22,90 +25,61 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockWaystone extends ContainerBlock {
+public class WaystoneBlock extends Block {
 
     public static final String name = "waystone";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty BASE = BooleanProperty.create("base");
 
-    private static final StatBase WAYSTONE_ACTIVATED = (new StatBasic("stat.waystones:waystonesActivated", new TranslationTextComponent("stat.waystones:waystonesActivated"))).registerStat();
+    // TODO private static final Stat WAYSTONE_ACTIVATED = (new Stat("stat.waystones:waystonesActivated", new TranslationTextComponent("stat.waystones:waystonesActivated"))).registerStat();
 
-    public BlockWaystone() {
-        super(Material.ROCK);
-
-        setRegistryName(name);
-        setUnlocalizedName(registryName.toString());
-        setHardness(5f);
-        setResistance(2000f);
-        setCreativeTab(Waystones.itemGroup);
+    public WaystoneBlock() {
+        super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING, BASE);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+        builder.add(BASE);
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        int meta = state.getValue(FACING).getIndex();
-        if (state.getValue(BASE)) {
-            meta |= 8;
-        }
-        return meta;
+    public boolean hasTileEntity() {
+        return true;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta(int meta) {
-        EnumFacing facing = EnumFacing.getFront(meta & 7);
-        if (facing.getAxis() == EnumFacing.Axis.Y) {
-            facing = EnumFacing.NORTH;
-        }
-        boolean isBase = (meta & 8) > 0;
-        return getDefaultState().withProperty(FACING, facing).withProperty(BASE, isBase);
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
     @Nullable
-    public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileWaystone(!getStateFromMeta(metadata).getValue(BASE));
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new WaystoneTileEntity(!state.get(BASE));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos) {
-        if (WaystoneConfig.general.creativeModeOnly && !player.capabilities.isCreativeMode) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader world, BlockPos pos) {
+        if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
             return -1f;
         }
 
-        TileWaystone tileWaystone = getTileWaystone(world, pos);
-        if (tileWaystone != null && !player.capabilities.isCreativeMode) {
-            if (tileWaystone.wasGenerated() && WaystoneConfig.general.disallowBreakingGenerated) {
+        WaystoneTileEntity tileWaystone = getTileWaystone(world, pos);
+        if (tileWaystone != null && !player.abilities.isCreativeMode) {
+            if (tileWaystone.wasGenerated() && WaystoneConfig.COMMON.disallowBreakingGenerated.get()) {
                 return -1f;
             }
 
-            if (tileWaystone.isGlobal() && !WaystoneConfig.general.allowEveryoneGlobal) {
+            if (tileWaystone.isGlobal() && !WaystoneConfig.SERVER.allowEveryoneGlobal.get()) {
                 return -1f;
             }
         }
@@ -113,7 +87,7 @@ public class BlockWaystone extends ContainerBlock {
         return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
 
-    @Override
+    // TODO @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
         Block blockBelow = world.getBlockState(pos.down()).getBlock();
         if (blockBelow == this) {
@@ -121,70 +95,71 @@ public class BlockWaystone extends ContainerBlock {
         }
 
         Block blockAbove = world.getBlockState(pos.up(2)).getBlock();
-        return blockAbove != this && super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
+        return blockAbove != this;// TODO && super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
     }
 
+    @Nullable
     @Override
-    public BlockState getStateForPlacement(World world, BlockPos pos, Direction side, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
-        Direction facing = Direction.getDirectionFromEntityLiving(pos, placer);
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        Direction facing = context.getPlacementHorizontalFacing();
         if (facing.getAxis() == Direction.Axis.Y) {
             facing = Direction.NORTH;
         }
 
-        return getDefaultState().with(FACING, facing).withProperty(BASE, true);
+        return getDefaultState().with(FACING, facing).with(BASE, true);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         world.setBlockState(pos.up(), this.getDefaultState().with(BASE, false));
-        if (placer instanceof EntityPlayer && (!WaystoneConfig.general.creativeModeOnly || ((PlayerEntity) placer).capabilities.isCreativeMode)) {
-            TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
+        if (placer instanceof PlayerEntity && (!WaystoneConfig.SERVER.creativeModeOnly.get() || ((PlayerEntity) placer).abilities.isCreativeMode)) {
+            WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
             if (tileWaystone != null) {
-                tileWaystone.setOwner((EntityPlayer) placer);
+                tileWaystone.setOwner((PlayerEntity) placer);
                 tileWaystone.setWasGenerated(false);
-                Waystones.proxy.openWaystoneSettings((EntityPlayer) placer, new WaystoneEntry(tileWaystone.getParent()), false);
+                Waystones.proxy.openWaystoneSettings((PlayerEntity) placer, new WaystoneEntry(tileWaystone.getParent()), false);
             }
         }
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, BlockState state) {
-        TileWaystone tileWaystone = getTileWaystone(world, pos);
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        WaystoneTileEntity tileWaystone = getTileWaystone(world, pos);
         if (tileWaystone != null) {
             WaystoneEntry entry = new WaystoneEntry(tileWaystone);
             if (tileWaystone.isGlobal()) {
                 GlobalWaystones.get(world).removeGlobalWaystone(entry);
             }
-            for (EntityPlayer player : world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos).grow(64, 64, 64))) {
+            for (PlayerEntity player : world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(64, 64, 64))) {
                 WaystoneManager.removePlayerWaystone(player, entry);
                 WaystoneManager.sendPlayerWaystones(player);
             }
         }
 
-        super.breakBlock(world, pos, state);
+        super.onReplaced(state, world, pos, newState, isMoving);
 
         if (world.getBlockState(pos.up()).getBlock() == this) {
-            world.setBlockToAir(pos.up());
+            world.removeBlock(pos.up(), false);
         } else if (world.getBlockState(pos.down()).getBlock() == this) {
-            world.setBlockToAir(pos.down());
+            world.removeBlock(pos.down(), false);
         }
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
-        if (player.isSneaking() && (player.playerAbilities.isCreativeMode || !WaystoneConfig.general.creativeModeOnly)) {
-            TileWaystone tileWaystone = getTileWaystone(world, pos);
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        if (player.isSneaking() && (player.abilities.isCreativeMode || !WaystoneConfig.SERVER.creativeModeOnly.get())) {
+            WaystoneTileEntity tileWaystone = getTileWaystone(world, pos);
             if (tileWaystone == null) {
                 return true;
             }
 
             if (!world.isRemote) {
-                if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
+                if (WaystoneConfig.SERVER.restrictRenameToOwner.get() && !tileWaystone.isOwner(player)) {
                     player.sendStatusMessage(new TranslationTextComponent("waystones:notTheOwner"), true);
                     return true;
                 }
 
-                if (tileWaystone.isGlobal() && !player.playerAbilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
+                if (tileWaystone.isGlobal() && !player.abilities.isCreativeMode && !WaystoneConfig.SERVER.allowEveryoneGlobal.get()) {
                     player.sendStatusMessage(new TranslationTextComponent("waystones:creativeRequired"), true);
                     return true;
                 }
@@ -194,7 +169,7 @@ public class BlockWaystone extends ContainerBlock {
             return true;
         }
 
-        TileWaystone tileWaystone = getTileWaystone(world, pos);
+        WaystoneTileEntity tileWaystone = getTileWaystone(world, pos);
         if (tileWaystone == null) {
             return true;
         }
@@ -209,7 +184,7 @@ public class BlockWaystone extends ContainerBlock {
         return true;
     }
 
-    public void activateWaystone(PlayerEntity player, World world, TileWaystone tileWaystone) {
+    public static void activateWaystone(PlayerEntity player, World world, WaystoneTileEntity tileWaystone) {
         BlockPos pos = tileWaystone.getPos();
         if (!world.isRemote) {
             WaystoneEntry waystone = new WaystoneEntry(tileWaystone);
@@ -219,20 +194,20 @@ public class BlockWaystone extends ContainerBlock {
                 TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:activatedWaystone", nameComponent);
                 chatComponent.getStyle().setColor(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent);
-                player.addStat(WAYSTONE_ACTIVATED);
+                // TODO player.addStat(WAYSTONE_ACTIVATED);
                 WaystoneManager.addPlayerWaystone(player, waystone);
                 WaystoneManager.sendPlayerWaystones(player);
             }
 
-            if (WaystoneConfig.general.setSpawnPoint) {
+            if (WaystoneConfig.SERVER.setSpawnPoint.get()) {
                 BlockState state = world.getBlockState(pos);
                 Direction blockFacing = state.get(FACING);
                 player.setSpawnPoint(new BlockPos(tileWaystone.getPos().offset(blockFacing)), true);
             }
 
-            world.updateObservingBlocksAt(pos, this);
+            // TODO world.updateObservingBlocksAt(pos, this);
         } else {
-            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), tileWaystone.getWorld().provider.getDimension()));
+            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), tileWaystone.getWorld().getDimension()));
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
             for (int i = 0; i < 32; i++) {
@@ -243,22 +218,22 @@ public class BlockWaystone extends ContainerBlock {
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random rand) {
-        if (!WaystoneConfig.client.disableParticles && rand.nextFloat() < 0.75f) {
-            TileWaystone tileWaystone = getTileWaystone(world, pos);
+    public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
+            WaystoneTileEntity tileWaystone = getTileWaystone(world, pos);
             if (tileWaystone == null) {
                 return;
             }
             if (ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) != null) {
-                world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, 0, 0, 0);
-                world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (rand.nextDouble() - 0.5) * 1.5, 0, 0, 0);
+                world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
+                world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
             }
         }
     }
 
     @Nullable
-    public TileWaystone getTileWaystone(World world, BlockPos pos) {
-        TileWaystone tileWaystone = (TileWaystone) world.getTileEntity(pos);
+    private WaystoneTileEntity getTileWaystone(IBlockReader world, BlockPos pos) {
+        WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
         return tileWaystone != null ? tileWaystone.getParent() : null;
     }
 

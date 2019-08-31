@@ -1,39 +1,56 @@
 package net.blay09.mods.waystones.network.message;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.blay09.mods.waystones.PlayerWaystoneData;
+import net.blay09.mods.waystones.WaystoneManager;
+import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageSortWaystone implements IMessage {
+import java.util.function.Supplier;
 
-	private int index;
-	private int otherIndex;
+public class MessageSortWaystone {
 
-	public MessageSortWaystone() {
-	}
+    private final int index;
+    private final int otherIndex;
 
-	public MessageSortWaystone(int index, int otherIndex) {
-		this.index = index;
-		this.otherIndex = otherIndex;
-	}
+    public MessageSortWaystone(int index, int otherIndex) {
+        this.index = index;
+        this.otherIndex = otherIndex;
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		index = buf.readByte();
-		otherIndex = buf.readByte();
-	}
+    public static void encode(MessageSortWaystone message, PacketBuffer buf) {
+        buf.writeByte(message.index);
+        buf.writeByte(message.otherIndex);
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeByte(index);
-		buf.writeByte(otherIndex);
-	}
+    public static MessageSortWaystone decode(PacketBuffer buf) {
+        int index = buf.readByte();
+        int otherIndex = buf.readByte();
+        return new MessageSortWaystone(index, otherIndex);
+    }
 
-	public int getIndex() {
-		return index;
-	}
+    public static void handle(MessageSortWaystone message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            ServerPlayerEntity player = context.getSender();
+            if (player == null) {
+                return;
+            }
 
-	public int getOtherIndex() {
-		return otherIndex;
-	}
+            PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
+            WaystoneEntry[] entries = waystoneData.getWaystones();
+            int index = message.index;
+            int otherIndex = message.otherIndex;
+            if (index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
+                return;
+            }
+            WaystoneEntry swap = entries[index];
+            entries[index] = entries[otherIndex];
+            entries[otherIndex] = swap;
+            waystoneData.store(player);
+            WaystoneManager.sendPlayerWaystones(player);
+        });
+    }
 
 }

@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.block;
+package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.worldgen.NameGenerator;
 import net.minecraft.block.BlockState;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class TileWaystone extends TileEntity {
+public class WaystoneTileEntity extends TileEntity {
 
     private boolean isDummy;
     private String waystoneName = "";
@@ -24,10 +24,12 @@ public class TileWaystone extends TileEntity {
     private boolean wasGenerated = true;
     private boolean isMossy;
 
-    public TileWaystone() {
+    public WaystoneTileEntity() {
+        super(ModTileEntities.waystone);
     }
 
-    public TileWaystone(boolean isDummy) {
+    public WaystoneTileEntity(boolean isDummy) {
+        super(ModTileEntities.waystone);
         this.isDummy = isDummy;
     }
 
@@ -150,11 +152,11 @@ public class TileWaystone extends TileEntity {
         markDirty();
     }
 
-    public TileWaystone getParent() {
+    public WaystoneTileEntity getParent() {
         if (isDummy) {
             TileEntity tileBelow = world.getTileEntity(pos.down());
-            if (tileBelow instanceof TileWaystone) {
-                return (TileWaystone) tileBelow;
+            if (tileBelow instanceof WaystoneTileEntity) {
+                return (WaystoneTileEntity) tileBelow;
             }
         }
         return this;
