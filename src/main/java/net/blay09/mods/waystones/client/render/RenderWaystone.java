@@ -1,19 +1,20 @@
 package net.blay09.mods.waystones.client.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.client.ClientWaystones;
-import net.minecraft.block.state.IBlockState;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class RenderWaystone extends TileEntitySpecialRenderer<WaystoneTileEntity> {
+public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
 
     private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone.png");
     private static final ResourceLocation textureMossy = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_mossy.png");
@@ -22,13 +23,13 @@ public class RenderWaystone extends TileEntitySpecialRenderer<WaystoneTileEntity
     private final ModelWaystone model = new ModelWaystone();
 
     @Override
-    public void render(WaystoneTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        IBlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
-        if (state != null && state.getBlock() != Waystones.blockWaystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
+    public void render(WaystoneTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+        BlockState state = (tileEntity != null && tileEntity.hasWorld()) ? tileEntity.getWorld().getBlockState(tileEntity.getPos()) : null;
+        if (state != null && state.getBlock() != ModBlocks.waystone) { // I don't know. But it seems for some reason the renderer gets called for minecraft:air in certain cases.
             return;
         }
 
-        boolean isDummy = state != null && !state.getValue(WaystoneBlock.BASE);
+        boolean isDummy = state != null && !state.get(WaystoneBlock.BASE);
         if (isDummy && destroyStage < 0) {
             return;
         }
@@ -37,33 +38,33 @@ public class RenderWaystone extends TileEntitySpecialRenderer<WaystoneTileEntity
             bindTexture(DESTROY_STAGES[destroyStage]);
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
-            GlStateManager.scale(4f, 8f, 1f);
-            GlStateManager.translate(0.0625f, 0.0625f, 0.0625f);
+            GlStateManager.scalef(4f, 8f, 1f);
+            GlStateManager.translatef(0.0625f, 0.0625f, 0.0625f);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         } else {
-            boolean isMossy = tileEntity != null && tileEntity.isMossy() && WaystoneConfig.client.randomlySpawnedLookMossy;
+            boolean isMossy = tileEntity != null && tileEntity.isMossy() && WaystoneConfig.CLIENT.randomlySpawnedLookMossy.get();
             bindTexture(isMossy ? textureMossy : texture);
         }
 
-        float angle = state != null ? WaystoneManager.getRotationYaw(state.getValue(WaystoneBlock.FACING)) : 0f;
+        float angle = state != null ? WaystoneManager.getRotationYaw(state.get(WaystoneBlock.FACING)) : 0f;
         GlStateManager.pushMatrix();
 //		GlStateManager.enableLighting();
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        GlStateManager.translate(x + 0.5, y + (isDummy ? -1 : 0), z + 0.5);
-        GlStateManager.rotate(angle, 0f, 1f, 0f);
-        GlStateManager.rotate(-180f, 1f, 0f, 0f);
-        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        GlStateManager.translated(x + 0.5, y + (isDummy ? -1 : 0), z + 0.5);
+        GlStateManager.rotatef(angle, 0f, 1f, 0f);
+        GlStateManager.rotatef(-180f, 1f, 0f, 0f);
+        GlStateManager.scalef(0.5f, 0.5f, 0.5f);
         model.renderAll();
         if (tileEntity != null && tileEntity.hasWorld() && (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null)) {
             bindTexture(textureActive);
-            GlStateManager.scale(1.05f, 1.05f, 1.05f);
-            if (!WaystoneConfig.client.disableTextGlow) {
+            GlStateManager.scalef(1.05f, 1.05f, 1.05f);
+            if (!WaystoneConfig.CLIENT.disableTextGlow.get()) {
 //				GlStateManager.disableLighting();
-                Minecraft.getMinecraft().entityRenderer.disableLightmap();
+                Minecraft.getInstance().gameRenderer.disableLightmap();
             }
             model.renderPillar();
-            if (!WaystoneConfig.client.disableTextGlow) {
-                Minecraft.getMinecraft().entityRenderer.enableLightmap();
+            if (!WaystoneConfig.CLIENT.disableTextGlow.get()) {
+                Minecraft.getInstance().gameRenderer.enableLightmap();
             }
         }
         GlStateManager.popMatrix();

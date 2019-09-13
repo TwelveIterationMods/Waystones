@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModBlocks {
-    public static WaystoneBlock waystone;
+    public static Block waystone;
 
     public static void register(IForgeRegistry<Block> registry) {
         registry.registerAll(

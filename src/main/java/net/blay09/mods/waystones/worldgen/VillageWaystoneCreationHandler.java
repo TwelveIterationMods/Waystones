@@ -1,14 +1,8 @@
 package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraft.world.gen.structure.StructureComponent;
-import net.minecraft.world.gen.structure.StructureVillagePieces;
-import net.minecraftforge.fml.common.registry.VillagerRegistry;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 
 public class VillageWaystoneCreationHandler implements VillagerRegistry.IVillageCreationHandler {

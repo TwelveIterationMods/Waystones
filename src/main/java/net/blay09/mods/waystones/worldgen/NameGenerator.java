@@ -4,12 +4,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
-import net.minecraft.init.Biomes;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
@@ -148,7 +148,7 @@ public class NameGenerator extends WorldSavedData {
         }
 
         String name = null;
-        for (String customName : WaystoneConfig.worldGen.customNames) {
+        for (String customName : WaystoneConfig.COMMON.customNames.get()) {
             if (!usedNames.contains(customName)) {
                 name = customName;
                 break;
@@ -174,20 +174,20 @@ public class NameGenerator extends WorldSavedData {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        NBTTagList tagList = compound.getTagList(TAG_LIST_NAME, Constants.NBT.TAG_STRING);
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            usedNames.add(((NBTTagString) tagList.get(i)).getString());
+    public void read(CompoundNBT compound) {
+        ListNBT tagList = compound.getList(TAG_LIST_NAME, Constants.NBT.TAG_STRING);
+        for (int i = 0; i < tagList.size(); i++) {
+            usedNames.add(tagList.get(i).getString());
         }
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagList tagList = new NBTTagList();
+    public CompoundNBT write(CompoundNBT compound) {
+        ListNBT tagList = new ListNBT();
         for (String entry : usedNames) {
-            tagList.appendTag(new NBTTagString(entry));
+            tagList.add(new StringNBT(entry));
         }
-        compound.setTag(TAG_LIST_NAME, tagList);
+        compound.put(TAG_LIST_NAME, tagList);
         return compound;
     }
 

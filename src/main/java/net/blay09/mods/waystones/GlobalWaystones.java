@@ -58,7 +58,7 @@ public class GlobalWaystones extends WorldSavedData {
 
 
 	@Override
-	public void readFromNBT(CompoundNBT tagCompound) {
+	public void read(CompoundNBT tagCompound) {
 		ListNBT tagList = tagCompound.getList(TAG_LIST_NAME, Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i < tagList.size(); i++) {
 			WaystoneEntry entry = WaystoneEntry.read((CompoundNBT) tagList.get(i));
@@ -67,7 +67,7 @@ public class GlobalWaystones extends WorldSavedData {
 	}
 
 	@Override
-	public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
+	public CompoundNBT write(CompoundNBT tagCompound) {
 		ListNBT tagList = new ListNBT();
 		for(WaystoneEntry entry : globalWaystones.values()) {
 			tagList.add(entry.writeToNBT());

@@ -102,7 +102,7 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public boolean isOwner(PlayerEntity player) {
-        return owner == null || player.getGameProfile().getId().equals(owner) || player.playerAbilities.isCreativeMode;
+        return owner == null || player.getGameProfile().getId().equals(owner) || player.abilities.isCreativeMode;
     }
 
     public boolean isMossy() {
@@ -124,13 +124,8 @@ public class WaystoneTileEntity extends TileEntity {
     public void setWaystoneName(String waystoneName) {
         this.waystoneName = waystoneName;
         BlockState state = world.getBlockState(pos);
-        world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 3);
+        world.markAndNotifyBlock(pos, world.getChunkAt(pos), state, state, 3);
         markDirty();
-    }
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, BlockState oldState, BlockState newSate) {
-        return oldState.getBlock() != newSate.getBlock();
     }
 
     @Override

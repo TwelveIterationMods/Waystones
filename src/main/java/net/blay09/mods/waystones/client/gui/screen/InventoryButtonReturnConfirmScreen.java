@@ -1,27 +1,28 @@
-package net.blay09.mods.waystones.client.gui;
+package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageTeleportToGlobal;
 import net.blay09.mods.waystones.network.message.MessageFreeWarpReturn;
+import net.blay09.mods.waystones.network.message.MessageTeleportToGlobal;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.util.text.TranslationTextComponent;
 
-public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesNoCallback {
+public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
 
     private final String waystoneName;
 
-    public GuiConfirmInventoryButtonReturn() {
+    public InventoryButtonReturnConfirmScreen() {
         this("");
     }
 
-    public GuiConfirmInventoryButtonReturn(String targetWaystone) {
-        super((result, id) -> {
+    public InventoryButtonReturnConfirmScreen(String targetWaystone) {
+        super(result -> {
             if (result) {
                 if (targetWaystone.isEmpty()) {
                     NetworkHandler.channel.sendToServer(new MessageFreeWarpReturn());
@@ -29,8 +30,8 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
                     NetworkHandler.channel.sendToServer(new MessageTeleportToGlobal(targetWaystone));
                 }
             }
-            Minecraft.getMinecraft().displayGuiScreen(null);
-        }, I18n.format("gui.waystones:confirmReturn"), "", 0);
+            Minecraft.getInstance().displayGuiScreen(null);
+        }, new TranslationTextComponent("gui.waystones:confirmReturn"), new StringTextComponent(""));
 
         this.waystoneName = getWaystoneName(targetWaystone);
     }
@@ -40,7 +41,7 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
             return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", targetWaystone);
         }
 
-        WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(FMLClientHandler.instance().getClientPlayerEntity());
+        WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(Minecraft.getInstance().player);
         if (lastEntry != null) {
             return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", lastEntry.getName());
         }
@@ -49,8 +50,9 @@ public class GuiConfirmInventoryButtonReturn extends GuiYesNo implements GuiYesN
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
+        FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         drawCenteredString(fontRenderer, waystoneName, width / 2, 100, 0xFFFFFF);
     }
 }
