@@ -156,6 +156,15 @@ public class BlockWaystone extends BlockContainer {
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileWaystone tileWaystone = getTileWaystone(world, pos);
         if (tileWaystone != null) {
+
+            // We're copying the wasGenerated flag to the top half of the TE so it can be accessed in harvestBlock().
+            // That function will only return the TE from the block which was broken, and the TE is removed from the world by then.
+            // As such, we need to copy it from the base (parent) to the top (dummy) before harvesting.
+            TileWaystone tileWaystoneExact = (TileWaystone) world.getTileEntity(pos);
+            if (tileWaystoneExact != null && tileWaystoneExact.isDummy()) {
+                tileWaystoneExact.setWasGenerated(tileWaystone.wasGenerated());
+            }
+
             WaystoneEntry entry = new WaystoneEntry(tileWaystone);
             if (tileWaystone.isGlobal()) {
                 GlobalWaystones.get(world).removeGlobalWaystone(entry);
@@ -173,6 +182,15 @@ public class BlockWaystone extends BlockContainer {
         } else if (world.getBlockState(pos.down()).getBlock() == this) {
             world.setBlockToAir(pos.down());
         }
+    }
+
+    @Override
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+        TileWaystone tileWaystone = (TileWaystone) te;
+        if (tileWaystone != null && tileWaystone.wasGenerated() && !WaystoneConfig.general.dropGenerated) {
+            return;
+        }
+        super.harvestBlock(world, player, pos, state, te, stack);
     }
 
     @Override
