@@ -99,6 +99,10 @@ public class WaystoneConfig {
         @Config.Comment("Whether generated waystones should not be breakable by players.")
         public boolean disallowBreakingGenerated = false;
 
+        @Config.Name("Drop Item From Generated")
+        @Config.Comment("Whether generated waystones drop their item form when broken by players.")
+        public boolean dropGenerated = true;
+
         @Config.Name("Warp Stone Use Time")
         @Config.Comment("The time it takes to use a warp stone in ticks. This is the charge-up time when holding right-click.")
         @Config.RangeInt(min = 1, max = 127)

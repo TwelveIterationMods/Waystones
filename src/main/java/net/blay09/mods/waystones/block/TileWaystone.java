@@ -145,6 +145,10 @@ public class TileWaystone extends TileEntity {
         return isGlobal;
     }
 
+    public boolean isDummy() {
+        return isDummy;
+    }
+
     public void setGlobal(boolean isGlobal) {
         this.isGlobal = isGlobal;
         markDirty();
