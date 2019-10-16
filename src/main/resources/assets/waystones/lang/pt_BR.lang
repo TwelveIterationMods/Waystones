@@ -1,0 +1,42 @@
+tile.waystones:waystone.name=Pedra do Caminho
+
+item.waystones:warp_scroll.name=Pergaminho de Destino
+item.waystones:warp_scroll_bound.name=Pergaminho de Destino (Escrito)
+item.waystones:return_scroll.name=Pergaminho de Retorno
+item.waystones:warp_stone.name=Pedra de Teleporte
+item.waystones:bound_scroll.name=Pergaminho Escrito
+
+itemGroup.waystones=Pedras do Caminho
+
+waystones:noDimensionWarp=Você não pode teleportar através de mundos!
+waystones:waystoneBroken=A Pedra do Caminho conectada foi movida ou destruída!
+waystones:returnImpossible=Você ainda não ativou nenhuma Pedra do Caminho!
+waystones:scrollNotBound=Esse pergaminho não está ligado à uma Pedra do Caminho!
+waystones:stoneNotCharged=A Pedra de Teleporte ainda não está totalmente carregada!
+waystones:activatedWaystone=Pedra do Caminho ativada: %s
+waystones:nameOccupied=O nome %s já está em uso!.
+waystones:notTheOwner=Pedras do Caminho só podem ser renomeadas por quem as colocou!
+waystones:creativeRequired=Você precisa estar no modo criativo para editar uma Pedra do Caminho global!
+waystones:scrollBound=Pergaminho conectado: %s
+
+gui.waystones:current_location=Posição atual:
+gui.waystones:warpStone.selectDestination=Selecione seu destino:
+gui.waystones:warpStone.nextPage=Próxima
+gui.waystones:warpStone.previousPage=Anterior
+gui.waystones:confirmReturn=Você realmente quer voltar para essa Pedra do Caminho?
+gui.waystones:confirmReturn.boundTo=Conectado à: %s
+gui.waystones:confirmReturn.noWaystoneActive=Não há Pedras do Caminho ativas!
+gui.waystones:editWaystone.enterName=Insira o nome da Pedra do Caminho:
+gui.waystones:editWaystone.isGlobal=é Global
+
+tooltip.waystones:cooldownLeft=Cooldown: %d seconds
+tooltip.waystones:boundTo=Conectado à: %s
+tooltip.waystones:none=Nada
+tooltip.waystones:returnToWaystone=Voltar para Pedra do Caminho
+tooltip.waystones:openWaystoneMenu=Abrir Menu de Pedras do Caminho
+tooltip.waystones:levelRequirement=Nível necessário: %d
+
+stat.waystones:waystonesActivated=Pedras do Caminho ativadas:
+
+waystones.general.globalinterdimension=Teleporte entre mundos (Pedras do Caminho Globais)
+waystones.worldgen.customnames=Nomes Personalizados
