@@ -141,6 +141,7 @@ public class MessageTeleportToWaystone {
 
             WaystoneManager.sendPlayerWaystones(player);
         });
+        context.setPacketHandled(true);
     }
 
 }

@@ -3,8 +3,10 @@ package net.blay09.mods.waystones.network;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class NetworkHandler {
@@ -26,6 +28,6 @@ public class NetworkHandler {
     }
 
     public static void sendTo(Object message, PlayerEntity player) {
-        // TODO
+        channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), message);
     }
 }

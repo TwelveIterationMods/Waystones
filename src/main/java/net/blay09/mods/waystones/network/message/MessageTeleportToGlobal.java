@@ -75,5 +75,6 @@ public class MessageTeleportToGlobal {
 
             WaystoneManager.sendPlayerWaystones(player);
         });
+        context.setPacketHandled(true);
     }
 }

@@ -51,6 +51,7 @@ public class MessageSortWaystone {
             waystoneData.store(player);
             WaystoneManager.sendPlayerWaystones(player);
         });
+        context.setPacketHandled(true);
     }
 
 }

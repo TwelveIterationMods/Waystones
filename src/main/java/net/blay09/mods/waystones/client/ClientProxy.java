@@ -6,9 +6,7 @@ import net.blay09.mods.waystones.client.gui.screen.EditWaystoneScreen;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.screen.WaystoneListScreen;
 import net.blay09.mods.waystones.client.gui.widget.InventoryWarpButton;
-import net.blay09.mods.waystones.client.render.RenderWaystone;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -26,7 +24,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,10 +34,7 @@ public class ClientProxy extends CommonProxy {
     private InventoryWarpButton buttonWarp;
     private boolean isVivecraftInstalled;
 
-    public void preInit() {
-        // TODO
-        ClientRegistry.bindTileEntitySpecialRenderer(WaystoneTileEntity.class, new RenderWaystone());
-
+    public ClientProxy() {
         isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains("vivecraft");
     }
 

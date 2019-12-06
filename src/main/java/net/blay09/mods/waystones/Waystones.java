@@ -2,6 +2,7 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
+import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.ModTileEntities;
@@ -17,8 +18,8 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Waystones.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -42,12 +43,15 @@ public class Waystones {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, WaystoneConfig.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WaystoneConfig.clientSpec);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-
         // TODO WorldGen
         /*VillagerRegistry.instance().registerVillageCreationHandler(new VillageWaystoneCreationHandler());
         MapGenStructureIO.registerStructureComponent(ComponentVillageWaystone.class, "waystones:village_waystone");
         GameRegistry.registerWorldGenerator(new LegacyWorldGen(), 0);*/
+    }
+
+    @SubscribeEvent
+    public static void setupClient(FMLClientSetupEvent event) {
+        ModRenderers.registerRenderers();
     }
 
     @SubscribeEvent
@@ -66,7 +70,8 @@ public class Waystones {
         ModBlocks.registerBlockItems(event.getRegistry());
     }
 
-    private void enqueueIMC(InterModEnqueueEvent event) {
+    @SubscribeEvent
+    public static void enqueueIMC(InterModEnqueueEvent event) {
         // TODO FMLInterModComms.sendFunctionMessage(Compat.THEONEPROBE, "getTheOneProbe", "net.blay09.mods.waystones.compat.TheOneProbeAddon");
     }
 

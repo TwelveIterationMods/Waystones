@@ -120,5 +120,6 @@ public class MessageEditWaystone {
                 }
             }
         });
+        context.setPacketHandled(true);
     }
 }

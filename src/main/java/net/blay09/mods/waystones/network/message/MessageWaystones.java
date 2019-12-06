@@ -49,5 +49,6 @@ public class MessageWaystones {
             PlayerWaystoneHelper.store(Minecraft.getInstance().player, message.entries, message.lastFreeWarp, message.lastWarpStoneUse);
             WarpStoneItem.lastTimerUpdate = System.currentTimeMillis();
         });
+        context.setPacketHandled(true);
     }
 }

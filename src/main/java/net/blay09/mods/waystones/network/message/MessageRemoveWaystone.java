@@ -44,6 +44,7 @@ public class MessageRemoveWaystone {
             WaystoneManager.removePlayerWaystone(player, entries[index]);
             WaystoneManager.sendPlayerWaystones(player);
         });
+        context.setPacketHandled(true);
     }
 
 }

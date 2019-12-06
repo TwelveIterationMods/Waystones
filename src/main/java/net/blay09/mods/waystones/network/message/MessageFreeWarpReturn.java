@@ -44,6 +44,7 @@ public class MessageFreeWarpReturn {
 
             WaystoneManager.sendPlayerWaystones(player);
         });
+        context.setPacketHandled(true);
     }
 
 }

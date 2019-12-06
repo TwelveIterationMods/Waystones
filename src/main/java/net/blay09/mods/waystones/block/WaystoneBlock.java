@@ -30,6 +30,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -44,7 +45,6 @@ public class WaystoneBlock extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty BASE = BooleanProperty.create("base");
 
-    // TODO private static final Stat WAYSTONE_ACTIVATED = (new Stat("stat.waystones:waystonesActivated", new TranslationTextComponent("stat.waystones:waystonesActivated"))).registerStat();
 
     public WaystoneBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
@@ -87,15 +87,16 @@ public class WaystoneBlock extends Block {
         return super.getPlayerRelativeBlockHardness(state, player, world, pos);
     }
 
-    // TODO @Override
-    public boolean canPlaceBlockAt(World world, BlockPos pos) {
+    @Override
+    public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
         Block blockBelow = world.getBlockState(pos.down()).getBlock();
         if (blockBelow == this) {
             return false;
         }
 
-        Block blockAbove = world.getBlockState(pos.up(2)).getBlock();
-        return blockAbove != this;// TODO && super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
+        Block blockTwoAbove = world.getBlockState(pos.up(2)).getBlock();
+        BlockState stateAbove = world.getBlockState(pos.up());
+        return blockTwoAbove != this && stateAbove.isAir(world, pos.up());
     }
 
     @Nullable
@@ -194,7 +195,7 @@ public class WaystoneBlock extends Block {
                 TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:activatedWaystone", nameComponent);
                 chatComponent.getStyle().setColor(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent);
-                // TODO player.addStat(WAYSTONE_ACTIVATED);
+                player.addStat(ModStats.waystoneActivated);
                 WaystoneManager.addPlayerWaystone(player, waystone);
                 WaystoneManager.sendPlayerWaystones(player);
             }
@@ -207,7 +208,7 @@ public class WaystoneBlock extends Block {
 
             // TODO world.updateObservingBlocksAt(pos, this);
         } else {
-            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), tileWaystone.getWorld().getDimension()));
+            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), world.getDimension()));
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
             for (int i = 0; i < 32; i++) {
