@@ -208,7 +208,7 @@ public class WaystoneBlock extends Block {
 
             // TODO world.updateObservingBlocksAt(pos, this);
         } else {
-            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), world.getDimension()));
+            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(tileWaystone.getWaystoneName(), tileWaystone.getPos(), world.getDimension().getType()));
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, pos, 1f);
             for (int i = 0; i < 32; i++) {

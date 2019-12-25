@@ -46,7 +46,7 @@ public class WaystoneEntryButton extends Button {
 
         this.xpLevelCost = (enableXPCost && WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSq(new Vec3d(waystone.getPos()))) / WaystoneConfig.SERVER.blocksPerXPLevel.get(), 0, WaystoneConfig.SERVER.maximumXpCost.get()) : 0;
 
-        if (waystone.getDimension() != Minecraft.getInstance().world.getDimension()) {
+        if (waystone.getDimension() != Minecraft.getInstance().world.getDimension().getType()) {
             if (!WaystoneManager.isDimensionWarpAllowed(waystone)) {
                 active = false;
             }

@@ -1,3 +1,4 @@
+/*
 package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.Waystones;
@@ -59,3 +60,4 @@ public class ComponentVillageWaystone extends StructureVillagePieces.Village {
 		return null;
 	}
 }
+*/

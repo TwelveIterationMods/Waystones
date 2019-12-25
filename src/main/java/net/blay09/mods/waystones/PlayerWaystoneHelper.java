@@ -16,14 +16,14 @@ public class PlayerWaystoneHelper {
     public static final String LAST_WARP_STONE_USE = "LastWarpStoneUse";
 
     public static CompoundNBT getWaystonesTag(PlayerEntity player) {
-        return player.getEntityData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getCompound(WAYSTONES);
+        return player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getCompound(WAYSTONES);
     }
 
     public static CompoundNBT getOrCreateWaystonesTag(PlayerEntity player) {
-        CompoundNBT persistedTag = player.getEntityData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+        CompoundNBT persistedTag = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
         CompoundNBT waystonesTag = persistedTag.getCompound(WAYSTONES);
         persistedTag.put(WAYSTONES, waystonesTag);
-        player.getEntityData().put(PlayerEntity.PERSISTED_NBT_TAG, persistedTag);
+        player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, persistedTag);
         return waystonesTag;
     }
 

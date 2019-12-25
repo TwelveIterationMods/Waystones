@@ -4,6 +4,10 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class WaystoneConfig {
 
@@ -17,7 +21,7 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.BooleanValue createJourneyMapWaypoint;
         public final ForgeConfigSpec.DoubleValue villageChance;
         public final ForgeConfigSpec.DoubleValue legacyChance;
-        public final ForgeConfigSpec.ConfigValue<String[]> customNames;
+        public final ForgeConfigSpec.ConfigValue<List<String>> customNames;
         public final ForgeConfigSpec.ConfigValue<String> teleportButtonTarget;
         public final ForgeConfigSpec.BooleanValue inventoryButtonXpCost;
 
@@ -82,7 +86,7 @@ public class WaystoneConfig {
             customNames = builder
                     .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
                     .translation("waystones.config.customNames")
-                    .define("customNames", new String[0]);
+                    .define("customNames", Collections.emptyList());
         }
     }
 
