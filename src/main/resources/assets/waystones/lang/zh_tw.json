@@ -1,10 +1,10 @@
 {
-    "block.waystones:waystone": "座標石碑",
+    "block.waystones.waystone": "座標石碑",
 
-    "item.waystones:warp_scroll": "瞬移卷軸",
-    "item.waystones:warp_scroll_bound": "瞬移卷軸（已綁定）",
-    "item.waystones:return_scroll": "返回卷軸",
-    "item.waystones:warp_stone": "瞬移石塊",
+    "item.waystones.warp_scroll": "瞬移卷軸",
+    "item.waystones.warp_scroll_bound": "瞬移卷軸（已綁定）",
+    "item.waystones.return_scroll": "返回卷軸",
+    "item.waystones.warp_stone": "瞬移石塊",
 
     "itemGroup.waystones": "座標石碑",
 

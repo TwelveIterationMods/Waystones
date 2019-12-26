@@ -3,7 +3,7 @@
     "item": "waystones:warp_scroll",
     "count": 3
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "EDE",
     "PPP",
@@ -11,16 +11,16 @@
   ],
   "key": {
     "G": {
-      "item": "#GOLD_NUGGET"
+      "tag": "forge:nuggets/gold"
     },
     "E": {
-      "item": "#ENDER_PEARL"
+      "item": "minecraft:ender_pearl"
     },
     "P": {
-      "item": "#PAPER"
+      "item": "minecraft:paper"
     },
     "D": {
-      "item": "#PURPLE_DYE"
+      "tag": "forge:dyes/purple"
     }
   }
 }

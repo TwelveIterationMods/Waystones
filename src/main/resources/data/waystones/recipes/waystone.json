@@ -2,7 +2,7 @@
   "result": {
     "item": "waystones:waystone"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " S ",
     "SWS",
@@ -10,8 +10,7 @@
   ],
   "key": {
     "S": {
-      "item": "minecraft:stonebrick",
-      "data": 0
+      "item": "minecraft:stonebrick"
     },
     "W": {
       "item": "waystones:warp_stone"

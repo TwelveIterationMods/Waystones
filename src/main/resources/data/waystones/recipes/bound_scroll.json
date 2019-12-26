@@ -3,7 +3,7 @@
     "item": "waystones:bound_scroll",
     "count": 3
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "DDD",
     "GEG",
@@ -11,16 +11,16 @@
   ],
   "key": {
     "D": {
-      "item": "#PURPLE_DYE"
+      "tag": "forge:dyes/purple"
     },
     "G": {
-      "item": "#GOLD_NUGGET"
+      "tag": "forge:nuggets/gold"
     },
     "E": {
-      "item": "#ENDER_PEARL"
+      "item": "minecraft:ender_pearl"
     },
     "P": {
-      "item": "#PAPER"
+      "item": "minecraft:paper"
     }
   }
 }

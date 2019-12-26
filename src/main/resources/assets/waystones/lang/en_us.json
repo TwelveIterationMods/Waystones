@@ -1,11 +1,11 @@
 {
-    "block.waystones:waystone": "Waystone",
+    "block.waystones.waystone": "Waystone",
 
-    "item.waystones:warp_scroll": "Warp Scroll",
-    "item.waystones:warp_scroll_bound": "Warp Scroll (Bound)",
-    "item.waystones:return_scroll": "Return Scroll",
-    "item.waystones:warp_stone": "Warp Stone",
-    "item.waystones:bound_scroll": "Bound Scroll",
+    "item.waystones.warp_scroll": "Warp Scroll",
+    "item.waystones.warp_scroll_bound": "Warp Scroll (Bound)",
+    "item.waystones.return_scroll": "Return Scroll",
+    "item.waystones.warp_stone": "Warp Stone",
+    "item.waystones.bound_scroll": "Bound Scroll",
 
     "itemGroup.waystones": "Waystones",
 

@@ -1,10 +1,10 @@
 {
-    "block.waystones:waystone": "Путеводный Обелиск",
+    "block.waystones.waystone": "Путеводный Обелиск",
 
-    "item.waystones:warp_scroll": "Свиток Перемещения",
-    "item.waystones:warp_scroll_bound": "Свиток Перемещения (Привязан)",
-    "item.waystones:return_scroll": "Свиток Возврата",
-    "item.waystones:warp_stone": "Камень Перемещения",
+    "item.waystones.warp_scroll": "Свиток Перемещения",
+    "item.waystones.warp_scroll_bound": "Свиток Перемещения (Привязан)",
+    "item.waystones.return_scroll": "Свиток Возврата",
+    "item.waystones.warp_stone": "Камень Перемещения",
 
     "itemGroup.waystones": "Waystones",
 

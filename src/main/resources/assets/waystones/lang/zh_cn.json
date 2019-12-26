@@ -1,11 +1,11 @@
 {
-    "block.waystones:waystone": "传送石碑",
+    "block.waystones.waystone": "传送石碑",
 
-    "item.waystones:warp_scroll": "传送卷轴",
-    "item.waystones:warp_scroll_bound": "传送卷轴(绑定)",
-    "item.waystones:return_scroll": "回城卷轴",
-    "item.waystones:warp_stone": "传送石",
-    "item.waystones:bound_scroll": "绑定卷轴",
+    "item.waystones.warp_scroll": "传送卷轴",
+    "item.waystones.warp_scroll_bound": "传送卷轴(绑定)",
+    "item.waystones.return_scroll": "回城卷轴",
+    "item.waystones.warp_stone": "传送石",
+    "item.waystones.bound_scroll": "绑定卷轴",
 
     "itemGroup.waystones": "传送石碑",
 

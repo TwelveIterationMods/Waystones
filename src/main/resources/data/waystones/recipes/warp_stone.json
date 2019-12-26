@@ -2,7 +2,7 @@
   "result": {
     "item": "waystones:warp_stone"
   },
-  "type": "forge:ore_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "DED",
     "EGE",
@@ -10,13 +10,13 @@
   ],
   "key": {
     "G": {
-      "item": "#EMERALD"
+      "tag": "forge:gems/emerald"
     },
     "E": {
-      "item": "#ENDER_PEARL"
+      "item": "minecraft:ender_pearl"
     },
     "D": {
-      "item": "#PURPLE_DYE"
+      "tag": "forge:dyes/purple"
     }
   }
 }
