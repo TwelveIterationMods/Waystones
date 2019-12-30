@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -16,8 +16,8 @@ public class ReturnScrollItem extends BoundScrollItem {
 
     @Nullable
     @Override
-    protected WaystoneEntry getBoundTo(PlayerEntity player, ItemStack itemStack) {
-        return PlayerWaystoneHelper.getLastWaystone(player);
+    protected IWaystone getBoundTo(PlayerEntity player, ItemStack itemStack) {
+        return PlayerWaystoneHelper.getNearestWaystone(player);
     }
 
 }

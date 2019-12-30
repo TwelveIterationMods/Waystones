@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -20,10 +20,10 @@ public class WaystoneEntryButton extends Button {
 
     private static final ResourceLocation ENCHANTMENT_TABLE_GUI_TEXTURE = new ResourceLocation("textures/gui/container/enchanting_table.png");
 
-    private final WaystoneEntry waystone;
+    private final IWaystone waystone;
     private final int xpLevelCost;
 
-    public WaystoneEntryButton(int x, int y, WaystoneEntry waystone, WarpMode mode, IPressable pressable) {
+    public WaystoneEntryButton(int x, int y, IWaystone waystone, WarpMode mode, IPressable pressable) {
         super(x, y, 150, 20, (waystone.isGlobal() ? TextFormatting.YELLOW : "") + waystone.getName(), pressable);
         this.waystone = waystone;
         PlayerEntity player = Minecraft.getInstance().player;
@@ -46,8 +46,8 @@ public class WaystoneEntryButton extends Button {
 
         this.xpLevelCost = (enableXPCost && WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSq(new Vec3d(waystone.getPos()))) / WaystoneConfig.SERVER.blocksPerXPLevel.get(), 0, WaystoneConfig.SERVER.maximumXpCost.get()) : 0;
 
-        if (waystone.getDimension() != Minecraft.getInstance().world.getDimension().getType()) {
-            if (!WaystoneManager.isDimensionWarpAllowed(waystone)) {
+        if (waystone.getDimensionType() != Minecraft.getInstance().world.getDimension().getType()) {
+            if (!WaystoneManagerLegacy.isDimensionWarpAllowed(waystone)) {
                 active = false;
             }
         }
@@ -57,7 +57,7 @@ public class WaystoneEntryButton extends Button {
         }
     }
 
-    public WaystoneEntry getWaystone() {
+    public IWaystone getWaystone() {
         return waystone;
     }
 

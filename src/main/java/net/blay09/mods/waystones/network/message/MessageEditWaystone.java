@@ -3,10 +3,10 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -92,27 +92,26 @@ public class MessageEditWaystone {
                     return;
                 }
 
-                WaystoneEntry oldWaystone = new WaystoneEntry(tileWaystone);
+                IWaystone oldWaystone = tileWaystone.getWaystone();
                 if (oldWaystone.isGlobal()) {
                     globalWaystones.removeGlobalWaystone(oldWaystone);
                 }
 
                 tileWaystone.setWaystoneName(newName);
 
-                WaystoneEntry newWaystone = new WaystoneEntry(tileWaystone);
+                IWaystone newWaystone = tileWaystone.getWaystone();
                 if (message.isGlobal && (player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get())) {
                     tileWaystone.setGlobal(true);
-                    newWaystone.setGlobal(true);
-                    globalWaystones.addGlobalWaystone(newWaystone);
+                    // TODO globalWaystones.addGlobalWaystone(newWaystone);
                     for (PlayerEntity otherPlayer : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-                        WaystoneManager.sendPlayerWaystones(otherPlayer);
+                        WaystoneManagerLegacy.sendPlayerWaystones(otherPlayer);
                     }
                 }
 
                 if (!newWaystone.isGlobal()) {
-                    WaystoneManager.removePlayerWaystone(player, oldWaystone);
-                    WaystoneManager.addPlayerWaystone(player, newWaystone);
-                    WaystoneManager.sendPlayerWaystones(player);
+                    WaystoneManagerLegacy.removePlayerWaystone(player, oldWaystone);
+                    // TODO WaystoneManagerLegacy.addPlayerWaystone(player, newWaystone);
+                    WaystoneManagerLegacy.sendPlayerWaystones(player);
                 }
 
                 if (message.fromSelectionGui) {

@@ -1,11 +1,12 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +52,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         return UseAction.BOW;
     }
 
-    private void setBoundTo(ItemStack itemStack, @Nullable WaystoneEntry entry) {
+    private void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {
         CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();
@@ -58,17 +60,17 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         }
 
         if (entry != null) {
-            tagCompound.put("WaystonesBoundTo", entry.writeToNBT());
+            tagCompound.put("WaystonesBoundTo", NBTUtil.writeUniqueId(entry.getWaystoneUid()));
         } else {
             tagCompound.remove("WaystonesBoundTo");
         }
     }
 
     @Nullable
-    protected WaystoneEntry getBoundTo(PlayerEntity player, ItemStack itemStack) {
+    protected IWaystone getBoundTo(PlayerEntity player, ItemStack itemStack) {
         CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound != null) {
-            return WaystoneEntry.read(tagCompound.getCompound("WaystonesBoundTo"));
+            return new WaystoneProxy(NBTUtil.readUniqueId(tagCompound.getCompound("WaystonesBoundTo")));
         }
 
         return null;
@@ -86,11 +88,11 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         TileEntity tileEntity = world.getTileEntity(context.getPos());
         if (tileEntity instanceof WaystoneTileEntity) {
             WaystoneTileEntity tileWaystone = ((WaystoneTileEntity) tileEntity).getParent();
-            WaystoneBlock.activateWaystone(player, world, tileWaystone);
+            PlayerWaystoneManager.activateWaystone(player, tileWaystone);
 
             if (!world.isRemote) {
                 ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.split(1);
-                setBoundTo(boundItem, new WaystoneEntry(tileWaystone));
+                setBoundTo(boundItem, tileWaystone.getWaystone());
                 if (boundItem != heldItem) {
                     if (!player.addItemStackToInventory(boundItem)) {
                         player.dropItem(boundItem, false);
@@ -111,14 +113,14 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entity) {
         if (!world.isRemote && entity instanceof PlayerEntity) {
-            WaystoneEntry boundTo = getBoundTo((PlayerEntity) entity, itemStack);
+            IWaystone boundTo = getBoundTo((PlayerEntity) entity, itemStack);
             if (boundTo != null) {
                 double distance = entity.getDistanceSq(boundTo.getPos().getX(), boundTo.getPos().getY(), boundTo.getPos().getZ());
                 if (distance <= 3.0) {
                     return itemStack;
                 }
 
-                if (WaystoneManager.teleportToWaystone((PlayerEntity) entity, boundTo)) {
+                if (WaystoneManagerLegacy.teleportToWaystone((PlayerEntity) entity, boundTo)) {
                     if (!((PlayerEntity) entity).abilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
@@ -132,7 +134,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
-        WaystoneEntry boundTo = getBoundTo(player, itemStack);
+        IWaystone boundTo = getBoundTo(player, itemStack);
         if (boundTo != null) {
             if (!player.isHandActive() && world.isRemote) {
                 Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
@@ -159,7 +161,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
             return;
         }
 
-        WaystoneEntry boundTo = getBoundTo(player, itemStack);
+        IWaystone boundTo = getBoundTo(player, itemStack);
         ITextComponent targetText = boundTo != null ? new StringTextComponent(boundTo.getName()) : new TranslationTextComponent("tooltip.waystones:none");
         if (boundTo != null) {
             targetText.getStyle().setColor(TextFormatting.AQUA);

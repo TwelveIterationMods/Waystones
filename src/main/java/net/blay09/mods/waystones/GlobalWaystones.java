@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
 import com.google.common.collect.Maps;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -23,10 +23,10 @@ public class GlobalWaystones extends WorldSavedData {
     private static final String DATA_NAME = Waystones.MOD_ID + "_GlobalWaystones";
     private static final String TAG_LIST_NAME = "GlobalWaystones";
 
-	private static final GlobalWaystones clientStorageCopy = new GlobalWaystones();
-	private final Map<String, WaystoneEntry> globalWaystones = Maps.newHashMap();
+    private static final GlobalWaystones clientStorageCopy = new GlobalWaystones();
+    private final Map<String, IWaystone> globalWaystones = Maps.newHashMap();
 
-	public GlobalWaystones() {
+    public GlobalWaystones() {
         super(DATA_NAME);
     }
 
@@ -34,30 +34,30 @@ public class GlobalWaystones extends WorldSavedData {
         super(name);
     }
 
-    public void addGlobalWaystone(WaystoneEntry entry) {
+    public void addGlobalWaystone(IWaystone entry) {
         globalWaystones.put(entry.getName(), entry);
         markDirty();
 
         for (PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            WaystoneManager.addPlayerWaystone(player, entry);
+            WaystoneManagerLegacy.addPlayerWaystone(player, entry);
         }
     }
 
-    public void removeGlobalWaystone(WaystoneEntry entry) {
+    public void removeGlobalWaystone(IWaystone entry) {
         globalWaystones.remove(entry.getName());
         markDirty();
 
         for (PlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            WaystoneManager.removePlayerWaystone(player, entry);
+            WaystoneManagerLegacy.removePlayerWaystone(player, entry);
         }
     }
 
-    public Collection<WaystoneEntry> getGlobalWaystones() {
+    public Collection<IWaystone> getGlobalWaystones() {
         return globalWaystones.values();
     }
 
     @Nullable
-    public WaystoneEntry getGlobalWaystone(String name) {
+    public IWaystone getGlobalWaystone(String name) {
         return globalWaystones.get(name);
     }
 
@@ -66,16 +66,16 @@ public class GlobalWaystones extends WorldSavedData {
     public void read(CompoundNBT tagCompound) {
         ListNBT tagList = tagCompound.getList(TAG_LIST_NAME, Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
-            WaystoneEntry entry = WaystoneEntry.read((CompoundNBT) tagList.get(i));
-            globalWaystones.put(entry.getName(), entry);
+            //TODO WaystoneEntry entry = WaystoneEntry.read((CompoundNBT) tagList.get(i));
+            //globalWaystones.put(entry.getName(), entry);
         }
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         ListNBT tagList = new ListNBT();
-        for (WaystoneEntry entry : globalWaystones.values()) {
-            tagList.add(entry.writeToNBT());
+        for (IWaystone entry : globalWaystones.values()) {
+            // TODO tagList.add(entry.writeToNBT());
         }
         tagCompound.put(TAG_LIST_NAME, tagList);
         return tagCompound;

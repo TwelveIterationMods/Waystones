@@ -2,8 +2,8 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -35,14 +35,14 @@ public class MessageFreeWarpReturn {
                 return;
             }
 
-            WaystoneEntry lastWaystone = PlayerWaystoneHelper.getLastWaystone(player);
-            if (lastWaystone != null && WaystoneManager.teleportToWaystone(player, lastWaystone)) {
+            IWaystone lastWaystone = PlayerWaystoneHelper.getNearestWaystone(player);
+            if (lastWaystone != null && WaystoneManagerLegacy.teleportToWaystone(player, lastWaystone)) {
                 if (!lastWaystone.isGlobal() || !WaystoneConfig.COMMON.globalNoCooldown.get()) {
                     PlayerWaystoneHelper.setLastFreeWarp(player, System.currentTimeMillis());
                 }
             }
 
-            WaystoneManager.sendPlayerWaystones(player);
+            WaystoneManagerLegacy.sendPlayerWaystones(player);
         });
         context.setPacketHandled(true);
     }

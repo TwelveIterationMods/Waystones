@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -17,13 +17,13 @@ import org.lwjgl.glfw.GLFW;
 
 public class EditWaystoneScreen extends Screen {
 
-    private final WaystoneEntry tileWaystone;
+    private final IWaystone tileWaystone;
     private TextFieldWidget textField;
     private Button btnDone;
     private GuiCheckBox chkGlobal;
     private boolean fromSelectionGui;
 
-    public EditWaystoneScreen(WaystoneEntry waystone, boolean fromSelectionGui) {
+    public EditWaystoneScreen(IWaystone waystone, boolean fromSelectionGui) {
         super(new TranslationTextComponent("gui.waystones:editWaystone.enterName"));
         this.tileWaystone = waystone;
         this.fromSelectionGui = fromSelectionGui;
@@ -56,7 +56,7 @@ public class EditWaystoneScreen extends Screen {
             }
 
             if (tileWaystone.getName().isEmpty()) {
-                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimension()));
+                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionType()));
             }
         });
         addButton(btnDone);
@@ -110,7 +110,7 @@ public class EditWaystoneScreen extends Screen {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().fontRenderer.drawString(getTitle().getFormattedText(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
+        Minecraft.getInstance().fontRenderer.drawString(getTitle().getFormattedText(), width / 2f - 100, height / 2f - 35, 0xFFFFFF);
     }
 
 }

@@ -1,11 +1,11 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -25,7 +24,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 
-public class WaystoneManager {
+@Deprecated
+public class WaystoneManagerLegacy {
 
     public static void sendPlayerWaystones(PlayerEntity player) {
         if (player instanceof ServerPlayerEntity) {
@@ -34,33 +34,33 @@ public class WaystoneManager {
         }
     }
 
-    public static void addPlayerWaystone(PlayerEntity player, WaystoneEntry waystone) {
+    public static void addPlayerWaystone(PlayerEntity player, IWaystone waystone) {
         CompoundNBT tagCompound = PlayerWaystoneHelper.getOrCreateWaystonesTag(player);
         ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        tagList.add(waystone.writeToNBT());
+        // TODO tagList.add(waystone.writeToNBT());
         tagCompound.put(PlayerWaystoneHelper.WAYSTONE_LIST, tagList);
     }
 
-    public static boolean removePlayerWaystone(PlayerEntity player, WaystoneEntry waystone) {
+    public static boolean removePlayerWaystone(PlayerEntity player, IWaystone waystone) {
         CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
         ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
             CompoundNBT entryCompound = tagList.getCompound(i);
-            if (WaystoneEntry.read(entryCompound).equals(waystone)) {
+            /*TODO if (WaystoneEntry.read(entryCompound).equals(waystone)) {
                 tagList.remove(i);
                 return true;
-            }
+            }*/
         }
 
         return false;
     }
 
-    public static boolean checkAndUpdateWaystone(PlayerEntity player, WaystoneEntry waystone) {
+    public static boolean checkAndUpdateWaystone(PlayerEntity player, IWaystone waystone) {
         CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
         ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
             CompoundNBT entryCompound = tagList.getCompound(i);
-            if (WaystoneEntry.read(entryCompound).equals(waystone)) {
+            /*TODO if (WaystoneEntry.read(entryCompound).equals(waystone)) {
                 WaystoneTileEntity tileEntity = getWaystoneInWorld(waystone);
                 if (tileEntity != null) {
                     if (!entryCompound.getString("Name").equals(tileEntity.getWaystoneName())) {
@@ -76,15 +76,15 @@ public class WaystoneManager {
                     sendPlayerWaystones(player);
                 }
                 return false;
-            }
+            }*/
         }
         return false;
     }
 
     @Nullable
-    public static WaystoneTileEntity getWaystoneInWorld(WaystoneEntry waystone) {
+    public static WaystoneTileEntity getWaystoneInWorld(IWaystone waystone) {
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimension(), false, true);
+        World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimensionType(), false, true);
         if (targetWorld != null) {
             TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
             if (tileEntity instanceof WaystoneTileEntity) {
@@ -95,11 +95,11 @@ public class WaystoneManager {
         return null;
     }
 
-    public static boolean isDimensionWarpAllowed(WaystoneEntry waystone) {
+    public static boolean isDimensionWarpAllowed(IWaystone waystone) {
         return waystone.isGlobal() ? WaystoneConfig.COMMON.globalInterDimension.get() : WaystoneConfig.SERVER.interDimension.get();
     }
 
-    public static boolean teleportToWaystone(PlayerEntity player, WaystoneEntry waystone) {
+    public static boolean teleportToWaystone(PlayerEntity player, IWaystone waystone) {
         if (!checkAndUpdateWaystone(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:waystoneBroken");
             chatComponent.getStyle().setColor(TextFormatting.RED);
@@ -108,10 +108,10 @@ public class WaystoneManager {
         }
 
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimension(), false, true);
+        World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimensionType(), false, true);
         Direction facing = targetWorld.getBlockState(waystone.getPos()).get(WaystoneBlock.FACING);
         BlockPos targetPos = waystone.getPos().offset(facing);
-        boolean dimensionWarp = waystone.getDimension() != player.getEntityWorld().getDimension().getType();
+        boolean dimensionWarp = waystone.getDimensionType() != player.getEntityWorld().getDimension().getType();
         if (dimensionWarp && !isDimensionWarpAllowed(waystone)) {
             player.sendMessage(new TranslationTextComponent("waystones:noDimensionWarp"));
             return false;

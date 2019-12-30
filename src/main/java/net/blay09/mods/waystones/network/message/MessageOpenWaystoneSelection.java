@@ -2,7 +2,8 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -13,9 +14,9 @@ import java.util.function.Supplier;
 public class MessageOpenWaystoneSelection {
     private final WarpMode warpMode;
     private final Hand hand;
-    private final WaystoneEntry waystone;
+    private final IWaystone waystone;
 
-    public MessageOpenWaystoneSelection(WarpMode warpMode, Hand hand, WaystoneEntry waystone) {
+    public MessageOpenWaystoneSelection(WarpMode warpMode, Hand hand, IWaystone waystone) {
         this.warpMode = warpMode;
         this.hand = hand;
         this.waystone = waystone;
@@ -25,13 +26,13 @@ public class MessageOpenWaystoneSelection {
     public static void encode(MessageOpenWaystoneSelection message, PacketBuffer buf) {
         buf.writeByte(message.warpMode.ordinal());
         buf.writeByte(message.hand.ordinal());
-        message.waystone.write(buf);
+        buf.writeUniqueId(message.waystone.getWaystoneUid());
     }
 
     public static MessageOpenWaystoneSelection decode(PacketBuffer buf) {
         WarpMode warpMode = WarpMode.values()[buf.readByte()];
         Hand hand = Hand.values()[buf.readByte()];
-        WaystoneEntry waystone = WaystoneEntry.read(buf);
+        IWaystone waystone = new WaystoneProxy(buf.readUniqueId());
         return new MessageOpenWaystoneSelection(warpMode, hand, waystone);
     }
 

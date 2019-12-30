@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -18,8 +18,8 @@ public class CommonProxy {
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         GlobalWaystones globalWaystones = GlobalWaystones.get(event.getPlayer().world);
         PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(event.getPlayer());
-        List<WaystoneEntry> validWaystones = Lists.newArrayList();
-        for (WaystoneEntry waystone : waystoneData.getWaystones()) {
+        List<IWaystone> validWaystones = Lists.newArrayList();
+        for (IWaystone waystone : waystoneData.getWaystones()) {
             if (waystone.isGlobal()) {
                 if (globalWaystones.getGlobalWaystone(waystone.getName()) == null) {
                     continue;
@@ -27,31 +27,31 @@ public class CommonProxy {
             }
             validWaystones.add(waystone);
         }
-        for (WaystoneEntry waystone : globalWaystones.getGlobalWaystones()) {
+        for (IWaystone waystone : globalWaystones.getGlobalWaystones()) {
             if (!validWaystones.contains(waystone)) {
                 validWaystones.add(waystone);
             }
         }
-        PlayerWaystoneHelper.store(event.getPlayer(), validWaystones.toArray(new WaystoneEntry[0]), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse());
+        PlayerWaystoneHelper.store(event.getPlayer(), validWaystones.toArray(new IWaystone[0]), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse());
 
-        WaystoneManager.sendPlayerWaystones(event.getPlayer());
+        WaystoneManagerLegacy.sendPlayerWaystones(event.getPlayer());
     }
 
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        WaystoneManager.sendPlayerWaystones(event.getPlayer());
+        WaystoneManagerLegacy.sendPlayerWaystones(event.getPlayer());
     }
 
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        WaystoneManager.sendPlayerWaystones(event.getPlayer());
+        WaystoneManagerLegacy.sendPlayerWaystones(event.getPlayer());
     }
 
-    public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable WaystoneEntry fromWaystone) {
+    public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable IWaystone fromWaystone) {
 
     }
 
-    public void openWaystoneSettings(PlayerEntity player, WaystoneEntry waystone, boolean fromSelectionGui) {
+    public void openWaystoneSettings(PlayerEntity player, IWaystone waystone, boolean fromSelectionGui) {
 
     }
 

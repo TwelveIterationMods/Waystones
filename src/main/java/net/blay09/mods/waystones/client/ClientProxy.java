@@ -6,8 +6,8 @@ import net.blay09.mods.waystones.client.gui.screen.EditWaystoneScreen;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.screen.WaystoneListScreen;
 import net.blay09.mods.waystones.client.gui.widget.InventoryWarpButton;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy {
                     if (!WaystoneConfig.COMMON.teleportButtonTarget.get().isEmpty()) {
                         minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen(WaystoneConfig.COMMON.teleportButtonTarget.get()));
                     } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
-                        if (PlayerWaystoneHelper.getLastWaystone(PlayerEntity) != null) {
+                        if (PlayerWaystoneHelper.getNearestWaystone(PlayerEntity) != null) {
                             minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else {
@@ -79,9 +79,9 @@ public class ClientProxy extends CommonProxy {
                 }
             } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
                 tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
-                WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(Minecraft.getInstance().player);
-                if (lastEntry != null) {
-                    tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
+                IWaystone nearestWaystone = PlayerWaystoneHelper.getNearestWaystone(Minecraft.getInstance().player);
+                if (nearestWaystone != null) {
+                    tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
                     tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", I18n.format("tooltip.waystones:none")));
                 }
@@ -106,15 +106,15 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable WaystoneEntry fromWaystone) {
+    public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable IWaystone fromWaystone) {
         if (player == Minecraft.getInstance().player) {
-            WaystoneEntry[] waystones = PlayerWaystoneData.fromPlayer(Minecraft.getInstance().player).getWaystones();
+            IWaystone[] waystones = PlayerWaystoneData.fromPlayer(Minecraft.getInstance().player).getWaystones();
             Minecraft.getInstance().displayGuiScreen(new WaystoneListScreen(waystones, mode, hand, fromWaystone));
         }
     }
 
     @Override
-    public void openWaystoneSettings(PlayerEntity player, WaystoneEntry waystone, boolean fromSelectionGui) {
+    public void openWaystoneSettings(PlayerEntity player, IWaystone waystone, boolean fromSelectionGui) {
         if (player == Minecraft.getInstance().player) {
             Minecraft.getInstance().displayGuiScreen(new EditWaystoneScreen(waystone, fromSelectionGui));
         }

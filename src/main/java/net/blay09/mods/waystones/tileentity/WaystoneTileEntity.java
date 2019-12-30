@@ -1,23 +1,27 @@
 package net.blay09.mods.waystones.tileentity;
 
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.worldgen.NameGenerator;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
-public class WaystoneTileEntity extends TileEntity {
+public class WaystoneTileEntity extends TileEntity implements IWaystone {
 
     private boolean isDummy;
+    private UUID waystoneUid = UUID.randomUUID();
     private String waystoneName = "";
     private UUID owner;
     private boolean isGlobal;
@@ -36,6 +40,7 @@ public class WaystoneTileEntity extends TileEntity {
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
+        tagCompound.put("UUID", NBTUtil.writeUniqueId(waystoneUid));
         tagCompound.putBoolean("IsDummy", isDummy);
         if (!isDummy) {
             if (!waystoneName.equals("%RANDOM%")) {
@@ -58,6 +63,7 @@ public class WaystoneTileEntity extends TileEntity {
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
+        waystoneUid = NBTUtil.readUniqueId(tagCompound.getCompound("UUId"));
         isDummy = tagCompound.getBoolean("IsDummy");
         if (!isDummy) {
             waystoneName = tagCompound.getString("WaystoneName");
@@ -101,8 +107,19 @@ public class WaystoneTileEntity extends TileEntity {
         return waystoneName;
     }
 
+    @Override
     public boolean isOwner(PlayerEntity player) {
         return owner == null || player.getGameProfile().getId().equals(owner) || player.abilities.isCreativeMode;
+    }
+
+    @Override
+    public Direction getFacing() {
+        return null;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !removed;
     }
 
     public boolean isMossy() {
@@ -113,16 +130,28 @@ public class WaystoneTileEntity extends TileEntity {
         isMossy = mossy;
     }
 
+    @Override
+    public UUID getWaystoneUid() {
+        return waystoneUid;
+    }
+
+    @Override
+    public String getName() {
+        return waystoneName;
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return Objects.requireNonNull(world).dimension.getType();
+    }
+
     public boolean wasGenerated() {
         return wasGenerated;
     }
 
-    public void setWasGenerated(boolean wasGenerated) {
-        this.wasGenerated = wasGenerated;
-    }
-
     public void setWaystoneName(String waystoneName) {
         this.waystoneName = waystoneName;
+
         BlockState state = world.getBlockState(pos);
         world.markAndNotifyBlock(pos, world.getChunkAt(pos), state, state, 3);
         markDirty();
@@ -156,4 +185,22 @@ public class WaystoneTileEntity extends TileEntity {
         }
         return this;
     }
+
+    public void initializePlacedBy(LivingEntity placer) {
+        setOwner((PlayerEntity) placer);
+        wasGenerated = false;
+    }
+
+    public IWaystone getWaystone() {
+        if (isDummy) {
+            TileEntity tileBelow = world.getTileEntity(pos.down());
+            if (tileBelow instanceof WaystoneTileEntity) {
+                return (WaystoneTileEntity) tileBelow;
+            }
+        }
+
+        return this;
+    }
+
+
 }

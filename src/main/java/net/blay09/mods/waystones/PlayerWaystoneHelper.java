@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -8,6 +8,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
+@Deprecated
 public class PlayerWaystoneHelper {
 
     public static final String WAYSTONES = "Waystones";
@@ -28,11 +29,11 @@ public class PlayerWaystoneHelper {
     }
 
 
-    public static void store(PlayerEntity player, WaystoneEntry[] entries, long lastFreeWarp, long lastWarpStoneUse) {
+    public static void store(PlayerEntity player, IWaystone[] entries, long lastFreeWarp, long lastWarpStoneUse) {
         CompoundNBT tagCompound = getOrCreateWaystonesTag(player);
         ListNBT tagList = new ListNBT();
-        for (WaystoneEntry entry : entries) {
-            tagList.add(entry.writeToNBT());
+        for (IWaystone entry : entries) {
+            // TODO tagList.add(entry.write());
         }
         tagCompound.put(WAYSTONE_LIST, tagList);
         tagCompound.putLong(LAST_FREE_WARP, lastFreeWarp);
@@ -64,11 +65,11 @@ public class PlayerWaystoneHelper {
     }
 
     @Nullable
-    public static WaystoneEntry getLastWaystone(PlayerEntity player) {
+    public static IWaystone getNearestWaystone(PlayerEntity player) {
         CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
         ListNBT tagList = tagCompound.getList(WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
         if (tagList.size() > 0) {
-            return WaystoneEntry.read(tagList.getCompound(tagList.size() - 1));
+            // TODO return IWaystone.read(tagList.getCompound(tagList.size() - 1));
         }
 
         return null;

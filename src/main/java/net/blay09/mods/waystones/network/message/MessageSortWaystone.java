@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -39,17 +39,17 @@ public class MessageSortWaystone {
             }
 
             PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-            WaystoneEntry[] entries = waystoneData.getWaystones();
+            IWaystone[] entries = waystoneData.getWaystones();
             int index = message.index;
             int otherIndex = message.otherIndex;
             if (index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
                 return;
             }
-            WaystoneEntry swap = entries[index];
+            IWaystone swap = entries[index];
             entries[index] = entries[otherIndex];
             entries[otherIndex] = swap;
             waystoneData.store(player);
-            WaystoneManager.sendPlayerWaystones(player);
+            WaystoneManagerLegacy.sendPlayerWaystones(player);
         });
         context.setPacketHandled(true);
     }

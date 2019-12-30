@@ -30,7 +30,7 @@ public class InventoryWarpButton extends Button {
             isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             PlayerEntity entityPlayer = Minecraft.getInstance().player;
-            if (!PlayerWaystoneHelper.canFreeWarp(entityPlayer) || PlayerWaystoneHelper.getLastWaystone(entityPlayer) == null) {
+            if (!PlayerWaystoneHelper.canFreeWarp(entityPlayer) || PlayerWaystoneHelper.getNearestWaystone(entityPlayer) == null) {
                 GlStateManager.color4f(0.5f, 0.5f, 0.5f, 0.5f);
             } else if (isHovered) {
                 GlStateManager.color4f(1f, 1f, 1f, 1f);

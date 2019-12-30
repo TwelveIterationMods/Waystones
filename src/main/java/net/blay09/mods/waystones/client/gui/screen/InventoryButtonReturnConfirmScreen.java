@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageFreeWarpReturn;
 import net.blay09.mods.waystones.network.message.MessageTeleportToGlobal;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -41,9 +41,9 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
             return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", targetWaystone);
         }
 
-        WaystoneEntry lastEntry = PlayerWaystoneHelper.getLastWaystone(Minecraft.getInstance().player);
-        if (lastEntry != null) {
-            return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", lastEntry.getName());
+        IWaystone nearestWaystone = PlayerWaystoneHelper.getNearestWaystone(Minecraft.getInstance().player);
+        if (nearestWaystone != null) {
+            return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", nearestWaystone.getName());
         }
 
         return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.noWaystoneActive");

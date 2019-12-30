@@ -6,11 +6,11 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneEntryButton;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageRemoveWaystone;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;
 import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
-import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -31,15 +31,15 @@ public class WaystoneListScreen extends Screen {
 
     private final WarpMode warpMode;
     private final Hand hand;
-    private final WaystoneEntry fromWaystone;
-    private WaystoneEntry[] entries;
+    private final IWaystone fromWaystone;
+    private IWaystone[] entries;
     private Button btnPrevPage;
     private Button btnNextPage;
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
 
-    public WaystoneListScreen(WaystoneEntry[] entries, WarpMode warpMode, Hand hand, @Nullable WaystoneEntry fromWaystone) {
+    public WaystoneListScreen(IWaystone[] entries, WarpMode warpMode, Hand hand, @Nullable IWaystone fromWaystone) {
         super(new TranslationTextComponent("gui.waystones:warpStone.selectDestination"));
         this.entries = entries;
         this.warpMode = warpMode;
@@ -106,7 +106,7 @@ public class WaystoneListScreen extends Screen {
                 addButton(sortDown);
 
                 RemoveWaystoneButton remove = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, btnWaystone, button -> {
-                    WaystoneEntry waystoneEntry = ((RemoveWaystoneButton) button).getWaystone();
+                    IWaystone waystoneEntry = ((RemoveWaystoneButton) button).getWaystone();
                     int index = ArrayUtils.indexOf(entries, waystoneEntry);
                     entries = ArrayUtils.remove(entries, index);
                     NetworkHandler.channel.sendToServer(new MessageRemoveWaystone(index));
@@ -123,7 +123,7 @@ public class WaystoneListScreen extends Screen {
     }
 
     private void sortButtonHandler(Button button) {
-        WaystoneEntry waystoneEntry = ((SortWaystoneButton) button).getWaystone();
+        IWaystone waystoneEntry = ((SortWaystoneButton) button).getWaystone();
         int index = ArrayUtils.indexOf(entries, waystoneEntry);
         int sortDir = ((SortWaystoneButton) button).getSortDir();
         int otherIndex = index + sortDir;
@@ -131,7 +131,7 @@ public class WaystoneListScreen extends Screen {
             return;
         }
 
-        WaystoneEntry swap = entries[index];
+        IWaystone swap = entries[index];
         entries[index] = entries[otherIndex];
         entries[otherIndex] = swap;
         NetworkHandler.channel.sendToServer(new MessageSortWaystone(index, otherIndex));

@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.util.WaystoneEntry;
+import net.blay09.mods.waystones.WaystoneManagerLegacy;
+import net.blay09.mods.waystones.core.IWaystone;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
@@ -42,7 +42,7 @@ public class MessageTeleportToGlobal {
                 return;
             }
 
-            WaystoneEntry waystone = GlobalWaystones.get(player.world).getGlobalWaystone(message.waystoneName);
+            IWaystone waystone = GlobalWaystones.get(player.world).getGlobalWaystone(message.waystoneName);
             if (waystone == null) {
                 player.sendStatusMessage(new TranslationTextComponent("waystones:waystoneBroken"), true);
                 return;
@@ -63,7 +63,7 @@ public class MessageTeleportToGlobal {
                 return;
             }
 
-            if (WaystoneManager.teleportToWaystone(player, waystone)) {
+            if (WaystoneManagerLegacy.teleportToWaystone(player, waystone)) {
                 if (!WaystoneConfig.COMMON.globalNoCooldown.get()) {
                     PlayerWaystoneHelper.setLastFreeWarp(player, System.currentTimeMillis());
                 }
@@ -73,7 +73,7 @@ public class MessageTeleportToGlobal {
                 }
             }
 
-            WaystoneManager.sendPlayerWaystones(player);
+            WaystoneManagerLegacy.sendPlayerWaystones(player);
         });
         context.setPacketHandled(true);
     }
