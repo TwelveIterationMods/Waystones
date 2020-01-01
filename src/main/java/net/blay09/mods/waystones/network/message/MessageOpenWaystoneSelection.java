@@ -44,7 +44,7 @@ public class MessageOpenWaystoneSelection {
                 return;
             }
 
-            Waystones.proxy.openWaystoneSelection(player, message.warpMode, message.hand, message.waystone);
+            // TODO Waystones.proxy.openWaystoneSelection(player, message.warpMode, message.hand, message.waystone);
         });
         context.setPacketHandled(true);
     }

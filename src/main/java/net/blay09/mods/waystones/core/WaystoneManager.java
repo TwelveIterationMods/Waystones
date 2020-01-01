@@ -2,9 +2,11 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -39,6 +41,11 @@ public class WaystoneManager extends WorldSavedData {
     }
 
     public static Optional<IWaystone> getWaystoneAt(IBlockReader world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof WaystoneTileEntity) {
+            return Optional.of(((WaystoneTileEntity) tileEntity).getWaystone());
+        }
+
         return Optional.empty();
     }
 

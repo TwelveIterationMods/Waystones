@@ -49,7 +49,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entityLiving) {
         if (world.isRemote && entityLiving instanceof PlayerEntity) {
-            Waystones.proxy.openWaystoneSelection((PlayerEntity) entityLiving, WarpMode.WARP_STONE, entityLiving.getActiveHand(), null);
+            // TODO Waystones.proxy.openWaystoneSelection((PlayerEntity) entityLiving, WarpMode.WARP_STONE, entityLiving.getActiveHand(), null);
         }
 
         return itemStack;

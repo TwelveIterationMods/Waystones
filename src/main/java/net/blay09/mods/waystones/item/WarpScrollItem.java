@@ -38,7 +38,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage {
 
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entityLiving) {
-        Waystones.proxy.openWaystoneSelection((PlayerEntity) entityLiving, WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
+        // TODO Waystones.proxy.openWaystoneSelection((PlayerEntity) entityLiving, WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
         return itemStack;
     }
 

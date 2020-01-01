@@ -3,6 +3,9 @@ package net.blay09.mods.waystones.worldgen;
 import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -14,6 +17,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
@@ -63,7 +67,7 @@ public class NameGenerator extends WorldSavedData {
 
     private final Set<String> usedNames = Sets.newHashSet();
 
-    public synchronized String getName(Biome biome, Random rand) {
+    public synchronized String getName(IWaystone waystone, Random rand) {
         String name = null;
         for (String customName : WaystoneConfig.COMMON.customNames.get()) {
             if (!usedNames.contains(customName)) {
@@ -83,6 +87,10 @@ public class NameGenerator extends WorldSavedData {
 
             name = tryName;
         }
+
+        GenerateWaystoneNameEvent event = new GenerateWaystoneNameEvent(waystone, name);
+        MinecraftForge.EVENT_BUS.post(event);
+        name = event.getName();
 
         usedNames.add(name);
         markDirty();

@@ -37,6 +37,9 @@ import java.util.Random;
 
 public class WaystoneBlock extends Block {
 
+    /**
+     * We provide a slightly smaller render shape to prevent neighbour blocks from being culled.
+     */
     private static final VoxelShape RENDER_SHAPE = VoxelShapes.create(1 / 16f, 1 / 16f, 1 / 16f, 15 / 16f, 15 / 16f, 15 / 16f);
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -109,7 +112,7 @@ public class WaystoneBlock extends Block {
             WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
             if (tileWaystone != null) {
                 tileWaystone.initializePlacedBy(placer);
-                Waystones.proxy.openWaystoneSettings((PlayerEntity) placer, tileWaystone, false);
+                // TODO Waystones.proxy.openWaystoneSettings((PlayerEntity) placer, tileWaystone, false);
             }
         }
     }
@@ -141,13 +144,13 @@ public class WaystoneBlock extends Block {
                 return true;
             }
 
-            Waystones.proxy.openWaystoneSettings(player, waystone, false);
+            // TODO Waystones.proxy.openWaystoneSettings(player, waystone, false);
             return true;
         }
 
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone);
+            // TODO Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone);
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 

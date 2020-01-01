@@ -1,45 +1,21 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
-import net.blay09.mods.waystones.network.message.MessageWaystones;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import javax.annotation.Nullable;
-
 @Deprecated
 public class WaystoneManagerLegacy {
-
-    @Nullable
-    public static WaystoneTileEntity getWaystoneInWorld(IWaystone waystone) {
-        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimensionType(), false, true);
-        if (targetWorld != null) {
-            TileEntity tileEntity = targetWorld.getTileEntity(waystone.getPos());
-            if (tileEntity instanceof WaystoneTileEntity) {
-                return ((WaystoneTileEntity) tileEntity).getParent();
-            }
-        }
-
-        return null;
-    }
 
     public static boolean isDimensionWarpAllowed(IWaystone waystone) {
         return waystone.isGlobal() ? WaystoneConfig.COMMON.globalInterDimension.get() : WaystoneConfig.SERVER.interDimension.get();

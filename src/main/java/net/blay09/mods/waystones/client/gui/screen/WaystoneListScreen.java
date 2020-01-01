@@ -141,7 +141,7 @@ public class WaystoneListScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isLocationHeaderHovered && fromWaystone != null) {
-            Waystones.proxy.openWaystoneSettings(Minecraft.getInstance().player, fromWaystone, true);
+            // TODO Waystones.proxy.openWaystoneSettings(Minecraft.getInstance().player, fromWaystone, true);
 
             return true;
         }
