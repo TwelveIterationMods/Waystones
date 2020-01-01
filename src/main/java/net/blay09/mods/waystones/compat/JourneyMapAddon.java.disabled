@@ -7,7 +7,7 @@ import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.event.ClientEvent;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

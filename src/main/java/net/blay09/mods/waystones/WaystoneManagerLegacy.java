@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.blay09.mods.waystones.network.message.MessageWaystones;
@@ -26,34 +26,6 @@ import javax.annotation.Nullable;
 
 @Deprecated
 public class WaystoneManagerLegacy {
-
-    public static void sendPlayerWaystones(PlayerEntity player) {
-        if (player instanceof ServerPlayerEntity) {
-            PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-            NetworkHandler.sendTo(new MessageWaystones(waystoneData.getWaystones(), waystoneData.getLastFreeWarp(), waystoneData.getLastWarpStoneUse()), player);
-        }
-    }
-
-    public static void addPlayerWaystone(PlayerEntity player, IWaystone waystone) {
-        CompoundNBT tagCompound = PlayerWaystoneHelper.getOrCreateWaystonesTag(player);
-        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        // TODO tagList.add(waystone.writeToNBT());
-        tagCompound.put(PlayerWaystoneHelper.WAYSTONE_LIST, tagList);
-    }
-
-    public static boolean removePlayerWaystone(PlayerEntity player, IWaystone waystone) {
-        CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
-        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < tagList.size(); i++) {
-            CompoundNBT entryCompound = tagList.getCompound(i);
-            /*TODO if (WaystoneEntry.read(entryCompound).equals(waystone)) {
-                tagList.remove(i);
-                return true;
-            }*/
-        }
-
-        return false;
-    }
 
     public static boolean checkAndUpdateWaystone(PlayerEntity player, IWaystone waystone) {
         CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
@@ -136,7 +108,7 @@ public class WaystoneManagerLegacy {
                 player.stopRiding();
             }
         }
-        player.rotationYaw = getRotationYaw(facing);
+        player.rotationYaw = facing.getHorizontalAngle();
         player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         sendTeleportEffect(player.world, pos);
     }
@@ -144,20 +116,6 @@ public class WaystoneManagerLegacy {
     public static void sendTeleportEffect(World world, BlockPos pos) {
         MessageTeleportEffect message = new MessageTeleportEffect(pos);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
-    }
-
-    public static float getRotationYaw(Direction facing) {
-        switch (facing) {
-            case NORTH:
-                return 180f;
-            case SOUTH:
-                return 0f;
-            case WEST:
-                return 90f;
-            case EAST:
-                return -90f;
-        }
-        return 0f;
     }
 
 }

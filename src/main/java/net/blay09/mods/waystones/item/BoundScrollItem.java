@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;

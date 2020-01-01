@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
-import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.Minecraft;

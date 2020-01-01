@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -10,6 +9,7 @@ import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -28,7 +28,7 @@ public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
             return;
         }
 
-        boolean isDummy = state != null && !state.get(WaystoneBlock.BASE);
+        boolean isDummy = state != null && state.get(WaystoneBlock.HALF) == DoubleBlockHalf.UPPER;
         if (isDummy && destroyStage < 0) {
             return;
         }
@@ -45,7 +45,7 @@ public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
             bindTexture(isMossy ? textureMossy : texture);
         }
 
-        float angle = state != null ? WaystoneManagerLegacy.getRotationYaw(state.get(WaystoneBlock.FACING)) : 0f;
+        float angle = state != null ? state.get(WaystoneBlock.FACING).getHorizontalAngle() : 0f;
         GlStateManager.pushMatrix();
 //		GlStateManager.enableLighting();
         GlStateManager.color4f(1f, 1f, 1f, 1f);

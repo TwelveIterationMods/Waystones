@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.WaystoneManagerLegacy;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -41,8 +41,7 @@ public class MessageRemoveWaystone {
                 return;
             }
 
-            WaystoneManagerLegacy.removePlayerWaystone(player, entries[index]);
-            WaystoneManagerLegacy.sendPlayerWaystones(player);
+            PlayerWaystoneManager.deactivateWaystone(player, entries[index]);
         });
         context.setPacketHandled(true);
     }

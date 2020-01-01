@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.WarpMode;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,7 +54,7 @@ public class MessageTeleportToWaystone {
             }
 
             ItemStack heldItem = player.getHeldItem(message.hand);
-            PlayerWaystoneManager.teleportToWaystone(player, message.waystone, message.warpMode, heldItem, message.fromWaystone);
+            PlayerWaystoneManager.tryTeleportToWaystone(player, message.waystone, message.warpMode, heldItem, message.fromWaystone);
         });
         context.setPacketHandled(true);
     }

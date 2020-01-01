@@ -1,10 +1,12 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.GlobalWaystones;
-import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManagerLegacy;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneEditPermissions;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +15,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -58,43 +59,27 @@ public class MessageEditWaystone {
                 return;
             }
 
-            if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
+            IWaystone waystone = WaystoneManager.getWaystoneAt(player.world, message.pos).orElseThrow(IllegalStateException::new);
+            WaystoneEditPermissions permissions = PlayerWaystoneManager.mayEditWaystone(player, player.world, message.pos, waystone);
+            if (permissions != WaystoneEditPermissions.ALLOW) {
                 return;
             }
 
             World world = player.getEntityWorld();
             BlockPos pos = message.pos;
-            if (player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) > 100) {
+            if (player.getDistanceSq(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
                 return;
             }
 
-            GlobalWaystones globalWaystones = GlobalWaystones.get(player.world);
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WaystoneTileEntity) {
                 WaystoneTileEntity tileWaystone = ((WaystoneTileEntity) tileEntity).getParent();
-                if (globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !player.abilities.isCreativeMode && !WaystoneConfig.SERVER.allowEveryoneGlobal.get()) {
-                    return;
-                }
-
-                if (WaystoneConfig.SERVER.restrictRenameToOwner.get() && !tileWaystone.isOwner(player)) {
-                    player.sendMessage(new TranslationTextComponent("waystones:notTheOwner"));
-                    return;
-                }
 
                 String newName = message.name;
+
                 // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
                 if (newName.equals("%RANDOM%") && !player.abilities.isCreativeMode) {
                     newName = "RANDOM";
-                }
-
-                if (globalWaystones.getGlobalWaystone(newName) != null && !player.abilities.isCreativeMode) {
-                    player.sendMessage(new TranslationTextComponent("waystones:nameOccupied", newName));
-                    return;
-                }
-
-                IWaystone oldWaystone = tileWaystone.getWaystone();
-                if (oldWaystone.isGlobal()) {
-                    globalWaystones.removeGlobalWaystone(oldWaystone);
                 }
 
                 tileWaystone.setWaystoneName(newName);
@@ -102,16 +87,6 @@ public class MessageEditWaystone {
                 IWaystone newWaystone = tileWaystone.getWaystone();
                 if (message.isGlobal && (player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get())) {
                     tileWaystone.setGlobal(true);
-                    // TODO globalWaystones.addGlobalWaystone(newWaystone);
-                    for (PlayerEntity otherPlayer : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-                        WaystoneManagerLegacy.sendPlayerWaystones(otherPlayer);
-                    }
-                }
-
-                if (!newWaystone.isGlobal()) {
-                    WaystoneManagerLegacy.removePlayerWaystone(player, oldWaystone);
-                    // TODO WaystoneManagerLegacy.addPlayerWaystone(player, newWaystone);
-                    WaystoneManagerLegacy.sendPlayerWaystones(player);
                 }
 
                 if (message.fromSelectionGui) {

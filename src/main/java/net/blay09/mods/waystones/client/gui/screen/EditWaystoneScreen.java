@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
-import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -56,7 +56,7 @@ public class EditWaystoneScreen extends Screen {
             }
 
             if (tileWaystone.getName().isEmpty()) {
-                MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionType()));
+                // TODO MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionType()));
             }
         });
         addButton(btnDone);

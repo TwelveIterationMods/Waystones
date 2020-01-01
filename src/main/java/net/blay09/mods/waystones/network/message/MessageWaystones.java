@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.item.WarpStoneItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;

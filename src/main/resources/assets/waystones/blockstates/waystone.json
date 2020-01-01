@@ -1,29 +1,12 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "transform": "forge:default-block",
-    "model": "waystones:waystone",
-    "textures": {
-      "particle": "minecraft:blocks/stone"
-    }
-  },
   "variants": {
-    "base": {
-      "true": {},
-      "false": {}
-    },
-    "facing": {
-      "west": {
-        "y": -90
-      },
-      "east": {
-        "y": 90
-      },
-      "north": {
-      },
-      "south": {
-        "y": 180
-      }
-    }
+    "facing=east,half=lower":  { "model": "waystones:block/waystone_bottom" },
+    "facing=south,half=lower": { "model": "waystones:block/waystone_bottom", "y": 90 },
+    "facing=west,half=lower":  { "model": "waystones:block/waystone_bottom", "y": 180 },
+    "facing=north,half=lower": { "model": "waystones:block/waystone_bottom", "y": 270 },
+    "facing=east,half=upper":  { "model": "waystones:block/waystone_top" },
+    "facing=south,half=upper": { "model": "waystones:block/waystone_top", "y": 90 },
+    "facing=west,half=upper":  { "model": "waystones:block/waystone_top", "y": 180 },
+    "facing=north,half=upper": { "model": "waystones:block/waystone_top", "y": 270 }
   }
 }

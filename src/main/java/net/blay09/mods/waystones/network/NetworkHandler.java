@@ -23,7 +23,6 @@ public class NetworkHandler {
         channel.registerMessage(4, MessageTeleportEffect.class, MessageTeleportEffect::encode, MessageTeleportEffect::decode, MessageTeleportEffect::handle);
         channel.registerMessage(5, MessageSortWaystone.class, MessageSortWaystone::encode, MessageSortWaystone::decode, MessageSortWaystone::handle);
         channel.registerMessage(6, MessageRemoveWaystone.class, MessageRemoveWaystone::encode, MessageRemoveWaystone::decode, MessageRemoveWaystone::handle);
-        channel.registerMessage(7, MessageTeleportToGlobal.class, MessageTeleportToGlobal::encode, MessageTeleportToGlobal::decode, MessageTeleportToGlobal::handle);
         channel.registerMessage(8, MessageOpenWaystoneSelection.class, MessageOpenWaystoneSelection::encode, MessageOpenWaystoneSelection::decode, MessageOpenWaystoneSelection::handle);
     }
 

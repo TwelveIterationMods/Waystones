@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.WaystoneManagerLegacy;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -41,8 +41,6 @@ public class MessageFreeWarpReturn {
                     PlayerWaystoneHelper.setLastFreeWarp(player, System.currentTimeMillis());
                 }
             }
-
-            WaystoneManagerLegacy.sendPlayerWaystones(player);
         });
         context.setPacketHandled(true);
     }

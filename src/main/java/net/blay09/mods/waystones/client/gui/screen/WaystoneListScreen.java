@@ -1,12 +1,12 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneEntryButton;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageRemoveWaystone;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;

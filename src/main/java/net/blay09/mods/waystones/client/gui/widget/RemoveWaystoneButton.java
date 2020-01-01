@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;

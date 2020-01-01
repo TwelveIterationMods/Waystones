@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.waystones.WarpMode;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.*;
@@ -15,10 +16,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -39,7 +41,7 @@ public class WaystoneBlock extends Block {
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty BASE = BooleanProperty.create("base");
+    public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
     public WaystoneBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
@@ -48,7 +50,7 @@ public class WaystoneBlock extends Block {
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
-        builder.add(BASE);
+        builder.add(HALF);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class WaystoneBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new WaystoneTileEntity(!state.get(BASE));
+        return new WaystoneTileEntity(state.get(HALF) == DoubleBlockHalf.UPPER);
     }
 
     @Override
@@ -92,12 +94,12 @@ public class WaystoneBlock extends Block {
             return null;
         }
 
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing()).with(BASE, true);
+        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing()).with(HALF, DoubleBlockHalf.LOWER);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        world.setBlockState(pos.up(), this.getDefaultState().with(BASE, false));
+        world.setBlockState(pos.up(), this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
 
         if (placer instanceof PlayerEntity) {
             WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
@@ -139,7 +141,7 @@ public class WaystoneBlock extends Block {
             return true;
         }
 
-        boolean isActivated = PlayerWaystoneManager.isActivated(player, waystone);
+        boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone);
         } else {
@@ -167,7 +169,7 @@ public class WaystoneBlock extends Block {
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
             IWaystone waystone = getTileWaystone(world, pos);
-            if (PlayerWaystoneManager.isActivated(Minecraft.getInstance().player, waystone)) {
+            if (PlayerWaystoneManager.isWaystoneActivated(Minecraft.getInstance().player, waystone)) {
                 world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
                 world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
             }

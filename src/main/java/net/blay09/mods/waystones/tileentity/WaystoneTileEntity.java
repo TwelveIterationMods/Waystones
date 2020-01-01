@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.tileentity;
 
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.worldgen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;

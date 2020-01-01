@@ -1,12 +1,13 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.waystones.core.IWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 
+@Deprecated
 public class PlayerWaystoneData {
 
     private final IWaystone[] entries;

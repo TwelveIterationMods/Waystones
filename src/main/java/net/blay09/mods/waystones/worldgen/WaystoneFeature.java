@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -35,11 +36,11 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
         BlockState stateAbove = world.getBlockState(posAbove);
         if (state.isAir(world, pos) && stateAbove.isAir(world, posAbove)) {
             world.setBlockState(pos, ModBlocks.waystone.getDefaultState()
-                    .with(WaystoneBlock.BASE, true)
+                    .with(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                     .with(WaystoneBlock.FACING, facing), 2);
 
             world.setBlockState(posAbove, ModBlocks.waystone.getDefaultState()
-                    .with(WaystoneBlock.BASE, false)
+                    .with(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
                     .with(WaystoneBlock.FACING, facing), 2);
 
             TileEntity tileEntity = world.getTileEntity(pos);

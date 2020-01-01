@@ -1,10 +1,9 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.ModStats;
-import net.blay09.mods.waystones.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -58,14 +57,12 @@ public class PlayerWaystoneManager {
         return WaystoneEditPermissions.ALLOW;
     }
 
-    public static boolean isActivated(PlayerEntity player, IWaystone waystone) {
-        return false; // TODO implement me
+    public static boolean isWaystoneActivated(PlayerEntity player, IWaystone waystone) {
+        return PlayerWaystoneData.isWaystoneActivated(player, waystone);
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        player.addStat(ModStats.waystoneActivated);
-
-        // TODO activate waystone for player
+        PlayerWaystoneData.activateWaystone(player, waystone);
 
         StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
         nameComponent.getStyle().setColor(TextFormatting.WHITE);
@@ -73,7 +70,7 @@ public class PlayerWaystoneManager {
         chatComponent.getStyle().setColor(TextFormatting.YELLOW);
         player.sendMessage(chatComponent);
 
-        MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(waystone.getName(), waystone.getPos(), waystone.getDimensionType()));
+        MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(waystone));
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
@@ -94,23 +91,18 @@ public class PlayerWaystoneManager {
 
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        if (!WaystoneConfig.SERVER.teleportButton.get() || WaystoneConfig.SERVER.teleportButtonReturnOnly.get() || !WaystoneConfig.COMMON.teleportButtonTarget.get().isEmpty()) {
-            return false;
-        }
-
-        // TODO System.currentTimeMillis() - getLastFreeWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
-        return true;
+        return System.currentTimeMillis() - PlayerWaystoneData.getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {
-        return true; // TODO implement me
+        return System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
     }
 
-    public static boolean hasCooldown(IWaystone waystone) {
+    public static boolean shouldTriggerCooldown(IWaystone waystone) {
         return !waystone.isGlobal() || !WaystoneConfig.COMMON.globalNoCooldown.get();
     }
 
-    public static boolean teleportToWaystone(ServerPlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
+    public static boolean tryTeleportToWaystone(ServerPlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
         if (!canUseWarpMode(player, warpMode, warpItem, fromWaystone)) {
             return false;
         }
@@ -122,11 +114,11 @@ public class PlayerWaystoneManager {
 
         if (warpMode == WarpMode.WARP_SCROLL) {
             warpItem.shrink(1);
-        } else if(hasCooldown(waystone)) {
-            if(warpMode == WarpMode.INVENTORY_BUTTON) {
-                // TODO set cooldown
-            } else if(warpMode == WarpMode.WARP_STONE) {
-                // TODO set cooldown
+        } else if (shouldTriggerCooldown(waystone)) {
+            if (warpMode == WarpMode.INVENTORY_BUTTON) {
+                PlayerWaystoneData.setLastInventoryWarp(player, System.currentTimeMillis());
+            } else if (warpMode == WarpMode.WARP_STONE) {
+                PlayerWaystoneData.setLastWarpStoneWarp(player, System.currentTimeMillis());
             }
         }
 
@@ -134,7 +126,16 @@ public class PlayerWaystoneManager {
             player.addExperienceLevel(-xpLevelCost);
         }
 
-        return false; // TODO implement me
+        teleportToWaystone(player, waystone);
+        return true;
+    }
+
+    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
+        player.sendMessage(new StringTextComponent("*teleports behind you*")); // TODO
+    }
+
+    public static void deactivateWaystone(ServerPlayerEntity player, IWaystone entry) {
+        PlayerWaystoneData.deactivateWaystone(player, entry);
     }
 
     private static boolean canUseWarpMode(PlayerEntity player, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
