@@ -17,8 +17,8 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.BooleanValue globalInterDimension;
         public final ForgeConfigSpec.BooleanValue resetUseOnDamage;
         public final ForgeConfigSpec.BooleanValue disallowBreakingGenerated;
+        public final ForgeConfigSpec.BooleanValue addVillageStructure;
         public final ForgeConfigSpec.BooleanValue createJourneyMapWaypoint;
-        public final ForgeConfigSpec.DoubleValue villageChance;
         public final ForgeConfigSpec.IntValue worldGenFrequency;
         public final ForgeConfigSpec.ConfigValue<List<String>> customNames;
         public final ForgeConfigSpec.ConfigValue<String> teleportButtonTarget;
@@ -72,15 +72,15 @@ public class WaystoneConfig {
                     .translation("waystones.config.createJourneyMapWaypoint")
                     .define("createJourneyMapWaypoint", false);
 
-            villageChance = builder
-                    .comment("The chance for a waystone to generate in a village. Set to 1 to always generate one in villages, set to 0 to disable.")
-                    .translation("waystones.config.villageChance")
-                    .defineInRange("villageChance", 1f, 0, 1);
+            addVillageStructure = builder
+                    .comment("Set to true if waystones should be added to the generation of villages.")
+                    .translation("waystones.config.addVillageStructure")
+                    .define("addVillageStructure", false);
 
             worldGenFrequency = builder
                     .comment("Approximate chunk distance between waystones generated freely in world generation")
                     .translation("waystones.config.worldGenFrequency")
-                    .defineInRange("worldGenFrequency", 30, 1, Integer.MAX_VALUE);
+                    .defineInRange("worldGenFrequency", 30, 0, Integer.MAX_VALUE);
 
             customNames = builder
                     .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")

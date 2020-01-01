@@ -152,4 +152,25 @@ public class PlayerWaystoneManager {
 
         return false;
     }
+
+    public static long getLastWarpStoneWarp(PlayerEntity player) {
+        return PlayerWaystoneData.getLastWarpStoneWarp(player);
+    }
+
+    public static void setLastWarpStoneWarp(PlayerEntity player, int timeStamp) {
+        PlayerWaystoneData.setLastWarpStoneWarp(player, timeStamp);
+    }
+
+    public static long getLastInventoryWarp(PlayerEntity player) {
+        return PlayerWaystoneData.getLastInventoryWarp(player);
+    }
+
+    public static void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
+        PlayerWaystoneData.setLastInventoryWarp(player, timeStamp);
+    }
+
+    @Nullable
+    public static IWaystone getNearestWaystone(PlayerEntity player) {
+        return null;
+    }
 }

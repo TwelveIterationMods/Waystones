@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -11,19 +11,19 @@ import java.util.function.Supplier;
 
 public class MessageRemoveWaystone {
 
-    private final int index;
+    private final IWaystone waystone;
 
-    public MessageRemoveWaystone(int index) {
-        this.index = index;
+    public MessageRemoveWaystone(IWaystone waystone) {
+        this.waystone = waystone;
     }
 
     public static void encode(MessageRemoveWaystone message, PacketBuffer buf) {
-        buf.writeByte(message.index);
+        buf.writeUniqueId(message.waystone.getWaystoneUid());
     }
 
     public static MessageRemoveWaystone decode(PacketBuffer buf) {
-        int index = buf.readByte();
-        return new MessageRemoveWaystone(index);
+        IWaystone waystone = new WaystoneProxy(buf.readUniqueId());
+        return new MessageRemoveWaystone(waystone);
     }
 
     public static void handle(MessageRemoveWaystone message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -34,14 +34,7 @@ public class MessageRemoveWaystone {
                 return;
             }
 
-            PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-            IWaystone[] entries = waystoneData.getWaystones();
-            int index = message.index;
-            if (index < 0 || index >= entries.length) {
-                return;
-            }
-
-            PlayerWaystoneManager.deactivateWaystone(player, entries[index]);
+            PlayerWaystoneManager.deactivateWaystone(player, message.waystone);
         });
         context.setPacketHandled(true);
     }

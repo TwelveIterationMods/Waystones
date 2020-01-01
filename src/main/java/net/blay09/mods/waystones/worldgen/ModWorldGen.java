@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
+import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -15,17 +17,22 @@ import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Collections;
+import java.util.Objects;
 
 public class ModWorldGen {
-    private static final ResourceLocation waystoneVillageStructure = new ResourceLocation("waystones", "village_waystone");
+    private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
+    private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
     private static final ResourceLocation emptyStructure = new ResourceLocation("empty");
 
-    private static WaystoneFeature waystoneFeature;
+    private static WaystoneFeature mossyWaystoneFeature;
+    private static WaystoneFeature sandyWaystoneFeature;
     private static WaystonePlacement waystonePlacement;
 
     public static void registerFeatures(IForgeRegistry<Feature<?>> registry) {
         registry.registerAll(
-                waystoneFeature = (WaystoneFeature) new WaystoneFeature(NoFeatureConfig::deserialize).setRegistryName("waystone")
+                new WaystoneFeature(NoFeatureConfig::deserialize, ModBlocks.waystone.getDefaultState()).setRegistryName("waystone"),
+                mossyWaystoneFeature = (WaystoneFeature) new WaystoneFeature(NoFeatureConfig::deserialize, ModBlocks.mossyWaystone.getDefaultState()).setRegistryName("mossy_waystone"),
+                sandyWaystoneFeature = (WaystoneFeature) new WaystoneFeature(NoFeatureConfig::deserialize, ModBlocks.sandyWaystone.getDefaultState()).setRegistryName("sandy_waystone")
         );
     }
 
@@ -36,37 +43,40 @@ public class ModWorldGen {
     }
 
     public static void setupRandomWorldGen() {
-        // TODO config needs to be able to disable it (== 0)
-        Biome.BIOMES.forEach(it -> {
-            ConfiguredFeature<?> configuredFeature = Biome.createDecoratedFeature(waystoneFeature, NoFeatureConfig.NO_FEATURE_CONFIG, waystonePlacement, NoPlacementConfig.NO_PLACEMENT_CONFIG);
-            it.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
-            // TODO Desert waystones: sandy? jungle waystones: mossy? actually we wanted all of them to be mossy but we'll see, maybe not
-        });
+        if (WaystoneConfig.COMMON.worldGenFrequency.get() > 0) {
+            Biome.BIOMES.forEach(it -> {
+                boolean isDesert = Objects.requireNonNull(it.getRegistryName()).getPath().contains("desert");
+                WaystoneFeature biomeWaystoneFeature = isDesert ? sandyWaystoneFeature : mossyWaystoneFeature;
+                ConfiguredFeature<?> configuredFeature = Biome.createDecoratedFeature(biomeWaystoneFeature, NoFeatureConfig.NO_FEATURE_CONFIG, waystonePlacement, NoPlacementConfig.NO_PLACEMENT_CONFIG);
+                it.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
+            });
+        }
     }
 
     public static void setupVillageWorldGen() {
-        JigsawManager.REGISTRY.register(new JigsawPattern(waystoneVillageStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        JigsawManager.REGISTRY.register(new JigsawPattern(villageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        JigsawManager.REGISTRY.register(new JigsawPattern(desertVillageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
 
-        // TODO Make the waystone in the structure "uninitialized"
-        // TODO tie behind config
-        // other variants (at least desert)
+        // TODO Make the waystone in the structure "uninitialized" and export desert with jigsaw
 
-        PlainsVillagePools.init();
-        SnowyVillagePools.init();
-        SavannaVillagePools.init();
-        DesertVillagePools.init();
-        TaigaVillagePools.init();
+        if (WaystoneConfig.COMMON.addVillageStructure.get()) {
+            PlainsVillagePools.init();
+            SnowyVillagePools.init();
+            SavannaVillagePools.init();
+            DesertVillagePools.init();
+            TaigaVillagePools.init();
 
-        addWaystoneStructureToVillageConfig("village/plains/houses");
-        addWaystoneStructureToVillageConfig("village/snowy/houses");
-        addWaystoneStructureToVillageConfig("village/savanna/houses");
-        addWaystoneStructureToVillageConfig("village/desert/houses");
-        addWaystoneStructureToVillageConfig("village/taiga/houses");
+            addWaystoneStructureToVillageConfig("village/plains/houses", villageWaystoneStructure);
+            addWaystoneStructureToVillageConfig("village/snowy/houses", villageWaystoneStructure);
+            addWaystoneStructureToVillageConfig("village/savanna/houses", villageWaystoneStructure);
+            addWaystoneStructureToVillageConfig("village/desert/houses", desertVillageWaystoneStructure);
+            addWaystoneStructureToVillageConfig("village/taiga/houses", villageWaystoneStructure);
+        }
     }
 
-    private static void addWaystoneStructureToVillageConfig(String villagePiece) {
+    private static void addWaystoneStructureToVillageConfig(String villagePiece, ResourceLocation waystoneStructure) {
         JigsawPattern houses = JigsawManager.REGISTRY.get(new ResourceLocation(villagePiece));
 
-        houses.jigsawPieces.add(new SingleJigsawPiece(waystoneVillageStructure.toString(), Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        houses.jigsawPieces.add(new SingleJigsawPiece(waystoneStructure.toString(), Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
     }
 }

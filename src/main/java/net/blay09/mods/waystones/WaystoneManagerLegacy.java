@@ -27,32 +27,6 @@ import javax.annotation.Nullable;
 @Deprecated
 public class WaystoneManagerLegacy {
 
-    public static boolean checkAndUpdateWaystone(PlayerEntity player, IWaystone waystone) {
-        CompoundNBT tagCompound = PlayerWaystoneHelper.getWaystonesTag(player);
-        ListNBT tagList = tagCompound.getList(PlayerWaystoneHelper.WAYSTONE_LIST, Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < tagList.size(); i++) {
-            CompoundNBT entryCompound = tagList.getCompound(i);
-            /*TODO if (WaystoneEntry.read(entryCompound).equals(waystone)) {
-                WaystoneTileEntity tileEntity = getWaystoneInWorld(waystone);
-                if (tileEntity != null) {
-                    if (!entryCompound.getString("Name").equals(tileEntity.getWaystoneName())) {
-                        entryCompound.putString("Name", tileEntity.getWaystoneName());
-                        sendPlayerWaystones(player);
-                    }
-                    return true;
-                } else {
-                    if (waystone.isGlobal()) {
-                        GlobalWaystones.get(player.world).removeGlobalWaystone(waystone);
-                    }
-                    removePlayerWaystone(player, waystone);
-                    sendPlayerWaystones(player);
-                }
-                return false;
-            }*/
-        }
-        return false;
-    }
-
     @Nullable
     public static WaystoneTileEntity getWaystoneInWorld(IWaystone waystone) {
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
@@ -72,13 +46,6 @@ public class WaystoneManagerLegacy {
     }
 
     public static boolean teleportToWaystone(PlayerEntity player, IWaystone waystone) {
-        if (!checkAndUpdateWaystone(player, waystone)) {
-            TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:waystoneBroken");
-            chatComponent.getStyle().setColor(TextFormatting.RED);
-            player.sendMessage(chatComponent);
-            return false;
-        }
-
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         World targetWorld = DimensionManager.getWorld(currentServer, waystone.getDimensionType(), false, true);
         Direction facing = targetWorld.getBlockState(waystone.getPos()).get(WaystoneBlock.FACING);

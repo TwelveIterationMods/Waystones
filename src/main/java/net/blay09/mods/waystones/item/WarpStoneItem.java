@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.PlayerWaystoneHelper;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -58,10 +58,13 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
+
+        // Reset cooldown when using in creative mode
         if (player.abilities.isCreativeMode) {
-            PlayerWaystoneHelper.setLastWarpStoneUse(player, 0);
+            PlayerWaystoneManager.setLastWarpStoneWarp(player, 0);
         }
-        if (PlayerWaystoneHelper.canUseWarpStone(player)) {
+
+        if (PlayerWaystoneManager.canUseWarpStone(player, itemStack)) {
             if (!player.isHandActive() && world.isRemote) {
                 Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
             }
@@ -89,7 +92,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return 0.0;
         }
 
-        long timeLeft = PlayerWaystoneHelper.getLastWarpStoneUse(player);
+        long timeLeft = PlayerWaystoneManager.getLastWarpStoneWarp(player);
         long timeSince = (System.currentTimeMillis() - lastTimerUpdate);
         float percentage = (float) timeSince / timeLeft;
         return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
@@ -97,7 +100,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public boolean hasEffect(ItemStack itemStack) {
-        return PlayerWaystoneHelper.canUseWarpStone(Minecraft.getInstance().player);
+        return PlayerWaystoneManager.canUseWarpStone(Minecraft.getInstance().player, itemStack);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return;
         }
 
-        long timeLeft = PlayerWaystoneHelper.getLastWarpStoneUse(player);
+        long timeLeft = PlayerWaystoneManager.getLastWarpStoneWarp(player);
         long timeSince = System.currentTimeMillis() - lastTimerUpdate;
         int secondsLeft = (int) ((timeLeft - timeSince) / 1000);
         if (secondsLeft > 0) {

@@ -109,7 +109,7 @@ public class WaystoneListScreen extends Screen {
                     IWaystone waystoneEntry = ((RemoveWaystoneButton) button).getWaystone();
                     int index = ArrayUtils.indexOf(entries, waystoneEntry);
                     entries = ArrayUtils.remove(entries, index);
-                    NetworkHandler.channel.sendToServer(new MessageRemoveWaystone(index));
+                    NetworkHandler.channel.sendToServer(new MessageRemoveWaystone(waystoneEntry));
                     updateList();
                 });
                 addButton(remove);

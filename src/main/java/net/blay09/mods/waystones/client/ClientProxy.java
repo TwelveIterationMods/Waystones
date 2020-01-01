@@ -2,11 +2,10 @@ package net.blay09.mods.waystones.client;
 
 import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.*;
-import net.blay09.mods.waystones.client.gui.screen.EditWaystoneScreen;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
-import net.blay09.mods.waystones.client.gui.screen.WaystoneListScreen;
 import net.blay09.mods.waystones.client.gui.widget.InventoryWarpButton;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.ClientBrandRetriever;
@@ -43,17 +42,17 @@ public class ClientProxy extends CommonProxy {
     public void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
         if (WaystoneConfig.SERVER.teleportButton.get() && event.getGui() instanceof InventoryScreen) {
             buttonWarp = new InventoryWarpButton((ContainerScreen<?>) event.getGui(), button -> {
-                PlayerEntity PlayerEntity = Minecraft.getInstance().player;
+                PlayerEntity player = Minecraft.getInstance().player;
                 Minecraft minecraft = event.getGui().getMinecraft();
-                if (PlayerWaystoneHelper.canFreeWarp(PlayerEntity)) {
+                if (PlayerWaystoneManager.canUseInventoryButton(player)) {
                     if (!WaystoneConfig.COMMON.teleportButtonTarget.get().isEmpty()) {
                         minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen(WaystoneConfig.COMMON.teleportButtonTarget.get()));
                     } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
-                        if (PlayerWaystoneHelper.getNearestWaystone(PlayerEntity) != null) {
+                        if (PlayerWaystoneManager.getNearestWaystone(player) != null) {
                             minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else {
-                        Waystones.proxy.openWaystoneSelection(PlayerEntity, WarpMode.INVENTORY_BUTTON, Hand.MAIN_HAND, null);
+                        Waystones.proxy.openWaystoneSelection(player, WarpMode.INVENTORY_BUTTON, Hand.MAIN_HAND, null);
                     }
                 } else {
                     minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -70,7 +69,7 @@ public class ClientProxy extends CommonProxy {
     public void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             tmpTooltip.clear();
-            long timeSince = System.currentTimeMillis() - PlayerWaystoneHelper.getLastFreeWarp(Minecraft.getInstance().player);
+            long timeSince = System.currentTimeMillis() - PlayerWaystoneManager.getLastInventoryWarp(Minecraft.getInstance().player);
             int secondsLeft = (int) ((WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000 - timeSince) / 1000);
             if (!WaystoneConfig.COMMON.teleportButtonTarget.get().isEmpty()) {
                 tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
@@ -80,7 +79,7 @@ public class ClientProxy extends CommonProxy {
                 }
             } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
                 tmpTooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
-                IWaystone nearestWaystone = PlayerWaystoneHelper.getNearestWaystone(Minecraft.getInstance().player);
+                IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
                 if (nearestWaystone != null) {
                     tmpTooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
@@ -109,15 +108,14 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void openWaystoneSelection(PlayerEntity player, WarpMode mode, Hand hand, @Nullable IWaystone fromWaystone) {
         if (player == Minecraft.getInstance().player) {
-            IWaystone[] waystones = PlayerWaystoneData.fromPlayer(Minecraft.getInstance().player).getWaystones();
-            Minecraft.getInstance().displayGuiScreen(new WaystoneListScreen(waystones, mode, hand, fromWaystone));
+            // TODO Send packet to server, have it open container with current data
         }
     }
 
     @Override
     public void openWaystoneSettings(PlayerEntity player, IWaystone waystone, boolean fromSelectionGui) {
         if (player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().displayGuiScreen(new EditWaystoneScreen(waystone, fromSelectionGui));
+            // TODO Send packet to server, have it open container with current data
         }
     }
 

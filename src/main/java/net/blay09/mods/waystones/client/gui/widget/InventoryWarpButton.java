@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -30,7 +30,7 @@ public class InventoryWarpButton extends Button {
             isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             PlayerEntity entityPlayer = Minecraft.getInstance().player;
-            if (!PlayerWaystoneHelper.canFreeWarp(entityPlayer) || PlayerWaystoneHelper.getNearestWaystone(entityPlayer) == null) {
+            if (!PlayerWaystoneManager.canUseInventoryButton(entityPlayer) || PlayerWaystoneManager.getNearestWaystone(entityPlayer) == null) {
                 GlStateManager.color4f(0.5f, 0.5f, 0.5f, 0.5f);
             } else if (isHovered) {
                 GlStateManager.color4f(1f, 1f, 1f, 1f);

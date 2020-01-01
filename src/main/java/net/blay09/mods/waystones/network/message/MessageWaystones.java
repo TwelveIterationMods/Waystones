@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.item.WarpStoneItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -45,7 +43,6 @@ public class MessageWaystones {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             // TODO ClientWaystones.setKnownWaystones(message.entries);
-            PlayerWaystoneHelper.store(Minecraft.getInstance().player, message.entries, message.lastFreeWarp, message.lastWarpStoneUse);
             WarpStoneItem.lastTimerUpdate = System.currentTimeMillis();
         });
         context.setPacketHandled(true);

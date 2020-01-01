@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.Dynamic;
-import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
@@ -21,11 +20,11 @@ import java.util.function.Function;
 
 public class WaystoneFeature extends Feature<NoFeatureConfig> {
 
-    // TODO limit to overworld
-    // TODO limit to min distance (pick chunks based on seed + distance instead of random)
+    private final BlockState waystoneState;
 
-    public WaystoneFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactory) {
+    public WaystoneFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactory, BlockState waystoneState) {
         super(configFactory);
+        this.waystoneState = waystoneState;
     }
 
     @Override
@@ -35,11 +34,11 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
         BlockPos posAbove = pos.up();
         BlockState stateAbove = world.getBlockState(posAbove);
         if (state.isAir(world, pos) && stateAbove.isAir(world, posAbove)) {
-            world.setBlockState(pos, ModBlocks.waystone.getDefaultState()
+            world.setBlockState(pos, waystoneState
                     .with(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
                     .with(WaystoneBlock.FACING, facing), 2);
 
-            world.setBlockState(posAbove, ModBlocks.waystone.getDefaultState()
+            world.setBlockState(posAbove, waystoneState
                     .with(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
                     .with(WaystoneBlock.FACING, facing), 2);
 
