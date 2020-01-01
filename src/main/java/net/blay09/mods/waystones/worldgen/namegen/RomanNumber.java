@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.worldgen;
+package net.blay09.mods.waystones.worldgen.namegen;
 
 import com.google.common.collect.Maps;
 

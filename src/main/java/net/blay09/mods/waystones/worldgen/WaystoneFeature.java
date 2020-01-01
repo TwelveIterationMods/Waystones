@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.worldgen;
 import com.mojang.datafixers.Dynamic;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;

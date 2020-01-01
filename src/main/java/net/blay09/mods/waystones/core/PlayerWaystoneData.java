@@ -4,6 +4,9 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
+import java.util.Collections;
+import java.util.List;
+
 public class PlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
@@ -52,5 +55,9 @@ public class PlayerWaystoneData {
 
     public static long getLastWarpStoneWarp(PlayerEntity player) {
         return getWaystonesData(player).getLong(LAST_WARPSTONE_WARP);
+    }
+
+    public static List<IWaystone> getWaystones(PlayerEntity player) {
+        return Collections.emptyList(); // TODO implement me
     }
 }

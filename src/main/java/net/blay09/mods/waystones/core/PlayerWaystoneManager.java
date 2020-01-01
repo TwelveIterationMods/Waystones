@@ -171,6 +171,10 @@ public class PlayerWaystoneManager {
 
     @Nullable
     public static IWaystone getNearestWaystone(PlayerEntity player) {
-        return null;
+        return PlayerWaystoneData.getWaystones(player).stream().min((first, second) -> {
+            double firstDist = first.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
+            double secondDist = second.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
+            return (int) Math.round(secondDist) - (int) Math.round(firstDist);
+        }).orElse(null);
     }
 }
