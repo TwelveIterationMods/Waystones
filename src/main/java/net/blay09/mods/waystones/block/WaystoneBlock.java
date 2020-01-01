@@ -1,9 +1,8 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
@@ -23,10 +22,11 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
@@ -37,11 +37,18 @@ import java.util.Random;
 
 public class WaystoneBlock extends Block {
 
+    private static final VoxelShape RENDER_SHAPE = VoxelShapes.create(1 / 16f, 1 / 16f, 1 / 16f, 15 / 16f, 15 / 16f, 15 / 16f);
+
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
     public WaystoneBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState p_196247_1_, IBlockReader p_196247_2_, BlockPos p_196247_3_) {
+        return RENDER_SHAPE;
     }
 
     @Override

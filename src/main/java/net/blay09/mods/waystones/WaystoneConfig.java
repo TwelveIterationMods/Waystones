@@ -4,7 +4,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.BooleanValue disallowBreakingGenerated;
         public final ForgeConfigSpec.BooleanValue createJourneyMapWaypoint;
         public final ForgeConfigSpec.DoubleValue villageChance;
-        public final ForgeConfigSpec.DoubleValue legacyChance;
+        public final ForgeConfigSpec.IntValue worldGenFrequency;
         public final ForgeConfigSpec.ConfigValue<List<String>> customNames;
         public final ForgeConfigSpec.ConfigValue<String> teleportButtonTarget;
         public final ForgeConfigSpec.BooleanValue inventoryButtonXpCost;
@@ -78,10 +77,10 @@ public class WaystoneConfig {
                     .translation("waystones.config.villageChance")
                     .defineInRange("villageChance", 1f, 0, 1);
 
-            legacyChance = builder
-                    .comment("The chance for a waystone to generate just anywhere (without a structure), scaled by 1/10000.")
-                    .translation("waystones.config.legacyChance")
-                    .defineInRange("legacyChance", 0f, 0, 10000);
+            worldGenFrequency = builder
+                    .comment("Approximate chunk distance between waystones generated freely in world generation")
+                    .translation("waystones.config.worldGenFrequency")
+                    .defineInRange("worldGenFrequency", 30, 1, Integer.MAX_VALUE);
 
             customNames = builder
                     .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")

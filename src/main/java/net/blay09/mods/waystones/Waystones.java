@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.ModTileEntities;
-import net.blay09.mods.waystones.worldgen.ModFeatures;
+import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -20,7 +20,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -60,15 +60,8 @@ public class Waystones {
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
-        Biome.BIOMES.forEach(it -> {
-            CountRangeConfig placementConfig = new CountRangeConfig(10, 0,0, 1);
-            ConfiguredFeature<?> configuredFeature = Biome.createDecoratedFeature(ModFeatures.waystone, NoFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_RANGE, placementConfig);
-            it.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
-        });
-
-        ResourceLocation villageStructure = new ResourceLocation("waystones", "village_waystone");
-        ResourceLocation emptyStructure = new ResourceLocation("empty");
-        JigsawManager.REGISTRY.register(new JigsawPattern(villageStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        ModWorldGen.setupRandomWorldGen();
+        ModWorldGen.setupVillageWorldGen();
     }
 
     @SubscribeEvent
@@ -82,8 +75,13 @@ public class Waystones {
     }
 
     @SubscribeEvent
-    public static void registerFeature(RegistryEvent.Register<Feature<?>> event) {
-        ModFeatures.register(event.getRegistry());
+    public static void registerWorldGenFeatures(RegistryEvent.Register<Feature<?>> event) {
+        ModWorldGen.registerFeatures(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerWorldGenPlacements(RegistryEvent.Register<Placement<?>> event) {
+        ModWorldGen.registerPlacements(event.getRegistry());
     }
 
     @SubscribeEvent
