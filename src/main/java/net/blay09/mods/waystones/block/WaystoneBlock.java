@@ -98,7 +98,7 @@ public class WaystoneBlock extends Block {
             return null;
         }
 
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing()).with(HALF, DoubleBlockHalf.LOWER);
+        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(HALF, DoubleBlockHalf.LOWER);
     }
 
     @Override
