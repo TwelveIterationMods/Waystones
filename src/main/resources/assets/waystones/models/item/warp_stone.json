@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "waystones:items/warp_stone"
+    "layer0": "waystones:item/warp_stone"
   }
 }

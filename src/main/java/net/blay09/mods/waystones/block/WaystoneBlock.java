@@ -37,9 +37,6 @@ import java.util.Random;
 
 public class WaystoneBlock extends Block {
 
-    public static final String name = "waystone";
-    public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
-
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 

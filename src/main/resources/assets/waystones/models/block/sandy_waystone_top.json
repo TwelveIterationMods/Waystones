@@ -1,0 +1,7 @@
+{
+	"parent": "waystones:block/waystone_top",
+	"textures": {
+		"particle": "block/cut_sandstone",
+		"texture": "block/cut_sandstone"
+	}
+}

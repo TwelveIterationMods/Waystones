@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "waystones:waystone"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SWS",
+    "OOO"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:cut_sandstone"
+    },
+    "W": {
+      "item": "waystones:warp_stone"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  }
+}
