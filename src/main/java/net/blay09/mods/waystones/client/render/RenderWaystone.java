@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -15,8 +16,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
 
-    private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone.png");
-    private static final ResourceLocation textureMossy = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_mossy.png");
     private static final ResourceLocation textureActive = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_active.png");
 
     private final ModelWaystone model = new ModelWaystone();
@@ -40,9 +39,6 @@ public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
             GlStateManager.scalef(4f, 8f, 1f);
             GlStateManager.translatef(0.0625f, 0.0625f, 0.0625f);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-        } else {
-            boolean isMossy = tileEntity != null && tileEntity.isMossy() && WaystoneConfig.CLIENT.randomlySpawnedLookMossy.get();
-            bindTexture(isMossy ? textureMossy : texture);
         }
 
         float angle = state != null ? state.get(WaystoneBlock.FACING).getHorizontalAngle() : 0f;
@@ -53,8 +49,7 @@ public class RenderWaystone extends TileEntityRenderer<WaystoneTileEntity> {
         GlStateManager.rotatef(angle, 0f, 1f, 0f);
         GlStateManager.rotatef(-180f, 1f, 0f, 0f);
         GlStateManager.scalef(0.5f, 0.5f, 0.5f);
-        model.renderAll();
-        boolean isActivated = false; // TODO (ClientWaystones.getKnownWaystone(tileEntity.getWaystoneName()) != null);
+        boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Minecraft.getInstance().player, tileEntity.getWaystone());
         if (tileEntity != null && tileEntity.hasWorld() && isActivated) {
             bindTexture(textureActive);
             GlStateManager.scalef(1.05f, 1.05f, 1.05f);

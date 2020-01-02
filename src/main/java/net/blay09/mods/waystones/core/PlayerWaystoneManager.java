@@ -64,13 +64,15 @@ public class PlayerWaystoneManager {
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
         PlayerWaystoneData.activateWaystone(player, waystone);
 
-        StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
-        nameComponent.getStyle().setColor(TextFormatting.WHITE);
-        TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:activatedWaystone", nameComponent);
-        chatComponent.getStyle().setColor(TextFormatting.YELLOW);
-        player.sendMessage(chatComponent);
+        if (!player.world.isRemote) {
+            StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
+            nameComponent.getStyle().setColor(TextFormatting.WHITE);
+            TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:activatedWaystone", nameComponent);
+            chatComponent.getStyle().setColor(TextFormatting.YELLOW);
+            player.sendMessage(chatComponent);
+        }
 
-        MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(waystone));
+        MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(player, waystone));
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {

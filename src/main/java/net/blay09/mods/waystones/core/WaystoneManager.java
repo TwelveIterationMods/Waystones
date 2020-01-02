@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -65,7 +66,21 @@ public class WaystoneManager extends WorldSavedData {
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         ListNBT tagList = new ListNBT();
+        writeWaystone((IWaystone) null);
         tagCompound.put(TAG_WAYSTONES, tagList);
+        return tagCompound;
+    }
+
+    private CompoundNBT writeWaystone(IWaystone waystone) {
+        CompoundNBT tagCompound = new CompoundNBT();
+        tagCompound.putString("WaystoneName", waystone.getName());
+        tagCompound.putBoolean("WasGenerated", waystone.wasGenerated());
+
+        if (waystone.getOwnerUid() != null) {
+            tagCompound.put("Owner", NBTUtil.writeUniqueId(waystone.getOwnerUid()));
+        }
+
+        tagCompound.putBoolean("IsGlobal", waystone.isGlobal());
         return tagCompound;
     }
 

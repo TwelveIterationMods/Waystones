@@ -47,8 +47,7 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
             if (tileEntity instanceof WaystoneTileEntity) {
                 WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
                 String generatedName = NameGenerator.get((World) world).getName(waystoneTileEntity.getWaystone(), rand);
-                waystoneTileEntity.setWaystoneName(generatedName);
-                waystoneTileEntity.setMossy(true);
+                waystoneTileEntity.initializeGenerated(world, generatedName);
             }
 
             return true;

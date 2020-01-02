@@ -1,24 +1,19 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.function.Supplier;
 
@@ -71,27 +66,21 @@ public class MessageEditWaystone {
                 return;
             }
 
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntity) {
-                WaystoneTileEntity tileWaystone = ((WaystoneTileEntity) tileEntity).getParent();
+            String newName = message.name;
 
-                String newName = message.name;
+            // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
+            if (newName.equals("%RANDOM%") && !player.abilities.isCreativeMode) {
+                newName = "RANDOM";
+            }
 
-                // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
-                if (newName.equals("%RANDOM%") && !player.abilities.isCreativeMode) {
-                    newName = "RANDOM";
-                }
+            // TODO waystone.setWaystoneName(newName);
 
-                tileWaystone.setWaystoneName(newName);
+            if (message.isGlobal && (player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get())) {
+                // TODO waystone.setGlobal(true);
+            }
 
-                IWaystone newWaystone = tileWaystone.getWaystone();
-                if (message.isGlobal && (player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get())) {
-                    tileWaystone.setGlobal(true);
-                }
-
-                if (message.fromSelectionGui) {
-                    NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE, Hand.MAIN_HAND, newWaystone));
-                }
+            if (message.fromSelectionGui) {
+                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone));
             }
         });
         context.setPacketHandled(true);

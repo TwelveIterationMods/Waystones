@@ -61,14 +61,14 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
-    public boolean hasTileEntity() {
+    public boolean hasTileEntity(BlockState state) {
         return true;
     }
 
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new WaystoneTileEntity(state.get(HALF) == DoubleBlockHalf.UPPER);
+        return new WaystoneTileEntity();
     }
 
     @Override
@@ -106,13 +106,16 @@ public class WaystoneBlock extends Block {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        world.setBlockState(pos.up(), this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
+        BlockPos posAbove = pos.up();
+        world.setBlockState(posAbove, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
 
-        if (placer instanceof PlayerEntity) {
-            WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
-            if (tileWaystone != null) {
-                tileWaystone.initializePlacedBy(placer);
-                // TODO Waystones.proxy.openWaystoneSettings((PlayerEntity) placer, tileWaystone, false);
+        WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+        if (waystoneTileEntity != null) {
+            waystoneTileEntity.initializePlacedBy(world, placer);
+
+            WaystoneTileEntity waystoneTileEntityAbove = (WaystoneTileEntity) world.getTileEntity(posAbove);
+            if (waystoneTileEntityAbove != null) {
+                waystoneTileEntityAbove.initializeFromBase(waystoneTileEntity);
             }
         }
     }

@@ -31,6 +31,11 @@ public class WaystoneProxy implements IWaystone {
     }
 
     @Override
+    public UUID getOwnerUid() {
+        return getBackingWaystone().getOwnerUid();
+    }
+
+    @Override
     public UUID getWaystoneUid() {
         return waystoneUid;
     }
@@ -58,11 +63,6 @@ public class WaystoneProxy implements IWaystone {
     @Override
     public boolean isOwner(PlayerEntity player) {
         return getBackingWaystone().isOwner(player);
-    }
-
-    @Override
-    public Direction getFacing() {
-        return getBackingWaystone().getFacing();
     }
 
     @Override

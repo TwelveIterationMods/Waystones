@@ -6,6 +6,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class InvalidWaystone implements IWaystone {
@@ -15,6 +16,12 @@ public class InvalidWaystone implements IWaystone {
     @Override
     public boolean isValid() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public UUID getOwnerUid() {
+        return null;
     }
 
     @Override
@@ -45,11 +52,6 @@ public class InvalidWaystone implements IWaystone {
     @Override
     public boolean isOwner(PlayerEntity player) {
         return false;
-    }
-
-    @Override
-    public Direction getFacing() {
-        return Direction.NORTH;
     }
 
     @Override

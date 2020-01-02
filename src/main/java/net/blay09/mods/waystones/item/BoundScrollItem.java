@@ -87,19 +87,19 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         World world = context.getWorld();
         TileEntity tileEntity = world.getTileEntity(context.getPos());
         if (tileEntity instanceof WaystoneTileEntity) {
-            WaystoneTileEntity tileWaystone = ((WaystoneTileEntity) tileEntity).getParent();
-            PlayerWaystoneManager.activateWaystone(player, tileWaystone);
+            IWaystone waystone = ((WaystoneTileEntity) tileEntity).getWaystone();
+            PlayerWaystoneManager.activateWaystone(player, waystone);
 
             if (!world.isRemote) {
                 ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.split(1);
-                setBoundTo(boundItem, tileWaystone.getWaystone());
+                setBoundTo(boundItem, waystone);
                 if (boundItem != heldItem) {
                     if (!player.addItemStackToInventory(boundItem)) {
                         player.dropItem(boundItem, false);
                     }
                 }
 
-                player.sendStatusMessage(new TranslationTextComponent("waystones:scrollBound", tileWaystone.getWaystoneName()), true);
+                player.sendStatusMessage(new TranslationTextComponent("waystones:scrollBound", waystone.getName()), true);
             }
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, context.getPos(), 2f);
