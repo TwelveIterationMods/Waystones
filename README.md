@@ -10,8 +10,3 @@ If you're interested in contributing to the mod, you can check out [issues label
 In order to get a development environment set up, clone the repository and run `./gradlew setupDecompWorkspace` and `./gradlew idea` or `./gradlew eclipse` depending on what IDE you use.
 
 If you need help, feel free to join us on [Discord](https://discord.gg/scGAfXC).
-
-## Development Builds
-
-Potentially unstable in-development releases built straight from the latest code in this repository are available [on my Jenkins](http://jenkins.blay09.net).
-They may contain unfinished and broken features and no support is provided for these builds.
