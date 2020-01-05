@@ -53,6 +53,10 @@ public class Waystone implements IWaystone {
         return isGlobal;
     }
 
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
     @Override
     public boolean isOwner(PlayerEntity player) {
         return ownerUid == null || player.getGameProfile().getId().equals(ownerUid) || player.abilities.isCreativeMode;
@@ -65,7 +69,7 @@ public class Waystone implements IWaystone {
 
     @Override
     public boolean isValid() {
-        return true; // TODO actually check it though
+        return true;
     }
 
     @Override

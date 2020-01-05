@@ -24,7 +24,7 @@ public class WaystoneProxy implements IWaystone {
 
     private IWaystone getBackingWaystone() {
         if (backingWaystone == null) {
-            backingWaystone = WaystoneManager.getWaystoneById(waystoneUid).orElseThrow(() -> new IllegalStateException("Waystone with id " + waystoneUid + " does not exist"));
+            backingWaystone = WaystoneManager.getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
         }
 
         return backingWaystone;

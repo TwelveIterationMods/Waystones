@@ -5,7 +5,6 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -15,10 +14,14 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 
 public class PlayerWaystoneManager {
+
+    private static IPlayerWaystoneData playerWaystoneData = DistExecutor.runForDist(() -> InMemoryPlayerWaystoneData::new, () -> PersistentPlayerWaystoneData::new);
 
     public static boolean mayBreakWaystone(PlayerEntity player, IBlockReader world, BlockPos pos) {
         if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
@@ -58,11 +61,11 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean isWaystoneActivated(PlayerEntity player, IWaystone waystone) {
-        return PlayerWaystoneData.isWaystoneActivated(player, waystone);
+        return playerWaystoneData.isWaystoneActivated(player, waystone);
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        PlayerWaystoneData.activateWaystone(player, waystone);
+        playerWaystoneData.activateWaystone(player, waystone);
 
         if (!player.world.isRemote) {
             StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
@@ -93,18 +96,18 @@ public class PlayerWaystoneManager {
 
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        return System.currentTimeMillis() - PlayerWaystoneData.getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
+        return System.currentTimeMillis() - playerWaystoneData.getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {
-        return System.currentTimeMillis() - PlayerWaystoneData.getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
+        return System.currentTimeMillis() - playerWaystoneData.getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
     }
 
     public static boolean shouldTriggerCooldown(IWaystone waystone) {
         return !waystone.isGlobal() || !WaystoneConfig.COMMON.globalNoCooldown.get();
     }
 
-    public static boolean tryTeleportToWaystone(ServerPlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
+    public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
         if (!canUseWarpMode(player, warpMode, warpItem, fromWaystone)) {
             return false;
         }
@@ -118,9 +121,9 @@ public class PlayerWaystoneManager {
             warpItem.shrink(1);
         } else if (shouldTriggerCooldown(waystone)) {
             if (warpMode == WarpMode.INVENTORY_BUTTON) {
-                PlayerWaystoneData.setLastInventoryWarp(player, System.currentTimeMillis());
+                playerWaystoneData.setLastInventoryWarp(player, System.currentTimeMillis());
             } else if (warpMode == WarpMode.WARP_STONE) {
-                PlayerWaystoneData.setLastWarpStoneWarp(player, System.currentTimeMillis());
+                playerWaystoneData.setLastWarpStoneWarp(player, System.currentTimeMillis());
             }
         }
 
@@ -132,12 +135,12 @@ public class PlayerWaystoneManager {
         return true;
     }
 
-    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
+    private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
         player.sendMessage(new StringTextComponent("*teleports behind you*")); // TODO
     }
 
-    public static void deactivateWaystone(ServerPlayerEntity player, IWaystone entry) {
-        PlayerWaystoneData.deactivateWaystone(player, entry);
+    public static void deactivateWaystone(PlayerEntity player, IWaystone entry) {
+        playerWaystoneData.deactivateWaystone(player, entry);
     }
 
     private static boolean canUseWarpMode(PlayerEntity player, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
@@ -156,27 +159,35 @@ public class PlayerWaystoneManager {
     }
 
     public static long getLastWarpStoneWarp(PlayerEntity player) {
-        return PlayerWaystoneData.getLastWarpStoneWarp(player);
+        return playerWaystoneData.getLastWarpStoneWarp(player);
     }
 
     public static void setLastWarpStoneWarp(PlayerEntity player, int timeStamp) {
-        PlayerWaystoneData.setLastWarpStoneWarp(player, timeStamp);
+        playerWaystoneData.setLastWarpStoneWarp(player, timeStamp);
     }
 
     public static long getLastInventoryWarp(PlayerEntity player) {
-        return PlayerWaystoneData.getLastInventoryWarp(player);
+        return playerWaystoneData.getLastInventoryWarp(player);
     }
 
     public static void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
-        PlayerWaystoneData.setLastInventoryWarp(player, timeStamp);
+        playerWaystoneData.setLastInventoryWarp(player, timeStamp);
     }
 
     @Nullable
     public static IWaystone getNearestWaystone(PlayerEntity player) {
-        return PlayerWaystoneData.getWaystones(player).stream().min((first, second) -> {
+        return playerWaystoneData.getWaystones(player).stream().min((first, second) -> {
             double firstDist = first.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
             double secondDist = second.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
             return (int) Math.round(secondDist) - (int) Math.round(firstDist);
         }).orElse(null);
+    }
+
+    public static Collection<IWaystone> getWaystones(PlayerEntity player) {
+        return playerWaystoneData.getWaystones(player);
+    }
+
+    public static IPlayerWaystoneData getPlayerWaystoneData() {
+        return playerWaystoneData;
     }
 }
