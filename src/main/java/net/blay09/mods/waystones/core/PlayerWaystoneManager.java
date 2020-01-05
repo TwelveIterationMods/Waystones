@@ -16,7 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,8 @@ import java.util.Collection;
 
 public class PlayerWaystoneManager {
 
-    private static IPlayerWaystoneData playerWaystoneData = DistExecutor.runForDist(() -> InMemoryPlayerWaystoneData::new, () -> PersistentPlayerWaystoneData::new);
+    private static IPlayerWaystoneData persistentPlayerWaystoneData = new PersistentPlayerWaystoneData();
+    private static IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
 
     public static boolean mayBreakWaystone(PlayerEntity player, IBlockReader world, BlockPos pos) {
         if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
@@ -64,11 +65,11 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean isWaystoneActivated(PlayerEntity player, IWaystone waystone) {
-        return playerWaystoneData.isWaystoneActivated(player, waystone);
+        return getPlayerWaystoneData(player.world).isWaystoneActivated(player, waystone);
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        playerWaystoneData.activateWaystone(player, waystone);
+        getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
 
         if (!player.world.isRemote) {
             StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
@@ -95,11 +96,11 @@ public class PlayerWaystoneManager {
 
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        return System.currentTimeMillis() - playerWaystoneData.getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
+        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {
-        return System.currentTimeMillis() - playerWaystoneData.getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
+        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
     }
 
     public static boolean shouldTriggerCooldown(IWaystone waystone) {
@@ -124,9 +125,9 @@ public class PlayerWaystoneManager {
             warpItem.shrink(1);
         } else if (shouldTriggerCooldown(waystone)) {
             if (warpMode == WarpMode.INVENTORY_BUTTON) {
-                playerWaystoneData.setLastInventoryWarp(player, System.currentTimeMillis());
+                getPlayerWaystoneData(player.world).setLastInventoryWarp(player, System.currentTimeMillis());
             } else if (warpMode == WarpMode.WARP_STONE) {
-                playerWaystoneData.setLastWarpStoneWarp(player, System.currentTimeMillis());
+                getPlayerWaystoneData(player.world).setLastWarpStoneWarp(player, System.currentTimeMillis());
             }
         }
 
@@ -145,7 +146,7 @@ public class PlayerWaystoneManager {
     }
 
     public static void deactivateWaystone(PlayerEntity player, IWaystone entry) {
-        playerWaystoneData.deactivateWaystone(player, entry);
+        getPlayerWaystoneData(player.world).deactivateWaystone(player, entry);
     }
 
     private static boolean canUseWarpMode(PlayerEntity player, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
@@ -168,24 +169,24 @@ public class PlayerWaystoneManager {
     }
 
     public static long getLastWarpStoneWarp(PlayerEntity player) {
-        return playerWaystoneData.getLastWarpStoneWarp(player);
+        return getPlayerWaystoneData(player.world).getLastWarpStoneWarp(player);
     }
 
     public static void setLastWarpStoneWarp(PlayerEntity player, int timeStamp) {
-        playerWaystoneData.setLastWarpStoneWarp(player, timeStamp);
+        getPlayerWaystoneData(player.world).setLastWarpStoneWarp(player, timeStamp);
     }
 
     public static long getLastInventoryWarp(PlayerEntity player) {
-        return playerWaystoneData.getLastInventoryWarp(player);
+        return getPlayerWaystoneData(player.world).getLastInventoryWarp(player);
     }
 
     public static void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
-        playerWaystoneData.setLastInventoryWarp(player, timeStamp);
+        getPlayerWaystoneData(player.world).setLastInventoryWarp(player, timeStamp);
     }
 
     @Nullable
     public static IWaystone getNearestWaystone(PlayerEntity player) {
-        return playerWaystoneData.getWaystones(player).stream().min((first, second) -> {
+        return getPlayerWaystoneData(player.world).getWaystones(player).stream().min((first, second) -> {
             double firstDist = first.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
             double secondDist = second.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
             return (int) Math.round(secondDist) - (int) Math.round(firstDist);
@@ -193,10 +194,14 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<IWaystone> getWaystones(PlayerEntity player) {
-        return playerWaystoneData.getWaystones(player);
+        return getPlayerWaystoneData(player.world).getWaystones(player);
     }
 
-    public static IPlayerWaystoneData getPlayerWaystoneData() {
-        return playerWaystoneData;
+    public static IPlayerWaystoneData getPlayerWaystoneData(World world) {
+        return world.isRemote ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
+    }
+
+    public static IPlayerWaystoneData getPlayerWaystoneData(LogicalSide side) {
+        return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 }
