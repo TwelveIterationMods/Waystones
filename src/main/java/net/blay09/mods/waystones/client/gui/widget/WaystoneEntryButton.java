@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
@@ -47,9 +46,9 @@ public class WaystoneEntryButton extends Button {
         this.xpLevelCost = (enableXPCost && WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0) ? MathHelper.clamp((int) Math.sqrt(player.getDistanceSq(new Vec3d(waystone.getPos()))) / WaystoneConfig.SERVER.blocksPerXPLevel.get(), 0, WaystoneConfig.SERVER.maximumXpCost.get()) : 0;
 
         if (waystone.getDimensionType() != Minecraft.getInstance().world.getDimension().getType()) {
-            if (!WaystoneManagerLegacy.isDimensionWarpAllowed(waystone)) {
-                active = false;
-            }
+            // TODO if (!WaystoneManagerLegacy.isDimensionWarpAllowed(waystone)) {
+                //active = false;
+            //}
         }
 
         if (player.experienceLevel < xpLevelCost && !player.abilities.isCreativeMode) {

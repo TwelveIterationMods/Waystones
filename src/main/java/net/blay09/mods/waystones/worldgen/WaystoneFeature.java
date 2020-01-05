@@ -10,7 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
@@ -46,7 +45,7 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WaystoneTileEntity) {
                 WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
-                String generatedName = NameGenerator.get((World) world).getName(waystoneTileEntity.getWaystone(), rand);
+                String generatedName = NameGenerator.get().getName(waystoneTileEntity.getWaystone(), rand);
                 waystoneTileEntity.initializeGenerated(world, generatedName);
             }
 

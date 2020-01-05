@@ -17,7 +17,7 @@ public class NetworkHandler {
 
     public static void init() {
         channel.registerMessage(0, MessageWaystones.class, MessageWaystones::encode, MessageWaystones::decode, MessageWaystones::handle);
-        channel.registerMessage(1, MessageFreeWarpReturn.class, MessageFreeWarpReturn::encode, MessageFreeWarpReturn::decode, MessageFreeWarpReturn::handle);
+        channel.registerMessage(1, MessageInventoryButton.class, MessageInventoryButton::encode, MessageInventoryButton::decode, MessageInventoryButton::handle);
         channel.registerMessage(2, MessageEditWaystone.class, MessageEditWaystone::encode, MessageEditWaystone::decode, MessageEditWaystone::handle);
         channel.registerMessage(3, MessageTeleportToWaystone.class, MessageTeleportToWaystone::encode, MessageTeleportToWaystone::decode, MessageTeleportToWaystone::handle);
         channel.registerMessage(4, MessageTeleportEffect.class, MessageTeleportEffect::encode, MessageTeleportEffect::decode, MessageTeleportEffect::handle);

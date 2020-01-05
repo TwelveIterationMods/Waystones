@@ -10,13 +10,13 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Random;
 import java.util.Set;
@@ -82,8 +82,8 @@ public class NameGenerator extends WorldSavedData {
         return compound;
     }
 
-    public static NameGenerator get(World world) {
-        MinecraftServer server = world.getServer();
+    public static NameGenerator get() {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
             DimensionSavedDataManager storage = overworld.getSavedData();

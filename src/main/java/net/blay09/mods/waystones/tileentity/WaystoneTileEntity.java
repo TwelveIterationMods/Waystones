@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.tileentity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -66,10 +67,12 @@ public class WaystoneTileEntity extends TileEntity {
 
     public void initializePlacedBy(World world, @Nullable LivingEntity player) {
         waystone = new Waystone(UUID.randomUUID(), "", world.dimension.getType(), pos, false, player != null ? player.getUniqueID() : null);
+        WaystoneManager.get().addWaystone(waystone);
     }
 
     public void initializeGenerated(IWorld world, String generatedName) {
         waystone = new Waystone(UUID.randomUUID(), generatedName, world.getDimension().getType(), pos, true, null);
+        WaystoneManager.get().addWaystone(waystone);
     }
 
     public void initializeFromBase(WaystoneTileEntity tileEntity) {

@@ -4,6 +4,8 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.network.NetworkHandler;
+import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +17,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -104,6 +107,10 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
+        if (!waystone.isValid()) {
+            return false;
+        }
+
         if (!canUseWarpMode(player, warpMode, warpItem, fromWaystone)) {
             return false;
         }
@@ -132,7 +139,9 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
-        player.sendMessage(new StringTextComponent("*teleports behind you*")); // TODO
+        BlockPos pos = waystone.getPos();
+        player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new MessageTeleportEffect(pos));
     }
 
     public static void deactivateWaystone(PlayerEntity player, IWaystone entry) {

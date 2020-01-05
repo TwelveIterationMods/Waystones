@@ -35,6 +35,10 @@ public class WaystoneManager extends WorldSavedData {
         super(DATA_NAME);
     }
 
+    public void addWaystone(IWaystone waystone) {
+        waystones.put(waystone.getWaystoneUid(), waystone);
+    }
+
     public void removeWaystone(IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
     }
