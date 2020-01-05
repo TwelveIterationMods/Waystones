@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -19,12 +18,12 @@ public class WaystoneProxy implements IWaystone {
 
     @Override
     public boolean isValid() {
-        return WaystoneManager.getWaystoneById(waystoneUid).isPresent();
+        return WaystoneManager.get().getWaystoneById(waystoneUid).isPresent();
     }
 
     private IWaystone getBackingWaystone() {
         if (backingWaystone == null) {
-            backingWaystone = WaystoneManager.getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
+            backingWaystone = WaystoneManager.get().getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
         }
 
         return backingWaystone;

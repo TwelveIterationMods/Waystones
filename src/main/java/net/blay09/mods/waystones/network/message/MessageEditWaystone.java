@@ -54,7 +54,7 @@ public class MessageEditWaystone {
                 return;
             }
 
-            IWaystone waystone = WaystoneManager.getWaystoneAt(player.world, message.pos).orElseThrow(IllegalStateException::new);
+            IWaystone waystone = WaystoneManager.get().getWaystoneAt(player.world, message.pos).orElseThrow(IllegalStateException::new);
             WaystoneEditPermissions permissions = PlayerWaystoneManager.mayEditWaystone(player, player.world, message.pos, waystone);
             if (permissions != WaystoneEditPermissions.ALLOW) {
                 return;
@@ -80,7 +80,7 @@ public class MessageEditWaystone {
             }
 
             if (message.fromSelectionGui) {
-                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone));
+                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE_TO_WAYSTONE, Hand.MAIN_HAND, waystone));
             }
         });
         context.setPacketHandled(true);

@@ -35,7 +35,7 @@ public class WaystoneEntryButton extends Button {
             case INVENTORY_BUTTON:
                 enableXPCost = WaystoneConfig.COMMON.inventoryButtonXpCost.get();
                 break;
-            case WAYSTONE:
+            case WAYSTONE_TO_WAYSTONE:
                 enableXPCost = WaystoneConfig.COMMON.waystoneXpCost.get();
                 break;
         }

@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.WaystoneManagerLegacy;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.client.Minecraft;
@@ -76,6 +76,10 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         return null;
     }
 
+    protected WarpMode getWarpMode() {
+        return WarpMode.BOUND_SCROLL;
+    }
+
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
@@ -113,15 +117,16 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entity) {
         if (!world.isRemote && entity instanceof PlayerEntity) {
-            IWaystone boundTo = getBoundTo((PlayerEntity) entity, itemStack);
+            PlayerEntity player = (PlayerEntity) entity;
+            IWaystone boundTo = getBoundTo(player, itemStack);
             if (boundTo != null) {
                 double distance = entity.getDistanceSq(boundTo.getPos().getX(), boundTo.getPos().getY(), boundTo.getPos().getZ());
                 if (distance <= 3.0) {
                     return itemStack;
                 }
 
-                if (WaystoneManagerLegacy.teleportToWaystone((PlayerEntity) entity, boundTo)) {
-                    if (!((PlayerEntity) entity).abilities.isCreativeMode) {
+                if (PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), itemStack, null)) {
+                    if (!player.abilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
                 }

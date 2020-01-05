@@ -28,7 +28,7 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        IWaystone waystone = WaystoneManager.getWaystoneAt(world, pos).orElseThrow(IllegalStateException::new);
+        IWaystone waystone = WaystoneManager.get().getWaystoneAt(world, pos).orElseThrow(IllegalStateException::new);
         if (!player.abilities.isCreativeMode) {
             if (waystone.wasGenerated() && WaystoneConfig.COMMON.disallowBreakingGenerated.get()) {
                 return false;
@@ -79,13 +79,9 @@ public class PlayerWaystoneManager {
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
-        boolean enableXPCost = WaystoneConfig.SERVER.globalWaystonesCostXp.get() || !waystone.isGlobal();
-        if (warpMode == WarpMode.INVENTORY_BUTTON) {
-            enableXPCost = enableXPCost && WaystoneConfig.COMMON.inventoryButtonXpCost.get() && !player.abilities.isCreativeMode;
-        } else if (warpMode == WarpMode.WARP_STONE) {
-            enableXPCost = enableXPCost && WaystoneConfig.COMMON.warpStoneXpCost.get() && !player.abilities.isCreativeMode;
-        } else if (warpMode == WarpMode.WAYSTONE) {
-            enableXPCost = enableXPCost && WaystoneConfig.COMMON.waystoneXpCost.get() && !player.abilities.isCreativeMode;
+        boolean enableXPCost = warpMode.hasXpCost() && !player.abilities.isCreativeMode;
+        if (waystone.isGlobal() && !WaystoneConfig.SERVER.globalWaystonesCostXp.get()) {
+            enableXPCost = false;
         }
 
         BlockPos pos = waystone.getPos();
@@ -112,7 +108,7 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        int xpLevelCost = PlayerWaystoneManager.getExperienceLevelCost(player, waystone, warpMode);
+        int xpLevelCost = getExperienceLevelCost(player, waystone, warpMode);
         if (player.experienceLevel < xpLevelCost) {
             return false;
         }
@@ -149,9 +145,13 @@ public class PlayerWaystoneManager {
                 return PlayerWaystoneManager.canUseInventoryButton(player);
             case WARP_SCROLL:
                 return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpScroll;
+            case BOUND_SCROLL:
+                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.boundScroll;
+            case RETURN_SCROLL:
+                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.returnScroll;
             case WARP_STONE:
                 return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpstone && PlayerWaystoneManager.canUseWarpStone(player, heldItem);
-            case WAYSTONE:
+            case WAYSTONE_TO_WAYSTONE:
                 return fromWaystone != null && fromWaystone.isValid();
         }
 

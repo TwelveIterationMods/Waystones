@@ -32,7 +32,7 @@ public class MessageTeleportToWaystone {
         buf.writeByte(message.warpMode.ordinal());
         if (message.warpMode == WarpMode.WARP_SCROLL || message.warpMode == WarpMode.WARP_STONE) {
             buf.writeByte(message.hand.ordinal());
-        } else if (message.warpMode == WarpMode.WAYSTONE) {
+        } else if (message.warpMode == WarpMode.WAYSTONE_TO_WAYSTONE) {
             buf.writeUniqueId(message.fromWaystone.getWaystoneUid());
         }
     }
@@ -41,7 +41,7 @@ public class MessageTeleportToWaystone {
         IWaystone waystone = new WaystoneProxy(buf.readUniqueId());
         WarpMode warpMode = WarpMode.values()[buf.readByte()];
         Hand hand = (warpMode == WarpMode.WARP_SCROLL || warpMode == WarpMode.WARP_STONE) ? Hand.values()[buf.readByte()] : Hand.MAIN_HAND;
-        IWaystone fromWaystone = warpMode == WarpMode.WAYSTONE ? new WaystoneProxy(buf.readUniqueId()) : null;
+        IWaystone fromWaystone = warpMode == WarpMode.WAYSTONE_TO_WAYSTONE ? new WaystoneProxy(buf.readUniqueId()) : null;
         return new MessageTeleportToWaystone(waystone, warpMode, hand, fromWaystone);
     }
 

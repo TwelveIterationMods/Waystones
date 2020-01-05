@@ -123,7 +123,7 @@ public class WaystoneBlock extends Block {
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         IWaystone waystone = getTileWaystone(world, pos);
-        WaystoneManager.removeWaystone(waystone);
+        WaystoneManager.get().removeWaystone(waystone);
 
         super.onReplaced(state, world, pos, newState, isMoving);
 
