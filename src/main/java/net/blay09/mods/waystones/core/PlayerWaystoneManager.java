@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -107,11 +108,12 @@ public class PlayerWaystoneManager {
         return !waystone.isGlobal() || !WaystoneConfig.COMMON.globalNoCooldown.get();
     }
 
-    public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, ItemStack warpItem, @Nullable IWaystone fromWaystone) {
+    public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         if (!waystone.isValid()) {
             return false;
         }
 
+        ItemStack warpItem = findWarpItem(player, warpMode);
         if (!canUseWarpMode(player, warpMode, warpItem, fromWaystone)) {
             return false;
         }
@@ -139,6 +141,31 @@ public class PlayerWaystoneManager {
         return true;
     }
 
+    private static ItemStack findWarpItem(PlayerEntity player, WarpMode warpMode) {
+        switch (warpMode) {
+            case WARP_SCROLL:
+                return findWarpItem(player, ModItems.warpScroll);
+            case WARP_STONE:
+                return findWarpItem(player, ModItems.warpStone);
+            case RETURN_SCROLL:
+                return findWarpItem(player, ModItems.returnScroll);
+            case BOUND_SCROLL:
+                return findWarpItem(player, ModItems.boundScroll);
+            default:
+                return ItemStack.EMPTY;
+        }
+    }
+
+    private static ItemStack findWarpItem(PlayerEntity player, Item warpItem) {
+        if (player.getHeldItemMainhand().getItem() == warpItem) {
+            return player.getHeldItemMainhand();
+        } else if (player.getHeldItemOffhand().getItem() == warpItem) {
+            return player.getHeldItemOffhand();
+        } else {
+            return ItemStack.EMPTY;
+        }
+    }
+
     private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
         BlockPos pos = waystone.getPos();
         player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -160,7 +187,7 @@ public class PlayerWaystoneManager {
             case RETURN_SCROLL:
                 return !heldItem.isEmpty() && heldItem.getItem() == ModItems.returnScroll;
             case WARP_STONE:
-                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpstone && PlayerWaystoneManager.canUseWarpStone(player, heldItem);
+                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpStone && PlayerWaystoneManager.canUseWarpStone(player, heldItem);
             case WAYSTONE_TO_WAYSTONE:
                 return fromWaystone != null && fromWaystone.isValid();
         }

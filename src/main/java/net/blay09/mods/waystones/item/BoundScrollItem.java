@@ -127,7 +127,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
                     return itemStack;
                 }
 
-                if (PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), itemStack, null)) {
+                if (PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null)) {
                     if (!player.abilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }

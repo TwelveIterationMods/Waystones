@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -35,8 +36,8 @@ public class SelectWaystoneMessage {
             }
 
             WaystoneSelectionContainer container = (WaystoneSelectionContainer) player.openContainer;
-            // ItemStack heldItem = player.getHeldItem(message.hand);
-            // TODO PlayerWaystoneManager.tryTeleportToWaystone(player, message.waystone, message.warpMode, heldItem, message.fromWaystone);
+            PlayerWaystoneManager.tryTeleportToWaystone(player, message.waystone, container.getWarpMode(), container.getWaystoneFrom());
+            player.closeScreen();
         });
         context.setPacketHandled(true);
     }
