@@ -4,14 +4,12 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
-import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.glfw.GLFW;
 

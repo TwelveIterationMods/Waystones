@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageInventoryButton;
+import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -23,7 +23,7 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     public InventoryButtonReturnConfirmScreen(String targetWaystone) {
         super(result -> {
             if (result) {
-                NetworkHandler.channel.sendToServer(new MessageInventoryButton());
+                NetworkHandler.channel.sendToServer(new InventoryButtonMessage());
             }
             Minecraft.getInstance().displayGuiScreen(null);
         }, new TranslationTextComponent("gui.waystones:confirmReturn"), new StringTextComponent(""));

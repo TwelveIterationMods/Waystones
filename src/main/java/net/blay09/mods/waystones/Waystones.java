@@ -3,24 +3,19 @@ package net.blay09.mods.waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
 import net.blay09.mods.waystones.client.ModRenderers;
+import net.blay09.mods.waystones.client.ModScreens;
+import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.ModTileEntities;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,8 +27,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-
-import java.util.Collections;
 
 @Mod(Waystones.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -67,6 +60,7 @@ public class Waystones {
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
         ModRenderers.registerRenderers();
+        ModScreens.registerScreens();
     }
 
     @SubscribeEvent
@@ -93,6 +87,11 @@ public class Waystones {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         ModItems.register(event.getRegistry());
         ModBlocks.registerBlockItems(event.getRegistry());
+    }
+
+    @SubscribeEvent
+    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+        ModContainers.register(event.getRegistry());
     }
 
     @SubscribeEvent

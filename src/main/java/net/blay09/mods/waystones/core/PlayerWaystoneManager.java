@@ -20,7 +20,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.List;
 
 public class PlayerWaystoneManager {
 
@@ -74,7 +74,7 @@ public class PlayerWaystoneManager {
         if (!player.world.isRemote) {
             StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
             nameComponent.getStyle().setColor(TextFormatting.WHITE);
-            TranslationTextComponent chatComponent = new TranslationTextComponent("waystones:activatedWaystone", nameComponent);
+            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
             chatComponent.getStyle().setColor(TextFormatting.YELLOW);
             player.sendMessage(chatComponent);
         }
@@ -193,7 +193,7 @@ public class PlayerWaystoneManager {
         }).orElse(null);
     }
 
-    public static Collection<IWaystone> getWaystones(PlayerEntity player) {
+    public static List<IWaystone> getWaystones(PlayerEntity player) {
         return getPlayerWaystoneData(player.world).getWaystones(player);
     }
 
@@ -203,5 +203,9 @@ public class PlayerWaystoneManager {
 
     public static IPlayerWaystoneData getPlayerWaystoneData(LogicalSide side) {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
+    }
+
+    public static boolean mayTeleportToWaystone(PlayerEntity player, IWaystone waystone) {
+        return true;
     }
 }

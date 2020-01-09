@@ -92,7 +92,9 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         TileEntity tileEntity = world.getTileEntity(context.getPos());
         if (tileEntity instanceof WaystoneTileEntity) {
             IWaystone waystone = ((WaystoneTileEntity) tileEntity).getWaystone();
-            PlayerWaystoneManager.activateWaystone(player, waystone);
+            if (!PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
+                PlayerWaystoneManager.activateWaystone(player, waystone);
+            }
 
             if (!world.isRemote) {
                 ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.split(1);
@@ -103,7 +105,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
                     }
                 }
 
-                player.sendStatusMessage(new TranslationTextComponent("waystones:scrollBound", waystone.getName()), true);
+                player.sendStatusMessage(new TranslationTextComponent("chat.waystones.scroll_bound", waystone.getName()), true);
             }
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, context.getPos(), 2f);

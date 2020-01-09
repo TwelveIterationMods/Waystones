@@ -3,12 +3,10 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
+    private final List<IWaystone> sortedWaystones = new ArrayList<>();
     private final Map<UUID, IWaystone> waystones = new HashMap<>();
     private long lastWarpStoneWarp;
     private long lastInventoryWarp;
@@ -16,6 +14,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void activateWaystone(PlayerEntity player, IWaystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
+        sortedWaystones.add(waystone);
     }
 
     @Override
@@ -26,6 +25,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void deactivateWaystone(PlayerEntity player, IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
+        sortedWaystones.remove(waystone);
     }
 
     @Override
@@ -49,12 +49,14 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public Collection<IWaystone> getWaystones(PlayerEntity player) {
-        return waystones.values();
+    public List<IWaystone> getWaystones(PlayerEntity player) {
+        return sortedWaystones;
     }
 
-    public void setWaystones(Collection<IWaystone> waystones) {
+    public void setWaystones(List<IWaystone> waystones) {
+        this.sortedWaystones.clear();
         this.waystones.clear();
+        this.sortedWaystones.addAll(waystones);
         for (IWaystone waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
         }

@@ -1,61 +1,56 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneEntryButton;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageRemoveWaystone;
-import net.blay09.mods.waystones.network.message.MessageSortWaystone;
-import net.blay09.mods.waystones.network.message.MessageTeleportToWaystone;
+import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
+import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
+import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
-public class WaystoneListScreen extends Screen {
+public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionContainer> {
 
-    private final WarpMode warpMode;
-    private final Hand hand;
-    private final IWaystone fromWaystone;
-    private IWaystone[] entries;
+    private final List<IWaystone> waystones;
+
     private Button btnPrevPage;
     private Button btnNextPage;
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
 
-    public WaystoneListScreen(IWaystone[] entries, WarpMode warpMode, Hand hand, @Nullable IWaystone fromWaystone) {
-        super(new TranslationTextComponent("gui.waystones:warpStone.selectDestination"));
-        this.entries = entries;
-        this.warpMode = warpMode;
-        this.hand = hand;
-        this.fromWaystone = fromWaystone;
+    public WaystoneSelectionScreen(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        waystones = PlayerWaystoneManager.getWaystones(playerInventory.player);
     }
 
     @Override
     public void init() {
-        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones:warpStone.previousPage"), button -> {
+        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset--;
             updateList();
         });
         addButton(btnPrevPage);
 
-        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, I18n.format("gui.waystones:warpStone.nextPage"), button -> {
+        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.next_page"), button -> {
             pageOffset++;
             updateList();
         });
@@ -64,52 +59,45 @@ public class WaystoneListScreen extends Screen {
         updateList();
     }
 
-    public void updateList() {
+    private void updateList() {
         final int maxContentHeight = (int) (height * 0.8f);
         final int headerHeight = 40;
         final int footerHeight = 25;
         final int entryHeight = 25;
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
 
-        final int buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, entries.length));
+        final int buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
         headerY = height / 2 - contentHeight / 2;
 
         btnPrevPage.active = pageOffset > 0;
-        btnNextPage.active = pageOffset < (entries.length - 1) / buttonsPerPage;
+        btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
 
         buttons.removeIf(button -> button instanceof WaystoneEntryButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
 
         int y = headerHeight;
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
-            if (entryIndex >= 0 && entryIndex < entries.length) {
-                WaystoneEntryButton btnWaystone = new WaystoneEntryButton(width / 2 - 100, headerY + y, entries[entryIndex], warpMode, button -> {
-                    NetworkHandler.channel.sendToServer(new MessageTeleportToWaystone(((WaystoneEntryButton) button).getWaystone(), warpMode, hand, fromWaystone));
-                    getMinecraft().displayGuiScreen(null);
-                });
-                if (entries[entryIndex].equals(fromWaystone)) {
-                    btnWaystone.active = false;
-                }
-                addButton(btnWaystone);
+            if (entryIndex >= 0 && entryIndex < waystones.size()) {
+                IWaystone waystone = waystones.get(entryIndex);
 
-                SortWaystoneButton sortUp = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, btnWaystone, -1, this::sortButtonHandler);
+                addButton(createWaystoneButton(y, waystone));
+
+                SortWaystoneButton sortUp = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortButtonHandler(entryIndex, -1));
                 if (entryIndex == 0) {
                     sortUp.visible = false;
                 }
                 addButton(sortUp);
 
-                SortWaystoneButton sortDown = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, btnWaystone, 1, this::sortButtonHandler);
-                if (entryIndex == entries.length - 1) {
+                SortWaystoneButton sortDown = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortButtonHandler(entryIndex, 1));
+                if (entryIndex == waystones.size() - 1) {
                     sortDown.visible = false;
                 }
                 addButton(sortDown);
 
-                RemoveWaystoneButton remove = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, btnWaystone, button -> {
-                    IWaystone waystoneEntry = ((RemoveWaystoneButton) button).getWaystone();
-                    int index = ArrayUtils.indexOf(entries, waystoneEntry);
-                    entries = ArrayUtils.remove(entries, index);
-                    NetworkHandler.channel.sendToServer(new MessageRemoveWaystone(waystoneEntry));
+                RemoveWaystoneButton remove = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, button -> {
+                    waystones.remove(waystone);
+                    NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
                     updateList();
                 });
                 addButton(remove);
@@ -118,29 +106,35 @@ public class WaystoneListScreen extends Screen {
             }
         }
 
-        btnPrevPage.y = headerY + headerHeight + buttonsPerPage * 22 + (entries.length > 0 ? 10 : 0);
-        btnNextPage.y = headerY + headerHeight + buttonsPerPage * 22 + (entries.length > 0 ? 10 : 0);
+        btnPrevPage.y = headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
+        btnNextPage.y = headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
     }
 
-    private void sortButtonHandler(Button button) {
-        IWaystone waystoneEntry = ((SortWaystoneButton) button).getWaystone();
-        int index = ArrayUtils.indexOf(entries, waystoneEntry);
-        int sortDir = ((SortWaystoneButton) button).getSortDir();
+    private WaystoneEntryButton createWaystoneButton(int y, IWaystone waystone) {
+        IWaystone waystoneFrom = container.getWaystoneFrom();
+        WaystoneEntryButton btnWaystone = new WaystoneEntryButton(width / 2 - 100, headerY + y, waystone, WarpMode.WAYSTONE_TO_WAYSTONE, button -> {
+            NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
+        });
+        if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
+            btnWaystone.active = false;
+        }
+        return btnWaystone;
+    }
+
+    private void sortButtonHandler(int index, int sortDir) {
         int otherIndex = index + sortDir;
-        if (index == -1 || otherIndex < 0 || otherIndex >= entries.length) {
+        if (index == -1 || otherIndex < 0 || otherIndex >= waystones.size()) {
             return;
         }
 
-        IWaystone swap = entries[index];
-        entries[index] = entries[otherIndex];
-        entries[otherIndex] = swap;
-        NetworkHandler.channel.sendToServer(new MessageSortWaystone(index, otherIndex));
+        Collections.swap(waystones, index, otherIndex);
+        NetworkHandler.channel.sendToServer(new SortWaystoneMessage(index, otherIndex));
         updateList();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        if (isLocationHeaderHovered && fromWaystone != null) {
+        if (isLocationHeaderHovered && container.getWaystoneFrom() != null) {
             // TODO Waystones.proxy.openWaystoneSettings(Minecraft.getInstance().player, fromWaystone, true);
 
             return true;
@@ -153,24 +147,33 @@ public class WaystoneListScreen extends Screen {
     public void render(int mouseX, int mouseY, float partialTicks) {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        IWaystone fromWaystone = container.getWaystoneFrom();
         drawCenteredString(fontRenderer, getTitle().getFormattedText(), width / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
             drawLocationHeader(fromWaystone.getName(), mouseX, mouseY, width / 2, headerY);
         }
 
-        if (entries.length == 0) {
+        if (waystones.size() == 0) {
             drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
         }
     }
 
-    public void drawLocationHeader(String locationName, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(String locationName, int mouseX, int mouseY, int x, int y) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
-        String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones:current_location") + " ";
+        String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones.waystone_selection.current_location") + " ";
         int locationPrefixWidth = fontRenderer.getStringWidth(locationPrefix);
 
         int locationWidth = fontRenderer.getStringWidth(locationName);
@@ -178,12 +181,8 @@ public class WaystoneListScreen extends Screen {
         int fullWidth = locationPrefixWidth + locationWidth;
 
         int startX = x - fullWidth / 2 + locationPrefixWidth;
-        if (mouseX >= startX && mouseX < startX + locationWidth + 16
-                && mouseY >= y && mouseY < y + fontRenderer.FONT_HEIGHT) {
-            isLocationHeaderHovered = true;
-        } else {
-            isLocationHeaderHovered = false;
-        }
+        isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
+                && mouseY >= y && mouseY < y + fontRenderer.FONT_HEIGHT;
 
         String fullText = locationPrefix + TextFormatting.WHITE;
         if (isLocationHeaderHovered) {

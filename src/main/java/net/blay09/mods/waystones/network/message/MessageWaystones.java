@@ -13,18 +13,17 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MessageWaystones {
 
-    private final Collection<IWaystone> waystones;
+    private final List<IWaystone> waystones;
     private final long lastFreeWarp;
     private final long lastWarpStoneUse;
 
-    public MessageWaystones(Collection<IWaystone> waystones, long lastFreeWarp, long lastWarpStoneUse) {
+    public MessageWaystones(List<IWaystone> waystones, long lastFreeWarp, long lastWarpStoneUse) {
         this.waystones = waystones;
         this.lastFreeWarp = lastFreeWarp;
         this.lastWarpStoneUse = lastWarpStoneUse;

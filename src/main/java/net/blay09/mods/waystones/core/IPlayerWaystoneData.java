@@ -6,6 +6,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface IPlayerWaystoneData {
     void activateWaystone(PlayerEntity player, IWaystone waystone);
@@ -15,5 +16,5 @@ public interface IPlayerWaystoneData {
     void setLastWarpStoneWarp(PlayerEntity player, long timeStamp);
     long getLastInventoryWarp(PlayerEntity player);
     void setLastInventoryWarp(PlayerEntity player, long timeStamp);
-    Collection<IWaystone> getWaystones(PlayerEntity player);
+    List<IWaystone> getWaystones(PlayerEntity player);
 }

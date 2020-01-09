@@ -6,28 +6,28 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageSortWaystone {
+public class SortWaystoneMessage {
 
     private final int index;
     private final int otherIndex;
 
-    public MessageSortWaystone(int index, int otherIndex) {
+    public SortWaystoneMessage(int index, int otherIndex) {
         this.index = index;
         this.otherIndex = otherIndex;
     }
 
-    public static void encode(MessageSortWaystone message, PacketBuffer buf) {
+    public static void encode(SortWaystoneMessage message, PacketBuffer buf) {
         buf.writeByte(message.index);
         buf.writeByte(message.otherIndex);
     }
 
-    public static MessageSortWaystone decode(PacketBuffer buf) {
+    public static SortWaystoneMessage decode(PacketBuffer buf) {
         int index = buf.readByte();
         int otherIndex = buf.readByte();
-        return new MessageSortWaystone(index, otherIndex);
+        return new SortWaystoneMessage(index, otherIndex);
     }
 
-    public static void handle(MessageSortWaystone message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(SortWaystoneMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             ServerPlayerEntity player = context.getSender();

@@ -1,20 +1,26 @@
 package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -76,5 +82,33 @@ public class WaystoneTileEntity extends TileEntity {
 
     public void initializeFromBase(WaystoneTileEntity tileEntity) {
         waystone = tileEntity.getWaystone();
+    }
+
+    public INamedContainerProvider getWaystoneSelectionContainerProvider() {
+        return new INamedContainerProvider() {
+            @Override
+            public ITextComponent getDisplayName() {
+                return new TranslationTextComponent("container.waystones.waystone_selection");
+            }
+
+            @Override
+            public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+                return new WaystoneSelectionContainer(i, getWaystone());
+            }
+        };
+    }
+
+    public INamedContainerProvider getWaystoneSettingsContainerProvider() {
+        return new INamedContainerProvider() {
+            @Override
+            public ITextComponent getDisplayName() {
+                return new TranslationTextComponent("container.waystones.waystone_settings");
+            }
+
+            @Override
+            public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+                return new WaystoneSelectionContainer(i, getWaystone());
+            }
+        };
     }
 }

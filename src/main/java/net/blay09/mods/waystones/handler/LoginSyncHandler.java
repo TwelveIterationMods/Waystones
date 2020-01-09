@@ -10,7 +10,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Collection;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
 public class LoginSyncHandler {
@@ -18,7 +18,7 @@ public class LoginSyncHandler {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
-        Collection<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
+        List<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
         long lastInventoryWarp = PlayerWaystoneManager.getLastInventoryWarp(player);
         long lastWarpStoneWarp = PlayerWaystoneManager.getLastWarpStoneWarp(player);
         NetworkHandler.sendTo(new MessageWaystones(waystones, lastInventoryWarp, lastWarpStoneWarp), player);

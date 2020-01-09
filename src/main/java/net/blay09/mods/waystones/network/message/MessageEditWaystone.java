@@ -3,17 +3,13 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.network.NetworkHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
@@ -80,7 +76,7 @@ public class MessageEditWaystone {
             }
 
             if (message.fromSelectionGui) {
-                NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE_TO_WAYSTONE, Hand.MAIN_HAND, waystone));
+                // TODO    NetworkHandler.channel.send(PacketDistributor.PLAYER.with(() -> player), new MessageOpenWaystoneSelection(WarpMode.WAYSTONE_TO_WAYSTONE, Hand.MAIN_HAND, waystone));
             }
         });
         context.setPacketHandled(true);

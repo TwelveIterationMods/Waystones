@@ -11,16 +11,16 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageInventoryButton {
+public class InventoryButtonMessage {
 
-    public static void encode(MessageInventoryButton message, PacketBuffer buf) {
+    public static void encode(InventoryButtonMessage message, PacketBuffer buf) {
     }
 
-    public static MessageInventoryButton decode(PacketBuffer buf) {
-        return new MessageInventoryButton();
+    public static InventoryButtonMessage decode(PacketBuffer buf) {
+        return new InventoryButtonMessage();
     }
 
-    public static void handle(MessageInventoryButton message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(InventoryButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             if (!WaystoneConfig.SERVER.teleportButton.get()) {

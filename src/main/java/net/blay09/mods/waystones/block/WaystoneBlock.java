@@ -3,7 +3,9 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneEditPermissions;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -12,6 +14,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -31,6 +34,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -122,8 +126,10 @@ public class WaystoneBlock extends Block {
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        IWaystone waystone = getTileWaystone(world, pos);
-        WaystoneManager.get().removeWaystone(waystone);
+        WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+        if (tileEntity != null) {
+            WaystoneManager.get().removeWaystone(tileEntity.getWaystone());
+        }
 
         super.onReplaced(state, world, pos, newState, isMoving);
 
@@ -137,7 +143,12 @@ public class WaystoneBlock extends Block {
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        IWaystone waystone = getTileWaystone(world, pos);
+        WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return false;
+        }
+
+        IWaystone waystone = tileEntity.getWaystone();
         if (player.isSneaking()) {
             WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, pos, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
@@ -147,13 +158,17 @@ public class WaystoneBlock extends Block {
                 return true;
             }
 
-            // TODO Waystones.proxy.openWaystoneSettings(player, waystone, false);
+            if (!world.isRemote) {
+                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSettingsContainerProvider(), pos);
+            }
             return true;
         }
 
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            // TODO Waystones.proxy.openWaystoneSelection(player, WarpMode.WAYSTONE, Hand.MAIN_HAND, waystone);
+            if (!world.isRemote) {
+                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), pos);
+            }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
@@ -178,21 +193,12 @@ public class WaystoneBlock extends Block {
     @Override
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
-            IWaystone waystone = getTileWaystone(world, pos);
-            if (PlayerWaystoneManager.isWaystoneActivated(Minecraft.getInstance().player, waystone)) {
+            WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+            if (tileEntity != null && PlayerWaystoneManager.isWaystoneActivated(Minecraft.getInstance().player, tileEntity.getWaystone())) {
                 world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
                 world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
             }
         }
-    }
-
-    private IWaystone getTileWaystone(IBlockReader world, BlockPos pos) {
-        WaystoneTileEntity tileWaystone = (WaystoneTileEntity) world.getTileEntity(pos);
-        if (tileWaystone == null) {
-            return InvalidWaystone.INSTANCE;
-        }
-
-        return tileWaystone.getWaystone();
     }
 
     @Override

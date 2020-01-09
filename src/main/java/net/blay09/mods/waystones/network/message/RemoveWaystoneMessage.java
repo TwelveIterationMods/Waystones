@@ -9,24 +9,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageRemoveWaystone {
+public class RemoveWaystoneMessage {
 
     private final IWaystone waystone;
 
-    public MessageRemoveWaystone(IWaystone waystone) {
+    public RemoveWaystoneMessage(IWaystone waystone) {
         this.waystone = waystone;
     }
 
-    public static void encode(MessageRemoveWaystone message, PacketBuffer buf) {
+    public static void encode(RemoveWaystoneMessage message, PacketBuffer buf) {
         buf.writeUniqueId(message.waystone.getWaystoneUid());
     }
 
-    public static MessageRemoveWaystone decode(PacketBuffer buf) {
+    public static RemoveWaystoneMessage decode(PacketBuffer buf) {
         IWaystone waystone = new WaystoneProxy(buf.readUniqueId());
-        return new MessageRemoveWaystone(waystone);
+        return new RemoveWaystoneMessage(waystone);
     }
 
-    public static void handle(MessageRemoveWaystone message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(RemoveWaystoneMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             ServerPlayerEntity player = context.getSender();
