@@ -2,12 +2,12 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneEntryButton;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.resources.I18n;
@@ -24,12 +25,14 @@ import net.minecraft.item.Items;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionContainer> {
 
     private final List<IWaystone> waystones;
+    private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
     private Button btnPrevPage;
     private Button btnNextPage;
@@ -44,6 +47,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     @Override
     public void init() {
+        tooltipProviders.clear();
         btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset--;
             updateList();
@@ -57,6 +61,14 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         addButton(btnNextPage);
 
         updateList();
+    }
+
+    @Override
+    protected <T extends Widget> T addButton(T button) {
+        if (button instanceof ITooltipProvider) {
+            tooltipProviders.add((ITooltipProvider) button);
+        }
+        return super.addButton(button);
     }
 
     private void updateList() {
@@ -83,24 +95,24 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
                 addButton(createWaystoneButton(y, waystone));
 
-                SortWaystoneButton sortUp = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortButtonHandler(entryIndex, -1));
+                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortButtonHandler(entryIndex, -1));
                 if (entryIndex == 0) {
-                    sortUp.visible = false;
+                    sortUpButton.visible = false;
                 }
-                addButton(sortUp);
+                addButton(sortUpButton);
 
-                SortWaystoneButton sortDown = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortButtonHandler(entryIndex, 1));
+                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortButtonHandler(entryIndex, 1));
                 if (entryIndex == waystones.size() - 1) {
-                    sortDown.visible = false;
+                    sortDownButton.visible = false;
                 }
-                addButton(sortDown);
+                addButton(sortDownButton);
 
-                RemoveWaystoneButton remove = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, button -> {
-                    waystones.remove(waystone);
+                RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, button -> {
+                    PlayerWaystoneManager.deactivateWaystone(Minecraft.getInstance().player, waystone);
                     NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
                     updateList();
                 });
-                addButton(remove);
+                addButton(removeButton);
 
                 y += 22;
             }
@@ -148,6 +160,11 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         renderHoveredToolTip(mouseX, mouseY);
+        for (ITooltipProvider tooltipProvider : tooltipProviders) {
+            if(tooltipProvider.shouldShowTooltip()) {
+                renderTooltip(tooltipProvider.getTooltip(), mouseX, mouseY);
+            }
+        }
     }
 
     @Override

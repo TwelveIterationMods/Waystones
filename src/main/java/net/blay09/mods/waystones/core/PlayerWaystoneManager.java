@@ -172,8 +172,8 @@ public class PlayerWaystoneManager {
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new MessageTeleportEffect(pos));
     }
 
-    public static void deactivateWaystone(PlayerEntity player, IWaystone entry) {
-        getPlayerWaystoneData(player.world).deactivateWaystone(player, entry);
+    public static void deactivateWaystone(PlayerEntity player, IWaystone waystone) {
+        getPlayerWaystoneData(player.world).deactivateWaystone(player, waystone);
     }
 
     private static boolean canUseWarpMode(PlayerEntity player, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {

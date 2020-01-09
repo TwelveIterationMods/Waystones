@@ -20,7 +20,7 @@ public class WaystoneEntryButton extends Button {
     private final int xpLevelCost;
 
     public WaystoneEntryButton(int x, int y, IWaystone waystone, WarpMode warpMode, IPressable pressable) {
-        super(x, y, 150, 20, (waystone.isGlobal() ? TextFormatting.YELLOW : "") + waystone.getName(), pressable);
+        super(x, y, 200, 20, (waystone.isGlobal() ? TextFormatting.YELLOW : "") + waystone.getName(), pressable);
         PlayerEntity player = Minecraft.getInstance().player;
         this.xpLevelCost = PlayerWaystoneManager.getExperienceLevelCost(player, waystone, warpMode);
         if (!PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {

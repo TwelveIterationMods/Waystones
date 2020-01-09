@@ -16,6 +16,7 @@
     "gui.waystones.waystone_selection.next_page": "Next",
     "gui.waystones.waystone_selection.previous_page": "Previous",
     "gui.waystones.waystone_selection.current_location": "Current Location:",
+    "gui.waystones.waystone_selection.hold_shift_to_delete": "Hold shift and click to delete",
 
     "chat.waystones.waystone_activated": "Activated Waystone: %s",
     "chat.waystones.scroll_bound": "Scroll bound: %s",
