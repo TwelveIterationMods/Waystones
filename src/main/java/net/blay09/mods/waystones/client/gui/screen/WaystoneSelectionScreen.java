@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
-import net.blay09.mods.waystones.client.gui.widget.WaystoneEntryButton;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -39,6 +39,11 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
+    private int buttonsPerPage;
+
+    private final int headerHeight = 40;
+    private final int footerHeight = 25;
+    private final int entryHeight = 25;
 
     public WaystoneSelectionScreen(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -47,15 +52,19 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     @Override
     public void init() {
+        final int maxContentHeight = (int) (height * 0.8f);
+        final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
+        buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
+
         tooltipProviders.clear();
         btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.previous_page"), button -> {
-            pageOffset--;
+            pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
         });
         addButton(btnPrevPage);
 
         btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.next_page"), button -> {
-            pageOffset++;
+            pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         });
         addButton(btnNextPage);
@@ -72,20 +81,14 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     }
 
     private void updateList() {
-        final int maxContentHeight = (int) (height * 0.8f);
-        final int headerHeight = 40;
-        final int footerHeight = 25;
-        final int entryHeight = 25;
-        final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
-
-        final int buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
         headerY = height / 2 - contentHeight / 2;
 
         btnPrevPage.active = pageOffset > 0;
         btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
 
-        buttons.removeIf(button -> button instanceof WaystoneEntryButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
+        buttons.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
+        children.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
 
         int y = headerHeight;
         for (int i = 0; i < buttonsPerPage; i++) {
@@ -122,9 +125,9 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         btnNextPage.y = headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
     }
 
-    private WaystoneEntryButton createWaystoneButton(int y, IWaystone waystone) {
+    private WaystoneButton createWaystoneButton(int y, IWaystone waystone) {
         IWaystone waystoneFrom = container.getWaystoneFrom();
-        WaystoneEntryButton btnWaystone = new WaystoneEntryButton(width / 2 - 100, headerY + y, waystone, container.getWarpMode(), button -> {
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, headerY + y, waystone, container.getWarpMode(), button -> {
             NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
         });
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {

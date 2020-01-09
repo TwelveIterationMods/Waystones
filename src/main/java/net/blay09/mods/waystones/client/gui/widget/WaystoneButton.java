@@ -13,13 +13,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
-public class WaystoneEntryButton extends Button {
+public class WaystoneButton extends Button {
 
     private static final ResourceLocation ENCHANTMENT_TABLE_GUI_TEXTURE = new ResourceLocation("textures/gui/container/enchanting_table.png");
 
     private final int xpLevelCost;
 
-    public WaystoneEntryButton(int x, int y, IWaystone waystone, WarpMode warpMode, IPressable pressable) {
+    public WaystoneButton(int x, int y, IWaystone waystone, WarpMode warpMode, IPressable pressable) {
         super(x, y, 200, 20, (waystone.isGlobal() ? TextFormatting.YELLOW : "") + waystone.getName(), pressable);
         PlayerEntity player = Minecraft.getInstance().player;
         this.xpLevelCost = PlayerWaystoneManager.getExperienceLevelCost(player, waystone, warpMode);
