@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
@@ -167,7 +168,10 @@ public class WaystoneBlock extends Block {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isRemote) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), pos);
+                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> {
+                    it.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
+                    it.writeBlockPos(pos);
+                });
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

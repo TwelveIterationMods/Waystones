@@ -1,21 +1,41 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class WarpScrollItem extends Item implements IResetUseOnDamage {
 
     public static final String name = "warp_scroll";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
+
+    private static final INamedContainerProvider containerProvider = new INamedContainerProvider() {
+        @Override
+        public ITextComponent getDisplayName() {
+            return new TranslationTextComponent("container.waystones.waystone_selection");
+        }
+
+        @Override
+        public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+            return new WaystoneSelectionContainer(i, WarpMode.WARP_SCROLL, null);
+        }
+    };
 
     public WarpScrollItem() {
         super(new Item.Properties().group(Waystones.itemGroup));
@@ -35,10 +55,13 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage {
         return UseAction.BOW;
     }
 
-
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entityLiving) {
-        // TODO Waystones.proxy.openWaystoneSelection((PlayerEntity) entityLiving, WarpMode.WARP_SCROLL, entityLiving.getActiveHand(), null);
+        if (!world.isRemote && entityLiving instanceof ServerPlayerEntity) {
+            NetworkHooks.openGui(((ServerPlayerEntity) entityLiving), containerProvider, it -> {
+                it.writeByte(WarpMode.WARP_SCROLL.ordinal());
+            });
+        }
         return itemStack;
     }
 

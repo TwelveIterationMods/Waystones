@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.tileentity;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -14,18 +15,13 @@ public class ModTileEntities {
 
     public static void register(IForgeRegistry<TileEntityType<?>> registry) {
         registry.registerAll(
-                waystone = build(WaystoneTileEntity::new, ModBlocks.waystone)
+                waystone = build(WaystoneTileEntity::new, new ResourceLocation(Waystones.MOD_ID, "waystone"), ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone)
         );
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends TileEntity> TileEntityType<T> build(Supplier<T> factory, Block block) {
-        ResourceLocation registryName = block.getRegistryName();
-        if (registryName == null) {
-            throw new IllegalArgumentException("Block passed into tile entity registration is not registered correctly");
-        }
-
+    private static <T extends TileEntity> TileEntityType<T> build(Supplier<T> factory, ResourceLocation registryName, Block... blocks) {
         //noinspection ConstantConditions dataFixerType can be null apparently
-        return (TileEntityType<T>) TileEntityType.Builder.create(factory, block).build(null).setRegistryName(registryName);
+        return (TileEntityType<T>) TileEntityType.Builder.create(factory, blocks).build(null).setRegistryName(registryName);
     }
 }

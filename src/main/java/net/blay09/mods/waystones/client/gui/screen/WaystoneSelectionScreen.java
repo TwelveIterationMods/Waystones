@@ -112,7 +112,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     private WaystoneEntryButton createWaystoneButton(int y, IWaystone waystone) {
         IWaystone waystoneFrom = container.getWaystoneFrom();
-        WaystoneEntryButton btnWaystone = new WaystoneEntryButton(width / 2 - 100, headerY + y, waystone, WarpMode.WAYSTONE_TO_WAYSTONE, button -> {
+        WaystoneEntryButton btnWaystone = new WaystoneEntryButton(width / 2 - 100, headerY + y, waystone, container.getWarpMode(), button -> {
             NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
         });
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {

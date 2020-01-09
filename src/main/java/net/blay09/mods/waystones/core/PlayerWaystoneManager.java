@@ -189,7 +189,7 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.world).getWaystones(player).stream().min((first, second) -> {
             double firstDist = first.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
             double secondDist = second.getPos().distanceSq(player.posX, player.posY, player.posZ, true);
-            return (int) Math.round(secondDist) - (int) Math.round(firstDist);
+            return (int) Math.round(firstDist) - (int) Math.round(secondDist);
         }).orElse(null);
     }
 
