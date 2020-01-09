@@ -11,17 +11,16 @@ import java.util.UUID;
 public class Waystone implements IWaystone {
 
     private final UUID waystoneUid;
-    private final String name;
     private final DimensionType dimensionType;
     private final BlockPos pos;
     private final boolean wasGenerated;
 
+    private String name;
     private boolean isGlobal;
     private UUID ownerUid;
 
-    public Waystone(UUID waystoneUid, String name, DimensionType dimensionType, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
+    public Waystone(UUID waystoneUid, DimensionType dimensionType, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
         this.waystoneUid = waystoneUid;
-        this.name = name;
         this.dimensionType = dimensionType;
         this.pos = pos;
         this.wasGenerated = wasGenerated;
@@ -36,6 +35,10 @@ public class Waystone implements IWaystone {
     @Override
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -76,4 +79,5 @@ public class Waystone implements IWaystone {
     public UUID getOwnerUid() {
         return ownerUid;
     }
+
 }

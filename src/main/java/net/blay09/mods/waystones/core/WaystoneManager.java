@@ -37,10 +37,12 @@ public class WaystoneManager extends WorldSavedData {
 
     public void addWaystone(IWaystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
+        markDirty();
     }
 
     public void removeWaystone(IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
+        markDirty();
     }
 
     public Optional<IWaystone> getWaystoneAt(IBlockReader world, BlockPos pos) {
@@ -70,7 +72,8 @@ public class WaystoneManager extends WorldSavedData {
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
             UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(compound.getCompound("OwnerUid")) : null;
-            Waystone waystone = new Waystone(waystoneUid, name, dimensionType, pos, wasGenerated, ownerUid);
+            Waystone waystone = new Waystone(waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
+            waystone.setName(name);
             waystone.setGlobal(compound.getBoolean("IsGlobal"));
             waystones.put(waystoneUid, waystone);
         }

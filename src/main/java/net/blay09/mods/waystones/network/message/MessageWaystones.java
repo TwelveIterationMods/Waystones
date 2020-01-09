@@ -56,7 +56,8 @@ public class MessageWaystones {
             }
             BlockPos pos = buf.readBlockPos();
 
-            Waystone waystone = new Waystone(waystoneUid, name, dimensionType, pos, false, null);
+            Waystone waystone = new Waystone(waystoneUid, dimensionType, pos, false, null);
+            waystone.setName(name);
             waystone.setGlobal(isGlobal);
             waystones.add(waystone);
         }

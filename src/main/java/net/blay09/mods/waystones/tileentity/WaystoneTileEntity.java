@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -65,14 +66,12 @@ public class WaystoneTileEntity extends TileEntity {
         return waystone != null ? waystone : InvalidWaystone.INSTANCE;
     }
 
-    public void initializePlacedBy(World world, @Nullable LivingEntity player) {
-        waystone = new Waystone(UUID.randomUUID(), "", world.dimension.getType(), pos, false, player != null ? player.getUniqueID() : null);
+    public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
+        Waystone waystone = new Waystone(UUID.randomUUID(), world.getDimension().getType(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+        String name = NameGenerator.get().getName(waystone, world.getRandom());
+        waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);
-    }
-
-    public void initializeGenerated(IWorld world, String generatedName) {
-        waystone = new Waystone(UUID.randomUUID(), generatedName, world.getDimension().getType(), pos, true, null);
-        WaystoneManager.get().addWaystone(waystone);
+        this.waystone = waystone;
     }
 
     public void initializeFromBase(WaystoneTileEntity tileEntity) {

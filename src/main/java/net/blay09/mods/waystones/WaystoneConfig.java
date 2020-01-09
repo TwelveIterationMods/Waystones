@@ -25,7 +25,7 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.BooleanValue inventoryButtonXpCost;
 
         Common(ForgeConfigSpec.Builder builder) {
-            builder.comment("Crafting Tweaks Configuration").push("common");
+            builder.comment("Waystone Configuration").push("common");
 
             teleportButtonTarget = builder
                     .comment("Set this to a global waystone name to lock the inventory button to that specific waystone. Leave empty for default behaviour.")
@@ -107,7 +107,7 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.BooleanValue globalWaystonesCostXp;
 
         Server(ForgeConfigSpec.Builder builder) {
-            builder.comment("Crafting Tweaks Configuration").push("common");
+            builder.comment("Waystones Configuration").push("server");
 
             teleportButton = builder
                     .comment("Should there be a button in the inventory to access the waystone menu?")
@@ -189,7 +189,7 @@ public class WaystoneConfig {
         public final ForgeConfigSpec.DoubleValue soundVolume;
 
         Client(ForgeConfigSpec.Builder builder) {
-            builder.comment("Crafting Tweaks Client Configuration").push("client");
+            builder.comment("Waystones Configuration").push("client");
 
             teleportButtonX = builder
                     .comment("The x position of the warp button in the inventory.")

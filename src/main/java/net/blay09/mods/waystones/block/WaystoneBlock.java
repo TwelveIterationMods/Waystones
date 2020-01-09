@@ -111,7 +111,7 @@ public class WaystoneBlock extends Block {
 
         WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
         if (waystoneTileEntity != null) {
-            waystoneTileEntity.initializePlacedBy(world, placer);
+            waystoneTileEntity.initializeWaystone(world, placer, false);
 
             WaystoneTileEntity waystoneTileEntityAbove = (WaystoneTileEntity) world.getTileEntity(posAbove);
             if (waystoneTileEntityAbove != null) {
