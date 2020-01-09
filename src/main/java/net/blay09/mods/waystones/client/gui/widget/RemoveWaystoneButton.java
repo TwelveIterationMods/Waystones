@@ -15,11 +15,13 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private static final ResourceLocation BEACON = new ResourceLocation("textures/gui/container/beacon.png");
 
     private final List<String> tooltip;
+    private final List<String> activeTooltip;
     private boolean shiftGuard;
 
     public RemoveWaystoneButton(int x, int y, IPressable pressable) {
         super(x, y, 13, 13, "", pressable);
         tooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.hold_shift_to_delete"));
+        activeTooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.click_to_delete"));
     }
 
     @Override
@@ -55,11 +57,11 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
     @Override
     public boolean shouldShowTooltip() {
-        return isHovered && !active;
+        return isHovered;
     }
 
     @Override
     public List<String> getTooltip() {
-        return tooltip;
+        return active ? activeTooltip : tooltip;
     }
 }

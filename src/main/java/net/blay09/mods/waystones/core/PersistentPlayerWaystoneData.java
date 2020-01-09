@@ -1,10 +1,16 @@
+
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,21 +22,29 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
 
     @Override
     public void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        CompoundNBT activatedWaystonesData = getActivatedWaystonesData(getWaystonesData(player));
-        activatedWaystonesData.putBoolean(waystone.getWaystoneUid().toString(), true);
+        ListNBT activatedWaystonesData = getActivatedWaystonesData(getWaystonesData(player));
+        activatedWaystonesData.add(new StringNBT(waystone.getWaystoneUid().toString()));
     }
 
     @Override
     public boolean isWaystoneActivated(PlayerEntity player, IWaystone waystone) {
-        return getActivatedWaystonesData(getWaystonesData(player)).contains(waystone.getWaystoneUid().toString());
+        ListNBT activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
+        String waystoneUid = waystone.getWaystoneUid().toString();
+        for (INBT activatedWaystone : activatedWaystones) {
+            if (waystoneUid.equals(activatedWaystone.getString())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public List<IWaystone> getWaystones(PlayerEntity player) {
-        CompoundNBT activatedWaystonesData = getActivatedWaystonesData(getWaystonesData(player));
+        ListNBT activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
         List<IWaystone> waystones = new ArrayList<>();
-        for (String waystoneUid : activatedWaystonesData.keySet()) {
-            WaystoneProxy proxy = new WaystoneProxy(UUID.fromString(waystoneUid));
+        for (INBT activatedWaystone : activatedWaystones) {
+            WaystoneProxy proxy = new WaystoneProxy(UUID.fromString(activatedWaystone.getString()));
             if (proxy.isValid()) {
                 waystones.add(proxy);
             }
@@ -40,10 +54,23 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
+        ListNBT activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
+        Collections.swap(activatedWaystones, index, otherIndex);
+    }
+
+    @Override
     public void deactivateWaystone(PlayerEntity player, IWaystone waystone) {
         CompoundNBT data = getWaystonesData(player);
-        CompoundNBT activatedWaystonesData = getActivatedWaystonesData(data);
-        activatedWaystonesData.remove(waystone.getWaystoneUid().toString());
+        ListNBT activatedWaystones = getActivatedWaystonesData(data);
+        String waystoneUid = waystone.getWaystoneUid().toString();
+        for (int i = activatedWaystones.size() - 1; i >= 0; i--) {
+            INBT activatedWaystone = activatedWaystones.get(i);
+            if (waystoneUid.equals(activatedWaystone.getString())) {
+                activatedWaystones.remove(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -66,10 +93,10 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         getWaystonesData(player).putLong(LAST_INVENTORY_WARP, timeStamp);
     }
 
-    private static CompoundNBT getActivatedWaystonesData(CompoundNBT data) {
-        CompoundNBT compound = data.getCompound(ACTIVATED_WAYSTONES);
-        data.put(ACTIVATED_WAYSTONES, compound);
-        return compound;
+    private static ListNBT getActivatedWaystonesData(CompoundNBT data) {
+        ListNBT list = data.getList(ACTIVATED_WAYSTONES, Constants.NBT.TAG_STRING);
+        data.put(ACTIVATED_WAYSTONES, list);
+        return list;
     }
 
     private static CompoundNBT getWaystonesData(PlayerEntity player) {

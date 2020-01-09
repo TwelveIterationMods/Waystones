@@ -53,6 +53,11 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         return sortedWaystones;
     }
 
+    @Override
+    public void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
+        Collections.swap(sortedWaystones, index, otherIndex);
+    }
+
     public void setWaystones(List<IWaystone> waystones) {
         this.sortedWaystones.clear();
         this.waystones.clear();

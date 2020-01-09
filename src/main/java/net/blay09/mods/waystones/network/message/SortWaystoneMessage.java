@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -35,18 +36,7 @@ public class SortWaystoneMessage {
                 return;
             }
 
-            // TODO Swap out the two waystones
-            /*PlayerWaystoneData waystoneData = PlayerWaystoneData.fromPlayer(player);
-            IWaystone[] entries = waystoneData.getWaystones();
-            int index = message.index;
-            int otherIndex = message.otherIndex;
-            if (index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
-                return;
-            }
-            IWaystone swap = entries[index];
-            entries[index] = entries[otherIndex];
-            entries[otherIndex] = swap;
-            waystoneData.store(player);*/
+            PlayerWaystoneManager.swapWaystoneSorting(player, message.index, message.otherIndex);
         });
         context.setPacketHandled(true);
     }

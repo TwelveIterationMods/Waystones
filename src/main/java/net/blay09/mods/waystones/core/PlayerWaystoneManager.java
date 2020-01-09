@@ -235,4 +235,8 @@ public class PlayerWaystoneManager {
     public static boolean mayTeleportToWaystone(PlayerEntity player, IWaystone waystone) {
         return true;
     }
+
+    public static void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
+        getPlayerWaystoneData(player.world).swapWaystoneSorting(player, index, otherIndex);
+    }
 }

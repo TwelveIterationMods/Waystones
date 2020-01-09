@@ -17,4 +17,5 @@ public interface IPlayerWaystoneData {
     long getLastInventoryWarp(PlayerEntity player);
     void setLastInventoryWarp(PlayerEntity player, long timeStamp);
     List<IWaystone> getWaystones(PlayerEntity player);
+    void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex);
 }

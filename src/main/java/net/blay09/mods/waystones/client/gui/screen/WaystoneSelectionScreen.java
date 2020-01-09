@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -26,7 +27,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionContainer> {
@@ -95,13 +95,13 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
                 addButton(createWaystoneButton(y, waystone));
 
-                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortButtonHandler(entryIndex, -1));
+                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortWaystone(entryIndex, -1));
                 if (entryIndex == 0) {
                     sortUpButton.visible = false;
                 }
                 addButton(sortUpButton);
 
-                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortButtonHandler(entryIndex, 1));
+                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortWaystone(entryIndex, 1));
                 if (entryIndex == waystones.size() - 1) {
                     sortDownButton.visible = false;
                 }
@@ -133,13 +133,17 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         return btnWaystone;
     }
 
-    private void sortButtonHandler(int index, int sortDir) {
+    private void sortWaystone(int index, int sortDir) {
         int otherIndex = index + sortDir;
+        if (Screen.hasShiftDown()) {
+            otherIndex = sortDir == -1 ? 0 : waystones.size() - 1;
+        }
+
         if (index == -1 || otherIndex < 0 || otherIndex >= waystones.size()) {
             return;
         }
 
-        Collections.swap(waystones, index, otherIndex);
+        PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
         NetworkHandler.channel.sendToServer(new SortWaystoneMessage(index, otherIndex));
         updateList();
     }
@@ -161,7 +165,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         super.render(mouseX, mouseY, partialTicks);
         renderHoveredToolTip(mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
-            if(tooltipProvider.shouldShowTooltip()) {
+            if (tooltipProvider.shouldShowTooltip()) {
                 renderTooltip(tooltipProvider.getTooltip(), mouseX, mouseY);
             }
         }
