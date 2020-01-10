@@ -18,7 +18,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private final List<String> activeTooltip;
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
-    private boolean shiftGuard;
+    private static boolean shiftGuard;
 
     public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IPressable pressable) {
         super(x, y, 13, 13, "", pressable);

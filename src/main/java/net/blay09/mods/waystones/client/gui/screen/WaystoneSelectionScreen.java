@@ -87,6 +87,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         btnPrevPage.active = pageOffset > 0;
         btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
 
+        tooltipProviders.clear();
         buttons.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
         children.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
 

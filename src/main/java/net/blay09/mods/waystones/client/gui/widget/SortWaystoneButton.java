@@ -25,10 +25,12 @@ public class SortWaystoneButton extends GuiButtonExt {
             Minecraft.getInstance().getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int renderY = y - (sortDir == 1 ? 20 : 5);
-            if (active) {
+            if (active && isHovered) {
                 GlStateManager.color4f(1f, 1f, 1f, 1f);
+            } else if (active) {
+                GlStateManager.color4f(1f, 1f, 1f, 0.75f);
             } else {
-                GlStateManager.color4f(1f, 1f, 1f, 0.5f);
+                GlStateManager.color4f(1f, 1f, 1f, 0.25f);
             }
 
             if (isHovered && active) {
