@@ -2,35 +2,35 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.glfw.GLFW;
 
-public class EditWaystoneScreen extends Screen {
+public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsContainer> {
 
-    private final IWaystone tileWaystone;
     private TextFieldWidget textField;
     private Button btnDone;
     private GuiCheckBox chkGlobal;
-    private boolean fromSelectionGui;
+    private boolean fromSelectionGui = false; // TODO
 
-    public EditWaystoneScreen(IWaystone waystone, boolean fromSelectionGui) {
-        super(new TranslationTextComponent("gui.waystones:editWaystone.enterName"));
-        this.tileWaystone = waystone;
-        this.fromSelectionGui = fromSelectionGui;
+    public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
     }
 
     @Override
     public void init() {
         super.init();
-        String oldText = tileWaystone.getName();
+        IWaystone waystone = container.getWaystone();
+        String oldText = waystone.getName();
         if (textField != null) {
             oldText = textField.getText();
         }
@@ -47,19 +47,19 @@ public class EditWaystoneScreen extends Screen {
                 return;
             }
 
-            NetworkHandler.channel.sendToServer(new MessageEditWaystone(tileWaystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
+            NetworkHandler.channel.sendToServer(new MessageEditWaystone(waystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
 
             if (!fromSelectionGui) {
                 Minecraft.getInstance().player.closeScreen();
             }
 
-            if (tileWaystone.getName().isEmpty()) {
+            if (waystone.getName().isEmpty()) {
                 // TODO MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionType()));
             }
         });
         addButton(btnDone);
 
-        chkGlobal = new GuiCheckBox(width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones:editWaystone.isGlobal"), tileWaystone.isGlobal());
+        chkGlobal = new GuiCheckBox(width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones.waystone_settings.is_global"), waystone.isGlobal());
         if (!WaystoneConfig.SERVER.allowEveryoneGlobal.get() && (!Minecraft.getInstance().player.abilities.isCreativeMode)) {
             chkGlobal.visible = false;
         }
@@ -111,4 +111,7 @@ public class EditWaystoneScreen extends Screen {
         Minecraft.getInstance().fontRenderer.drawString(getTitle().getFormattedText(), width / 2f - 100, height / 2f - 35, 0xFFFFFF);
     }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    }
 }

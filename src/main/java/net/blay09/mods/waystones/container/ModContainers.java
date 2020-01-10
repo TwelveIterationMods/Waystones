@@ -11,6 +11,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModContainers {
     public static ContainerType<WaystoneSelectionContainer> waystoneSelection;
+    public static ContainerType<WaystoneSettingsContainer> waystoneSettings;
 
     public static void register(IForgeRegistry<ContainerType<?>> registry) {
         waystoneSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
@@ -26,8 +27,18 @@ public class ModContainers {
 
             return new WaystoneSelectionContainer(windowId, warpMode, fromWaystone);
         });
+        waystoneSettings = new ContainerType<>((IContainerFactory<WaystoneSettingsContainer>) (windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            TileEntity tileEntity = inv.player.world.getTileEntity(pos);
+            if (tileEntity instanceof WaystoneTileEntity) {
+                return new WaystoneSettingsContainer(windowId, ((WaystoneTileEntity) tileEntity).getWaystone());
+            }
+
+            return null;
+        });
         registry.registerAll(
-                waystoneSelection.setRegistryName("waystone_selection")
+                waystoneSelection.setRegistryName("waystone_selection"),
+                waystoneSettings.setRegistryName("waystone_settings")
         );
     }
 

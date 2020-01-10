@@ -12,12 +12,15 @@
     "itemGroup.waystones": "Waystones",
 
     "container.waystones.waystone_selection": "Select your destination:",
+    "container.waystones.waystone_settings": "Enter waystone name:",
 
     "gui.waystones.waystone_selection.next_page": "Next",
     "gui.waystones.waystone_selection.previous_page": "Previous",
     "gui.waystones.waystone_selection.current_location": "Current Location:",
     "gui.waystones.waystone_selection.hold_shift_to_delete": "Hold shift and click to delete",
     "gui.waystones.waystone_selection.click_to_delete": "Click to delete",
+
+    "gui.waystones.waystone_settings.is_global": "is Global",
 
     "chat.waystones.waystone_activated": "Activated Waystone: %s",
     "chat.waystones.scroll_bound": "Scroll bound: %s",
@@ -33,8 +36,6 @@
     "gui.waystones:confirmReturn": "Do you really want to warp back to this waystone?",
     "gui.waystones:confirmReturn.boundTo": "Bound to: %s",
     "gui.waystones:confirmReturn.noWaystoneActive": "No waystone active.",
-    "gui.waystones:editWaystone.enterName": "Enter waystone name:",
-    "gui.waystones:editWaystone.isGlobal": "is Global",
     "tooltip.waystones:cooldownLeft": "Cooldown: %d seconds",
     "tooltip.waystones:boundTo": "Bound to: %s",
     "tooltip.waystones:none": "None",

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
+import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.entity.LivingEntity;
@@ -104,7 +105,7 @@ public class WaystoneTileEntity extends TileEntity {
 
             @Override
             public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-                return new WaystoneSelectionContainer(i, WarpMode.WAYSTONE_TO_WAYSTONE, getWaystone());
+                return new WaystoneSettingsContainer(i, getWaystone());
             }
         };
     }

@@ -24,8 +24,8 @@
     "gui.waystones:confirmReturn": "你真的想要瞬移返回到這個座標石碑嗎？",
     "gui.waystones:confirmReturn.boundTo": "綁定至：%s",
     "gui.waystones:confirmReturn.noWaystoneActive": "沒有激活的座標石碑。",
-    "gui.waystones:editWaystone.enterName": "輸入座標石碑名稱：",
-    "gui.waystones:editWaystone.isGlobal": "是世界性的",
+    "container.waystones.waystone_settings": "輸入座標石碑名稱：",
+    "gui.waystones.waystone_settings.is_global": "是世界性的",
 
     "tooltip.waystones:cooldownLeft": "冷卻：%d秒",
     "tooltip.waystones:boundTo": "綁定至：%s",

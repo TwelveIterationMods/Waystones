@@ -27,8 +27,8 @@
     "gui.waystones:confirmReturn": "确定要传送返回到该石碑吗?",
     "gui.waystones:confirmReturn.boundTo": "绑定至: %s",
     "gui.waystones:confirmReturn.noWaystoneActive": "没有激活的石碑.",
-    "gui.waystones:editWaystone.enterName": "为石碑命名:",
-    "gui.waystones:editWaystone.isGlobal": "跨世界传送",
+    "container.waystones.waystone_settings": "为石碑命名:",
+    "gui.waystones.waystone_settings.is_global": "跨世界传送",
 
     "tooltip.waystones:cooldownLeft": "冷却时间: %d秒",
     "tooltip.waystones:boundTo": "绑定至: %s",
