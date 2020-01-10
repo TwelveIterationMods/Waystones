@@ -4,7 +4,7 @@ import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageEditWaystone;
+import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -20,7 +20,6 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     private TextFieldWidget textField;
     private Button btnDone;
     private GuiCheckBox chkGlobal;
-    private boolean fromSelectionGui = false; // TODO
 
     public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -47,15 +46,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
                 return;
             }
 
-            NetworkHandler.channel.sendToServer(new MessageEditWaystone(waystone.getPos(), textField.getText(), chkGlobal.isChecked(), fromSelectionGui));
-
-            if (!fromSelectionGui) {
-                Minecraft.getInstance().player.closeScreen();
-            }
-
-            if (waystone.getName().isEmpty()) {
-                // TODO MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(textField.getText(), tileWaystone.getPos(), tileWaystone.getDimensionType()));
-            }
+            NetworkHandler.channel.sendToServer(new EditWaystoneMessage(waystone, textField.getText(), chkGlobal.isChecked()));
         });
         addButton(btnDone);
 

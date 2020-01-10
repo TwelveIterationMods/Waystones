@@ -16,10 +16,14 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
     private final List<String> tooltip;
     private final List<String> activeTooltip;
+    private final int visibleRegionStart;
+    private final int visibleRegionHeight;
     private boolean shiftGuard;
 
-    public RemoveWaystoneButton(int x, int y, IPressable pressable) {
+    public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IPressable pressable) {
         super(x, y, 13, 13, "", pressable);
+        this.visibleRegionStart = visibleRegionStart;
+        this.visibleRegionHeight = visibleRegionHeight;
         tooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.hold_shift_to_delete"));
         activeTooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.click_to_delete"));
     }
@@ -42,7 +46,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         }
         active = !shiftGuard && shiftDown;
 
-        if (mouseY >= y && mouseY < y + height) {
+        if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             GlStateManager.color4f(1f, 1f, 1f, 1f);
             Minecraft.getInstance().getTextureManager().bindTexture(BEACON);
             if (isHovered && active) {

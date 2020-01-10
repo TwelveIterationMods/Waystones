@@ -21,7 +21,7 @@ public class WaystoneProxy implements IWaystone {
         return WaystoneManager.get().getWaystoneById(waystoneUid).isPresent();
     }
 
-    private IWaystone getBackingWaystone() {
+    public IWaystone getBackingWaystone() {
         if (backingWaystone == null) {
             backingWaystone = WaystoneManager.get().getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
         }

@@ -90,7 +90,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         buttons.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
         children.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
 
-        int y = headerHeight;
+        int y = headerHeight + headerY;
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
             if (entryIndex >= 0 && entryIndex < waystones.size()) {
@@ -98,19 +98,19 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
                 addButton(createWaystoneButton(y, waystone));
 
-                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 2, waystone, -1, it -> sortWaystone(entryIndex, -1));
+                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(entryIndex, -1));
                 if (entryIndex == 0) {
-                    sortUpButton.visible = false;
+                    sortUpButton.active = false;
                 }
                 addButton(sortUpButton);
 
-                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, headerY + y + 11, waystone, 1, it -> sortWaystone(entryIndex, 1));
+                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
                 if (entryIndex == waystones.size() - 1) {
-                    sortDownButton.visible = false;
+                    sortDownButton.active = false;
                 }
                 addButton(sortDownButton);
 
-                RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, headerY + y + 4, button -> {
+                RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, button -> {
                     PlayerWaystoneManager.deactivateWaystone(Minecraft.getInstance().player, waystone);
                     NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
                     updateList();
@@ -127,7 +127,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     private WaystoneButton createWaystoneButton(int y, IWaystone waystone) {
         IWaystone waystoneFrom = container.getWaystoneFrom();
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, headerY + y, waystone, container.getWarpMode(), button -> {
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, container.getWarpMode(), button -> {
             NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
         });
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {

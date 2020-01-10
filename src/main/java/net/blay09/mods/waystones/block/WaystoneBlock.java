@@ -151,7 +151,7 @@ public class WaystoneBlock extends Block {
 
         IWaystone waystone = tileEntity.getWaystone();
         if (player.isSneaking()) {
-            WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, pos, waystone);
+            WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
                     player.sendStatusMessage(new TranslationTextComponent(result.getLangKey()), true);

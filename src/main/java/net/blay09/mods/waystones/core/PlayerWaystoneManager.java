@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageTeleportEffect;
+import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class PlayerWaystoneManager {
         return !WaystoneConfig.SERVER.creativeModeOnly.get() || (player != null && player.abilities.isCreativeMode);
     }
 
-    public static WaystoneEditPermissions mayEditWaystone(PlayerEntity player, World world, BlockPos pos, IWaystone waystone) {
+    public static WaystoneEditPermissions mayEditWaystone(PlayerEntity player, World world, IWaystone waystone) {
         if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
             return WaystoneEditPermissions.NOT_CREATIVE;
         }
@@ -169,7 +169,7 @@ public class PlayerWaystoneManager {
     private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
         BlockPos pos = waystone.getPos();
         player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new MessageTeleportEffect(pos));
+        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new TeleportEffectMessage(pos));
     }
 
     public static void deactivateWaystone(PlayerEntity player, IWaystone waystone) {
@@ -238,5 +238,9 @@ public class PlayerWaystoneManager {
 
     public static void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
         getPlayerWaystoneData(player.world).swapWaystoneSorting(player, index, otherIndex);
+    }
+
+    public static boolean mayEditGlobalWaystones(PlayerEntity player) {
+        return player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get();
     }
 }

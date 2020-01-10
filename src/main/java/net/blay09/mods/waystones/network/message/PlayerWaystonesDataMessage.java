@@ -17,19 +17,19 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class MessageWaystones {
+public class PlayerWaystonesDataMessage {
 
     private final List<IWaystone> waystones;
     private final long lastFreeWarp;
     private final long lastWarpStoneUse;
 
-    public MessageWaystones(List<IWaystone> waystones, long lastFreeWarp, long lastWarpStoneUse) {
+    public PlayerWaystonesDataMessage(List<IWaystone> waystones, long lastFreeWarp, long lastWarpStoneUse) {
         this.waystones = waystones;
         this.lastFreeWarp = lastFreeWarp;
         this.lastWarpStoneUse = lastWarpStoneUse;
     }
 
-    public static void encode(MessageWaystones message, PacketBuffer buf) {
+    public static void encode(PlayerWaystonesDataMessage message, PacketBuffer buf) {
         buf.writeShort(message.waystones.size());
         for (IWaystone waystone : message.waystones) {
             buf.writeUniqueId(waystone.getWaystoneUid());
@@ -42,7 +42,7 @@ public class MessageWaystones {
         buf.writeLong(Math.max(0, WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000 - (System.currentTimeMillis() - message.lastWarpStoneUse)));
     }
 
-    public static MessageWaystones decode(PacketBuffer buf) {
+    public static PlayerWaystonesDataMessage decode(PacketBuffer buf) {
         int waystoneCount = buf.readShort();
         List<IWaystone> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
@@ -62,10 +62,10 @@ public class MessageWaystones {
         }
         long lastFreeWarp = buf.readLong();
         long lastWarpStoneUse = buf.readLong();
-        return new MessageWaystones(waystones, lastFreeWarp, lastWarpStoneUse);
+        return new PlayerWaystonesDataMessage(waystones, lastFreeWarp, lastWarpStoneUse);
     }
 
-    public static void handle(MessageWaystones message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(PlayerWaystonesDataMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(LogicalSide.CLIENT);

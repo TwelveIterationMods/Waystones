@@ -10,24 +10,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageTeleportEffect {
+public class TeleportEffectMessage {
 
     private final BlockPos pos;
 
-    public MessageTeleportEffect(BlockPos pos) {
+    public TeleportEffectMessage(BlockPos pos) {
         this.pos = pos;
     }
 
-    public static void encode(MessageTeleportEffect message, PacketBuffer buf) {
+    public static void encode(TeleportEffectMessage message, PacketBuffer buf) {
         buf.writeBlockPos(message.pos);
     }
 
-    public static MessageTeleportEffect decode(PacketBuffer buf) {
+    public static TeleportEffectMessage decode(PacketBuffer buf) {
         BlockPos pos = buf.readBlockPos();
-        return new MessageTeleportEffect(pos);
+        return new TeleportEffectMessage(pos);
     }
 
-    public static void handle(MessageTeleportEffect message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(TeleportEffectMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
