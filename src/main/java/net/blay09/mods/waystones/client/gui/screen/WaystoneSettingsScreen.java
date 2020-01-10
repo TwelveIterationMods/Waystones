@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -37,12 +37,14 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         textField = new TextFieldWidget(Minecraft.getInstance().fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20, textField, "");
         textField.setMaxStringLength(128);
         textField.setText(oldText);
-        textField.setFocused2(true);
+        textField.changeFocus(true);
         addButton(textField);
+        setFocusedDefault(textField);
 
         btnDone = new Button(width / 2, height / 2 + 10, 100, 20, I18n.format("gui.done"), button -> {
             if (textField.getText().isEmpty()) {
-                textField.setFocused2(true);
+                textField.changeFocus(true);
+                setFocused(textField);
                 return;
             }
 
@@ -51,7 +53,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         addButton(btnDone);
 
         chkGlobal = new GuiCheckBox(width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones.waystone_settings.is_global"), waystone.isGlobal());
-        if (!WaystoneConfig.SERVER.allowEveryoneGlobal.get() && (!Minecraft.getInstance().player.abilities.isCreativeMode)) {
+        if (PlayerWaystoneManager.mayEditGlobalWaystones(Minecraft.getInstance().player)) {
             chkGlobal.visible = false;
         }
 
@@ -82,7 +84,11 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
             return true;
         }
 
-        if (textField.keyPressed(keyCode, scanCode, modifiers)) {
+        if (textField.keyPressed(keyCode, scanCode, modifiers) || textField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                getMinecraft().player.closeScreen();
+            }
+
             return true;
         }
 
