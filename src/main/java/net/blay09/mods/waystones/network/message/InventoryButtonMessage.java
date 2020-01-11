@@ -4,9 +4,9 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
-import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -18,6 +18,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class InventoryButtonMessage {
@@ -67,7 +68,8 @@ public class InventoryButtonMessage {
             } else if (inventoryButtonMode.isReturnToAny()) {
                 NetworkHooks.openGui(player, containerProvider);
             } else if (inventoryButtonMode.hasNamedTarget()) {
-                // TODO find Waystone by name, and probably restrict that name in edit screen?
+                Optional<IWaystone> waystone = WaystoneManager.get().findWaystoneByName(inventoryButtonMode.getNamedTarget());
+                waystone.ifPresent(iWaystone -> PlayerWaystoneManager.tryTeleportToWaystone(player, iWaystone, WarpMode.INVENTORY_BUTTON, null));
             }
         });
         context.setPacketHandled(true);

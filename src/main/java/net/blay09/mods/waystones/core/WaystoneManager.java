@@ -56,6 +56,14 @@ public class WaystoneManager extends WorldSavedData {
         return Optional.ofNullable(waystones.get(waystoneUid));
     }
 
+    public Optional<IWaystone> findWaystoneByName(String name) {
+        return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
+    }
+
+    public List<IWaystone> getGlobalWaystones() {
+        return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
+    }
+
     @Override
     public void read(CompoundNBT tagCompound) {
         ListNBT tagList = tagCompound.getList(TAG_WAYSTONES, Constants.NBT.TAG_COMPOUND);
@@ -106,9 +114,5 @@ public class WaystoneManager extends WorldSavedData {
         }
 
         return clientStorageCopy;
-    }
-
-    public List<IWaystone> getGlobalWaystones() {
-        return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
     }
 }

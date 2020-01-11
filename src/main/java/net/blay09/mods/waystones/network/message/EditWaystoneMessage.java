@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -53,7 +54,8 @@ public class EditWaystoneMessage {
             }
 
             Waystone backingWaystone = (Waystone) ((WaystoneProxy) message.waystone).getBackingWaystone();
-            backingWaystone.setName(message.name);
+            String legalName = makeNameLegal(message.name);
+            backingWaystone.setName(legalName);
 
             if (PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
                 if (!backingWaystone.isGlobal() && message.isGlobal) {
@@ -68,5 +70,14 @@ public class EditWaystoneMessage {
             player.closeScreen();
         });
         context.setPacketHandled(true);
+    }
+
+    private static String makeNameLegal(String name) {
+        String inventoryButtonMode = WaystoneConfig.SERVER.inventoryButton.get();
+        if (inventoryButtonMode.equals(name)) {
+            return name + "*";
+        }
+
+        return name;
     }
 }
