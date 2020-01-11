@@ -243,4 +243,12 @@ public class PlayerWaystoneManager {
             }
         }
     }
+
+    public static void removeKnownWaystone(IWaystone waystone) {
+        List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
+        for (ServerPlayerEntity player : players) {
+            deactivateWaystone(player, waystone);
+            WaystoneSyncManager.sendWaystonesData(player);
+        }
+    }
 }
