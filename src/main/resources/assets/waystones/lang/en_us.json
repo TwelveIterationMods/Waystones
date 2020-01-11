@@ -22,6 +22,7 @@
   "gui.waystones.inventory.confirm_return": "Do you really want to warp back to this waystone?",
   "gui.waystones.inventory.confirm_return_bound_to": "Bound to: %s",
   "gui.waystones.inventory.return_to_waystone": "Return to Waystone",
+  "gui.waystones.inventory.return_to_nearest_waystone": "Return to Nearest Waystone",
   "chat.waystones.waystone_activated": "Activated Waystone: %s",
   "chat.waystones.scroll_bound": "Scroll bound: %s",
   "chat.waystones.scroll_no_yet_bound": "This scroll is not bound to a waystone.",

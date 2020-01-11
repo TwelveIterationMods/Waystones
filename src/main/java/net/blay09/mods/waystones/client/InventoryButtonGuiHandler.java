@@ -65,7 +65,7 @@ public class InventoryButtonGuiHandler {
                     tooltip.add("");
                 }
             } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
+                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_nearest_waystone"));
                 IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
                 if (nearestWaystone != null) {
                     tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
@@ -75,6 +75,8 @@ public class InventoryButtonGuiHandler {
                 if (secondsLeft > 0) {
                     tooltip.add("");
                 }
+            } else {
+                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
             }
             if (secondsLeft > 0) {
                 tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.cooldown_left", secondsLeft));
