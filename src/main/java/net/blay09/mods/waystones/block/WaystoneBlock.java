@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ObserverBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -203,7 +205,18 @@ public class WaystoneBlock extends Block {
     }
 
     private void notifyObserversOfActivation(World world, BlockPos pos) {
-        // TODO notify observers of waystone activation
+        if (!world.isRemote) {
+            for (Direction direction : Direction.values()) {
+                BlockPos offset = pos.offset(direction);
+                BlockState neighbourState = world.getBlockState(offset);
+                Block neighbourBlock = neighbourState.getBlock();
+                if (neighbourBlock instanceof ObserverBlock && neighbourState.get(ObserverBlock.FACING) == direction.getOpposite()) {
+                    if (!world.getPendingBlockTicks().isTickScheduled(offset, neighbourBlock)) {
+                        world.getPendingBlockTicks().scheduleTick(offset, neighbourBlock, 2);
+                    }
+                }
+            }
+        }
     }
 
     @Override
