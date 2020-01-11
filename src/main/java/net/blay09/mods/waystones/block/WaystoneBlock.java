@@ -31,6 +31,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
@@ -175,6 +177,14 @@ public class WaystoneBlock extends Block {
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
+
+            if (!world.isRemote) {
+                StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
+                nameComponent.getStyle().setColor(TextFormatting.WHITE);
+                TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
+                chatComponent.getStyle().setColor(TextFormatting.YELLOW);
+                player.sendMessage(chatComponent);
+            }
 
             notifyObserversOfActivation(world, pos);
 

@@ -7,18 +7,17 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -71,14 +70,6 @@ public class PlayerWaystoneManager {
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
         getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
-
-        if (!player.world.isRemote) {
-            StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
-            nameComponent.getStyle().setColor(TextFormatting.WHITE);
-            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
-            chatComponent.getStyle().setColor(TextFormatting.YELLOW);
-            player.sendMessage(chatComponent);
-        }
 
         MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(player, waystone));
     }
@@ -242,5 +233,14 @@ public class PlayerWaystoneManager {
 
     public static boolean mayEditGlobalWaystones(PlayerEntity player) {
         return player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get();
+    }
+
+    public static void makeWaystoneGlobal(IWaystone waystone) {
+        List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
+        for (ServerPlayerEntity player : players) {
+            if (!isWaystoneActivated(player, waystone)) {
+                activateWaystone(player, waystone);
+            }
+        }
     }
 }

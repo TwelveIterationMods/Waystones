@@ -18,10 +18,8 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WaystoneManager extends WorldSavedData {
 
@@ -108,5 +106,9 @@ public class WaystoneManager extends WorldSavedData {
         }
 
         return clientStorageCopy;
+    }
+
+    public List<IWaystone> getGlobalWaystones() {
+        return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
     }
 }

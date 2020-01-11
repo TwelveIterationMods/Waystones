@@ -53,7 +53,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         addButton(btnDone);
 
         chkGlobal = new GuiCheckBox(width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones.waystone_settings.is_global"), waystone.isGlobal());
-        if (PlayerWaystoneManager.mayEditGlobalWaystones(Minecraft.getInstance().player)) {
+        if (!PlayerWaystoneManager.mayEditGlobalWaystones(Minecraft.getInstance().player)) {
             chkGlobal.visible = false;
         }
 

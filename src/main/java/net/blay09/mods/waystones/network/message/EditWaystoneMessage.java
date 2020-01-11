@@ -56,10 +56,14 @@ public class EditWaystoneMessage {
             backingWaystone.setName(message.name);
 
             if (PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
+                if (!backingWaystone.isGlobal() && message.isGlobal) {
+                    PlayerWaystoneManager.makeWaystoneGlobal(backingWaystone);
+                }
                 backingWaystone.setGlobal(message.isGlobal);
             }
 
             WaystoneManager.get().markDirty();
+            WaystoneSyncManager.sendWaystonesDataToAll();
 
             player.closeScreen();
         });

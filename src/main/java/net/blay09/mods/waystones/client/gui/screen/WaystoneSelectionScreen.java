@@ -116,7 +116,10 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
                     NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
                     updateList();
                 });
-                addButton(removeButton);
+                // Only show the remove button for non-global waystones
+                if (!waystone.isGlobal()) {
+                    addButton(removeButton);
+                }
 
                 y += 22;
             }
