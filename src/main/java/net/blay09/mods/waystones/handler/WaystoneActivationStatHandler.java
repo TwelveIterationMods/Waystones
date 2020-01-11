@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.handler;
 
+import net.blay09.mods.waystones.ModStats;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -10,7 +11,7 @@ public class WaystoneActivationStatHandler {
 
     @SubscribeEvent
     public static void onWaystoneActivated(WaystoneActivatedEvent event) {
-        // TODO player.addStat(ModStats.waystoneActivated);
+        event.getPlayer().addStat(ModStats.waystoneActivated);
     }
 
 }

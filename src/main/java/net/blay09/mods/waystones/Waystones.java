@@ -46,6 +46,7 @@ public class Waystones {
 
     public Waystones() {
         DeferredWorkQueue.runLater(NetworkHandler::init);
+        DeferredWorkQueue.runLater(ModStats::registerStats);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WaystoneConfig.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, WaystoneConfig.serverSpec);
