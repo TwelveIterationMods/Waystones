@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -12,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -75,6 +77,10 @@ public class PlayerWaystoneManager {
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
+        if (waystone.getDimensionType() != player.world.getDimension().getType()) {
+            return WaystoneConfig.SERVER.dimensionalWarpXpCost.get();
+        }
+
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
         boolean enableXPCost = !player.abilities.isCreativeMode;
         if (waystone.isGlobal()) {
@@ -112,6 +118,13 @@ public class PlayerWaystoneManager {
 
         int xpLevelCost = getExperienceLevelCost(player, waystone, warpMode);
         if (player.experienceLevel < xpLevelCost) {
+            return false;
+        }
+
+        DimensionalWarp dimensionalWarpMode = WaystoneConfig.SERVER.dimensionalWarp.get();
+        boolean isDimensionalWarp = waystone.getDimensionType() != player.world.getDimension().getType();
+        if (isDimensionalWarp && dimensionalWarpMode != DimensionalWarp.ALLOW && !(dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal())) {
+            player.sendStatusMessage(new TranslationTextComponent("chat.waystones.cannot_dimension_warp"), false);
             return false;
         }
 
