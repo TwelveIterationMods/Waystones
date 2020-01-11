@@ -23,6 +23,7 @@ public class NetworkHandler {
         channel.registerMessage(4, TeleportEffectMessage.class, TeleportEffectMessage::encode, TeleportEffectMessage::decode, TeleportEffectMessage::handle);
         channel.registerMessage(5, SortWaystoneMessage.class, SortWaystoneMessage::encode, SortWaystoneMessage::decode, SortWaystoneMessage::handle);
         channel.registerMessage(6, RemoveWaystoneMessage.class, RemoveWaystoneMessage::encode, RemoveWaystoneMessage::decode, RemoveWaystoneMessage::handle);
+        channel.registerMessage(7, RequestEditWaystoneMessage.class, RequestEditWaystoneMessage::encode, RequestEditWaystoneMessage::decode, RequestEditWaystoneMessage::handle);
     }
 
     public static void sendTo(Object message, PlayerEntity player) {

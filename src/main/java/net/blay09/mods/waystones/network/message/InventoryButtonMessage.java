@@ -3,16 +3,36 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
+import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
 public class InventoryButtonMessage {
+
+    private static final INamedContainerProvider containerProvider = new INamedContainerProvider() {
+        @Override
+        public ITextComponent getDisplayName() {
+            return new TranslationTextComponent("container.waystones.waystone_selection");
+        }
+
+        @Override
+        public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+            return new WaystoneSelectionContainer(i, WarpMode.INVENTORY_BUTTON, null);
+        }
+    };
 
     public static void encode(InventoryButtonMessage message, PacketBuffer buf) {
     }
@@ -45,7 +65,7 @@ public class InventoryButtonMessage {
                     PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown);
                 }
             } else if (inventoryButtonMode.isReturnToAny()) {
-                // TODO NetworkHooks.openGui(player, null);
+                NetworkHooks.openGui(player, containerProvider);
             } else if (inventoryButtonMode.hasNamedTarget()) {
                 // TODO find Waystone by name, and probably restrict that name in edit screen?
             }

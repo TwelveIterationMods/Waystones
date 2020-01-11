@@ -203,7 +203,7 @@ public class WaystoneBlock extends Block {
     }
 
     private void notifyObserversOfActivation(World world, BlockPos pos) {
-        // TODO implement me
+        // TODO notify observers of waystone activation
     }
 
     @Override

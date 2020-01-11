@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
+import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -158,8 +159,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isLocationHeaderHovered && container.getWaystoneFrom() != null) {
-            // TODO Waystones.proxy.openWaystoneSettings(Minecraft.getInstance().player, fromWaystone, true);
-
+            NetworkHandler.channel.sendToServer(new RequestEditWaystoneMessage(container.getWaystoneFrom()));
             return true;
         }
 
