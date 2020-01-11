@@ -59,27 +59,25 @@ public class InventoryButtonGuiHandler {
             long timeSince = System.currentTimeMillis() - PlayerWaystoneManager.getLastInventoryWarp(Minecraft.getInstance().player);
             int secondsLeft = (int) ((WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000 - timeSince) / 1000);
             if (!WaystoneConfig.COMMON.teleportButtonTarget.get().isEmpty()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
-                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + WaystoneConfig.COMMON.teleportButtonTarget.get()));
+                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
+                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + WaystoneConfig.COMMON.teleportButtonTarget.get()));
                 if (secondsLeft > 0) {
                     tooltip.add("");
                 }
             } else if (WaystoneConfig.SERVER.teleportButtonReturnOnly.get()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:returnToWaystone"));
+                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
                 IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
                 if (nearestWaystone != null) {
-                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
+                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
-                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", I18n.format("tooltip.waystones:none")));
+                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", I18n.format("tooltip.waystones.bound_to_none")));
                 }
                 if (secondsLeft > 0) {
                     tooltip.add("");
                 }
-            } else {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("tooltip.waystones:openWaystoneMenu"));
             }
             if (secondsLeft > 0) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:cooldownLeft", secondsLeft));
+                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.cooldown_left", secondsLeft));
             }
             event.getGui().renderTooltip(tooltip, event.getMouseX(), event.getMouseY());
         }

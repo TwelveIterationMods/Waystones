@@ -26,22 +26,22 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
                 NetworkHandler.channel.sendToServer(new InventoryButtonMessage());
             }
             Minecraft.getInstance().displayGuiScreen(null);
-        }, new TranslationTextComponent("gui.waystones:confirmReturn"), new StringTextComponent(""));
+        }, new TranslationTextComponent("gui.waystones.inventory.confirm_return"), new StringTextComponent(""));
 
         this.waystoneName = getWaystoneName(targetWaystone);
     }
 
     private static String getWaystoneName(String targetWaystone) {
         if (!targetWaystone.isEmpty()) {
-            return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", targetWaystone);
+            return TextFormatting.GRAY + I18n.format("gui.waystones.inventory.confirm_return_bound_to", targetWaystone);
         }
 
         IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
         if (nearestWaystone != null) {
-            return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.boundTo", nearestWaystone.getName());
+            return TextFormatting.GRAY + I18n.format("gui.waystones.inventory.confirm_return_bound_to", nearestWaystone.getName());
         }
 
-        return TextFormatting.GRAY + I18n.format("gui.waystones:confirmReturn.noWaystoneActive");
+        return TextFormatting.GRAY + I18n.format("gui.waystones.inventory.confirm_return.noWaystoneActive");
     }
 
     @Override

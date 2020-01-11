@@ -194,7 +194,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("waystones:scrollNotBound"), width / 2, height / 2 - 20, 0xFFFFFF);
+            drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), width / 2, height / 2 - 20, 0xFFFFFF);
         }
     }
 

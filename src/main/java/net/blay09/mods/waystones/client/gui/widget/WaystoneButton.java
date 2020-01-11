@@ -46,7 +46,7 @@ public class WaystoneButton extends Button {
             }
 
             if (isHovered && mouseX <= x + 16) {
-                GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("tooltip.waystones:levelRequirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 200, mc.fontRenderer);
+                GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("gui.waystones.waystone_selection.level_requirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 200, mc.fontRenderer);
             }
             GlStateManager.disableLighting();
         }

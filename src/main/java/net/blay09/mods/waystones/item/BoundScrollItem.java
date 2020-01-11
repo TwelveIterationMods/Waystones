@@ -155,7 +155,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
 
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TranslationTextComponent("waystones:scrollNotBound"), true);
+            player.sendStatusMessage(new TranslationTextComponent("chat.waystones.scroll_no_yet_bound"), true);
             return new ActionResult<>(ActionResultType.FAIL, itemStack);
         }
 
@@ -169,12 +169,12 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         }
 
         IWaystone boundTo = getBoundTo(player, itemStack);
-        ITextComponent targetText = boundTo != null ? new StringTextComponent(boundTo.getName()) : new TranslationTextComponent("tooltip.waystones:none");
+        ITextComponent targetText = boundTo != null ? new StringTextComponent(boundTo.getName()) : new TranslationTextComponent("tooltip.waystones.bound_to_none");
         if (boundTo != null) {
             targetText.getStyle().setColor(TextFormatting.AQUA);
         }
 
-        TranslationTextComponent boundToText = new TranslationTextComponent("tooltip.waystones:boundTo", targetText);
+        TranslationTextComponent boundToText = new TranslationTextComponent("tooltip.waystones.bound_to", targetText);
         boundToText.getStyle().setColor(TextFormatting.GRAY);
         tooltip.add(boundToText);
     }
