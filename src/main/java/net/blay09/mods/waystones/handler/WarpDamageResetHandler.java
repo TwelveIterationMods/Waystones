@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.handler;
 
-import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.item.IResetUseOnDamage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,10 +12,8 @@ public class WarpDamageResetHandler {
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent event) {
-        if (WaystoneConfig.COMMON.resetUseOnDamage.get()) {
-            if (event.getEntity() instanceof PlayerEntity && event.getEntityLiving().getActiveItemStack().getItem() instanceof IResetUseOnDamage) {
-                event.getEntityLiving().stopActiveHand();
-            }
+        if (event.getEntity() instanceof PlayerEntity && event.getEntityLiving().getActiveItemStack().getItem() instanceof IResetUseOnDamage) {
+            event.getEntityLiving().stopActiveHand();
         }
     }
 

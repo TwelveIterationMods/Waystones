@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;

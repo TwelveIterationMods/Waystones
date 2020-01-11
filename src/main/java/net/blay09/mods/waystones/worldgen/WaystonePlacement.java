@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.Dynamic;
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;

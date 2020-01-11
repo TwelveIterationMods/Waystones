@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.worldgen;
 
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;

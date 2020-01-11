@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.InMemoryPlayerWaystoneData;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;

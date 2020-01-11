@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.waystones.CommonProxy;
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;

@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
@@ -28,28 +28,28 @@ public class PlayerWaystoneManager {
     private static IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
 
     public static boolean mayBreakWaystone(PlayerEntity player, IBlockReader world, BlockPos pos) {
-        if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
+        if (WaystoneConfig.SERVER.restrictToCreative.get() && !player.abilities.isCreativeMode) {
             return false;
         }
 
         IWaystone waystone = WaystoneManager.get().getWaystoneAt(world, pos).orElseThrow(IllegalStateException::new);
         if (!player.abilities.isCreativeMode) {
-            if (waystone.wasGenerated() && WaystoneConfig.COMMON.disallowBreakingGenerated.get()) {
+            if (waystone.wasGenerated() && WaystoneConfig.SERVER.generatedWaystonesUnbreakable.get()) {
                 return false;
             }
 
-            return !waystone.isGlobal() || WaystoneConfig.SERVER.allowEveryoneGlobal.get();
+            return !waystone.isGlobal() || WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
         }
 
         return true;
     }
 
     public static boolean mayPlaceWaystone(@Nullable PlayerEntity player) {
-        return !WaystoneConfig.SERVER.creativeModeOnly.get() || (player != null && player.abilities.isCreativeMode);
+        return !WaystoneConfig.SERVER.restrictToCreative.get() || (player != null && player.abilities.isCreativeMode);
     }
 
     public static WaystoneEditPermissions mayEditWaystone(PlayerEntity player, World world, IWaystone waystone) {
-        if (WaystoneConfig.SERVER.creativeModeOnly.get() && !player.abilities.isCreativeMode) {
+        if (WaystoneConfig.SERVER.restrictToCreative.get() && !player.abilities.isCreativeMode) {
             return WaystoneEditPermissions.NOT_CREATIVE;
         }
 
@@ -57,7 +57,7 @@ public class PlayerWaystoneManager {
             return WaystoneEditPermissions.NOT_THE_OWNER;
         }
 
-        if (waystone.isGlobal() && !player.abilities.isCreativeMode && !WaystoneConfig.SERVER.allowEveryoneGlobal.get()) {
+        if (waystone.isGlobal() && !player.abilities.isCreativeMode && !WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get()) {
             return WaystoneEditPermissions.GET_CREATIVE;
         }
 
@@ -75,28 +75,29 @@ public class PlayerWaystoneManager {
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
-        boolean enableXPCost = warpMode.hasXpCost() && !player.abilities.isCreativeMode;
-        if (waystone.isGlobal() && !WaystoneConfig.SERVER.globalWaystonesCostXp.get()) {
-            enableXPCost = false;
+        double xpCostMultiplier = warpMode.getXpCostMultiplier();
+        boolean enableXPCost = !player.abilities.isCreativeMode;
+        if (waystone.isGlobal()) {
+            xpCostMultiplier *= WaystoneConfig.SERVER.globalWaystoneXpCostMultiplier.get();
         }
 
         BlockPos pos = waystone.getPos();
-        int dist = (int) Math.sqrt(player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()));
-        int xpLevelCost = WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0 ? MathHelper.clamp(dist / WaystoneConfig.SERVER.blocksPerXPLevel.get(), 0, WaystoneConfig.SERVER.maximumXpCost.get()) : 0;
-        return enableXPCost ? xpLevelCost : 0;
+        double dist = Math.sqrt(player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()));
+        double xpLevelCost = WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0 ? MathHelper.clamp(dist / (float) WaystoneConfig.SERVER.blocksPerXPLevel.get(), 0, WaystoneConfig.SERVER.maximumXpCost.get()) : 0;
+        return enableXPCost ? (int) Math.round(xpLevelCost * xpCostMultiplier) : 0;
     }
 
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastInventoryWarp(player) > WaystoneConfig.SERVER.teleportButtonCooldown.get() * 1000;
+        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastInventoryWarp(player) > WaystoneConfig.SERVER.inventoryButtonCooldown.get() * 1000;
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {
         return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
     }
 
-    public static boolean shouldTriggerCooldown(IWaystone waystone) {
-        return !waystone.isGlobal() || !WaystoneConfig.COMMON.globalNoCooldown.get();
+    public static double getCooldownMultiplier(IWaystone waystone) {
+        return waystone.isGlobal() ? WaystoneConfig.SERVER.globalWaystoneCooldownMultiplier.get() : 1f;
     }
 
     public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
@@ -116,11 +117,13 @@ public class PlayerWaystoneManager {
 
         if (warpMode == WarpMode.WARP_SCROLL) {
             warpItem.shrink(1);
-        } else if (shouldTriggerCooldown(waystone)) {
+        } else {
             if (warpMode == WarpMode.INVENTORY_BUTTON) {
-                getPlayerWaystoneData(player.world).setLastInventoryWarp(player, System.currentTimeMillis());
+                int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
+                getPlayerWaystoneData(player.world).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown);
             } else if (warpMode == WarpMode.WARP_STONE) {
-                getPlayerWaystoneData(player.world).setLastWarpStoneWarp(player, System.currentTimeMillis());
+                int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
+                getPlayerWaystoneData(player.world).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown);
             }
         }
 
@@ -191,15 +194,15 @@ public class PlayerWaystoneManager {
     }
 
     public static void setLastWarpStoneWarp(PlayerEntity player, int timeStamp) {
-        getPlayerWaystoneData(player.world).setLastWarpStoneWarp(player, timeStamp);
+        getPlayerWaystoneData(player.world).setWarpStoneCooldownUntil(player, timeStamp);
     }
 
     public static long getLastInventoryWarp(PlayerEntity player) {
         return getPlayerWaystoneData(player.world).getLastInventoryWarp(player);
     }
 
-    public static void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
-        getPlayerWaystoneData(player.world).setLastInventoryWarp(player, timeStamp);
+    public static void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
+        getPlayerWaystoneData(player.world).setInventoryButtonCooldownUntil(player, timeStamp);
     }
 
     @Nullable
@@ -232,7 +235,7 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean mayEditGlobalWaystones(PlayerEntity player) {
-        return player.abilities.isCreativeMode || WaystoneConfig.SERVER.allowEveryoneGlobal.get();
+        return player.abilities.isCreativeMode || WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
     }
 
     public static void makeWaystoneGlobal(IWaystone waystone) {

@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.client.ModScreens;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;

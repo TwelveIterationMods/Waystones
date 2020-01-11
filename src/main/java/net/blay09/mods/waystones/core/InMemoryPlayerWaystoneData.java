@@ -34,7 +34,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void setLastWarpStoneWarp(PlayerEntity player, long timeStamp) {
+    public void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
         lastWarpStoneWarp = timeStamp;
     }
 
@@ -44,7 +44,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
+    public void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
         lastInventoryWarp = timeStamp;
     }
 

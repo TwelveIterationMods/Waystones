@@ -79,7 +79,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void setLastWarpStoneWarp(PlayerEntity player, long timeStamp) {
+    public void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
         getWaystonesData(player).putLong(LAST_WARPSTONE_WARP, timeStamp);
     }
 
@@ -89,7 +89,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void setLastInventoryWarp(PlayerEntity player, long timeStamp) {
+    public void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
         getWaystonesData(player).putLong(LAST_INVENTORY_WARP, timeStamp);
     }
 

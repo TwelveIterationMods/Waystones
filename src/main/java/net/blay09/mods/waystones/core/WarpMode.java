@@ -1,26 +1,26 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 
 import java.util.function.Supplier;
 
 public enum WarpMode {
-	INVENTORY_BUTTON(WaystoneConfig.COMMON.inventoryButtonXpCost::get),
-	WARP_SCROLL(() -> false),
-	RETURN_SCROLL(() -> false),
-	BOUND_SCROLL(() -> false),
-	WARP_STONE(WaystoneConfig.COMMON.warpStoneXpCost::get),
-	WAYSTONE_TO_WAYSTONE(WaystoneConfig.COMMON.waystoneXpCost::get);
+    INVENTORY_BUTTON(WaystoneConfig.SERVER.inventoryButtonXpCostMultiplier::get),
+    WARP_SCROLL(() -> 0.0),
+    RETURN_SCROLL(() -> 0.0),
+    BOUND_SCROLL(() -> 0.0),
+    WARP_STONE(WaystoneConfig.SERVER.warpStoneXpCostMultiplier::get),
+    WAYSTONE_TO_WAYSTONE(WaystoneConfig.SERVER.waystoneXpCostMultiplier::get);
 
-	public static WarpMode[] values = values();
+    public static WarpMode[] values = values();
 
-    private final Supplier<Boolean> xpCostSupplier;
+    private final Supplier<Double> xpCostMultiplierSupplier;
 
-	WarpMode(Supplier<Boolean> xpCostSupplier) {
-		this.xpCostSupplier = xpCostSupplier;
-	}
+    WarpMode(Supplier<Double> xpCostMultiplierSupplier) {
+        this.xpCostMultiplierSupplier = xpCostMultiplierSupplier;
+    }
 
-	public boolean hasXpCost() {
-		return xpCostSupplier.get();
-	}
+    public double getXpCostMultiplier() {
+        return xpCostMultiplierSupplier.get();
+    }
 }
