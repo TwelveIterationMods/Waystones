@@ -57,8 +57,6 @@ public class ModWorldGen {
         JigsawManager.REGISTRY.register(new JigsawPattern(villageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
         JigsawManager.REGISTRY.register(new JigsawPattern(desertVillageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
 
-        // TODO Make the waystone in the structure "uninitialized" and export desert with jigsaw
-
         if (WaystoneConfig.COMMON.addVillageStructure.get()) {
             PlainsVillagePools.init();
             SnowyVillagePools.init();
