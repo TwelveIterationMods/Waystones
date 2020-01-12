@@ -81,13 +81,16 @@ public class InventoryButtonGuiHandler {
                 if (nearestWaystone != null) {
                     tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
-                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", I18n.format("tooltip.waystones.bound_to_none")));
+                    tooltip.add(TextFormatting.RED + I18n.format("gui.waystones.inventory.no_waystones_activated"));
                 }
                 if (secondsLeft > 0) {
                     tooltip.add("");
                 }
             } else if (inventoryButtonMode.isReturnToAny()) {
                 tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
+                if (PlayerWaystoneManager.getWaystones(Minecraft.getInstance().player).isEmpty()) {
+                    tooltip.add(TextFormatting.RED + I18n.format("gui.waystones.inventory.no_waystones_activated"));
+                }
             }
 
             if (secondsLeft > 0) {

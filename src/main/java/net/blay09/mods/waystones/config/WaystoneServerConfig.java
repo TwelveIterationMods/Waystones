@@ -42,14 +42,14 @@ public class WaystoneServerConfig {
         maximumXpCost = builder
                 .comment("The maximum base xp cost (may be exceeded by multipliers defined below)")
                 .translation("config.waystones.maximumXpCost")
-                .defineInRange("maximumXpCost", 3, 1, Float.MAX_VALUE);
+                .defineInRange("maximumXpCost", 3, 1, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to teleporting from one waystone to another by right-clicking it.").push("waystoneToWaystone");
 
         waystoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting from one waystone to another.")
                 .translation("config.waystones.waystoneXpCostMultiplier")
-                .defineInRange("waystoneXpCostMultiplier", 1, 0, Float.MAX_VALUE);
+                .defineInRange("waystoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to the optional Waystones button displayed in the inventory.").push("inventoryButton");
 
@@ -61,7 +61,7 @@ public class WaystoneServerConfig {
         inventoryButtonXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting via the inventory button.")
                 .translation("config.waystones.inventoryButtonXpCostMultiplier")
-                .defineInRange("inventoryButtonXpCostMultiplier", 1, 0, Float.MAX_VALUE);
+                .defineInRange("inventoryButtonXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         inventoryButtonCooldown = builder
                 .comment("The cooldown between usages of the inventory button in seconds.")
@@ -73,12 +73,12 @@ public class WaystoneServerConfig {
         globalWaystoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting to a global waystone through any method.")
                 .translation("config.waystones.globalWaystonesXpCostMultiplier")
-                .defineInRange("globalWaystonesXpCostMultiplier", 1, 0, Float.MAX_VALUE);
+                .defineInRange("globalWaystonesXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         globalWaystoneCooldownMultiplier = builder
                 .comment("The multiplier applied to the cooldown when teleporting to a global waystone via inventory button or warp stone.")
                 .translation("config.waystones.globalWaystoneCooldownMultiplier")
-                .defineInRange("globalWaystoneCooldownMultiplier", 1, 0, Float.MAX_VALUE);
+                .defineInRange("globalWaystoneCooldownMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         globalWaystoneRequiresCreative = builder
                 .comment("Set to false to allow non-creative players to make waystones globally activated.")
@@ -90,7 +90,7 @@ public class WaystoneServerConfig {
         warpStoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting using a Warp Stone item (not the Waystone block, John)")
                 .translation("config.waystones.warpStoneXpCostMultiplier")
-                .defineInRange("warpStoneXpCostMultiplier", 1, 0, Float.MAX_VALUE);
+                .defineInRange("warpStoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         warpStoneCooldown = builder
                 .comment("The cooldown between usages of the warp stone in seconds. This is bound to the player, not the item, so multiple warp stones share the same cooldown.")
