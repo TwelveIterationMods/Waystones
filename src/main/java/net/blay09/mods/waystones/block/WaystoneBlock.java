@@ -160,7 +160,9 @@ public class WaystoneBlock extends Block {
             WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
-                    player.sendStatusMessage(new TranslationTextComponent(result.getLangKey()), true);
+                    TranslationTextComponent chatComponent = new TranslationTextComponent(result.getLangKey());
+                    chatComponent.getStyle().setColor(TextFormatting.RED);
+                    player.sendStatusMessage(chatComponent, true);
                 }
                 return true;
             }

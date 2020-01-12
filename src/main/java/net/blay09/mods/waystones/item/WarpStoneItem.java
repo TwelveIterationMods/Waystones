@@ -94,7 +94,9 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             }
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TranslationTextComponent("chat.waystones.warpstone_not_charged"), true);
+            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warpstone_not_charged");
+            chatComponent.getStyle().setColor(TextFormatting.RED);
+            player.sendStatusMessage(chatComponent, true);
             return new ActionResult<>(ActionResultType.FAIL, itemStack);
         }
     }

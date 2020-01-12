@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -124,11 +125,13 @@ public class PlayerWaystoneManager {
         DimensionalWarp dimensionalWarpMode = WaystoneConfig.SERVER.dimensionalWarp.get();
         boolean isDimensionalWarp = waystone.getDimensionType() != player.world.getDimension().getType();
         if (isDimensionalWarp && dimensionalWarpMode != DimensionalWarp.ALLOW && !(dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal())) {
-            player.sendStatusMessage(new TranslationTextComponent("chat.waystones.cannot_dimension_warp"), false);
+            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
+            chatComponent.getStyle().setColor(TextFormatting.RED);
+            player.sendStatusMessage(chatComponent, false);
             return false;
         }
 
-        if (warpMode.consumesItem()) {
+        if (warpMode.consumesItem() && !player.abilities.isCreativeMode) {
             warpItem.shrink(1);
         }
 
@@ -176,7 +179,7 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
-        BlockPos pos = waystone.getPos();
+        BlockPos pos = waystone.getPos(); // TODO offset by facing so player doesn't spawn inside
         player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new TeleportEffectMessage(pos));
     }

@@ -105,7 +105,9 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
                     }
                 }
 
-                player.sendStatusMessage(new TranslationTextComponent("chat.waystones.scroll_bound", waystone.getName()), true);
+                TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.scroll_bound", waystone.getName());
+                chatComponent.getStyle().setColor(TextFormatting.YELLOW);
+                player.sendStatusMessage(chatComponent, true);
             }
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, context.getPos(), 2f);
@@ -127,11 +129,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
                     return itemStack;
                 }
 
-                if (PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null)) {
-                    if (!player.abilities.isCreativeMode) {
-                        itemStack.shrink(1);
-                    }
-                }
+                PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null);
             }
         }
 
@@ -155,7 +153,9 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
 
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TranslationTextComponent("chat.waystones.scroll_no_yet_bound"), true);
+            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.scroll_not_yet_bound");
+            chatComponent.getStyle().setColor(TextFormatting.RED);
+            player.sendStatusMessage(chatComponent, true);
             return new ActionResult<>(ActionResultType.FAIL, itemStack);
         }
 

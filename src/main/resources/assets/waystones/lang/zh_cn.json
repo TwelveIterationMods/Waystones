@@ -18,7 +18,7 @@
   "gui.waystones.inventory.return_to_waystone": "返回传送石碑",
   "gui.waystones.waystone_selection.level_requirement": "需要经验等级: %d",
   "chat.waystones.cannot_dimension_warp": "禁止跨世界传送.",
-  "chat.waystones.scroll_no_yet_bound": "该卷轴未绑定到任何石碑.",
+  "chat.waystones.scroll_not_yet_bound": "该卷轴未绑定到任何石碑.",
   "chat.waystones.warpstone_not_charged": "传送石未完全充能.",
   "chat.waystones.waystone_activated": "已激活的传送石碑: %s",
   "chat.waystones.only_owner_can_edit": "只有石碑放置者才能修改名称.",
