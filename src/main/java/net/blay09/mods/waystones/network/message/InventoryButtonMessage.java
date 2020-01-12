@@ -55,6 +55,11 @@ public class InventoryButtonMessage {
                 return;
             }
 
+            // Reset cooldown if player is in creative mode
+            if (player.abilities.isCreativeMode) {
+                PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, 0);
+            }
+
             if (!PlayerWaystoneManager.canUseInventoryButton(player)) {
                 return;
             }

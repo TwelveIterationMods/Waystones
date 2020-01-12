@@ -2,15 +2,18 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -122,9 +125,8 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        DimensionalWarp dimensionalWarpMode = WaystoneConfig.SERVER.dimensionalWarp.get();
         boolean isDimensionalWarp = waystone.getDimensionType() != player.world.getDimension().getType();
-        if (isDimensionalWarp && dimensionalWarpMode != DimensionalWarp.ALLOW && !(dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal())) {
+        if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
             chatComponent.getStyle().setColor(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);
@@ -153,6 +155,11 @@ public class PlayerWaystoneManager {
         return true;
     }
 
+    private static boolean canDimensionalWarpTo(PlayerEntity player, IWaystone waystone) {
+        DimensionalWarp dimensionalWarpMode = WaystoneConfig.SERVER.dimensionalWarp.get();
+        return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal();
+    }
+
     private static ItemStack findWarpItem(PlayerEntity player, WarpMode warpMode) {
         switch (warpMode) {
             case WARP_SCROLL:
@@ -179,9 +186,22 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
-        BlockPos pos = waystone.getPos(); // TODO offset by facing so player doesn't spawn inside
-        player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(pos)), new TeleportEffectMessage(pos));
+        World world = player.world;
+        BlockPos sourcePos = player.getPosition();
+        BlockPos pos = waystone.getPos();
+        BlockPos targetPos;
+
+        BlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof WaystoneBlock) {
+            Direction direction = state.get(WaystoneBlock.FACING);
+            targetPos = pos.offset(direction);
+        } else {
+            targetPos = pos;
+        }
+
+        player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
+        NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
     }
 
     public static void deactivateWaystone(PlayerEntity player, IWaystone waystone) {

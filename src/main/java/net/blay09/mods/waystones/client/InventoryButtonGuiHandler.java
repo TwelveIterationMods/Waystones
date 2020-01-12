@@ -42,20 +42,26 @@ public class InventoryButtonGuiHandler {
         }
 
         buttonWarp = new InventoryWarpButton((ContainerScreen<?>) event.getGui(), button -> {
-            PlayerEntity player = Minecraft.getInstance().player;
-            Minecraft minecraft = event.getGui().getMinecraft();
+            Minecraft mc = event.getGui().getMinecraft();
+            PlayerEntity player = mc.player;
+
+            // Reset cooldown if player is in creative mode
+            if (player.abilities.isCreativeMode) {
+                PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, 0);
+            }
+
             if (PlayerWaystoneManager.canUseInventoryButton(player)) {
                 if (inventoryButtonMode.hasNamedTarget()) {
-                    minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
+                    mc.displayGuiScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                 } else if (inventoryButtonMode.isReturnToNearest()) {
                     if (PlayerWaystoneManager.getNearestWaystone(player) != null) {
-                        minecraft.displayGuiScreen(new InventoryButtonReturnConfirmScreen());
+                        mc.displayGuiScreen(new InventoryButtonReturnConfirmScreen());
                     }
                 } else if (inventoryButtonMode.isReturnToAny()) {
                     NetworkHandler.channel.sendToServer(new InventoryButtonMessage());
                 }
             } else {
-                minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
+                mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
             }
         });
         event.addWidget(buttonWarp);
