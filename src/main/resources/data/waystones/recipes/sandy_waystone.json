@@ -10,7 +10,7 @@
   ],
   "key": {
     "S": {
-      "item": "minecraft:cut_sandstone"
+      "item": "minecraft:chiseled_sandstone"
     },
     "W": {
       "item": "waystones:warp_stone"

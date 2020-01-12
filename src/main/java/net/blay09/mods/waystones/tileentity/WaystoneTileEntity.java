@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.*;
@@ -14,18 +15,22 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class WaystoneTileEntity extends TileEntity {
 
-    private IWaystone waystone;
+    private IWaystone waystone = InvalidWaystone.INSTANCE;
+    private boolean shouldNotInitialize;
 
     public WaystoneTileEntity() {
         super(ModTileEntities.waystone);
@@ -34,14 +39,21 @@ public class WaystoneTileEntity extends TileEntity {
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
-        tagCompound.put("UUID", NBTUtil.writeUniqueId(getWaystone().getWaystoneUid()));
+
+        IWaystone waystone = getWaystone();
+        if (waystone.isValid()) {
+            tagCompound.put("UUID", NBTUtil.writeUniqueId(waystone.getWaystoneUid()));
+        }
+
         return tagCompound;
     }
 
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        waystone = new WaystoneProxy(NBTUtil.readUniqueId(tagCompound.getCompound("UUID")));
+        if (tagCompound.contains("UUID")) {
+            waystone = new WaystoneProxy(NBTUtil.readUniqueId(tagCompound.getCompound("UUID")));
+        }
     }
 
     @Override
@@ -67,7 +79,19 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public IWaystone getWaystone() {
-        return waystone != null ? waystone : InvalidWaystone.INSTANCE;
+        if (!waystone.isValid() && world != null && !shouldNotInitialize) {
+            DoubleBlockHalf half = getBlockState().get(WaystoneBlock.HALF);
+            if (half == DoubleBlockHalf.LOWER) {
+                initializeWaystone(Objects.requireNonNull(world), null, true);
+            } else if (half == DoubleBlockHalf.UPPER) {
+                TileEntity tileEntity = world.getTileEntity(pos.down());
+                if (tileEntity instanceof WaystoneTileEntity) {
+                    initializeFromBase(((WaystoneTileEntity) tileEntity));
+                }
+            }
+        }
+
+        return waystone;
     }
 
     public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
@@ -80,6 +104,25 @@ public class WaystoneTileEntity extends TileEntity {
 
     public void initializeFromBase(WaystoneTileEntity tileEntity) {
         waystone = tileEntity.getWaystone();
+    }
+
+    public void uninitializeWaystone() {
+        if (waystone.isValid()) {
+            WaystoneManager.get().removeWaystone(waystone);
+            PlayerWaystoneManager.removeKnownWaystone(waystone);
+        }
+
+        waystone = InvalidWaystone.INSTANCE;
+        shouldNotInitialize = true;
+
+        DoubleBlockHalf half = getBlockState().get(WaystoneBlock.HALF);
+        BlockPos otherPos = half == DoubleBlockHalf.UPPER ? pos.down() : pos.up();
+        TileEntity tileEntity = Objects.requireNonNull(world).getTileEntity(otherPos);
+        if (tileEntity instanceof WaystoneTileEntity) {
+            WaystoneTileEntity waystoneTile = (WaystoneTileEntity) tileEntity;
+            waystoneTile.waystone = InvalidWaystone.INSTANCE;
+            waystoneTile.shouldNotInitialize = true;
+        }
     }
 
     public INamedContainerProvider getWaystoneSelectionContainerProvider() {

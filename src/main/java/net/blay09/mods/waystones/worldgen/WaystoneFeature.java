@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.worldgen;
 import com.mojang.datafixers.Dynamic;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
@@ -42,10 +41,14 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
                     .with(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
                     .with(WaystoneBlock.FACING, facing), 2);
 
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntity) {
-                WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
-                waystoneTileEntity.initializeWaystone(world, null, true);
+            WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+            if (tileEntity != null) {
+                tileEntity.initializeWaystone(world, null, true);
+
+                TileEntity tileEntityAbove = world.getTileEntity(pos.up());
+                if (tileEntityAbove instanceof WaystoneTileEntity) {
+                    ((WaystoneTileEntity) tileEntityAbove).initializeFromBase(tileEntity);
+                }
             }
 
             return true;

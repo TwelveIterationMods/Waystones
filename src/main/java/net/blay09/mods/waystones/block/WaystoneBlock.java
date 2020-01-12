@@ -19,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
@@ -153,6 +154,17 @@ public class WaystoneBlock extends Block {
         WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
         if (tileEntity == null) {
             return false;
+        }
+
+        if (player.abilities.isCreativeMode) {
+            ItemStack heldItem = player.getHeldItem(hand);
+            if (heldItem.getItem() == Items.BAMBOO) {
+                if (!world.isRemote) {
+                    tileEntity.uninitializeWaystone();
+                    player.sendStatusMessage(new StringTextComponent("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
+                }
+                return true;
+            }
         }
 
         IWaystone waystone = tileEntity.getWaystone();
