@@ -80,15 +80,17 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public IWaystone getWaystone() {
-        BlockState state = getBlockState();
-        if (!waystone.isValid() && world != null && !world.isRemote && !shouldNotInitialize && state.getBlock() instanceof WaystoneBlock) {
-            DoubleBlockHalf half = state.get(WaystoneBlock.HALF);
-            if (half == DoubleBlockHalf.LOWER) {
-                initializeWaystone(Objects.requireNonNull(world), null, true);
-            } else if (half == DoubleBlockHalf.UPPER) {
-                TileEntity tileEntity = world.getTileEntity(pos.down());
-                if (tileEntity instanceof WaystoneTileEntity) {
-                    initializeFromBase(((WaystoneTileEntity) tileEntity));
+        if (!waystone.isValid() && world != null && !world.isRemote && !shouldNotInitialize) {
+            BlockState state = getBlockState();
+            if (state.getBlock() instanceof WaystoneBlock) {
+                DoubleBlockHalf half = state.get(WaystoneBlock.HALF);
+                if (half == DoubleBlockHalf.LOWER) {
+                    initializeWaystone(Objects.requireNonNull(world), null, true);
+                } else if (half == DoubleBlockHalf.UPPER) {
+                    TileEntity tileEntity = world.getTileEntity(pos.down());
+                    if (tileEntity instanceof WaystoneTileEntity) {
+                        initializeFromBase(((WaystoneTileEntity) tileEntity));
+                    }
                 }
             }
         }
