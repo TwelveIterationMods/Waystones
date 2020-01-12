@@ -1,9 +1,7 @@
 package net.blay09.mods.waystones.client.gui;
 
 import net.blay09.mods.waystones.WarpMode;
-import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageRemoveWaystone;
 import net.blay09.mods.waystones.network.message.MessageSortWaystone;
@@ -16,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,6 +33,7 @@ public class GuiWaystoneList extends GuiScreen {
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
+    private int buttonsPerPage;
 
     public GuiWaystoneList(WaystoneEntry[] entries, WarpMode warpMode, EnumHand hand, @Nullable WaystoneEntry fromWaystone) {
         this.entries = entries;
@@ -62,7 +60,7 @@ public class GuiWaystoneList extends GuiScreen {
         final int entryHeight = 25;
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
 
-        final int buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, entries.length));
+        buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, entries.length));
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
         headerY = height / 2 - contentHeight / 2;
 
@@ -112,10 +110,10 @@ public class GuiWaystoneList extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button == btnNextPage) {
-            pageOffset++;
+            pageOffset = GuiScreen.isShiftKeyDown() ? (entries.length - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         } else if (button == btnPrevPage) {
-            pageOffset--;
+            pageOffset = GuiScreen.isShiftKeyDown() ? 0 : pageOffset - 1;
             updateList();
         } else if (button instanceof GuiButtonWaystoneEntry) {
             NetworkHandler.channel.sendToServer(new MessageTeleportToWaystone(((GuiButtonWaystoneEntry) button).getWaystone(), warpMode, hand, fromWaystone));
@@ -125,6 +123,9 @@ public class GuiWaystoneList extends GuiScreen {
             int index = ArrayUtils.indexOf(entries, waystoneEntry);
             int sortDir = ((GuiButtonSortWaystone) button).getSortDir();
             int otherIndex = index + sortDir;
+            if (GuiScreen.isShiftKeyDown()) {
+                otherIndex = sortDir == -1 ? 0 : entries.length - 1;
+            }
             if (index == -1 || otherIndex < 0 || otherIndex >= entries.length) {
                 return;
             }

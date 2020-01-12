@@ -14,9 +14,7 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class NameGenerator extends WorldSavedData {
 
@@ -148,7 +146,9 @@ public class NameGenerator extends WorldSavedData {
         }
 
         String name = null;
-        for (String customName : WaystoneConfig.worldGen.customNames) {
+        List<String> customNames = Arrays.asList(WaystoneConfig.worldGen.customNames);
+        Collections.shuffle(customNames);
+        for (String customName : customNames) {
             if (!usedNames.contains(customName)) {
                 name = customName;
                 break;

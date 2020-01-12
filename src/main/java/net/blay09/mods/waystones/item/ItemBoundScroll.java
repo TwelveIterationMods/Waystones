@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
+import net.blay09.mods.waystones.client.ClientWaystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -82,7 +83,9 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileWaystone) {
             TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
-            ((BlockWaystone) Waystones.blockWaystone).activateWaystone(player, world, tileWaystone);
+            if (ClientWaystones.getKnownWaystone(tileWaystone.getWaystoneName()) == null) {
+                ((BlockWaystone) Waystones.blockWaystone).activateWaystone(player, world, tileWaystone);
+            }
 
             if (!world.isRemote) {
                 ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.splitStack(1);
@@ -118,8 +121,7 @@ public class ItemBoundScroll extends Item implements IResetUseOnDamage {
 
                 TileWaystone tileWaystone = WaystoneManager.getWaystoneInWorld(boundTo);
                 if (tileWaystone != null) {
-                    WaystoneManager.addPlayerWaystone(player, boundTo);
-                    WaystoneManager.sendPlayerWaystones(player);
+                    ((BlockWaystone) Waystones.blockWaystone).activateWaystone(player, world, tileWaystone);
 
                     if (WaystoneManager.teleportToWaystone(player, boundTo)) {
                         if (!player.capabilities.isCreativeMode) itemStack.shrink(1);

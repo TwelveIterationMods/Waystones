@@ -44,6 +44,8 @@ public class HandlerTeleportToWaystone implements IMessageHandler<MessageTelepor
 
                     break;
                 case WARP_SCROLL:
+                    enableXPCost = false;
+
                     if (heldItem.isEmpty() || heldItem.getItem() != Waystones.itemWarpScroll) {
                         return;
                     }

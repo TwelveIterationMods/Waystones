@@ -75,6 +75,10 @@ public class PlayerWaystoneHelper {
     }
 
     public static int getTravelCostByDistance(EntityPlayer player, WaystoneEntry waystone) {
+        if (player.world.provider.getDimension() != waystone.getDimensionId()) {
+            return WaystoneConfig.general.dimensionalXpCost;
+        }
+
         if (WaystoneConfig.general.blocksPerXPLevel <= 0) {
             return 0;
         }
