@@ -16,7 +16,7 @@ public class NetworkHandler {
     public static final SimpleChannel channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(Waystones.MOD_ID, "network"), () -> version, it -> it.equals(version), it -> it.equals(version));
 
     public static void init() {
-        channel.registerMessage(0, PlayerWaystonesDataMessage.class, PlayerWaystonesDataMessage::encode, PlayerWaystonesDataMessage::decode, PlayerWaystonesDataMessage::handle);
+        channel.registerMessage(0, PlayerKnownWaystonesMessage.class, PlayerKnownWaystonesMessage::encode, PlayerKnownWaystonesMessage::decode, PlayerKnownWaystonesMessage::handle);
         channel.registerMessage(1, InventoryButtonMessage.class, InventoryButtonMessage::encode, InventoryButtonMessage::decode, InventoryButtonMessage::handle);
         channel.registerMessage(2, EditWaystoneMessage.class, EditWaystoneMessage::encode, EditWaystoneMessage::decode, EditWaystoneMessage::handle);
         channel.registerMessage(3, SelectWaystoneMessage.class, SelectWaystoneMessage::encode, SelectWaystoneMessage::decode, SelectWaystoneMessage::handle);
@@ -24,6 +24,7 @@ public class NetworkHandler {
         channel.registerMessage(5, SortWaystoneMessage.class, SortWaystoneMessage::encode, SortWaystoneMessage::decode, SortWaystoneMessage::handle);
         channel.registerMessage(6, RemoveWaystoneMessage.class, RemoveWaystoneMessage::encode, RemoveWaystoneMessage::decode, RemoveWaystoneMessage::handle);
         channel.registerMessage(7, RequestEditWaystoneMessage.class, RequestEditWaystoneMessage::encode, RequestEditWaystoneMessage::decode, RequestEditWaystoneMessage::handle);
+        channel.registerMessage(8, PlayerWaystoneCooldownsMessage.class, PlayerWaystoneCooldownsMessage::encode, PlayerWaystoneCooldownsMessage::decode, PlayerWaystoneCooldownsMessage::handle);
     }
 
     public static void sendTo(Object message, PlayerEntity player) {

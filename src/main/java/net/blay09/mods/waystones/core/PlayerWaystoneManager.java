@@ -95,11 +95,11 @@ public class PlayerWaystoneManager {
 
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastInventoryWarp(player) > WaystoneConfig.SERVER.inventoryButtonCooldown.get() * 1000;
+        return getInventoryButtonCooldownLeft(player) <= 0;
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {
-        return System.currentTimeMillis() - getPlayerWaystoneData(player.world).getLastWarpStoneWarp(player) > WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
+        return getWarpStoneCooldownLeft(player) <= 0;
     }
 
     public static double getCooldownMultiplier(IWaystone waystone) {
@@ -128,16 +128,18 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        if (warpMode == WarpMode.WARP_SCROLL) {
+        if (warpMode.consumesItem()) {
             warpItem.shrink(1);
-        } else {
-            if (warpMode == WarpMode.INVENTORY_BUTTON) {
-                int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(player.world).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown);
-            } else if (warpMode == WarpMode.WARP_STONE) {
-                int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(player.world).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown);
-            }
+        }
+
+        if (warpMode == WarpMode.INVENTORY_BUTTON) {
+            int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
+            getPlayerWaystoneData(player.world).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000);
+            WaystoneSyncManager.sendWaystoneCooldowns(player);
+        } else if (warpMode == WarpMode.WARP_STONE) {
+            int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
+            getPlayerWaystoneData(player.world).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000);
+            WaystoneSyncManager.sendWaystoneCooldowns(player);
         }
 
         if (xpLevelCost > 0) {
@@ -202,16 +204,26 @@ public class PlayerWaystoneManager {
         return false;
     }
 
-    public static long getLastWarpStoneWarp(PlayerEntity player) {
-        return getPlayerWaystoneData(player.world).getLastWarpStoneWarp(player);
+    public static long getWarpStoneCooldownUntil(PlayerEntity player) {
+        return getPlayerWaystoneData(player.world).getWarpStoneCooldownUntil(player);
     }
 
-    public static void setLastWarpStoneWarp(PlayerEntity player, int timeStamp) {
+    public static long getWarpStoneCooldownLeft(PlayerEntity player) {
+        long cooldownUntil = getWarpStoneCooldownUntil(player);
+        return Math.max(0, cooldownUntil - System.currentTimeMillis());
+    }
+
+    public static void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
         getPlayerWaystoneData(player.world).setWarpStoneCooldownUntil(player, timeStamp);
     }
 
-    public static long getLastInventoryWarp(PlayerEntity player) {
-        return getPlayerWaystoneData(player.world).getLastInventoryWarp(player);
+    public static long getInventoryButtonCooldownUntil(PlayerEntity player) {
+        return getPlayerWaystoneData(player.world).getInventoryButtonCooldownUntil(player);
+    }
+
+    public static long getInventoryButtonCooldownLeft(PlayerEntity player) {
+        long cooldownUntil = getInventoryButtonCooldownUntil(player);
+        return Math.max(0, cooldownUntil - System.currentTimeMillis());
     }
 
     public static void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
@@ -264,7 +276,7 @@ public class PlayerWaystoneManager {
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayerEntity player : players) {
             deactivateWaystone(player, waystone);
-            WaystoneSyncManager.sendWaystonesData(player);
+            WaystoneSyncManager.sendKnownWaystones(player);
         }
     }
 }

@@ -8,8 +8,8 @@ import java.util.*;
 public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final List<IWaystone> sortedWaystones = new ArrayList<>();
     private final Map<UUID, IWaystone> waystones = new HashMap<>();
-    private long lastWarpStoneWarp;
-    private long lastInventoryWarp;
+    private long warpStoneCooldownUntil;
+    private long inventoryButtonCooldownUntil;
 
     @Override
     public void activateWaystone(PlayerEntity player, IWaystone waystone) {
@@ -29,23 +29,23 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public long getLastWarpStoneWarp(PlayerEntity player) {
-        return lastWarpStoneWarp;
+    public long getWarpStoneCooldownUntil(PlayerEntity player) {
+        return warpStoneCooldownUntil;
     }
 
     @Override
     public void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
-        lastWarpStoneWarp = timeStamp;
+        warpStoneCooldownUntil = timeStamp;
     }
 
     @Override
-    public long getLastInventoryWarp(PlayerEntity player) {
-        return lastInventoryWarp;
+    public long getInventoryButtonCooldownUntil(PlayerEntity player) {
+        return inventoryButtonCooldownUntil;
     }
 
     @Override
     public void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
-        lastInventoryWarp = timeStamp;
+        inventoryButtonCooldownUntil = timeStamp;
     }
 
     @Override

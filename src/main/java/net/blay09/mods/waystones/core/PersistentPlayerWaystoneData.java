@@ -17,8 +17,8 @@ import java.util.UUID;
 public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
-    private static final String LAST_INVENTORY_WARP = "LastInventoryWarp";
-    private static final String LAST_WARPSTONE_WARP = "LastWarpStoneWarp";
+    private static final String INVENTORY_BUTTON_COOLDOWN_UNTIL = "InventoryButtonCooldownUntil";
+    private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntil";
 
     @Override
     public void activateWaystone(PlayerEntity player, IWaystone waystone) {
@@ -74,23 +74,23 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public long getLastWarpStoneWarp(PlayerEntity player) {
-        return getWaystonesData(player).getLong(LAST_WARPSTONE_WARP);
+    public long getWarpStoneCooldownUntil(PlayerEntity player) {
+        return getWaystonesData(player).getLong(WARP_STONE_COOLDOWN_UNTIL);
     }
 
     @Override
     public void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
-        getWaystonesData(player).putLong(LAST_WARPSTONE_WARP, timeStamp);
+        getWaystonesData(player).putLong(WARP_STONE_COOLDOWN_UNTIL, timeStamp);
     }
 
     @Override
-    public long getLastInventoryWarp(PlayerEntity player) {
-        return getWaystonesData(player).getLong(LAST_INVENTORY_WARP);
+    public long getInventoryButtonCooldownUntil(PlayerEntity player) {
+        return getWaystonesData(player).getLong(INVENTORY_BUTTON_COOLDOWN_UNTIL);
     }
 
     @Override
     public void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
-        getWaystonesData(player).putLong(LAST_INVENTORY_WARP, timeStamp);
+        getWaystonesData(player).putLong(INVENTORY_BUTTON_COOLDOWN_UNTIL, timeStamp);
     }
 
     private static ListNBT getActivatedWaystonesData(CompoundNBT data) {

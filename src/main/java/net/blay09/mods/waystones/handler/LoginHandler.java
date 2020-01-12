@@ -24,7 +24,8 @@ public class LoginHandler {
             }
         }
 
-        WaystoneSyncManager.sendWaystonesData(event.getPlayer());
+        WaystoneSyncManager.sendKnownWaystones(event.getPlayer());
+        WaystoneSyncManager.sendWaystoneCooldowns(event.getPlayer());
     }
 
 }

@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -43,8 +44,6 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return new WaystoneSelectionContainer(i, WarpMode.WARP_STONE, null);
         }
     };
-
-    public static long lastTimerUpdate;
 
     public WarpStoneItem() {
         super(new Item.Properties().group(Waystones.itemGroup).maxStackSize(1).maxDamage(100));
@@ -81,7 +80,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
         // Reset cooldown when using in creative mode
         if (player.abilities.isCreativeMode) {
-            PlayerWaystoneManager.setLastWarpStoneWarp(player, 0);
+            PlayerWaystoneManager.setWarpStoneCooldownUntil(player, 0);
         }
 
         if (PlayerWaystoneManager.canUseWarpStone(player, itemStack)) {
@@ -112,10 +111,13 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return 0.0;
         }
 
-        long timeLeft = PlayerWaystoneManager.getLastWarpStoneWarp(player);
-        long timeSince = (System.currentTimeMillis() - lastTimerUpdate);
-        float percentage = (float) timeSince / timeLeft;
-        return 1.0 - (double) (Math.max(0, Math.min(1, percentage)));
+        long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
+        long maxCooldown = WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
+        if (maxCooldown == 0) {
+            return 0f;
+        }
+
+        return MathHelper.clamp(timeLeft / (float) maxCooldown, 0f, 1f);
     }
 
     @Override
@@ -130,9 +132,8 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return;
         }
 
-        long timeLeft = PlayerWaystoneManager.getLastWarpStoneWarp(player);
-        long timeSince = System.currentTimeMillis() - lastTimerUpdate;
-        int secondsLeft = (int) ((timeLeft - timeSince) / 1000);
+        long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
+        int secondsLeft = (int) (timeLeft / 1000);
         if (secondsLeft > 0) {
             TranslationTextComponent secondsLeftText = new TranslationTextComponent("tooltip.waystones.cooldown_left", secondsLeft);
             secondsLeftText.getStyle().setColor(TextFormatting.GRAY);

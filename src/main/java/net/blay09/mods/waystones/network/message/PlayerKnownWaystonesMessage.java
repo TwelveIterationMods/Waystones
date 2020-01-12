@@ -1,11 +1,9 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.InMemoryPlayerWaystoneData;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.item.WarpStoneItem;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -17,19 +15,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class PlayerWaystonesDataMessage {
+public class PlayerKnownWaystonesMessage {
 
     private final List<IWaystone> waystones;
-    private final long lastFreeWarp;
-    private final long lastWarpStoneUse;
 
-    public PlayerWaystonesDataMessage(List<IWaystone> waystones, long lastFreeWarp, long lastWarpStoneUse) {
+    public PlayerKnownWaystonesMessage(List<IWaystone> waystones) {
         this.waystones = waystones;
-        this.lastFreeWarp = lastFreeWarp;
-        this.lastWarpStoneUse = lastWarpStoneUse;
     }
 
-    public static void encode(PlayerWaystonesDataMessage message, PacketBuffer buf) {
+    public static void encode(PlayerKnownWaystonesMessage message, PacketBuffer buf) {
         buf.writeShort(message.waystones.size());
         for (IWaystone waystone : message.waystones) {
             buf.writeUniqueId(waystone.getWaystoneUid());
@@ -38,11 +32,9 @@ public class PlayerWaystonesDataMessage {
             buf.writeInt(waystone.getDimensionType().getId());
             buf.writeBlockPos(waystone.getPos());
         }
-        buf.writeLong(message.lastFreeWarp);
-        buf.writeLong(Math.max(0, WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000 - (System.currentTimeMillis() - message.lastWarpStoneUse)));
     }
 
-    public static PlayerWaystonesDataMessage decode(PacketBuffer buf) {
+    public static PlayerKnownWaystonesMessage decode(PacketBuffer buf) {
         int waystoneCount = buf.readShort();
         List<IWaystone> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
@@ -60,17 +52,14 @@ public class PlayerWaystonesDataMessage {
             waystone.setGlobal(isGlobal);
             waystones.add(waystone);
         }
-        long lastFreeWarp = buf.readLong();
-        long lastWarpStoneUse = buf.readLong();
-        return new PlayerWaystonesDataMessage(waystones, lastFreeWarp, lastWarpStoneUse);
+        return new PlayerKnownWaystonesMessage(waystones);
     }
 
-    public static void handle(PlayerWaystonesDataMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handle(PlayerKnownWaystonesMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(LogicalSide.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
-            WarpStoneItem.lastTimerUpdate = System.currentTimeMillis();
         });
         context.setPacketHandled(true);
     }

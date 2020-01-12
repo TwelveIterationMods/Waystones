@@ -61,9 +61,8 @@ public class InventoryButtonMessage {
 
             if (inventoryButtonMode.isReturnToNearest()) {
                 IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-                if (nearestWaystone != null && PlayerWaystoneManager.tryTeleportToWaystone(player, nearestWaystone, WarpMode.INVENTORY_BUTTON, null)) {
-                    int cooldown = (int) (WaystoneConfig.SERVER.inventoryButtonCooldown.get() * PlayerWaystoneManager.getCooldownMultiplier(nearestWaystone));
-                    PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown);
+                if (nearestWaystone != null) {
+                    PlayerWaystoneManager.tryTeleportToWaystone(player, nearestWaystone, WarpMode.INVENTORY_BUTTON, null);
                 }
             } else if (inventoryButtonMode.isReturnToAny()) {
                 NetworkHooks.openGui(player, containerProvider);

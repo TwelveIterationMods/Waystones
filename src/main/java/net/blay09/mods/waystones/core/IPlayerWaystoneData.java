@@ -12,9 +12,9 @@ public interface IPlayerWaystoneData {
     void activateWaystone(PlayerEntity player, IWaystone waystone);
     boolean isWaystoneActivated(PlayerEntity player, IWaystone waystone);
     void deactivateWaystone(PlayerEntity player, IWaystone waystone);
-    long getLastWarpStoneWarp(PlayerEntity player);
+    long getWarpStoneCooldownUntil(PlayerEntity player);
     void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp);
-    long getLastInventoryWarp(PlayerEntity player);
+    long getInventoryButtonCooldownUntil(PlayerEntity player);
     void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp);
     List<IWaystone> getWaystones(PlayerEntity player);
     void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex);

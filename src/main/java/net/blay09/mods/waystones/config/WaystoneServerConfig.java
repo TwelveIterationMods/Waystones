@@ -22,7 +22,7 @@ public class WaystoneServerConfig {
 
     public final ForgeConfigSpec.IntValue scrollUseTime;
 
-    public final ForgeConfigSpec.ConfigValue<DimensionalWarp> dimensionalWarp;
+    public final ForgeConfigSpec.EnumValue<DimensionalWarp> dimensionalWarp;
     public final ForgeConfigSpec.IntValue dimensionalWarpXpCost;
 
     public final ForgeConfigSpec.BooleanValue restrictToCreative;
@@ -114,7 +114,7 @@ public class WaystoneServerConfig {
         dimensionalWarp = builder
                 .comment("Set to 'ALLOW' to allow dimensional warp in general. Set to 'GLOBAL_ONLY' to restrict dimensional warp to global waystones. Set to 'DENY' to disallow all dimensional warps.")
                 .translation("config.waystones.dimensionalWarp")
-                .define("dimensionalWarp", DimensionalWarp.ALLOW);
+                .defineEnum("dimensionalWarp", DimensionalWarp.ALLOW);
 
         dimensionalWarpXpCost = builder
                 .comment("The base xp level cost when travelling between dimensions. Ignores block distance.")

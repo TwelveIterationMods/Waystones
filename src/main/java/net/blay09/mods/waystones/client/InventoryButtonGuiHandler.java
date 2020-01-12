@@ -68,7 +68,7 @@ public class InventoryButtonGuiHandler {
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
             List<String> tooltip = new ArrayList<>();
-            long timeSince = System.currentTimeMillis() - PlayerWaystoneManager.getLastInventoryWarp(Minecraft.getInstance().player);
+            long timeSince = System.currentTimeMillis() - PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
             int secondsLeft = (int) ((WaystoneConfig.SERVER.inventoryButtonCooldown.get() * 1000 - timeSince) / 1000);
             if (inventoryButtonMode.hasNamedTarget()) {
                 tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
