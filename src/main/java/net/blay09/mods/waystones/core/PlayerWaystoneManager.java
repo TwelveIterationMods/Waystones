@@ -190,15 +190,19 @@ public class PlayerWaystoneManager {
         BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
         BlockPos targetPos;
+        Direction targetDir;
 
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof WaystoneBlock) {
             Direction direction = state.get(WaystoneBlock.FACING);
             targetPos = pos.offset(direction);
+            targetDir = direction;
         } else {
             targetPos = pos;
+            targetDir = Direction.NORTH;
         }
 
+        player.rotationYaw = targetDir.getHorizontalAngle();
         player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
