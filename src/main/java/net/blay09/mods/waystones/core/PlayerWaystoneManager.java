@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -132,6 +133,15 @@ public class PlayerWaystoneManager {
             player.sendStatusMessage(chatComponent, false);
             return false;
         }
+
+        // TODO Remove once ITeleporter is ported
+        if (isDimensionalWarp) {
+            StringTextComponent chatComponent = new StringTextComponent("Dimensional teleport is currently disabled due to missing Forge features and will hopefully return in 1.15.");
+            chatComponent.getStyle().setColor(TextFormatting.RED);
+            player.sendStatusMessage(chatComponent, false);
+            return false;
+        }
+
 
         if (warpMode.consumesItem() && !player.abilities.isCreativeMode) {
             warpItem.shrink(1);
