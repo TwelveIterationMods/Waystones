@@ -36,6 +36,6 @@ public class WaystoneClientConfig {
         soundVolume = builder
                 .comment("The volume of the sound played when teleporting.")
                 .translation("config.waystones.soundVolume")
-                .defineInRange("soundVolume", 0.5f, 0f, 1f);
+                .defineInRange("soundVolume", 0.35f, 0f, 1f);
     }
 }
