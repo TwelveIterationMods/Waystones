@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.waystones.CommonProxy;
 import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -22,6 +23,12 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void playSound(SoundEvent sound, BlockPos pos, float pitch) {
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(sound, SoundCategory.AMBIENT, WaystoneConfig.CLIENT.soundVolume.get().floatValue(), pitch, pos));
+    }
+
+    @Override
+    public void setWaystoneCooldowns(long inventoryButtonCooldownUntil, long warpStoneCooldownUntil) {
+        PlayerWaystoneManager.setInventoryButtonCooldownUntil(Minecraft.getInstance().player, inventoryButtonCooldownUntil);
+        PlayerWaystoneManager.setWarpStoneCooldownUntil(Minecraft.getInstance().player, warpStoneCooldownUntil);
     }
 
     @Override

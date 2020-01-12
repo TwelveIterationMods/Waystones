@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.InMemoryPlayerWaystoneData;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -60,6 +61,9 @@ public class PlayerKnownWaystonesMessage {
         context.enqueueWork(() -> {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(LogicalSide.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
+            for (IWaystone waystone : message.waystones) {
+                WaystoneManager.get().updateWaystone(waystone);
+            }
         });
         context.setPacketHandled(true);
     }

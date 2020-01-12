@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -79,8 +80,9 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public IWaystone getWaystone() {
-        if (!waystone.isValid() && world != null && !shouldNotInitialize) {
-            DoubleBlockHalf half = getBlockState().get(WaystoneBlock.HALF);
+        BlockState state = getBlockState();
+        if (!waystone.isValid() && world != null && !world.isRemote && !shouldNotInitialize && state.getBlock() instanceof WaystoneBlock) {
+            DoubleBlockHalf half = state.get(WaystoneBlock.HALF);
             if (half == DoubleBlockHalf.LOWER) {
                 initializeWaystone(Objects.requireNonNull(world), null, true);
             } else if (half == DoubleBlockHalf.UPPER) {

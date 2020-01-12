@@ -30,7 +30,7 @@ public class EditWaystoneMessage {
 
     public static EditWaystoneMessage decode(PacketBuffer buf) {
         IWaystone waystone = new WaystoneProxy(buf.readUniqueId());
-        String name = buf.readString();
+        String name = buf.readString(255);
         boolean isGlobal = buf.readBoolean();
         return new EditWaystoneMessage(waystone, name, isGlobal);
     }

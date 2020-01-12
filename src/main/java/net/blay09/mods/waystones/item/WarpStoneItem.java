@@ -23,6 +23,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -107,6 +109,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public double getDurabilityForDisplay(ItemStack stack) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {
@@ -123,11 +126,13 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean hasEffect(ItemStack itemStack) {
         return PlayerWaystoneManager.canUseWarpStone(Minecraft.getInstance().player, itemStack);
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) {

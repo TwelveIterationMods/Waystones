@@ -3,10 +3,7 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystoneConfig;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.WaystoneEditPermissions;
-import net.blay09.mods.waystones.core.WaystoneManager;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -40,6 +37,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -164,6 +163,11 @@ public class WaystoneBlock extends Block {
                     player.sendStatusMessage(new StringTextComponent("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
                 }
                 return true;
+            } else if (heldItem.getItem() == Items.STICK) {
+                if (!world.isRemote) {
+                    player.sendStatusMessage(new StringTextComponent("Waystone UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
+                }
+                return true;
             }
         }
 
@@ -202,6 +206,8 @@ public class WaystoneBlock extends Block {
                 TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
                 chatComponent.getStyle().setColor(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent);
+
+                WaystoneSyncManager.sendKnownWaystones(player);
             }
 
             notifyObserversOfActivation(world, pos);
@@ -234,6 +240,7 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
             WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);

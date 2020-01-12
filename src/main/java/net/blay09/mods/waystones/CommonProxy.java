@@ -11,4 +11,7 @@ public class CommonProxy {
     public boolean isVivecraftInstalled() {
         return false;
     }
+
+    public void setWaystoneCooldowns(long inventoryButtonCooldownUntil, long warpStoneCooldownUntil) {
+    }
 }

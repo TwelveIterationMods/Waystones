@@ -38,6 +38,14 @@ public class WaystoneManager extends WorldSavedData {
         markDirty();
     }
 
+    public void updateWaystone(IWaystone waystone) {
+        Waystone mutableWaystone = (Waystone) waystones.getOrDefault(waystone.getWaystoneUid(), waystone);
+        mutableWaystone.setName(waystone.getName());
+        mutableWaystone.setGlobal(waystone.isGlobal());
+        waystones.put(waystone.getWaystoneUid(), mutableWaystone);
+        markDirty();
+    }
+
     public void removeWaystone(IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
         markDirty();
