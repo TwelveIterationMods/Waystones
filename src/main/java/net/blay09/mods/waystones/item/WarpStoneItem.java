@@ -138,7 +138,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         int secondsLeft = (int) (timeLeft / 1000);
         if (secondsLeft > 0) {
             TranslationTextComponent secondsLeftText = new TranslationTextComponent("tooltip.waystones.cooldown_left", secondsLeft);
-            secondsLeftText.getStyle().setColor(TextFormatting.GRAY);
+            secondsLeftText.getStyle().setColor(TextFormatting.GOLD);
             tooltip.add(secondsLeftText);
         }
     }

@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
-import net.blay09.mods.waystones.client.gui.widget.InventoryWarpButton;
+import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -28,7 +28,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID, value = Dist.CLIENT)
 public class InventoryButtonGuiHandler {
 
-    private static InventoryWarpButton buttonWarp;
+    private static WaystoneInventoryButton buttonWarp;
 
     @SubscribeEvent
     public static void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
@@ -41,7 +41,7 @@ public class InventoryButtonGuiHandler {
             return;
         }
 
-        buttonWarp = new InventoryWarpButton((ContainerScreen<?>) event.getGui(), button -> {
+        buttonWarp = new WaystoneInventoryButton((ContainerScreen<?>) event.getGui(), button -> {
             Minecraft mc = event.getGui().getMinecraft();
             PlayerEntity player = mc.player;
 
@@ -100,7 +100,7 @@ public class InventoryButtonGuiHandler {
             }
 
             if (secondsLeft > 0) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.cooldown_left", secondsLeft));
+                tooltip.add(TextFormatting.GOLD + I18n.format("tooltip.waystones.cooldown_left", secondsLeft));
             }
 
             event.getGui().renderTooltip(tooltip, event.getMouseX(), event.getMouseY());
