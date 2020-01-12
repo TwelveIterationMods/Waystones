@@ -2,14 +2,14 @@ package net.blay09.mods.waystones.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WaystoneCommonConfig {
     public final ForgeConfigSpec.BooleanValue addVillageStructure;
     public final ForgeConfigSpec.IntValue worldGenFrequency;
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
-    public final ForgeConfigSpec.ConfigValue<List<String>> customWaystoneNames;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
         builder.comment("The new config sync is great, but common configs don't sync to clients. Therefore all synced options need to be in the server config, which is in your world directory. Hopefully at some point Forge will sync COMMON too so we don't need to split options so much.").push("common");
@@ -34,8 +34,6 @@ public class WaystoneCommonConfig {
         customWaystoneNames = builder
                 .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
                 .translation("config.waystones.customWaystoneNames")
-                .define("customNames", Collections.emptyList());
-
-
+                .defineList("customWaystoneNames", ArrayList::new, it -> it instanceof String);
     }
 }
