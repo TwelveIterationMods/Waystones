@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
 import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
@@ -21,6 +22,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -190,7 +192,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         IWaystone fromWaystone = container.getWaystoneFrom();
         drawCenteredString(fontRenderer, getTitle().getFormattedText(), width / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(fromWaystone.getName(), mouseX, mouseY, width / 2, headerY);
+            drawLocationHeader(fromWaystone, mouseX, mouseY, width / 2, headerY);
         }
 
         if (waystones.size() == 0) {
@@ -198,13 +200,13 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         }
     }
 
-    private void drawLocationHeader(String locationName, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(IWaystone waystone, int mouseX, int mouseY, int x, int y) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
         String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones.waystone_selection.current_location") + " ";
         int locationPrefixWidth = fontRenderer.getStringWidth(locationPrefix);
 
-        int locationWidth = fontRenderer.getStringWidth(locationName);
+        int locationWidth = fontRenderer.getStringWidth(waystone.getName());
 
         int fullWidth = locationPrefixWidth + locationWidth;
 
@@ -212,15 +214,18 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
                 && mouseY >= y && mouseY < y + fontRenderer.FONT_HEIGHT;
 
+        PlayerEntity player = Minecraft.getInstance().player;
+        WaystoneEditPermissions waystoneEditPermissions = PlayerWaystoneManager.mayEditWaystone(player, player.world, waystone);
+
         String fullText = locationPrefix + TextFormatting.WHITE;
-        if (isLocationHeaderHovered) {
+        if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             fullText += TextFormatting.UNDERLINE;
         }
-        fullText += locationName;
+        fullText += waystone.getName();
 
         drawString(fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
-        if (isLocationHeaderHovered) {
+        if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             GlStateManager.pushMatrix();
             GlStateManager.translated(x + fullWidth / 2f + 4, y, 0f);
             float scale = 0.5f;

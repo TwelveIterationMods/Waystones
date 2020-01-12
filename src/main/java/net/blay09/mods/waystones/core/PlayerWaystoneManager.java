@@ -287,7 +287,7 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean mayEditGlobalWaystones(PlayerEntity player) {
-        return player.abilities.isCreativeMode || WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
+        return player.abilities.isCreativeMode || !WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
     }
 
     public static void makeWaystoneGlobal(IWaystone waystone) {
