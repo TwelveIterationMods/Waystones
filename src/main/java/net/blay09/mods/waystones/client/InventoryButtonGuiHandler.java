@@ -56,7 +56,6 @@ public class InventoryButtonGuiHandler {
                 }
             } else {
                 minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
-                event.setCanceled(true);
             }
         });
         event.addWidget(buttonWarp);
@@ -68,8 +67,8 @@ public class InventoryButtonGuiHandler {
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
             List<String> tooltip = new ArrayList<>();
-            long timeSince = System.currentTimeMillis() - PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
-            int secondsLeft = (int) ((WaystoneConfig.SERVER.inventoryButtonCooldown.get() * 1000 - timeSince) / 1000);
+            long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
+            int secondsLeft = (int) (timeLeft / 1000);
             if (inventoryButtonMode.hasNamedTarget()) {
                 tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
                 tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));

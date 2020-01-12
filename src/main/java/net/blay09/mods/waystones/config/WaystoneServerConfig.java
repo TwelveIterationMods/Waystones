@@ -44,7 +44,7 @@ public class WaystoneServerConfig {
                 .translation("config.waystones.maximumXpCost")
                 .defineInRange("maximumXpCost", 3, 1, Float.MAX_VALUE);
 
-        builder.comment("These options apply to teleporting from one waystone to another by right-clicking it.").push("waystoneToWaystone");
+        builder.pop().comment("These options apply to teleporting from one waystone to another by right-clicking it.").push("waystoneToWaystone");
 
         waystoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting from one waystone to another.")
