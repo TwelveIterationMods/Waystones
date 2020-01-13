@@ -2,6 +2,6 @@
 	"parent": "waystones:item/waystone",
 	"textures": {
 		"particle": "block/chiseled_sandstone",
-		"texture": "block/chiseled_sandstone"
+        "texture": "waystones:block/chiseled_sandstone_waystone"
 	}
 }
