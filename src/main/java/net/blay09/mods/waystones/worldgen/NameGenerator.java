@@ -4,14 +4,17 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.util.GenerateWaystoneNameEvent;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
@@ -140,7 +143,12 @@ public class NameGenerator extends WorldSavedData {
         BIOME_NAMES.put(biome.biomeName, name);
     }
 
+    @Deprecated
     public String getName(Biome biome, Random rand) {
+        return getName(BlockPos.ORIGIN, 0, biome, rand);
+    }
+
+    public String getName(BlockPos pos, int dimension, Biome biome, Random rand) {
         if (BIOME_NAMES == null) {
             init();
         }
@@ -167,6 +175,10 @@ public class NameGenerator extends WorldSavedData {
 
             name = tryName;
         }
+
+        GenerateWaystoneNameEvent event = new GenerateWaystoneNameEvent(pos, dimension, name);
+        MinecraftForge.EVENT_BUS.post(event);
+        name = event.getWaystoneName();
 
         usedNames.add(name);
         markDirty();

@@ -85,7 +85,7 @@ public class TileWaystone extends TileEntity {
 
     private void generateNameIfNecessary() {
         if (waystoneName.isEmpty()) {
-            waystoneName = NameGenerator.get(world).getName(world.getBiome(pos), world.rand);
+            waystoneName = NameGenerator.get(world).getName(pos, world.provider.getDimension(), world.getBiome(pos), world.rand);
         }
     }
 
