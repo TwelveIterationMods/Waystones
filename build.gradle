@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "idea"
 
-def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "0"
+def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "1"
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
@@ -58,6 +58,14 @@ repositories {
     maven {
         url "https://minecraft.curseforge.com/api/maven/"
     }
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
 }
 
 dependencies {
@@ -67,10 +75,8 @@ dependencies {
             version: "${minecraft_version}-${forge_version}"
     ])
 
-    compileOnly "jei:jei_1.12.2:4.14.4.264"
-    compileOnly "hwyla:Hwyla:1.8.23:B38_1.12"
-    compileOnly "the-one-probe:theoneprobe:1.12:1.4.19"
-    compileOnly "journeymap:journeymap:1.12.2:5.5.2"
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:6.0.0.27:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:6.0.0.27")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

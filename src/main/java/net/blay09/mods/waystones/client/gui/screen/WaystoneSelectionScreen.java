@@ -44,17 +44,24 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     private boolean isLocationHeaderHovered;
     private int buttonsPerPage;
 
-    private final int headerHeight = 40;
+    private final int headerHeight = 70;
     private final int footerHeight = 25;
     private final int entryHeight = 25;
 
     public WaystoneSelectionScreen(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         waystones = PlayerWaystoneManager.getWaystones(playerInventory.player);
+        xSize = 270;
+        ySize = 200;
     }
 
     @Override
     public void init() {
+        // Leave no space for JEI!
+        xSize = width;
+
+        super.init();
+
         final int maxContentHeight = (int) (height * 0.8f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
         buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
@@ -85,7 +92,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     private void updateList() {
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
-        headerY = height / 2 - contentHeight / 2;
+        headerY = 0;
 
         btnPrevPage.active = pageOffset > 0;
         btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
@@ -190,13 +197,13 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
         GlStateManager.color4f(1f, 1f, 1f, 1f);
         IWaystone fromWaystone = container.getWaystoneFrom();
-        drawCenteredString(fontRenderer, getTitle().getFormattedText(), width / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
+        drawCenteredString(fontRenderer, getTitle().getFormattedText(), xSize / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(fromWaystone, mouseX, mouseY, width / 2, headerY);
+            drawLocationHeader(fromWaystone, mouseX, mouseY, xSize / 2, headerY);
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), width / 2, height / 2 - 20, 0xFFFFFF);
+            drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), xSize / 2, height / 2 - 20, 0xFFFFFF);
         }
     }
 

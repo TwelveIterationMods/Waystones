@@ -23,10 +23,15 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
 
     public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
+        xSize = 270;
+        ySize = 200;
     }
 
     @Override
     public void init() {
+        // Leave no space for JEI!
+        xSize = width;
+
         super.init();
         IWaystone waystone = container.getWaystone();
         String oldText = waystone.getName();
