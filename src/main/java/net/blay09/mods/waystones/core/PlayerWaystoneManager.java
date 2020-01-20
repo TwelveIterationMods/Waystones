@@ -189,13 +189,14 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
-        World world = player.world;
         BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
         BlockPos targetPos;
         Direction targetDir;
 
-        BlockState state = world.getBlockState(pos);
+        MinecraftServer server = player.getServer();
+        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimensionType());
+        BlockState state = targetWorld.getBlockState(pos);
         if (state.getBlock() instanceof WaystoneBlock) {
             Direction direction = state.get(WaystoneBlock.FACING);
             targetPos = pos.offset(direction);
@@ -205,8 +206,6 @@ public class PlayerWaystoneManager {
             targetDir = Direction.NORTH;
         }
 
-        MinecraftServer server = player.getServer();
-        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimensionType());
         player.teleport(targetWorld, targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5, targetDir.getHorizontalAngle(), player.rotationPitch);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));

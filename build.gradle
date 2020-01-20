@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "idea"
 
-def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: "2"
+def BUILD_NUMBER = System.getenv("BUILD_NUMBER") ?: patch_version
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
