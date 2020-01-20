@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -122,7 +123,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
 
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, LivingEntity entity) {
-        if (!world.isRemote && entity instanceof PlayerEntity) {
+        if (!world.isRemote && entity instanceof ServerPlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             IWaystone boundTo = getBoundTo(player, itemStack);
             if (boundTo != null) {
@@ -131,7 +132,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
                     return itemStack;
                 }
 
-                PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null);
+                PlayerWaystoneManager.tryTeleportToWaystone(((ServerPlayerEntity) player), boundTo, getWarpMode(), null);
             }
         }
 

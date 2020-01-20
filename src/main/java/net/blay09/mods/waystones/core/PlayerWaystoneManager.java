@@ -13,14 +13,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerWaystoneManager {
 
@@ -111,7 +113,7 @@ public class PlayerWaystoneManager {
         return waystone.isGlobal() ? WaystoneConfig.SERVER.globalWaystoneCooldownMultiplier.get() : 1f;
     }
 
-    public static boolean tryTeleportToWaystone(PlayerEntity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+    public static boolean tryTeleportToWaystone(ServerPlayerEntity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         if (!waystone.isValid()) {
             return false;
         }
@@ -133,15 +135,6 @@ public class PlayerWaystoneManager {
             player.sendStatusMessage(chatComponent, false);
             return false;
         }
-
-        // TODO Remove once ITeleporter is ported
-        if (isDimensionalWarp) {
-            StringTextComponent chatComponent = new StringTextComponent("Dimensional teleport is currently disabled due to missing Forge features and will hopefully return in 1.15.");
-            chatComponent.getStyle().setColor(TextFormatting.RED);
-            player.sendStatusMessage(chatComponent, false);
-            return false;
-        }
-
 
         if (warpMode.consumesItem() && !player.abilities.isCreativeMode) {
             warpItem.shrink(1);
@@ -195,7 +188,7 @@ public class PlayerWaystoneManager {
         }
     }
 
-    private static void teleportToWaystone(PlayerEntity player, IWaystone waystone) {
+    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
         World world = player.world;
         BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
@@ -212,8 +205,9 @@ public class PlayerWaystoneManager {
             targetDir = Direction.NORTH;
         }
 
-        player.rotationYaw = targetDir.getHorizontalAngle();
-        player.setPositionAndUpdate(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+        MinecraftServer server = player.getServer();
+        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimensionType());
+        player.teleport(targetWorld, targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5, targetDir.getHorizontalAngle(), player.rotationPitch);
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
     }

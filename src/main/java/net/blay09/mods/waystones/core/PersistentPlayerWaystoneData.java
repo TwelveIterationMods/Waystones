@@ -100,8 +100,11 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     private static CompoundNBT getWaystonesData(PlayerEntity player) {
-        CompoundNBT compound = player.getPersistentData().getCompound(TAG_NAME);
-        player.getPersistentData().put(TAG_NAME, compound);
+        CompoundNBT playerData = player.getPersistentData();
+        CompoundNBT persistedData = playerData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+        CompoundNBT compound = persistedData.getCompound(TAG_NAME);
+        persistedData.put(TAG_NAME, compound);
+        playerData.put(PlayerEntity.PERSISTED_NBT_TAG, persistedData);
         return compound;
     }
 }
