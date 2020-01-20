@@ -56,7 +56,15 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
         ListNBT activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
-        Collections.swap(activatedWaystones, index, otherIndex);
+        if (otherIndex == -1) {
+            INBT waystone = activatedWaystones.remove(index);
+            activatedWaystones.add(0, waystone);
+        } else if (otherIndex == activatedWaystones.size()) {
+            INBT waystone = activatedWaystones.remove(index);
+            activatedWaystones.add(waystone);
+        } else {
+            Collections.swap(activatedWaystones, index, otherIndex);
+        }
     }
 
     @Override

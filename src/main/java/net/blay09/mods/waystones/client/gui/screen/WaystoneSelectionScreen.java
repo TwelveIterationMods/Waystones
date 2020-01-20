@@ -151,13 +151,18 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     }
 
     private void sortWaystone(int index, int sortDir) {
-        int otherIndex = index + sortDir;
-        if (Screen.hasShiftDown()) {
-            otherIndex = sortDir == -1 ? 0 : waystones.size() - 1;
+        if (index < 0 || index >= waystones.size()) {
+            return;
         }
 
-        if (index == -1 || otherIndex < 0 || otherIndex >= waystones.size()) {
-            return;
+        int otherIndex;
+        if (Screen.hasShiftDown()) {
+            otherIndex = sortDir == -1 ? -1 : waystones.size();
+        } else {
+            otherIndex = index + sortDir;
+            if (otherIndex < 0 || otherIndex >= waystones.size()) {
+                return;
+            }
         }
 
         PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);

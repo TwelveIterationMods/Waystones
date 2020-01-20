@@ -55,7 +55,15 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
 
     @Override
     public void swapWaystoneSorting(PlayerEntity player, int index, int otherIndex) {
-        Collections.swap(sortedWaystones, index, otherIndex);
+        if (otherIndex == -1) {
+            IWaystone waystone = sortedWaystones.remove(index);
+            sortedWaystones.add(0, waystone);
+        } else if (otherIndex == sortedWaystones.size()) {
+            IWaystone waystone = sortedWaystones.remove(index);
+            sortedWaystones.add(waystone);
+        } else {
+            Collections.swap(sortedWaystones, index, otherIndex);
+        }
     }
 
     public void setWaystones(List<IWaystone> waystones) {
