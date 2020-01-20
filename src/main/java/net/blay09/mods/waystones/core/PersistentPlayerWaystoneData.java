@@ -23,7 +23,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void activateWaystone(PlayerEntity player, IWaystone waystone) {
         ListNBT activatedWaystonesData = getActivatedWaystonesData(getWaystonesData(player));
-        activatedWaystonesData.add(new StringNBT(waystone.getWaystoneUid().toString()));
+        activatedWaystonesData.add(0, new StringNBT(waystone.getWaystoneUid().toString()));
     }
 
     @Override
