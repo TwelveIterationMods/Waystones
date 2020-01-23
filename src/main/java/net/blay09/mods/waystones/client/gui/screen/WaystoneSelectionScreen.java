@@ -44,7 +44,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     private boolean isLocationHeaderHovered;
     private int buttonsPerPage;
 
-    private final int headerHeight = 70;
+    private final int headerHeight = 40;
     private final int footerHeight = 25;
     private final int entryHeight = 25;
 
@@ -59,8 +59,6 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     public void init() {
         // Leave no space for JEI!
         xSize = width;
-
-        super.init();
 
         final int maxContentHeight = (int) (height * 0.8f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
@@ -92,7 +90,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     private void updateList() {
         final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
-        headerY = 0;
+        headerY = height / 2 - contentHeight / 2;
 
         btnPrevPage.active = pageOffset > 0;
         btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
