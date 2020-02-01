@@ -44,9 +44,9 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     private boolean isLocationHeaderHovered;
     private int buttonsPerPage;
 
-    private final int headerHeight = 70;
-    private final int footerHeight = 25;
-    private final int entryHeight = 25;
+    private static final int headerHeight = 40;
+    private static final int footerHeight = 25;
+    private static final int entryHeight = 25;
 
     public WaystoneSelectionScreen(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -57,14 +57,16 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     @Override
     public void init() {
-        // Leave no space for JEI!
-        xSize = width;
-
-        super.init();
-
-        final int maxContentHeight = (int) (height * 0.8f);
+        final int maxContentHeight = (int) (height * 0.6f);
         final int maxButtonsPerPage = (maxContentHeight - headerHeight - footerHeight) / entryHeight;
         buttonsPerPage = Math.max(4, Math.min(maxButtonsPerPage, waystones.size()));
+        final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
+
+        // Leave no space for JEI!
+        xSize = width;
+        ySize = contentHeight;
+
+        super.init();
 
         tooltipProviders.clear();
         btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.previous_page"), button -> {
@@ -91,7 +93,6 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     }
 
     private void updateList() {
-        final int contentHeight = headerHeight + buttonsPerPage * entryHeight + footerHeight;
         headerY = 0;
 
         btnPrevPage.active = pageOffset > 0;
@@ -101,7 +102,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         buttons.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
         children.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
 
-        int y = headerHeight + headerY;
+        int y = guiTop + headerHeight + headerY;
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
             if (entryIndex >= 0 && entryIndex < waystones.size()) {
@@ -135,8 +136,8 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
             }
         }
 
-        btnPrevPage.y = headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
-        btnNextPage.y = headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
+        btnPrevPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
+        btnNextPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
     }
 
     private WaystoneButton createWaystoneButton(int y, IWaystone waystone) {
@@ -223,8 +224,9 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         int fullWidth = locationPrefixWidth + locationWidth;
 
         int startX = x - fullWidth / 2 + locationPrefixWidth;
+        int startY = y + guiTop;
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
-                && mouseY >= y && mouseY < y + fontRenderer.FONT_HEIGHT;
+                && mouseY >= startY && mouseY < startY + fontRenderer.FONT_HEIGHT;
 
         PlayerEntity player = Minecraft.getInstance().player;
         WaystoneEditPermissions waystoneEditPermissions = PlayerWaystoneManager.mayEditWaystone(player, player.world, waystone);
