@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BoundScrollItem extends Item implements IResetUseOnDamage {
+public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse {
 
     public static final String name = "bound_scroll";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);

@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.item.IFOVOnUse;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,9 +15,13 @@ public class WarpStoneFOVHandler {
     @SubscribeEvent
     public static void onFOV(FOVUpdateEvent event) {
         ItemStack activeItemStack = event.getEntity().getActiveItemStack();
-        if (!activeItemStack.isEmpty() && activeItemStack.getItem() == ModItems.returnScroll) {
+        if (isScrollItem(activeItemStack)) {
             event.setNewfov(event.getEntity().getItemInUseCount() / 64f * 2f + 0.5f);
         }
+    }
+
+    private static boolean isScrollItem(ItemStack activeItemStack) {
+        return !activeItemStack.isEmpty() && activeItemStack.getItem() instanceof IFOVOnUse;
     }
 
 }

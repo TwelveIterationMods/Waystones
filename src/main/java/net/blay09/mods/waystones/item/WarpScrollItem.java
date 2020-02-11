@@ -20,7 +20,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class WarpScrollItem extends Item implements IResetUseOnDamage {
+public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse {
 
     public static final String name = "warp_scroll";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
