@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -8,18 +9,21 @@ import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Objects;
 
 public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsContainer> {
 
     private TextFieldWidget textField;
     private Button btnDone;
-    private GuiCheckBox chkGlobal;
+    private ToggleWidget chkGlobal;
 
     public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -53,12 +57,13 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
                 return;
             }
 
-            NetworkHandler.channel.sendToServer(new EditWaystoneMessage(waystone, textField.getText(), chkGlobal.isChecked()));
+            NetworkHandler.channel.sendToServer(new EditWaystoneMessage(waystone, textField.getText(), chkGlobal.isStateTriggered()));
         });
         addButton(btnDone);
 
-        chkGlobal = new GuiCheckBox(width / 2 - 100, height / 2 + 15, " " + I18n.format("gui.waystones.waystone_settings.is_global"), waystone.isGlobal());
-        if (!PlayerWaystoneManager.mayEditGlobalWaystones(Minecraft.getInstance().player)) {
+        chkGlobal = new ToggleWidget(width / 2 - 100, height / 2 + 10, 20, 20, waystone.isGlobal());
+        chkGlobal.initTextureValues(0, 0, 20, 20, new ResourceLocation(Waystones.MOD_ID, "textures/gui/checkbox.png"));
+        if (!PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player))) {
             chkGlobal.visible = false;
         }
 
@@ -75,6 +80,11 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (chkGlobal.mouseClicked(mouseX, mouseY, button)) {
+            chkGlobal.setStateTriggered(!chkGlobal.isStateTriggered());
+            return true;
+        }
+
         if (textField.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
@@ -91,7 +101,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
 
         if (textField.keyPressed(keyCode, scanCode, modifiers) || textField.isFocused()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                getMinecraft().player.closeScreen();
+                Objects.requireNonNull(getMinecraft().player).closeScreen();
             }
 
             return true;
@@ -110,7 +120,8 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
 
-        Minecraft.getInstance().fontRenderer.drawString(getTitle().getFormattedText(), width / 2f - 100, height / 2f - 35, 0xFFFFFF);
+        drawString(font, getTitle().getFormattedText(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
+        drawString(font, I18n.format("gui.waystones.waystone_settings.is_global"), width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
     }
 
     @Override

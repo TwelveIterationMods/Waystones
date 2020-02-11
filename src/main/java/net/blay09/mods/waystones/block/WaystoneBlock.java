@@ -24,6 +24,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -42,6 +43,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Random;
 
 public class WaystoneBlock extends Block {
@@ -151,10 +153,10 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
         if (tileEntity == null) {
-            return false;
+            return ActionResultType.FAIL;
         }
 
         if (player.abilities.isCreativeMode) {
@@ -164,17 +166,17 @@ public class WaystoneBlock extends Block {
                     tileEntity.uninitializeWaystone();
                     player.sendStatusMessage(new StringTextComponent("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             } else if (heldItem.getItem() == Items.STICK) {
                 if (!world.isRemote) {
                     player.sendStatusMessage(new StringTextComponent("Waystone UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
 
         IWaystone waystone = tileEntity.getWaystone();
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
@@ -182,13 +184,13 @@ public class WaystoneBlock extends Block {
                     chatComponent.getStyle().setColor(TextFormatting.RED);
                     player.sendStatusMessage(chatComponent, true);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
 
             if (!world.isRemote) {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSettingsContainerProvider(), pos);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
@@ -223,7 +225,7 @@ public class WaystoneBlock extends Block {
             }
         }
 
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     private void notifyObserversOfActivation(World world, BlockPos pos) {
@@ -246,15 +248,12 @@ public class WaystoneBlock extends Block {
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
             WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
-            if (tileEntity != null && PlayerWaystoneManager.isWaystoneActivated(Minecraft.getInstance().player, tileEntity.getWaystone())) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            if (tileEntity != null && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone())) {
                 world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
                 world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
             }
         }
     }
 
-    @Override
-    public boolean hasCustomBreakingProgress(BlockState state) {
-        return true;
-    }
 }

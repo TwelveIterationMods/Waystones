@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -31,6 +32,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionContainer> {
 
@@ -123,7 +125,8 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
                 addButton(sortDownButton);
 
                 RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, button -> {
-                    PlayerWaystoneManager.deactivateWaystone(Minecraft.getInstance().player, waystone);
+                    PlayerEntity player = Minecraft.getInstance().player;
+                    PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
                     NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
                     updateList();
                 });
@@ -142,9 +145,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
 
     private WaystoneButton createWaystoneButton(int y, IWaystone waystone) {
         IWaystone waystoneFrom = container.getWaystoneFrom();
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, container.getWarpMode(), button -> {
-            NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
-        });
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, container.getWarpMode(), button -> NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone)));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }
@@ -201,7 +202,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
         IWaystone fromWaystone = container.getWaystoneFrom();
         drawCenteredString(fontRenderer, getTitle().getFormattedText(), xSize / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
@@ -240,13 +241,13 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         drawString(fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(x + fullWidth / 2f + 4, y, 0f);
+            RenderSystem.pushMatrix();
+            RenderSystem.translated(x + fullWidth / 2f + 4, y, 0f);
             float scale = 0.5f;
-            GlStateManager.scalef(scale, scale, scale);
+            RenderSystem.scalef(scale, scale, scale);
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 

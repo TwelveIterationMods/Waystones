@@ -145,7 +145,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage {
         IWaystone boundTo = getBoundTo(player, itemStack);
         if (boundTo != null) {
             if (!player.isHandActive() && world.isRemote) {
-                Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
+                Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.getPosX(), player.getPosY(), player.getPosZ()), 2f);
             }
 
             if (Waystones.proxy.isVivecraftInstalled()) {

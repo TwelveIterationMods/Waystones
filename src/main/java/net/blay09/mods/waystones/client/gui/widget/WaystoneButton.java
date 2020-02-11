@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -11,7 +11,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.util.Objects;
 
 public class WaystoneButton extends Button {
 
@@ -22,7 +24,7 @@ public class WaystoneButton extends Button {
     public WaystoneButton(int x, int y, IWaystone waystone, WarpMode warpMode, IPressable pressable) {
         super(x, y, 200, 20, (waystone.isGlobal() ? TextFormatting.YELLOW : "") + waystone.getName(), pressable);
         PlayerEntity player = Minecraft.getInstance().player;
-        this.xpLevelCost = (int) Math.round(PlayerWaystoneManager.getExperienceLevelCost(player, waystone, warpMode));
+        this.xpLevelCost = Math.round(PlayerWaystoneManager.getExperienceLevelCost(Objects.requireNonNull(player), waystone, warpMode));
         if (!PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
             active = false;
         } else if (player.experienceLevel < xpLevelCost && !player.abilities.isCreativeMode) {
@@ -33,11 +35,11 @@ public class WaystoneButton extends Button {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
 
         Minecraft mc = Minecraft.getInstance();
         if (xpLevelCost > 0) {
-            boolean canAfford = mc.player.experienceLevel >= xpLevelCost || mc.player.abilities.isCreativeMode;
+            boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.abilities.isCreativeMode;
             mc.getTextureManager().bindTexture(ENCHANTMENT_TABLE_GUI_TEXTURE);
             blit(x + 2, y + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
@@ -46,9 +48,9 @@ public class WaystoneButton extends Button {
             }
 
             if (isHovered && mouseX <= x + 16) {
-                GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("gui.waystones.waystone_selection.level_requirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.mainWindow.getWidth(), mc.mainWindow.getHeight(), 200, mc.fontRenderer);
+                GuiUtils.drawHoveringText(Lists.newArrayList((canAfford ? TextFormatting.GREEN : TextFormatting.RED) + I18n.format("gui.waystones.waystone_selection.level_requirement", xpLevelCost)), mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 200, mc.fontRenderer);
             }
-            GlStateManager.disableLighting();
+            RenderSystem.disableLighting();
         }
     }
 

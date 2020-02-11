@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -47,15 +47,15 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         active = !shiftGuard && shiftDown;
 
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
+            RenderSystem.color4f(1f, 1f, 1f, 1f);
             Minecraft.getInstance().getTextureManager().bindTexture(BEACON);
             if (isHovered && active) {
-                GlStateManager.color4f(1f, 1f, 1f, 1f);
+                RenderSystem.color4f(1f, 1f, 1f, 1f);
             } else {
-                GlStateManager.color4f(0.5f, 0.5f, 0.5f, 0.5f);
+                RenderSystem.color4f(0.5f, 0.5f, 0.5f, 0.5f);
             }
             blit(x, y, 114, 223, 13, 13);
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
+            RenderSystem.color4f(1f, 1f, 1f, 1f);
         }
     }
 

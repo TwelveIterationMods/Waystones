@@ -80,7 +80,7 @@ public class NameGenerator extends WorldSavedData {
     public CompoundNBT write(CompoundNBT compound) {
         ListNBT tagList = new ListNBT();
         for (String entry : usedNames) {
-            tagList.add(new StringNBT(entry));
+            tagList.add(StringNBT.valueOf(entry));
         }
         compound.put(USED_NAMES, tagList);
         return compound;

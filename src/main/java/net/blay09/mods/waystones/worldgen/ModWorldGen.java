@@ -48,7 +48,9 @@ public class ModWorldGen {
         if (WaystoneConfig.COMMON.worldGenFrequency.get() > 0) {
             Biome.BIOMES.forEach(biome -> {
                 WaystoneFeature feature = getWaystoneFeature(biome);
-                ConfiguredFeature<?> configuredFeature = Biome.createDecoratedFeature(feature, NoFeatureConfig.NO_FEATURE_CONFIG, waystonePlacement, NoPlacementConfig.NO_PLACEMENT_CONFIG);
+                ConfiguredFeature<?, ?> configuredFeature = feature
+                        .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
+                        .func_227228_a_(waystonePlacement.func_227446_a_(NoPlacementConfig.NO_PLACEMENT_CONFIG));
                 biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
             });
         }

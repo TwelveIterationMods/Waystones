@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Objects;
 
 public class WaystoneInventoryButton extends Button {
 
@@ -36,17 +38,17 @@ public class WaystoneInventoryButton extends Button {
             isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
             PlayerEntity player = Minecraft.getInstance().player;
-            if (PlayerWaystoneManager.canUseInventoryButton(player)) {
+            if (PlayerWaystoneManager.canUseInventoryButton(Objects.requireNonNull(player))) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
                 ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
                 itemRenderer.renderItemAndEffectIntoGUI(icon, x, y);
             } else {
                 Minecraft.getInstance().getTextureManager().bindTexture(INVENTORY_BUTTON_TEXTURE);
-                GlStateManager.enableBlend();
-                GlStateManager.color4f(1f, 1f, 1f, 0.5f);
+                RenderSystem.enableBlend();
+                RenderSystem.color4f(1f, 1f, 1f, 0.5f);
                 blit(x, y, 0, 0, 16, 16, 16, 16);
-                GlStateManager.color4f(1f, 1f, 1f, 1f);
-                GlStateManager.disableBlend();
+                RenderSystem.color4f(1f, 1f, 1f, 1f);
+                RenderSystem.disableBlend();
             }
         }
     }
