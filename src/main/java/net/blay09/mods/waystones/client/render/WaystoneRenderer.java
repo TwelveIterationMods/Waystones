@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystoneConfig;
@@ -8,9 +9,12 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,9 +25,8 @@ import java.util.Objects;
 
 public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
 
-    private static final ResourceLocation textureActive = new ResourceLocation(Waystones.MOD_ID, "textures/entity/waystone_active.png");
-
-    private final ModelWaystone model = new ModelWaystone();
+    private static final ModelWaystone model = new ModelWaystone();
+    private static final Material MATERIAL = new Material(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
 
     public WaystoneRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -46,13 +49,10 @@ public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone());
         if (isActivated) {
             matrixStack.scale(1.05f, 1.05f, 1.05f);
-            if (!WaystoneConfig.CLIENT.disableTextGlow.get()) {
-                // TODO Minecraft.getInstance().gameRenderer.disableLightmap();
-            }
-            model.render(matrixStack, buffer.getBuffer(RenderType.cutout()), combinedLightIn, combinedOverlayIn, 1f, 1f, 1f, 1f);
-            if (!WaystoneConfig.CLIENT.disableTextGlow.get()) {
-                // TODO Minecraft.getInstance().gameRenderer.enableLightmap();
-            }
+            IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::entityCutout);
+            int light = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
+            int overlay = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.DEFAULT_LIGHT;
+            model.render(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
         }
         matrixStack.pop();
     }
