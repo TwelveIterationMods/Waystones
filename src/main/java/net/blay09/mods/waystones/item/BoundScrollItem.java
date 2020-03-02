@@ -115,7 +115,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
 
             Waystones.proxy.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, context.getPos(), 2f);
 
-            return ActionResultType.SUCCESS;
+            return !world.isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
         }
 
         return ActionResultType.PASS;
