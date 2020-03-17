@@ -13,6 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPlayEntityEffectPacket;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -207,6 +209,13 @@ public class PlayerWaystoneManager {
         }
 
         player.teleport(targetWorld, targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5, targetDir.getHorizontalAngle(), player.rotationPitch);
+
+        // Resync some things that Vanilla is missing:
+        for (EffectInstance effectinstance : player.getActivePotionEffects()) {
+            player.connection.sendPacket(new SPlayEntityEffectPacket(player.getEntityId(), effectinstance));
+        }
+        player.setExperienceLevel(player.experienceLevel);
+
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
     }
