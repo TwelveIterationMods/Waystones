@@ -25,6 +25,7 @@ public class SortWaystoneButton extends Button {
             Minecraft.getInstance().getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int renderY = y - (sortDir == 1 ? 20 : 5);
+            RenderSystem.enableBlend();
             if (active && isHovered) {
                 RenderSystem.color4f(1f, 1f, 1f, 1f);
             } else if (active) {
@@ -39,6 +40,7 @@ public class SortWaystoneButton extends Button {
                 blit(x - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
             }
 
+            RenderSystem.disableBlend();
             RenderSystem.color4f(1f, 1f, 1f, 1f);
         }
     }
