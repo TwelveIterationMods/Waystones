@@ -34,16 +34,12 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @SubscribeEvent
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
-        if (!WaystoneConfig.COMMON.createJourneyMapWaypoint.get()) {
-            return;
-        }
-
-        if (event.getWaystoneName().isEmpty()) {
+        if (!WaystoneConfig.CLIENT.createJourneyMapWaypoint.get()) {
             return;
         }
 
         try {
-            api.show(new Waypoint(Waystones.MOD_ID, event.getWaystoneName(), event.getDimension(), event.getPos()));
+            api.show(new Waypoint(Waystones.MOD_ID, event.getWaystone().getName(), event.getWaystone().getDimensionType().getId(), event.getWaystone().getPos()));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -8,6 +8,7 @@ public class WaystoneClientConfig {
     public final ForgeConfigSpec.ConfigValue<Integer> teleportButtonY;
     public final ForgeConfigSpec.BooleanValue disableParticles;
     public final ForgeConfigSpec.BooleanValue disableTextGlow;
+    public final ForgeConfigSpec.BooleanValue createJourneyMapWaypoint;
     public final ForgeConfigSpec.DoubleValue soundVolume;
 
     WaystoneClientConfig(ForgeConfigSpec.Builder builder) {
@@ -37,5 +38,10 @@ public class WaystoneClientConfig {
                 .comment("The volume of the sound played when teleporting.")
                 .translation("config.waystones.soundVolume")
                 .defineInRange("soundVolume", 0.1f, 0f, 1f);
+
+        createJourneyMapWaypoint = builder
+                .comment("If enabled, a JourneyMap waypoint will be created when activating a waystone.")
+                .translation("config.waystones.createJourneyMapWaypoint")
+                .define("createJourneyMapWaypoint", false);
     }
 }

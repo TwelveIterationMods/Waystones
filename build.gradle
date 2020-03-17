@@ -75,6 +75,7 @@ dependencies {
             version: "${minecraft_version}-${forge_version}"
     ])
 
+    compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
     compileOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.2:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.15.2:6.0.0.2")
 }
