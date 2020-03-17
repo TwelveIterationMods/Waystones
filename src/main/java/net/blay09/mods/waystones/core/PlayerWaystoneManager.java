@@ -141,7 +141,7 @@ public class PlayerWaystoneManager {
         }
 
         if (warpMode == WarpMode.INVENTORY_BUTTON) {
-            int cooldown = (int) (WaystoneConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
+            int cooldown = (int) (WaystoneConfig.SERVER.inventoryButtonCooldown.get() * getCooldownMultiplier(waystone));
             getPlayerWaystoneData(player.world).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000);
             WaystoneSyncManager.sendWaystoneCooldowns(player);
         } else if (warpMode == WarpMode.WARP_STONE) {
