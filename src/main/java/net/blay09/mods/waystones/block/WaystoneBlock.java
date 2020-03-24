@@ -83,7 +83,9 @@ public class WaystoneBlock extends Block implements IWaterLoggable {
     @Override
     public VoxelShape getShape(BlockState p_196247_1_, IBlockReader p_196247_2_, BlockPos p_196247_3_, final ISelectionContext context) {
         final DoubleBlockHalf half = p_196247_1_.get(WaystoneBlock.HALF);
-        if (half == DoubleBlockHalf.LOWER) return WaystoneBlock.WAYSTONE_LOWER;
+        if (half == DoubleBlockHalf.LOWER) {
+            return WaystoneBlock.WAYSTONE_LOWER;
+        }
         else return WaystoneBlock.WAYSTONE_UPPER;
     }
 
@@ -124,32 +126,35 @@ public class WaystoneBlock extends Block implements IWaterLoggable {
         final BlockPos pos = context.getPos();
         final IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 
-        final BlockPos waystonePos = this.getWaystoneUpperPos(pos, context.getPlacementHorizontalFacing().getOpposite());
-        if (pos.getY() < 255 && waystonePos.getY() < 255 && context.getWorld().getBlockState(pos.up()).isReplaceable(
-          context)) return this.getDefaultState().with(FACING, context
-          .getPlacementHorizontalFacing()).with(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
-          .with(WaystoneBlock.WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() == 8);
-        else return null;
-    }
-
-    private BlockPos getWaystoneUpperPos(final BlockPos base, final Direction facing)
-    {
-        switch (facing)
-        {
-            default:
-                return base.up();
+        final BlockPos waystonePos = pos.up();
+        if (pos.getY() < 255 && waystonePos.getY() < 255 && context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
+            return this.getDefaultState().with(FACING, context
+              .getPlacementHorizontalFacing()).with(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
+              .with(WaystoneBlock.WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() == 8);
         }
+        else return null;
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 
         //Sets top state & checks for water
+        BlockPos posAbove = pos.up();
         final IFluidState fluidState = world.getFluidState(pos.up());
         if (placer != null)
         {
             world.setBlockState(pos.up(), state.with(WaystoneBlock.HALF, DoubleBlockHalf.UPPER).with(
               WaystoneBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER), 1);
+        }
+
+        WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+        if (waystoneTileEntity != null) {
+            waystoneTileEntity.initializeWaystone(world, placer, false);
+
+            WaystoneTileEntity waystoneTileEntityAbove = (WaystoneTileEntity) world.getTileEntity(posAbove);
+            if (waystoneTileEntityAbove != null) {
+                waystoneTileEntityAbove.initializeFromBase(waystoneTileEntity);
+            }
         }
     }
 
@@ -176,13 +181,13 @@ public class WaystoneBlock extends Block implements IWaterLoggable {
         if (world.getBlockState(pos.up()).getBlock() == this) {
             if (fluidState.getFluid() == Fluids.WATER) {
                 world.setBlockState(pos, fluidState.getBlockState(), 35);
-                world.removeBlock(pos.up(), false);
-            } else world.removeBlock(pos.up(), false);
+            }
+            world.removeBlock(pos.up(), false);
         } else if (world.getBlockState(pos.down()).getBlock() == this) {
             if (fluidState.getFluid() == Fluids.WATER) {
                 world.setBlockState(pos, fluidState.getBlockState(), 35);
-                world.removeBlock(pos.down(), false);
-            } else world.removeBlock(pos.down(), false);
+            }
+            world.removeBlock(pos.down(), false);
         }
     }
 
