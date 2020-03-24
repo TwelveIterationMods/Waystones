@@ -127,7 +127,7 @@ public class WaystoneBlock extends Block implements IWaterLoggable {
         final IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 
         final BlockPos waystonePos = pos.up();
-        if (pos.getY() < 255 && waystonePos.getY() < 255 && context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
+        if (waystonePos.getY() < 256 && context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
             return this.getDefaultState().with(FACING, context
               .getPlacementHorizontalFacing()).with(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
               .with(WaystoneBlock.WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() == 8);
