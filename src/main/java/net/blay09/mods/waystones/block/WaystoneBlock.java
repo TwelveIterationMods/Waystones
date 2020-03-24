@@ -81,8 +81,8 @@ public class WaystoneBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_196247_1_, IBlockReader p_196247_2_, BlockPos p_196247_3_, final ISelectionContext context) {
-        final DoubleBlockHalf half = p_196247_1_.get(WaystoneBlock.HALF);
+    public VoxelShape getShape(BlockState state, IBlockReader p_196247_2_, BlockPos p_196247_3_, final ISelectionContext context) {
+        final DoubleBlockHalf half = state.get(WaystoneBlock.HALF);
         if (half == DoubleBlockHalf.LOWER) {
             return WaystoneBlock.WAYSTONE_LOWER;
         }
