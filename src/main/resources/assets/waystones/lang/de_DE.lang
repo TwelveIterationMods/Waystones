@@ -1,0 +1,42 @@
+tile.waystones:waystone.name=Wegpunkt
+
+item.waystones:warp_scroll.name=Teleportations-Schriftrolle
+item.waystones:warp_scroll_bound.name=Teleportations-Schriftrolle (Verbunden)
+item.waystones:return_scroll.name=Rückkehr-Schriftrolle
+item.waystones:warp_stone.name=Teleportationsstein
+item.waystones:bound_scroll.name=Verbundene Schriftrolle
+
+itemGroup.waystones=Wegpunkte
+
+waystones:noDimensionWarp=Du kannst Dich nicht zwischen Welten teleportieren.
+waystones:waystoneBroken=Der verbundene Wegpunkt wurde bewegt oder zerstört.
+waystones:returnImpossible=Du hast noch keine Wegpunkte aktiviert
+waystones:scrollNotBound=Diese Schriftrolle ist nicht mit einen Wegpunkt verbunden.
+waystones:stoneNotCharged=Der Teleportationsstein ist noch nicht vollständig geladen.
+waystones:activatedWaystone=Aktivierter Wegpunkt: %s
+waystones:nameOccupied=Der Name %s wird bereits verwendet.
+waystones:notTheOwner=Wegpunkte können nur von demjenigen umbenannt werden, der sie platziert hat.
+waystones:creativeRequired=Um einen globalen Wegpunkt zu bearbeiten, musst Du Dich im Kreativmodus befinden.
+waystones:scrollBound=Verbundene Schriftrolle: %s
+
+gui.waystones:current_location=Aktueller Standort:
+gui.waystones:warpStone.selectDestination=Wähle Dein Reiseziel aus:
+gui.waystones:warpStone.nextPage=Nächste
+gui.waystones:warpStone.previousPage=Vorherige
+gui.waystones:confirmReturn=Willst Du wirklich zu diesem Wegpunkt zurückkehren
+gui.waystones:confirmReturn.boundTo=Verbunden mit: %s
+gui.waystones:confirmReturn.noWaystoneActive=Keine Wegpunkte aktiv.
+gui.waystones:editWaystone.enterName=Gib einen Wegpunktnamen ein:
+gui.waystones:editWaystone.isGlobal=ist Global
+
+tooltip.waystones:cooldownLeft=Abklingzeit: %d Sekunden
+tooltip.waystones:boundTo=Verbunden mit: %s
+tooltip.waystones:none=Keine
+tooltip.waystones:returnToWaystone=Zum Wegpunkt zurückkehren
+tooltip.waystones:openWaystoneMenu=Wegpunktmenü öffnen
+tooltip.waystones:levelRequirement=Level-Anforderung: %d
+
+stat.waystones:waystonesActivated=Wegpunkte aktiviert
+
+waystones.general.globalinterdimension=Interdim. Teleportation (Globale Wegpunkte)
+waystones.worldgen.customnames=Eigene Namen
