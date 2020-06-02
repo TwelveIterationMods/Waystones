@@ -16,6 +16,7 @@ import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -46,7 +47,7 @@ public class ModWorldGen {
 
     public static void setupRandomWorldGen() {
         if (WaystoneConfig.COMMON.worldGenFrequency.get() > 0) {
-            Biome.BIOMES.forEach(biome -> {
+            ForgeRegistries.BIOMES.forEach(biome -> {
                 WaystoneFeature feature = getWaystoneFeature(biome);
                 ConfiguredFeature<?, ?> configuredFeature = feature
                         .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
