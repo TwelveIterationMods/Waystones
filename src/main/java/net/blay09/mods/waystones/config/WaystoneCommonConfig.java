@@ -29,7 +29,7 @@ public class WaystoneCommonConfig {
         worldGenStyle = builder
                 .comment("Set to 'DEFAULT' to only generate the normally textured waystones. Set to 'MOSSY' or 'SANDY' to generate all as that variant. Set to 'BIOME' to make the style depend on the biome it is generated in.")
                 .translation("config.waystones.worldGenStyle")
-                .defineEnum("worldGenStyle", WorldGenStyle.MOSSY);
+                .defineEnum("worldGenStyle", WorldGenStyle.BIOME);
 
         customWaystoneNames = builder
                 .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
