@@ -59,7 +59,7 @@ public class ModWorldGen {
         }
     }
 
-    private static WaystoneFeature getWaystoneFeature(Biome it) {
+    private static WaystoneFeature getWaystoneFeature(Biome biome) {
         WorldGenStyle worldGenStyle = WaystoneConfig.COMMON.worldGenStyle.get();
         switch (worldGenStyle) {
             case MOSSY:
