@@ -16,6 +16,9 @@ import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.common.BiomeDictionary;
+import static net.minecraftforge.common.BiomeDictionary.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -46,7 +49,7 @@ public class ModWorldGen {
 
     public static void setupRandomWorldGen() {
         if (WaystoneConfig.COMMON.worldGenFrequency.get() > 0) {
-            Biome.BIOMES.forEach(biome -> {
+            ForgeRegistries.BIOMES.forEach(biome -> {
                 WaystoneFeature feature = getWaystoneFeature(biome);
                 ConfiguredFeature<?, ?> configuredFeature = feature
                         .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
@@ -56,7 +59,7 @@ public class ModWorldGen {
         }
     }
 
-    private static WaystoneFeature getWaystoneFeature(Biome it) {
+    private static WaystoneFeature getWaystoneFeature(Biome biome) {
         WorldGenStyle worldGenStyle = WaystoneConfig.COMMON.worldGenStyle.get();
         switch (worldGenStyle) {
             case MOSSY:
@@ -64,10 +67,9 @@ public class ModWorldGen {
             case SANDY:
                 return sandyWaystoneFeature;
             case BIOME:
-                ResourceLocation biomeRegistryName = Objects.requireNonNull(it.getRegistryName());
-                if (biomeRegistryName.getPath().contains("desert")) {
+                if (BiomeDictionary.hasType(biome, Type.SANDY)) {
                     return sandyWaystoneFeature;
-                } else if (biomeRegistryName.getPath().contains("jungle")) {
+                } else if (BiomeDictionary.hasType(biome, Type.WET)) {
                     return mossyWaystoneFeature;
                 } else {
                     return waystoneFeature;
