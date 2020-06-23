@@ -17,7 +17,7 @@ public class WaystoneCommonConfig {
         builder.push("worldgen");
 
         addVillageStructure = builder
-                .comment("Set to true if waystones should be added to the generation of villages.")
+                .comment("EXPERIMENTAL: Set to true if waystones should be added to the generation of villages. NOTE THAT THIS IS CURRENTLY NOT LIMITED TO ONLY ONE WAYSTONE, THEREFORE IT IS NOT RECOMMENDED RIGHT NOW.")
                 .translation("config.waystones.addVillageStructure")
                 .define("addVillageStructure", false);
 

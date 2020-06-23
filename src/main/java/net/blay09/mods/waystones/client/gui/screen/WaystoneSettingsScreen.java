@@ -121,7 +121,10 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         super.render(mouseX, mouseY, partialTicks);
 
         drawString(font, getTitle().getFormattedText(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
-        drawString(font, I18n.format("gui.waystones.waystone_settings.is_global"), width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
+
+        if (chkGlobal.visible) {
+            drawString(font, I18n.format("gui.waystones.waystone_settings.is_global"), width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
+        }
     }
 
     @Override
