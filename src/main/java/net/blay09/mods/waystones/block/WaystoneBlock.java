@@ -122,13 +122,13 @@ public class WaystoneBlock extends Block {
             world.setBlockState(posAbove, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
         }
 
-        WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
-        if (waystoneTileEntity != null) {
-            waystoneTileEntity.initializeWaystone(world, placer, false);
+        TileEntity waystoneTileEntity = world.getTileEntity(pos);
+        if (waystoneTileEntity instanceof WaystoneTileEntity) {
+            ((WaystoneTileEntity) waystoneTileEntity).initializeWaystone(world, placer, false);
 
-            WaystoneTileEntity waystoneTileEntityAbove = (WaystoneTileEntity) world.getTileEntity(posAbove);
-            if (waystoneTileEntityAbove != null) {
-                waystoneTileEntityAbove.initializeFromBase(waystoneTileEntity);
+            TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
+            if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {
+                ((WaystoneTileEntity) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntity) waystoneTileEntity));
             }
         }
     }
