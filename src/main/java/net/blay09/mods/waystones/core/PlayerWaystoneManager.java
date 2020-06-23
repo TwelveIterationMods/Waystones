@@ -49,7 +49,9 @@ public class PlayerWaystoneManager {
                 return false;
             }
 
-            return !waystone.isGlobal() || WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
+            boolean isGlobal = waystone.isGlobal();
+            boolean mayBreakGlobalWaystones = !WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get();
+            return !isGlobal || mayBreakGlobalWaystones;
         }
 
         return true;
@@ -68,7 +70,7 @@ public class PlayerWaystoneManager {
             return WaystoneEditPermissions.NOT_THE_OWNER;
         }
 
-        if (waystone.isGlobal() && !player.abilities.isCreativeMode && !WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get()) {
+        if (waystone.isGlobal() && !player.abilities.isCreativeMode && WaystoneConfig.SERVER.globalWaystoneRequiresCreative.get()) {
             return WaystoneEditPermissions.GET_CREATIVE;
         }
 

@@ -12,7 +12,7 @@ public class WaystoneCommonConfig {
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
-        builder.comment("The new config sync is great, but common configs don't sync to clients. Therefore all synced options need to be in the server config, which is in your world directory. Hopefully at some point Forge will sync COMMON too so we don't need to split options so much.").push("common");
+        builder.comment(WaystoneConfig.CONFIGS_NOTE).push("common");
 
         builder.push("worldgen");
 

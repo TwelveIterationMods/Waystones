@@ -119,7 +119,7 @@ public class WaystoneServerConfig {
         dimensionalWarpXpCost = builder
                 .comment("The base xp level cost when travelling between dimensions. Ignores block distance.")
                 .translation("config.waystones.dimensionalWarpXpCost")
-                .defineInRange("dimensionalWarpXpCost", 3, 0, Float.POSITIVE_INFINITY);
+                .defineInRange("dimensionalWarpXpCost", 3, 0, Integer.MAX_VALUE);
 
         builder.pop().comment("These options define restrictions when managing waystones.").push("restrictions");
 
