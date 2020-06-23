@@ -86,12 +86,12 @@ public class PlayerWaystoneManager {
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
+        boolean enableXPCost = !player.abilities.isCreativeMode;
         if (waystone.getDimensionType() != player.world.getDimension().getType()) {
-            return WaystoneConfig.SERVER.dimensionalWarpXpCost.get();
+            return enableXPCost ? WaystoneConfig.SERVER.dimensionalWarpXpCost.get() : 0;
         }
 
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
-        boolean enableXPCost = !player.abilities.isCreativeMode;
         if (waystone.isGlobal()) {
             xpCostMultiplier *= WaystoneConfig.SERVER.globalWaystoneXpCostMultiplier.get();
         }
