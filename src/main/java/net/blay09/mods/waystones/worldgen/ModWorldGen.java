@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
@@ -11,17 +13,18 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.common.BiomeDictionary;
-import static net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Collections;
-import java.util.Objects;
+
+import static net.minecraftforge.common.BiomeDictionary.Type;
 
 public class ModWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
@@ -101,6 +104,8 @@ public class ModWorldGen {
     private static void addWaystoneStructureToVillageConfig(String villagePiece, ResourceLocation waystoneStructure) {
         JigsawPattern houses = JigsawManager.REGISTRY.get(new ResourceLocation(villagePiece));
 
-        houses.jigsawPieces.add(new SingleJigsawPiece(waystoneStructure.toString(), Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        final SingleJigsawPiece piece = new SingleJigsawPiece(waystoneStructure.toString(), Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID);
+        houses.field_214952_d = ImmutableList.<Pair<JigsawPiece, Integer>>builder().addAll(houses.field_214952_d).add(Pair.of(piece, 1)).build();
+        houses.jigsawPieces.add(piece);
     }
 }
