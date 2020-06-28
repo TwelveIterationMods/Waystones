@@ -8,6 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class EditWaystoneMessage {
@@ -74,7 +75,7 @@ public class EditWaystoneMessage {
 
     private static String makeNameLegal(String name) {
         String inventoryButtonMode = WaystoneConfig.SERVER.inventoryButton.get();
-        if (inventoryButtonMode.equals(name)) {
+        if (inventoryButtonMode.equals(name) && WaystoneManager.get().findWaystoneByName(name).isPresent()) {
             return name + "*";
         }
 
