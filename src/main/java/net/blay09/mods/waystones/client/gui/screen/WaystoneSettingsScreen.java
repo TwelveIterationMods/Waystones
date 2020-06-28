@@ -85,6 +85,14 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
             return true;
         }
 
+        final int chkGlobalLabelX = width / 2 - 100 + 25;
+        final int chkGlobalLabelY = height / 2 + 16;
+        final int chkGlobalLabelWidth = getMinecraft().fontRenderer.getStringWidth(I18n.format("gui.waystones.waystone_settings.is_global"));
+        if (mouseX >= chkGlobalLabelX && mouseX < chkGlobalLabelX + chkGlobalLabelWidth && mouseY >= chkGlobalLabelY && mouseY < chkGlobalLabelY + getMinecraft().fontRenderer.FONT_HEIGHT) {
+            chkGlobal.setStateTriggered(!chkGlobal.isStateTriggered());
+            return true;
+        }
+
         if (textField.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
