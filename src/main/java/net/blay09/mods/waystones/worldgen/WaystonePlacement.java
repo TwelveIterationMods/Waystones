@@ -29,6 +29,10 @@ public class WaystonePlacement extends TopSolidOnce {
 
     private boolean isWaystoneChunk(IWorld world, BlockPos pos) {
         final int chunkDistance = WaystoneConfig.COMMON.worldGenFrequency.get();
+        if (chunkDistance == 0) {
+            return false;
+        }
+
         final int maxDeviation = (int) Math.ceil(chunkDistance / 2f);
         int chunkX = pos.getX() / 16;
         int chunkZ = pos.getZ() / 16;

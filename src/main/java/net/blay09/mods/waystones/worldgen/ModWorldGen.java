@@ -51,15 +51,13 @@ public class ModWorldGen {
     }
 
     public static void setupRandomWorldGen() {
-        if (WaystoneConfig.COMMON.worldGenFrequency.get() > 0) {
-            ForgeRegistries.BIOMES.forEach(biome -> {
-                WaystoneFeature feature = getWaystoneFeature(biome);
-                ConfiguredFeature<?, ?> configuredFeature = feature
-                        .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
-                        .func_227228_a_(waystonePlacement.func_227446_a_(NoPlacementConfig.NO_PLACEMENT_CONFIG));
-                biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
-            });
-        }
+        ForgeRegistries.BIOMES.forEach(biome -> {
+            WaystoneFeature feature = getWaystoneFeature(biome);
+            ConfiguredFeature<?, ?> configuredFeature = feature
+                    .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
+                    .func_227228_a_(waystonePlacement.func_227446_a_(NoPlacementConfig.NO_PLACEMENT_CONFIG));
+            biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
+        });
     }
 
     private static WaystoneFeature getWaystoneFeature(Biome biome) {
