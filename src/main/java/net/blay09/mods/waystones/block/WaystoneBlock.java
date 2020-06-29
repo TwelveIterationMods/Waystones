@@ -49,21 +49,20 @@ import java.util.Random;
 
 public class WaystoneBlock extends Block {
 
-    public static final VoxelShape LOWER_SHAPE, UPPER_SHAPE;
+    public static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
+      makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+      makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+      makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+      makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0)
+    ).simplify();
 
-    static {
-        VoxelShape l0 = makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0);
-        VoxelShape l1 = makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0);
-        VoxelShape l2 = makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0);
-        VoxelShape l3 = makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0);
-        VoxelShape u0 = makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0);
-        VoxelShape u1 = makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0);
-        VoxelShape u2 = makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0);
-        VoxelShape u3 = makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0);
-        VoxelShape u4 = makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0);
-        LOWER_SHAPE = VoxelShapes.or(l3, VoxelShapes.or(l2, VoxelShapes.or(l1, l0)));
-        UPPER_SHAPE = VoxelShapes.or(u4, VoxelShapes.or(u3, VoxelShapes.or(u2, VoxelShapes.or(u1, u0))));
-    }
+    public static final VoxelShape UPPER_SHAPE = VoxelShapes.or(
+      makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
+      makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0),
+      makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0),
+      makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0),
+      makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
+    ).simplify();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
