@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.StringTextComponent;
@@ -48,10 +49,20 @@ import java.util.Random;
 
 public class WaystoneBlock extends Block {
 
-    /**
-     * We provide a slightly smaller render shape to prevent neighbour blocks from being culled.
-     */
-    private static final VoxelShape RENDER_SHAPE = VoxelShapes.create(1 / 16f, 1 / 16f, 1 / 16f, 15 / 16f, 15 / 16f, 15 / 16f);
+    public static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
+      makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+      makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+      makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+      makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0)
+    ).simplify();
+
+    public static final VoxelShape UPPER_SHAPE = VoxelShapes.or(
+      makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
+      makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0),
+      makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0),
+      makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0),
+      makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
+    ).simplify();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -61,8 +72,8 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState p_196247_1_, IBlockReader p_196247_2_, BlockPos p_196247_3_) {
-        return RENDER_SHAPE;
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return state.get(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;
     }
 
     @Override
