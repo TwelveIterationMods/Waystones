@@ -154,10 +154,9 @@ public class WaystoneBlock extends Block {
         super.onReplaced(state, world, pos, newState, isMoving);
 
         // Also destroy the connect upper or lower waystone block
-        if (world.getBlockState(pos.up()).getBlock() == this) {
-            world.removeBlock(pos.up(), false);
-        } else if (world.getBlockState(pos.down()).getBlock() == this) {
-            world.removeBlock(pos.down(), false);
+        BlockPos offset = state.get(HALF) == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+        if (world.getBlockState(offset).getBlock() == this) {
+            world.removeBlock(offset, false);
         }
     }
 
