@@ -6,6 +6,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "waystones:mossy_waystone",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ],
           "name": "waystones:mossy_waystone"
         }
       ],
