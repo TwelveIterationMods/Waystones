@@ -129,9 +129,7 @@ public class WaystoneBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         BlockPos posAbove = pos.up();
-        if (!world.isRemote) {
-            world.setBlockState(posAbove, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
-        }
+        world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER));
 
         TileEntity waystoneTileEntity = world.getTileEntity(pos);
         if (waystoneTileEntity instanceof WaystoneTileEntity) {
