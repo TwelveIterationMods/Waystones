@@ -77,8 +77,8 @@ public class WaystoneBlock extends Block {
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState neighbor, IWorld world, BlockPos pos, BlockPos offset) {
         DoubleBlockHalf half = state.get(HALF);
-        if (facing.getAxis() != Direction.Axis.Y || half == DoubleBlockHalf.LOWER != (facing == Direction.UP) || neighbor.getBlock() == this && neighbor.get(HALF) != half) {
-            if (half != DoubleBlockHalf.LOWER || facing != Direction.DOWN || state.isValidPosition(world, pos)) {
+        if ((facing.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (facing == Direction.UP)) || ((neighbor.getBlock() == this) && (neighbor.get(HALF) != half))) {
+            if ((half != DoubleBlockHalf.LOWER) || (facing != Direction.DOWN) || state.isValidPosition(world, pos)) {
                 return state;
             }
         }
