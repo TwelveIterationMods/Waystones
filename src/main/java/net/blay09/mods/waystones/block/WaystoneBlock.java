@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ObserverBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -37,6 +38,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,6 +71,41 @@ public class WaystoneBlock extends Block {
 
     public WaystoneBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
+        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState neighbor, IWorld world, BlockPos pos, BlockPos offset) {
+        DoubleBlockHalf half = state.get(HALF);
+        if ((facing.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (facing == Direction.UP)) || ((neighbor.getBlock() == this) && (neighbor.get(HALF) != half))) {
+            if ((half != DoubleBlockHalf.LOWER) || (facing != Direction.DOWN) || state.isValidPosition(world, pos)) {
+                return state;
+            }
+        }
+
+        return Blocks.AIR.getDefaultState();
+    }
+
+    @Override
+    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
+        super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+    }
+
+    @Override
+    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        DoubleBlockHalf half = state.get(HALF);
+        BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+        BlockState other = world.getBlockState(offset);
+        if (other.getBlock() == this && other.get(HALF) != half) {
+            world.setBlockState(offset, Blocks.AIR.getDefaultState(), 35);
+            world.playEvent(player, 2001, offset, Block.getStateId(other));
+            if (!world.isRemote && !player.isCreative()) {
+                spawnDrops(state, world, pos, null, player, player.getHeldItemMainhand());
+                spawnDrops(other, world, offset, null, player, player.getHeldItemMainhand());
+            }
+        }
+
+        super.onBlockHarvested(world, pos, state, player);
     }
 
     @Override
@@ -104,16 +141,12 @@ public class WaystoneBlock extends Block {
 
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
-        // Do not allow placing a waystone directly on top of another
-        Block blockBelow = world.getBlockState(pos.down()).getBlock();
-        if (blockBelow == this) {
-            return false;
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            return true;
         }
 
-        // Do not allow placing a waystone directly below of another
-        Block blockTwoAbove = world.getBlockState(pos.up(2)).getBlock();
-        BlockState stateAbove = world.getBlockState(pos.up());
-        return blockTwoAbove != this && stateAbove.isAir(world, pos.up());
+        BlockState below = world.getBlockState(pos.down());
+        return below.getBlock() == this && below.get(HALF) == DoubleBlockHalf.LOWER;
     }
 
     @Nullable
@@ -123,15 +156,20 @@ public class WaystoneBlock extends Block {
             return null;
         }
 
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(HALF, DoubleBlockHalf.LOWER);
+        BlockPos pos = context.getPos();
+        if (pos.getY() < context.getWorld().getDimension().getHeight() - 1) {
+            if (context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
+                return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         BlockPos posAbove = pos.up();
-        if (!world.isRemote) {
-            world.setBlockState(posAbove, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
-        }
+        world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER));
 
         TileEntity waystoneTileEntity = world.getTileEntity(pos);
         if (waystoneTileEntity instanceof WaystoneTileEntity) {
@@ -154,13 +192,6 @@ public class WaystoneBlock extends Block {
         }
 
         super.onReplaced(state, world, pos, newState, isMoving);
-
-        // Also destroy the connect upper or lower waystone block
-        if (world.getBlockState(pos.up()).getBlock() == this) {
-            world.removeBlock(pos.up(), false);
-        } else if (world.getBlockState(pos.down()).getBlock() == this) {
-            world.removeBlock(pos.down(), false);
-        }
     }
 
     @Override
