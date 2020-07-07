@@ -2,8 +2,9 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
@@ -45,8 +46,8 @@ public class WaystoneProxy implements IWaystone {
     }
 
     @Override
-    public DimensionType getDimensionType() {
-        return getBackingWaystone().getDimensionType();
+    public RegistryKey<World> getDimension() {
+        return getBackingWaystone().getDimension();
     }
 
     @Override

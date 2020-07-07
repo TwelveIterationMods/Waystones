@@ -1,11 +1,14 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,18 +17,18 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
     private static final ResourceLocation BEACON = new ResourceLocation("textures/gui/container/beacon.png");
 
-    private final List<String> tooltip;
-    private final List<String> activeTooltip;
+    private final List<ITextProperties> tooltip;
+    private final List<ITextProperties> activeTooltip;
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
     private static boolean shiftGuard;
 
     public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IPressable pressable) {
-        super(x, y, 13, 13, "", pressable);
+        super(x, y, 13, 13, new StringTextComponent(""), pressable);
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
-        tooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.hold_shift_to_delete"));
-        activeTooltip = Collections.singletonList(I18n.format("gui.waystones.waystone_selection.click_to_delete"));
+        tooltip = Collections.singletonList(new TranslationTextComponent("gui.waystones.waystone_selection.hold_shift_to_delete"));
+        activeTooltip = Collections.singletonList(new TranslationTextComponent("gui.waystones.waystone_selection.click_to_delete"));
     }
 
     @Override
@@ -39,7 +42,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         boolean shiftDown = Screen.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;
@@ -54,7 +57,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
             } else {
                 RenderSystem.color4f(0.5f, 0.5f, 0.5f, 0.5f);
             }
-            blit(x, y, 114, 223, 13, 13);
+            blit(matrixStack, x, y, 114, 223, 13, 13);
             RenderSystem.color4f(1f, 1f, 1f, 1f);
         }
     }
@@ -65,7 +68,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public List<String> getTooltip() {
+    public List<ITextProperties> getTooltip() {
         return active ? activeTooltip : tooltip;
     }
 }

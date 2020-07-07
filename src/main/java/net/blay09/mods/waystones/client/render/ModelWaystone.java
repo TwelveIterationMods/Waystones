@@ -11,7 +11,7 @@ public class ModelWaystone extends Model {
     private ModelRenderer pillar;
 
     public ModelWaystone() {
-        super(it -> RenderType.cutout());
+        super(it -> RenderType.getCutout());
         textureWidth = 256;
         textureHeight = 256;
 

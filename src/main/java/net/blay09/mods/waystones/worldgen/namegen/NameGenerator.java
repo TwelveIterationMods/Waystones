@@ -10,7 +10,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -89,7 +89,7 @@ public class NameGenerator extends WorldSavedData {
     public static NameGenerator get() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
+            ServerWorld overworld = server.getWorld(World.field_234918_g_);
             DimensionSavedDataManager storage = overworld.getSavedData();
             return storage.getOrCreate(NameGenerator::new, DATA_NAME);
         }

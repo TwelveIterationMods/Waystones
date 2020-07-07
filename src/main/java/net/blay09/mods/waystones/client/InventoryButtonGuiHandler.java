@@ -13,10 +13,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,39 +71,45 @@ public class InventoryButtonGuiHandler {
         // Render the inventory button tooltip when it's hovered
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
-            List<String> tooltip = new ArrayList<>();
+            List<ITextProperties> tooltip = new ArrayList<>();
             long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
             int secondsLeft = (int) (timeLeft / 1000);
             if (inventoryButtonMode.hasNamedTarget()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
-                tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
+                tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
+                tooltip.add(formatTranslation(TextFormatting.GRAY, "tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
                 if (secondsLeft > 0) {
-                    tooltip.add("");
+                    tooltip.add(new StringTextComponent(""));
                 }
             } else if (inventoryButtonMode.isReturnToNearest()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_nearest_waystone"));
+                tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_nearest_waystone"));
                 IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
                 if (nearestWaystone != null) {
-                    tooltip.add(TextFormatting.GRAY + I18n.format("tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
+                    tooltip.add(formatTranslation(TextFormatting.GRAY, "tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
-                    tooltip.add(TextFormatting.RED + I18n.format("gui.waystones.inventory.no_waystones_activated"));
+                    tooltip.add(formatTranslation(TextFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
                 }
                 if (secondsLeft > 0) {
-                    tooltip.add("");
+                    tooltip.add(new StringTextComponent(""));
                 }
             } else if (inventoryButtonMode.isReturnToAny()) {
-                tooltip.add(TextFormatting.YELLOW + I18n.format("gui.waystones.inventory.return_to_waystone"));
+                tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
                 if (PlayerWaystoneManager.getWaystones(Minecraft.getInstance().player).isEmpty()) {
-                    tooltip.add(TextFormatting.RED + I18n.format("gui.waystones.inventory.no_waystones_activated"));
+                    tooltip.add(formatTranslation(TextFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
                 }
             }
 
             if (secondsLeft > 0) {
-                tooltip.add(TextFormatting.GOLD + I18n.format("tooltip.waystones.cooldown_left", secondsLeft));
+                tooltip.add(formatTranslation(TextFormatting.GOLD, "tooltip.waystones.cooldown_left", secondsLeft));
             }
 
-            event.getGui().renderTooltip(tooltip, event.getMouseX(), event.getMouseY());
+            event.getGui().renderTooltip(event.getMatrixStack(), tooltip, event.getMouseX(), event.getMouseY());
         }
+    }
+
+    private static ITextComponent formatTranslation(TextFormatting formatting, String key, Object... args) {
+        final TranslationTextComponent result = new TranslationTextComponent(key, args);
+        result.getStyle().setFormatting(formatting);
+        return result;
     }
 
 }

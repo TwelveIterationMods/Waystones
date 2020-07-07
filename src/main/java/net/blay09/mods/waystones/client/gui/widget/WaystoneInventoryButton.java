@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.config.WaystoneConfig;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Objects;
 
@@ -24,14 +26,14 @@ public class WaystoneInventoryButton extends Button {
     private final ItemStack iconItemHovered;
 
     public WaystoneInventoryButton(ContainerScreen<?> parentScreen, IPressable pressable) {
-        super(0, 0, 16, 16, "", pressable);
+        super(0, 0, 16, 16, new StringTextComponent(""), pressable);
         this.parentScreen = parentScreen;
         this.iconItem = new ItemStack(ModItems.boundScroll);
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             x = parentScreen.getGuiLeft() + WaystoneConfig.CLIENT.teleportButtonX.get();
             y = parentScreen.getGuiTop() + WaystoneConfig.CLIENT.teleportButtonY.get();
@@ -46,7 +48,7 @@ public class WaystoneInventoryButton extends Button {
                 Minecraft.getInstance().getTextureManager().bindTexture(INVENTORY_BUTTON_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.color4f(1f, 1f, 1f, 0.5f);
-                blit(x, y, 0, 0, 16, 16, 16, 16);
+                blit(matrixStack, x, y, 0, 0, 16, 16, 16, 16);
                 RenderSystem.color4f(1f, 1f, 1f, 1f);
                 RenderSystem.disableBlend();
             }

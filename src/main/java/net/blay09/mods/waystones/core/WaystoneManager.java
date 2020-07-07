@@ -9,9 +9,12 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
@@ -77,15 +80,12 @@ public class WaystoneManager extends WorldSavedData {
         ListNBT tagList = tagCompound.getList(TAG_WAYSTONES, Constants.NBT.TAG_COMPOUND);
         for (INBT tag : tagList) {
             CompoundNBT compound = (CompoundNBT) tag;
-            UUID waystoneUid = NBTUtil.readUniqueId(compound.getCompound("WaystoneUid"));
+            UUID waystoneUid = NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("WaystoneUid")));
             String name = compound.getString("Name");
-            DimensionType dimensionType = DimensionType.getById(compound.getInt("DimensionTypeId"));
-            if (dimensionType == null) {
-                dimensionType = DimensionType.OVERWORLD;
-            }
+            RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(compound.getString("World")));
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
-            UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(compound.getCompound("OwnerUid")) : null;
+            UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
             Waystone waystone = new Waystone(waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
             waystone.setName(name);
             waystone.setGlobal(compound.getBoolean("IsGlobal"));
@@ -98,13 +98,13 @@ public class WaystoneManager extends WorldSavedData {
         ListNBT tagList = new ListNBT();
         for (IWaystone waystone : waystones.values()) {
             CompoundNBT compound = new CompoundNBT();
-            compound.put("WaystoneUid", NBTUtil.writeUniqueId(waystone.getWaystoneUid()));
+            compound.put("WaystoneUid", NBTUtil.func_240626_a_(waystone.getWaystoneUid())); // writeUniqueId
             compound.putString("Name", waystone.getName());
-            compound.putInt("DimensionTypeId", waystone.getDimensionType().getId());
+            compound.putString("World", waystone.getDimension().func_240901_a_().toString());
             compound.put("BlockPos", NBTUtil.writeBlockPos(waystone.getPos()));
             compound.putBoolean("WasGenerated", waystone.wasGenerated());
             if (waystone.getOwnerUid() != null) {
-                compound.put("OwnerUid", NBTUtil.writeUniqueId(waystone.getOwnerUid()));
+                compound.put("OwnerUid", NBTUtil.func_240626_a_(waystone.getOwnerUid())); // writeUniqueId
             }
             compound.putBoolean("IsGlobal", waystone.isGlobal());
             tagList.add(compound);
@@ -116,7 +116,7 @@ public class WaystoneManager extends WorldSavedData {
     public static WaystoneManager get() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
+            ServerWorld overworld = server.getWorld(World.field_234918_g_);
             DimensionSavedDataManager storage = overworld.getSavedData();
             return storage.getOrCreate(WaystoneManager::new, DATA_NAME);
         }

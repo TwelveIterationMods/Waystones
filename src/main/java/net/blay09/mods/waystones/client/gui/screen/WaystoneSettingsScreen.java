@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
@@ -15,6 +16,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
@@ -24,6 +27,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     private TextFieldWidget textField;
     private Button btnDone;
     private ToggleWidget chkGlobal;
+    private final TranslationTextComponent isGlobalText = new TranslationTextComponent("gui.waystones.waystone_settings.is_global");
 
     public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -43,14 +47,14 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
             oldText = textField.getText();
         }
 
-        textField = new TextFieldWidget(Minecraft.getInstance().fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20, textField, "");
+        textField = new TextFieldWidget(Minecraft.getInstance().fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20, textField, new StringTextComponent(""));
         textField.setMaxStringLength(128);
         textField.setText(oldText);
         textField.changeFocus(true);
         addButton(textField);
         setFocusedDefault(textField);
 
-        btnDone = new Button(width / 2, height / 2 + 10, 100, 20, I18n.format("gui.done"), button -> {
+        btnDone = new Button(width / 2, height / 2 + 10, 100, 20, new TranslationTextComponent("gui.done"), button -> {
             if (textField.getText().isEmpty()) {
                 textField.changeFocus(true);
                 setFocused(textField);
@@ -124,18 +128,18 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        drawString(font, getTitle().getFormattedText(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
+        drawString(matrixStack, font, getTitle(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
 
         if (chkGlobal.visible) {
-            drawString(font, I18n.format("gui.waystones.waystone_settings.is_global"), width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
+            drawString(matrixStack, font, isGlobalText, width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
         }
     }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    @Override // drawGuiContainerBackgroundLayer
+    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
     }
 }

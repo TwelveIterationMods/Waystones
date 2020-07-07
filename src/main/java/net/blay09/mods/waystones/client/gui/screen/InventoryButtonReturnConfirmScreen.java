@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -45,9 +46,9 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-        drawCenteredString(fontRenderer, waystoneName, width / 2, 100, 0xFFFFFF);
+        drawCenteredString(matrixStack, fontRenderer, waystoneName, width / 2, 100, 0xFFFFFF);
     }
 }

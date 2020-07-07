@@ -3,11 +3,10 @@ package net.blay09.mods.waystones.compat;
 import journeymap.client.api.ClientPlugin;
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.IClientPlugin;
-import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.event.ClientEvent;
-import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -39,7 +38,7 @@ public class JourneyMapAddon implements IClientPlugin {
         }
 
         try {
-            api.show(new Waypoint(Waystones.MOD_ID, event.getWaystone().getName(), event.getWaystone().getDimensionType().getId(), event.getWaystone().getPos()));
+            // TODO api.show(new Waypoint(Waystones.MOD_ID, event.getWaystone().getName(), event.getWaystone().getDimension(), event.getWaystone().getPos()));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,10 +25,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -157,7 +154,7 @@ public class WaystoneBlock extends Block {
         }
 
         BlockPos pos = context.getPos();
-        if (pos.getY() < context.getWorld().getDimension().getHeight() - 1) {
+        if (pos.getY() < context.getWorld().getHeight() - 1) {
             if (context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
                 return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
             }
@@ -218,12 +215,12 @@ public class WaystoneBlock extends Block {
         }
 
         IWaystone waystone = tileEntity.getWaystone();
-        if (player.isShiftKeyDown()) {
+        if (player.isSneaking()) {
             WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
                     TranslationTextComponent chatComponent = new TranslationTextComponent(result.getLangKey());
-                    chatComponent.getStyle().setColor(TextFormatting.RED);
+                    chatComponent.getStyle().setFormatting(TextFormatting.RED);
                     player.sendStatusMessage(chatComponent, true);
                 }
                 return ActionResultType.SUCCESS;
@@ -248,10 +245,10 @@ public class WaystoneBlock extends Block {
 
             if (!world.isRemote) {
                 StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
-                nameComponent.getStyle().setColor(TextFormatting.WHITE);
+                nameComponent.getStyle().setFormatting(TextFormatting.WHITE);
                 TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
-                chatComponent.getStyle().setColor(TextFormatting.YELLOW);
-                player.sendMessage(chatComponent);
+                chatComponent.getStyle().setFormatting(TextFormatting.YELLOW);
+                player.sendMessage(chatComponent, Util.DUMMY_UUID);
 
                 WaystoneSyncManager.sendKnownWaystones(player);
             }

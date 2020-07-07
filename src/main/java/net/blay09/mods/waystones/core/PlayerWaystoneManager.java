@@ -89,7 +89,7 @@ public class PlayerWaystoneManager {
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
         boolean enableXPCost = !player.abilities.isCreativeMode;
-        if (waystone.getDimensionType() != player.world.getDimension().getType()) {
+        if (waystone.getDimension() != player.world.func_234923_W_()) {
             return enableXPCost ? WaystoneConfig.SERVER.dimensionalWarpXpCost.get() : 0;
         }
 
@@ -132,10 +132,10 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        boolean isDimensionalWarp = waystone.getDimensionType() != player.world.getDimension().getType();
+        boolean isDimensionalWarp = waystone.getDimension() != player.world.func_234923_W_();
         if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
-            chatComponent.getStyle().setColor(TextFormatting.RED);
+            chatComponent.getStyle().setFormatting(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);
             return false;
         }
@@ -193,13 +193,13 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
-        BlockPos sourcePos = player.getPosition();
+        BlockPos sourcePos = player.func_233580_cy_();
         BlockPos pos = waystone.getPos();
         BlockPos targetPos;
         Direction targetDir;
 
         MinecraftServer server = player.getServer();
-        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimensionType());
+        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
         BlockState state = targetWorld.getBlockState(pos);
         if (state.getBlock() instanceof WaystoneBlock) {
             Direction direction = state.get(WaystoneBlock.FACING);

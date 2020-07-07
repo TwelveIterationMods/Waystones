@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.tileentity.ModTileEntities;
-import net.blay09.mods.waystones.worldgen.ModWorldGen;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -36,7 +35,7 @@ public class Waystones {
 
     public static final String MOD_ID = "waystones";
 
-    public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+    public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
     public static final ItemGroup itemGroup = new ItemGroup(Waystones.MOD_ID) {
         @Override
@@ -56,8 +55,8 @@ public class Waystones {
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
-        ModWorldGen.setupRandomWorldGen();
-        ModWorldGen.setupVillageWorldGen();
+//        ModWorldGen.setupRandomWorldGen();
+//        ModWorldGen.setupVillageWorldGen();
     }
 
     @SubscribeEvent
@@ -73,12 +72,12 @@ public class Waystones {
 
     @SubscribeEvent
     public static void registerWorldGenFeatures(RegistryEvent.Register<Feature<?>> event) {
-        ModWorldGen.registerFeatures(event.getRegistry());
+//        ModWorldGen.registerFeatures(event.getRegistry());
     }
 
     @SubscribeEvent
     public static void registerWorldGenPlacements(RegistryEvent.Register<Placement<?>> event) {
-        ModWorldGen.registerPlacements(event.getRegistry());
+//        ModWorldGen.registerPlacements(event.getRegistry());
     }
 
     @SubscribeEvent

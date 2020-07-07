@@ -6,8 +6,11 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -30,7 +33,7 @@ public class PlayerKnownWaystonesMessage {
             buf.writeUniqueId(waystone.getWaystoneUid());
             buf.writeString(waystone.getName());
             buf.writeBoolean(waystone.isGlobal());
-            buf.writeInt(waystone.getDimensionType().getId());
+            buf.writeResourceLocation(waystone.getDimension().func_240901_a_());
             buf.writeBlockPos(waystone.getPos());
         }
     }
@@ -42,13 +45,10 @@ public class PlayerKnownWaystonesMessage {
             UUID waystoneUid = buf.readUniqueId();
             String name = buf.readString();
             boolean isGlobal = buf.readBoolean();
-            DimensionType dimensionType = DimensionType.getById(buf.readInt());
-            if (dimensionType == null) {
-                dimensionType = DimensionType.OVERWORLD;
-            }
+            RegistryKey<World> dimension = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
             BlockPos pos = buf.readBlockPos();
 
-            Waystone waystone = new Waystone(waystoneUid, dimensionType, pos, false, null);
+            Waystone waystone = new Waystone(waystoneUid, dimension, pos, false, null);
             waystone.setName(name);
             waystone.setGlobal(isGlobal);
             waystones.add(waystone);

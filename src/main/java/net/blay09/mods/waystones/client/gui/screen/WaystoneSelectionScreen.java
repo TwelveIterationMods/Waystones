@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
@@ -29,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,13 +73,13 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         super.init();
 
         tooltipProviders.clear();
-        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.previous_page"), button -> {
+        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, new TranslationTextComponent("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
         });
         addButton(btnPrevPage);
 
-        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, I18n.format("gui.waystones.waystone_selection.next_page"), button -> {
+        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, new TranslationTextComponent("gui.waystones.waystone_selection.next_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         });
@@ -183,38 +185,38 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        renderHoveredToolTip(mouseX, mouseY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        func_230459_a_(matrixStack, mouseX, mouseY); // renderHoveredTooltip
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
-                renderTooltip(tooltipProvider.getTooltip(), mouseX, mouseY);
+                renderTooltip(matrixStack, tooltipProvider.getTooltip(), mouseX, mouseY);
             }
         }
     }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    @Override // drawGuiContainerBackgroundLayer
+    protected void func_230450_a_(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
     }
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    @Override // drawGuiContainerForegroundLayer
+    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         IWaystone fromWaystone = container.getWaystoneFrom();
-        drawCenteredString(fontRenderer, getTitle().getFormattedText(), xSize / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
+        drawCenteredString(matrixStack, fontRenderer, getTitle(), xSize / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(fromWaystone, mouseX, mouseY, xSize / 2, headerY);
+            drawLocationHeader(matrixStack, fromWaystone, mouseX, mouseY, xSize / 2, headerY);
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), xSize / 2, height / 2 - 20, 0xFFFFFF);
+            drawCenteredString(matrixStack, fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), xSize / 2, height / 2 - 20, 0xFFFFFF);
         }
     }
 
-    private void drawLocationHeader(IWaystone waystone, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(MatrixStack matrixStack, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
         String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones.waystone_selection.current_location") + " ";
@@ -238,7 +240,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         }
         fullText += waystone.getName();
 
-        drawString(fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
+        drawString(matrixStack, fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             RenderSystem.pushMatrix();

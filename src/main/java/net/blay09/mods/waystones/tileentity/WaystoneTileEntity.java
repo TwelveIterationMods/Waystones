@@ -43,24 +43,24 @@ public class WaystoneTileEntity extends TileEntity {
 
         IWaystone waystone = getWaystone();
         if (waystone.isValid()) {
-            tagCompound.put("UUID", NBTUtil.writeUniqueId(waystone.getWaystoneUid()));
+            tagCompound.put("UUID", NBTUtil.func_240626_a_(waystone.getWaystoneUid()));
         }
 
         return tagCompound;
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void read(BlockState state, CompoundNBT tagCompound) {
+        super.read(state, tagCompound);
         if (tagCompound.contains("UUID")) {
-            waystone = new WaystoneProxy(NBTUtil.readUniqueId(tagCompound.getCompound("UUID")));
+            waystone = new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tagCompound.get("UUID"))));
         }
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         super.onDataPacket(net, pkt);
-        read(pkt.getNbtCompound());
+        read(getBlockState(), pkt.getNbtCompound());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(UUID.randomUUID(), world.getDimension().getType(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+        Waystone waystone = new Waystone(UUID.randomUUID(), world.getWorld().func_234923_W_(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         String name = NameGenerator.get().getName(waystone, world.getRandom());
         waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);

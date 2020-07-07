@@ -1,9 +1,11 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 public class SortWaystoneButton extends Button {
 
@@ -13,14 +15,14 @@ public class SortWaystoneButton extends Button {
     private final int visibleRegionHeight;
 
     public SortWaystoneButton(int x, int y, int sortDir, int visibleRegionStart, int visibleRegionHeight, IPressable pressable) {
-        super(x, y, 11, 7, "", pressable);
+        super(x, y, 11, 7, new StringTextComponent(""), pressable);
         this.sortDir = sortDir;
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             Minecraft.getInstance().getTextureManager().bindTexture(SERVER_SELECTION_BUTTONS);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
@@ -35,9 +37,9 @@ public class SortWaystoneButton extends Button {
             }
 
             if (isHovered && active) {
-                blit(x - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
+                blit(matrixStack, x - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
             } else {
-                blit(x - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
+                blit(matrixStack, x - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
             }
 
             RenderSystem.disableBlend();

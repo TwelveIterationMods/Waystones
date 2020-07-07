@@ -11,22 +11,22 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 
 import java.util.Objects;
 
 public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
 
     private static final ModelWaystone model = new ModelWaystone();
-    private static final Material MATERIAL = new Material(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
+    private static final RenderMaterial MATERIAL = new RenderMaterial(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
 
     public WaystoneRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -49,9 +49,9 @@ public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone());
         if (isActivated) {
             matrixStack.scale(1.05f, 1.05f, 1.05f);
-            IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::entityCutout);
+            IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::getEntityCutout);
             int light = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
-            int overlay = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.DEFAULT_LIGHT;
+            int overlay = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
             model.render(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
         }
         matrixStack.pop();

@@ -13,7 +13,7 @@ public class ModTextures {
 
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().getBasePath().equals(Atlases.SIGN_ATLAS)) {
+        if (event.getMap().getTextureLocation().equals(Atlases.SIGN_ATLAS)) {
             event.addSprite(new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
         }
     }
