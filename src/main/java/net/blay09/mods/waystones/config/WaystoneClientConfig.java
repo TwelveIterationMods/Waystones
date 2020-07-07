@@ -12,7 +12,7 @@ public class WaystoneClientConfig {
     public final ForgeConfigSpec.DoubleValue soundVolume;
 
     WaystoneClientConfig(ForgeConfigSpec.Builder builder) {
-        builder.comment(WaystoneConfig.CONFIGS_NOTE).push("client");
+        builder.push("client");
 
         teleportButtonX = builder
                 .comment("The x position of the warp button in the inventory.")

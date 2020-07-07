@@ -12,7 +12,7 @@ public class WaystoneCommonConfig {
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
-        builder.comment(WaystoneConfig.CONFIGS_NOTE).push("common");
+        builder.push("common");
 
         builder.push("worldgen");
 

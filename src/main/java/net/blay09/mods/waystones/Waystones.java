@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
 import net.blay09.mods.waystones.client.ModRenderers;
@@ -17,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
@@ -27,6 +30,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 
 @Mod(Waystones.MOD_ID)
@@ -49,8 +53,26 @@ public class Waystones {
         DeferredWorkQueue.runLater(ModStats::registerStats);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WaystoneConfig.commonSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, WaystoneConfig.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WaystoneConfig.clientSpec);
+        registerSaneServerConfig(WaystoneConfig.serverSpec, MOD_ID);
+    }
+
+    /**
+     * Register server config with a custom path for it to appear in the normal config folder and generate it
+     * manually right away instead of on world-load.
+     */
+    private void registerSaneServerConfig(ForgeConfigSpec serverSpec, String modId) {
+        final String fileName = FMLPaths.CONFIGDIR.get().resolve(modId + "-server.toml").toAbsolutePath().toString();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, serverSpec, fileName);
+
+        final CommentedFileConfig configData = CommentedFileConfig.builder(fileName)
+                .sync()
+                .preserveInsertionOrder()
+                .writingMode(WritingMode.REPLACE)
+                .build();
+        serverSpec.setConfig(configData);
+        configData.save();
+        configData.close();
     }
 
     @SubscribeEvent
