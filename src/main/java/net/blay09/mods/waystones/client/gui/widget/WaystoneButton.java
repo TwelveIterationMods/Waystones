@@ -38,7 +38,7 @@ public class WaystoneButton extends Button {
     private static ITextComponent getWaystoneNameComponent(IWaystone waystone) {
         final StringTextComponent textComponent = new StringTextComponent(waystone.getName());
         if (waystone.isGlobal()) {
-            textComponent.getStyle().setFormatting(TextFormatting.YELLOW);
+            textComponent.func_240699_a_(TextFormatting.YELLOW);
         }
         return textComponent;
     }
@@ -61,7 +61,7 @@ public class WaystoneButton extends Button {
             if (isHovered && mouseX <= x + 16) {
                 final List<ITextProperties> tooltip = new ArrayList<>();
                 final TranslationTextComponent levelRequirementText = new TranslationTextComponent("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
-                levelRequirementText.getStyle().setFormatting(canAfford ? TextFormatting.GREEN : TextFormatting.RED);
+                levelRequirementText.func_240699_a_(canAfford ? TextFormatting.GREEN : TextFormatting.RED);
                 tooltip.add(levelRequirementText);
                 GuiUtils.drawHoveringText(matrixStack, tooltip, mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 200, mc.fontRenderer);
             }

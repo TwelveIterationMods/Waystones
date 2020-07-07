@@ -108,7 +108,7 @@ public class InventoryButtonGuiHandler {
 
     private static ITextComponent formatTranslation(TextFormatting formatting, String key, Object... args) {
         final TranslationTextComponent result = new TranslationTextComponent(key, args);
-        result.getStyle().setFormatting(formatting);
+        result.func_240699_a_(formatting);
         return result;
     }
 

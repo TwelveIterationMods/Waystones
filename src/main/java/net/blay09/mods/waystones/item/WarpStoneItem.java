@@ -97,7 +97,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         } else {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warpstone_not_charged");
-            chatComponent.getStyle().setFormatting(TextFormatting.RED);
+            chatComponent.func_240699_a_(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, true);
             return new ActionResult<>(ActionResultType.FAIL, itemStack);
         }
@@ -143,7 +143,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         int secondsLeft = (int) (timeLeft / 1000);
         if (secondsLeft > 0) {
             TranslationTextComponent secondsLeftText = new TranslationTextComponent("tooltip.waystones.cooldown_left", secondsLeft);
-            secondsLeftText.getStyle().setFormatting(TextFormatting.GOLD);
+            secondsLeftText.func_240699_a_(TextFormatting.GOLD);
             tooltip.add(secondsLeftText);
         }
     }

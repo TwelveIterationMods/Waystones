@@ -135,7 +135,7 @@ public class PlayerWaystoneManager {
         boolean isDimensionalWarp = waystone.getDimension() != player.world.func_234923_W_();
         if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
-            chatComponent.getStyle().setFormatting(TextFormatting.RED);
+            chatComponent.func_240699_a_(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);
             return false;
         }

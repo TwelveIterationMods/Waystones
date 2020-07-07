@@ -21,10 +21,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -110,7 +107,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
                 }
 
                 TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.scroll_bound", waystone.getName());
-                chatComponent.getStyle().setFormatting(TextFormatting.YELLOW);
+                chatComponent.func_240699_a_(TextFormatting.YELLOW);
                 player.sendStatusMessage(chatComponent, true);
             }
 
@@ -158,7 +155,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         } else {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.scroll_not_yet_bound");
-            chatComponent.getStyle().setFormatting(TextFormatting.RED);
+            chatComponent.func_240699_a_(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, true);
             return new ActionResult<>(ActionResultType.FAIL, itemStack);
         }
@@ -174,13 +171,13 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
         }
 
         IWaystone boundTo = getBoundTo(player, itemStack);
-        ITextComponent targetText = boundTo != null ? new StringTextComponent(boundTo.getName()) : new TranslationTextComponent("tooltip.waystones.bound_to_none");
+        TextComponent targetText = boundTo != null ? new StringTextComponent(boundTo.getName()) : new TranslationTextComponent("tooltip.waystones.bound_to_none");
         if (boundTo != null) {
-            targetText.getStyle().setFormatting(TextFormatting.AQUA);
+            targetText.func_240699_a_(TextFormatting.AQUA);
         }
 
         TranslationTextComponent boundToText = new TranslationTextComponent("tooltip.waystones.bound_to", targetText);
-        boundToText.getStyle().setFormatting(TextFormatting.GRAY);
+        boundToText.func_240699_a_(TextFormatting.GRAY);
         tooltip.add(boundToText);
     }
 
