@@ -33,6 +33,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import java.io.File;
+
 
 @Mod(Waystones.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -66,14 +68,17 @@ public class Waystones {
         final String fileName = FMLPaths.CONFIGDIR.get().resolve(modId + "-server.toml").toAbsolutePath().toString();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, serverSpec, fileName);
 
-        final CommentedFileConfig configData = CommentedFileConfig.builder(fileName)
-                .sync()
-                .preserveInsertionOrder()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-        serverSpec.setConfig(configData);
-        configData.save();
-        configData.close();
+        File file = new File(fileName);
+        if (!file.exists()) {
+            final CommentedFileConfig configData = CommentedFileConfig.builder(file)
+                    .sync()
+                    .preserveInsertionOrder()
+                    .writingMode(WritingMode.REPLACE)
+                    .build();
+            serverSpec.setConfig(configData);
+            configData.save();
+            configData.close();
+        }
     }
 
     @SubscribeEvent
