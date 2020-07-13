@@ -78,6 +78,9 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    flatDir {
+        dirs "run/obfmods"
+    }
 }
 
 dependencies {
@@ -90,6 +93,13 @@ dependencies {
     compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
     compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2")
+
+    def obfModsDir = new File("run/obfmods")
+    obfModsDir.eachFile { file ->
+        def parts = file.name.split('-', 2)
+        def dep = "ignored:" + parts[0] + ":" + parts[1].replace(".jar", "");
+        runtimeOnly fg.deobf(dep)
+    }
 }
 
 jar {

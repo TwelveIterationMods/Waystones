@@ -83,8 +83,10 @@ public class Waystones {
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
-        ModWorldGen.setupRandomWorldGen();
-        ModWorldGen.setupVillageWorldGen();
+        DeferredWorkQueue.runLater(() -> {
+            ModWorldGen.setupRandomWorldGen();
+            ModWorldGen.setupVillageWorldGen();
+        });
     }
 
     @SubscribeEvent
