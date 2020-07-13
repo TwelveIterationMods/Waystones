@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -52,7 +53,7 @@ public class WaystoneTileEntity extends TileEntity {
     @Override
     public void read(BlockState state, CompoundNBT tagCompound) {
         super.read(state, tagCompound);
-        if (tagCompound.contains("UUID")) {
+        if (tagCompound.contains("UUID", Constants.NBT.TAG_INT_ARRAY)) {
             waystone = new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tagCompound.get("UUID"))));
         }
     }
