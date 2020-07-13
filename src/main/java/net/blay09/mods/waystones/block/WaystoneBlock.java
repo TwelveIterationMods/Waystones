@@ -5,11 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ObserverBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -49,18 +45,18 @@ import java.util.Random;
 public class WaystoneBlock extends Block {
 
     public static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
-      makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
-      makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
-      makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
-      makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0)
+            makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+            makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+            makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+            makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0)
     ).simplify();
 
     public static final VoxelShape UPPER_SHAPE = VoxelShapes.or(
-      makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
-      makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0),
-      makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0),
-      makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0),
-      makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
+            makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
+            makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0),
+            makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0),
+            makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0),
+            makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
     ).simplify();
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -84,11 +80,6 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
-    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-        super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
-    }
-
-    @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         DoubleBlockHalf half = state.get(HALF);
         BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
@@ -97,7 +88,6 @@ public class WaystoneBlock extends Block {
             world.setBlockState(offset, Blocks.AIR.getDefaultState(), 35);
             world.playEvent(player, 2001, offset, Block.getStateId(other));
             if (!world.isRemote && !player.isCreative()) {
-                spawnDrops(state, world, pos, null, player, player.getHeldItemMainhand());
                 spawnDrops(other, world, offset, null, player, player.getHeldItemMainhand());
             }
         }
