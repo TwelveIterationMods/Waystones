@@ -46,9 +46,9 @@ public class WaystoneServerConfig {
                 .defineInRange("minimumXpCost", 0, 0, Float.POSITIVE_INFINITY);
 
         maximumXpCost = builder
-                .comment("The maximum base xp cost (may be exceeded by multipliers defined below)")
+                .comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all XP costs")
                 .translation("config.waystones.maximumXpCost")
-                .defineInRange("maximumXpCost", 3, 1, Float.POSITIVE_INFINITY);
+                .defineInRange("maximumXpCost", 3, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to teleporting from one waystone to another by right-clicking it.").push("waystoneToWaystone");
 

@@ -102,7 +102,12 @@ public class PlayerWaystoneManager {
         double dist = Math.sqrt(player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()));
         final double minimumXpCost = WaystoneConfig.SERVER.minimumXpCost.get();
         final double maximumXpCost = WaystoneConfig.SERVER.maximumXpCost.get();
-        double xpLevelCost = WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0 ? MathHelper.clamp(dist / (float) WaystoneConfig.SERVER.blocksPerXPLevel.get(), minimumXpCost, maximumXpCost) : minimumXpCost;
+        double xpLevelCost;
+        if (WaystoneConfig.SERVER.blocksPerXPLevel.get() > 0) {
+            xpLevelCost = MathHelper.clamp(dist / (float) WaystoneConfig.SERVER.blocksPerXPLevel.get(), minimumXpCost, maximumXpCost);
+        } else {
+            xpLevelCost = minimumXpCost;
+        }
         return enableXPCost ? (int) Math.round(xpLevelCost * xpCostMultiplier) : 0;
     }
 
