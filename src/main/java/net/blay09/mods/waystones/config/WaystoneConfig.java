@@ -3,8 +3,10 @@ package net.blay09.mods.waystones.config;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.StringUtils;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.nio.file.Path;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class WaystoneConfig {
@@ -20,6 +22,10 @@ public class WaystoneConfig {
 
     public static final ForgeConfigSpec serverSpec;
     public static final WaystoneServerConfig SERVER;
+
+    public static Path getServerConfigPath() {
+        return FMLPaths.CONFIGDIR.get().resolve(Waystones.MOD_ID + "-server.toml").toAbsolutePath();
+    }
 
     static {
         final Pair<WaystoneServerConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(WaystoneServerConfig::new);
