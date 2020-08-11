@@ -87,7 +87,7 @@ public class WaystoneServerConfig {
                 .defineInRange("globalWaystoneCooldownMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         globalWaystoneRequiresCreative = builder
-                .comment("Set to false to allow non-creative players to make waystones globally activated.")
+                .comment("Set to false to allow non-creative players to make waystones globally activated for all players.")
                 .translation("config.waystones.globalWaystoneRequiresCreative")
                 .define("globalWaystoneRequiresCreative", true);
 
