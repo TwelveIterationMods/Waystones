@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -70,7 +72,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
     @Nullable
     protected IWaystone getBoundTo(PlayerEntity player, ItemStack itemStack) {
         CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
+        if (tagCompound != null && tagCompound.contains("WaystonesBoundTo", Constants.NBT.TAG_INT_ARRAY)) {
             return new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tagCompound.get("WaystonesBoundTo"))));
         }
 
