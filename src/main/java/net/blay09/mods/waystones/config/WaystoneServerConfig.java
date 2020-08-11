@@ -4,6 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class WaystoneServerConfig {
     public final ForgeConfigSpec.IntValue blocksPerXPLevel;
+    public final ForgeConfigSpec.DoubleValue minimumXpCost;
     public final ForgeConfigSpec.DoubleValue maximumXpCost;
 
     public final ForgeConfigSpec.DoubleValue waystoneXpCostMultiplier;
@@ -38,6 +39,11 @@ public class WaystoneServerConfig {
                 .comment("The amount of blocks per xp level requirement. If set to 500, the base xp cost for travelling 1000 blocks will be 2 levels.")
                 .translation("config.waystones.blocksPerXPLevel")
                 .defineInRange("blocksPerXPLevel", 500, 1, Integer.MAX_VALUE);
+
+        minimumXpCost = builder
+                .comment("The minimum base xp cost")
+                .translation("config.waystones.minimumXpCost")
+                .defineInRange("minimumXpCost", 0, 0, Float.POSITIVE_INFINITY);
 
         maximumXpCost = builder
                 .comment("The maximum base xp cost (may be exceeded by multipliers defined below)")
