@@ -69,7 +69,7 @@ public class Waystones {
      */
     private void registerSaneServerConfig(ForgeConfigSpec serverSpec, String modId) {
         final String fileName = FMLPaths.CONFIGDIR.get().resolve(modId + "-server.toml").toAbsolutePath().toString();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, serverSpec, fileName);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, serverSpec, fileName);
 
         File file = new File(fileName);
         if (!file.exists()) {
