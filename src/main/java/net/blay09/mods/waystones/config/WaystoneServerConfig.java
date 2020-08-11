@@ -38,7 +38,7 @@ public class WaystoneServerConfig {
         blocksPerXPLevel = builder
                 .comment("The amount of blocks per xp level requirement. If set to 500, the base xp cost for travelling 1000 blocks will be 2 levels.")
                 .translation("config.waystones.blocksPerXPLevel")
-                .defineInRange("blocksPerXPLevel", 500, 1, Integer.MAX_VALUE);
+                .defineInRange("blocksPerXPLevel", 1000, 1, Integer.MAX_VALUE);
 
         minimumXpCost = builder
                 .comment("The minimum base xp cost")
@@ -48,7 +48,7 @@ public class WaystoneServerConfig {
         maximumXpCost = builder
                 .comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all XP costs")
                 .translation("config.waystones.maximumXpCost")
-                .defineInRange("maximumXpCost", 3, 0, Float.POSITIVE_INFINITY);
+                .defineInRange("maximumXpCost", 0, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to teleporting from one waystone to another by right-clicking it.").push("waystoneToWaystone");
 
@@ -67,7 +67,7 @@ public class WaystoneServerConfig {
         inventoryButtonXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting via the inventory button.")
                 .translation("config.waystones.inventoryButtonXpCostMultiplier")
-                .defineInRange("inventoryButtonXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+                .defineInRange("inventoryButtonXpCostMultiplier", 0, 0, Float.POSITIVE_INFINITY);
 
         inventoryButtonCooldown = builder
                 .comment("The cooldown between usages of the inventory button in seconds.")
@@ -96,7 +96,7 @@ public class WaystoneServerConfig {
         warpStoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting using a Warp Stone item (not the Waystone block, John)")
                 .translation("config.waystones.warpStoneXpCostMultiplier")
-                .defineInRange("warpStoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+                .defineInRange("warpStoneXpCostMultiplier", 0, 0, Float.POSITIVE_INFINITY);
 
         warpStoneCooldown = builder
                 .comment("The cooldown between usages of the warp stone in seconds. This is bound to the player, not the item, so multiple warp stones share the same cooldown.")

@@ -5,9 +5,9 @@
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "EDE",
-    "PPP",
-    "GDG"
+    "GDG",
+    "GEG",
+    "PPP"
   ],
   "key": {
     "G": {

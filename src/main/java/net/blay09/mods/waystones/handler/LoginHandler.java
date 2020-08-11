@@ -22,8 +22,6 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
 public class LoginHandler {
 
-    private static final Logger logger = LogManager.getLogger();
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         // Introduce all global waystones to this player
@@ -37,16 +35,9 @@ public class LoginHandler {
         WaystoneSyncManager.sendKnownWaystones(event.getPlayer());
         WaystoneSyncManager.sendWaystoneCooldowns(event.getPlayer());
 
-        syncServerConfigs(event.getPlayer());
+        WaystoneConfig.syncServerConfigs(event.getPlayer());
     }
 
-    private static void syncServerConfigs(PlayerEntity player) {
-        try {
-            final byte[] configData = Files.readAllBytes(WaystoneConfig.getServerConfigPath());
-            NetworkHandler.sendTo(new SyncConfigMessage(configData), player);
-        } catch (IOException e) {
-            logger.error("Failed to sync Waystones config", e);
-        }
-    }
+
 
 }
