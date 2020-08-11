@@ -31,7 +31,6 @@ public class TeleportEffectMessage {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
-            mc.ingameGUI.getBossOverlay().clearBossInfos();
             Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRAVEL, message.pos, 1f);
             for (int i = 0; i < 128; i++) {
                 mc.world.addParticle(ParticleTypes.PORTAL, message.pos.getX() + (mc.world.rand.nextDouble() - 0.5) * 3, message.pos.getY() + mc.world.rand.nextDouble() * 3, message.pos.getZ() + (mc.world.rand.nextDouble() - 0.5) * 3, (mc.world.rand.nextDouble() - 0.5) * 2, -mc.world.rand.nextDouble(), (mc.world.rand.nextDouble() - 0.5) * 2);
