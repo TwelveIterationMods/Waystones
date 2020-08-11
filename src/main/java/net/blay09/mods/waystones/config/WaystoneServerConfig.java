@@ -100,14 +100,14 @@ public class WaystoneServerConfig {
         warpStoneUseTime = builder
                 .comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
                 .translation("config.waystones.warpStoneUseTime")
-                .defineInRange("warpStoneUseTime", 32, 1, 127);
+                .defineInRange("warpStoneUseTime", 32, 1, Integer.MAX_VALUE);
 
         builder.pop().comment("These options apply to teleporting using the scroll items.").push("scrolls");
 
         scrollUseTime = builder
                 .comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
                 .translation("config.waystones.scrollUseTime")
-                .defineInRange("scrollUseTime", 32, 1, 127);
+                .defineInRange("scrollUseTime", 32, 1, Integer.MAX_VALUE);
 
         builder.pop().comment("These options apply to teleporting between dimensions.").push("dimensionalWarp");
 
