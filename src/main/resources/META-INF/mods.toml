@@ -4,6 +4,7 @@ issueTrackerURL="https://github.com/blay09/Waystones/issues"
 displayURL="https://minecraft.curseforge.com/projects/waystones"
 authors="BlayTheNinth"
 credits="Includes item icons by @JoeCreates released under CC-BY-SA 3.0"
+license="MIT"
 
 [[mods]]
 modId="waystones"

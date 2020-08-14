@@ -1,30 +1,15 @@
 package net.blay09.mods.waystones.worldgen;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
-import net.minecraft.world.gen.feature.jigsaw.SingleJigsawPiece;
-import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.util.Collections;
-
-import static net.minecraftforge.common.BiomeDictionary.Type;
 
 public class ModWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
@@ -51,13 +36,13 @@ public class ModWorldGen {
     }
 
     public static void setupRandomWorldGen() {
-        ForgeRegistries.BIOMES.forEach(biome -> {
+        /*ForgeRegistries.BIOMES.forEach(biome -> {
             WaystoneFeature feature = getWaystoneFeature(biome);
             ConfiguredFeature<?, ?> configuredFeature = feature
                     .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
                     .withPlacement(waystonePlacement.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG));
             biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
-        });
+        });*/
     }
 
     private static WaystoneFeature getWaystoneFeature(Biome biome) {
@@ -67,21 +52,21 @@ public class ModWorldGen {
                 return mossyWaystoneFeature;
             case SANDY:
                 return sandyWaystoneFeature;
-            case BIOME:
+            /*case BIOME:
                 if (BiomeDictionary.hasType(biome, Type.SANDY)) {
                     return sandyWaystoneFeature;
                 } else if (BiomeDictionary.hasType(biome, Type.WET)) {
                     return mossyWaystoneFeature;
                 } else {
                     return waystoneFeature;
-                }
+                }*/
             default:
                 return waystoneFeature;
         }
     }
 
     public static void setupVillageWorldGen() {
-        JigsawManager.REGISTRY.register(new JigsawPattern(villageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+        /*JigsawManager.REGISTRY.register(new JigsawPattern(villageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
         JigsawManager.REGISTRY.register(new JigsawPattern(desertVillageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
 
         if (WaystoneConfig.COMMON.addVillageStructure.get()) {
@@ -96,14 +81,14 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig("village/savanna/houses", villageWaystoneStructure);
             addWaystoneStructureToVillageConfig("village/desert/houses", desertVillageWaystoneStructure);
             addWaystoneStructureToVillageConfig("village/taiga/houses", villageWaystoneStructure);
-        }
+        }*/
     }
 
     private static void addWaystoneStructureToVillageConfig(String villagePiece, ResourceLocation waystoneStructure) {
-        JigsawPattern houses = JigsawManager.REGISTRY.get(new ResourceLocation(villagePiece));
+        /*JigsawPattern houses = JigsawManager.REGISTRY.get(new ResourceLocation(villagePiece));
 
         final SingleJigsawPiece piece = new SingleJigsawPiece(waystoneStructure.toString());
         houses.rawTemplates = ImmutableList.<Pair<JigsawPiece, Integer>>builder().addAll(houses.rawTemplates).add(Pair.of(piece, 1)).build();
-        houses.jigsawPieces.add(piece);
+        houses.jigsawPieces.add(piece);*/
     }
 }

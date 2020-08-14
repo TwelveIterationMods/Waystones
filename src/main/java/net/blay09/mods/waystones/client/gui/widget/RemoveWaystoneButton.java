@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -17,8 +18,8 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
     private static final ResourceLocation BEACON = new ResourceLocation("textures/gui/container/beacon.png");
 
-    private final List<ITextProperties> tooltip;
-    private final List<ITextProperties> activeTooltip;
+    private final List<ITextComponent> tooltip;
+    private final List<ITextComponent> activeTooltip;
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
     private static boolean shiftGuard;
@@ -68,7 +69,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public List<ITextProperties> getTooltip() {
+    public List<ITextComponent> getTooltip() {
         return active ? activeTooltip : tooltip;
     }
 }

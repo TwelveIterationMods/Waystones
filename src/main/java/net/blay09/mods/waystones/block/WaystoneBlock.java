@@ -210,7 +210,7 @@ public class WaystoneBlock extends Block {
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
                     TranslationTextComponent chatComponent = new TranslationTextComponent(result.getLangKey());
-                    chatComponent.func_240699_a_(TextFormatting.RED);
+                    chatComponent.mergeStyle(TextFormatting.RED);
                     player.sendStatusMessage(chatComponent, true);
                 }
                 return ActionResultType.SUCCESS;
@@ -235,9 +235,9 @@ public class WaystoneBlock extends Block {
 
             if (!world.isRemote) {
                 StringTextComponent nameComponent = new StringTextComponent(waystone.getName());
-                nameComponent.func_240699_a_(TextFormatting.WHITE);
+                nameComponent.mergeStyle(TextFormatting.WHITE);
                 TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_activated", nameComponent);
-                chatComponent.func_240699_a_(TextFormatting.YELLOW);
+                chatComponent.mergeStyle(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent, Util.DUMMY_UUID);
 
                 WaystoneSyncManager.sendKnownWaystones(player);

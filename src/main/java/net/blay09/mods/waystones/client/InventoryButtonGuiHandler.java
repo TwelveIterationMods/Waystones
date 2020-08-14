@@ -71,7 +71,7 @@ public class InventoryButtonGuiHandler {
         // Render the inventory button tooltip when it's hovered
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
-            List<ITextProperties> tooltip = new ArrayList<>();
+            List<ITextComponent> tooltip = new ArrayList<>();
             long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
             int secondsLeft = (int) (timeLeft / 1000);
             if (inventoryButtonMode.hasNamedTarget()) {
@@ -102,13 +102,13 @@ public class InventoryButtonGuiHandler {
                 tooltip.add(formatTranslation(TextFormatting.GOLD, "tooltip.waystones.cooldown_left", secondsLeft));
             }
 
-            event.getGui().renderTooltip(event.getMatrixStack(), tooltip, event.getMouseX(), event.getMouseY());
+            event.getGui().func_243308_b(event.getMatrixStack(), tooltip, event.getMouseX(), event.getMouseY()); // renderTooltip
         }
     }
 
     private static ITextComponent formatTranslation(TextFormatting formatting, String key, Object... args) {
         final TranslationTextComponent result = new TranslationTextComponent(key, args);
-        result.func_240699_a_(formatting);
+        result.mergeStyle(formatting);
         return result;
     }
 

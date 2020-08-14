@@ -12,7 +12,6 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 import java.util.Random;
 
@@ -26,7 +25,7 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
     }
 
     @Override // place
-    public boolean func_230362_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    public boolean func_241855_a(ISeedReader world, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
         Direction facing = Direction.values()[2 + rand.nextInt(4)];
         BlockState state = world.getBlockState(pos);
         BlockPos posAbove = pos.up();

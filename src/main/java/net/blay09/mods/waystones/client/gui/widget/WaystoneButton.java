@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +39,7 @@ public class WaystoneButton extends Button {
     private static ITextComponent getWaystoneNameComponent(IWaystone waystone) {
         final StringTextComponent textComponent = new StringTextComponent(waystone.getName());
         if (waystone.isGlobal()) {
-            textComponent.func_240699_a_(TextFormatting.YELLOW);
+            textComponent.mergeStyle(TextFormatting.YELLOW);
         }
         return textComponent;
     }
@@ -59,11 +60,13 @@ public class WaystoneButton extends Button {
             }
 
             if (isHovered && mouseX <= x + 16) {
-                final List<ITextProperties> tooltip = new ArrayList<>();
+                final List<ITextComponent> tooltip = new ArrayList<>();
                 final TranslationTextComponent levelRequirementText = new TranslationTextComponent("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
-                levelRequirementText.func_240699_a_(canAfford ? TextFormatting.GREEN : TextFormatting.RED);
+                levelRequirementText.mergeStyle(canAfford ? TextFormatting.GREEN : TextFormatting.RED);
                 tooltip.add(levelRequirementText);
-                GuiUtils.drawHoveringText(matrixStack, tooltip, mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 200, mc.fontRenderer);
+                final Screen screen = Minecraft.getInstance().currentScreen;
+                Objects.requireNonNull(screen).func_243308_b(matrixStack, tooltip, mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT); // renderTooltip
+                // TOOD used to be: GuiUtils.drawHoveringText(matrixStack, tooltip, mouseX, mouseY + mc.fontRenderer.FONT_HEIGHT, mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight(), 200, mc.fontRenderer);
             }
             RenderSystem.disableLighting();
         }

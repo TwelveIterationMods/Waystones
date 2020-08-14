@@ -57,7 +57,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         btnDone = new Button(width / 2, height / 2 + 10, 100, 20, new TranslationTextComponent("gui.done"), button -> {
             if (textField.getText().isEmpty()) {
                 textField.changeFocus(true);
-                setFocused(textField);
+                setListener(textField);
                 return;
             }
 
@@ -77,8 +77,8 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     }
 
     @Override
-    public void removed() {
-        super.removed();
+    public void onClose() {
+        super.onClose();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
@@ -139,7 +139,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         }
     }
 
-    @Override // drawGuiContainerBackgroundLayer
-    protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
     }
 }

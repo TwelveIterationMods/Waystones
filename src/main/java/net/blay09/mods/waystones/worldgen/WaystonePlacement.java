@@ -4,8 +4,7 @@ import com.mojang.serialization.Codec;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.WorldDecoratingHelper;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.TopSolidOnce;
 
@@ -17,16 +16,17 @@ public class WaystonePlacement extends TopSolidOnce {
         super(codec);
     }
 
-    @Override
-    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator chunkGenerator, Random random, NoPlacementConfig config, BlockPos pos) {
+
+    @Override // getPositions
+    public Stream<BlockPos> func_241857_a(WorldDecoratingHelper world, Random random, NoPlacementConfig config, BlockPos pos) {
         if (isWaystoneChunk(world, pos)) {
-            return super.getPositions(world, chunkGenerator, random, config, pos);
+            return super.func_241857_a(world, random, config, pos);
         } else {
             return Stream.empty();
         }
     }
 
-    private boolean isWaystoneChunk(IWorld world, BlockPos pos) {
+    private boolean isWaystoneChunk(WorldDecoratingHelper world, BlockPos pos) {
         final int chunkDistance = WaystoneConfig.COMMON.worldGenFrequency.get();
         if (chunkDistance == 0) {
             return false;

@@ -191,17 +191,17 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
         func_230459_a_(matrixStack, mouseX, mouseY); // renderHoveredTooltip
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
-                renderTooltip(matrixStack, tooltipProvider.getTooltip(), mouseX, mouseY);
+                func_243308_b(matrixStack, tooltipProvider.getTooltip(), mouseX, mouseY);
             }
         }
     }
 
-    @Override // drawGuiContainerBackgroundLayer
-    protected void func_230450_a_(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
     }
 
-    @Override // drawGuiContainerForegroundLayer
-    protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
+    @Override
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
         RenderSystem.color4f(1f, 1f, 1f, 1f);

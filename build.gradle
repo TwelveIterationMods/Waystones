@@ -91,8 +91,8 @@ dependencies {
     ])
 
     compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
-    compileOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.1:7.0.0.2")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
 
     def obfModsDir = new File("run/obfmods")
     obfModsDir.eachFile { file ->

@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -100,7 +101,7 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(UUID.randomUUID(), world.getWorld().func_234923_W_(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+        Waystone waystone = new Waystone(UUID.randomUUID(), ((World) world).func_234923_W_(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         String name = NameGenerator.get().getName(waystone, world.getRandom());
         waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);

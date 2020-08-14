@@ -142,7 +142,7 @@ public class PlayerWaystoneManager {
         boolean isDimensionalWarp = waystone.getDimension() != player.world.func_234923_W_();
         if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
-            chatComponent.func_240699_a_(TextFormatting.RED);
+            chatComponent.mergeStyle(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);
             return false;
         }
@@ -200,7 +200,7 @@ public class PlayerWaystoneManager {
     }
 
     private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
-        BlockPos sourcePos = player.func_233580_cy_();
+        BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
         BlockPos targetPos;
         Direction targetDir;
