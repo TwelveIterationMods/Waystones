@@ -5,6 +5,8 @@ import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.SyncConfigMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -62,8 +64,15 @@ public class WaystoneConfig {
     @SubscribeEvent
     public static void onConfigReloaded(ModConfig.Reloading event) {
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
-            for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-                syncServerConfigs(player);
+            final MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+            if (currentServer != null) {
+                final PlayerList playerList = currentServer.getPlayerList();
+                //noinspection ConstantConditions
+                if (playerList != null) {
+                    for (ServerPlayerEntity player : playerList.getPlayers()) {
+                        syncServerConfigs(player);
+                    }
+                }
             }
         }
     }
