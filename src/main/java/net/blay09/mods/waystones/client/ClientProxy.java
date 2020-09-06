@@ -22,7 +22,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void playSound(SoundEvent sound, BlockPos pos, float pitch) {
-        Minecraft.getInstance().getSoundHandler().play(new SimpleSound(sound, SoundCategory.AMBIENT, WaystoneConfig.CLIENT.soundVolume.get().floatValue(), pitch, pos));
+        Minecraft.getInstance().getSoundHandler().play(new SimpleSound(sound, SoundCategory.BLOCKS, WaystoneConfig.CLIENT.soundVolume.get().floatValue(), pitch, pos));
     }
 
     @Override
