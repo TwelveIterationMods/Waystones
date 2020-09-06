@@ -143,7 +143,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
     }
 
-    @Override // drawGuiContainerForegroundLayer
-    protected void func_230451_b_(MatrixStack p_230451_1_, int p_230451_2_, int p_230451_3_) {
+    @Override
+    protected void drawGuiContainerForegroundLayer(MatrixStack p_230451_1_, int p_230451_2_, int p_230451_3_) {
     }
 }

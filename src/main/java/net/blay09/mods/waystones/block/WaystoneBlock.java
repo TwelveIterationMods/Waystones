@@ -158,13 +158,25 @@ public class WaystoneBlock extends Block {
         BlockPos posAbove = pos.up();
         world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER));
 
-        TileEntity waystoneTileEntity = world.getTileEntity(pos);
-        if (waystoneTileEntity instanceof WaystoneTileEntity) {
-            ((WaystoneTileEntity) waystoneTileEntity).initializeWaystone(world, placer, false);
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof WaystoneTileEntity) {
+                ((WaystoneTileEntity) tileEntity).initializeWaystone(world, placer, false);
 
-            TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
-            if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {
-                ((WaystoneTileEntity) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntity) waystoneTileEntity));
+                TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
+                if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {
+                    ((WaystoneTileEntity) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntity) tileEntity));
+                }
+
+                // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
+                if (placer instanceof ServerPlayerEntity) {
+                    final ServerPlayerEntity player = (ServerPlayerEntity) placer;
+                    final WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
+                    WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
+                    if (result == WaystoneEditPermissions.ALLOW) {
+                        NetworkHooks.openGui(player, waystoneTileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, waystoneTileEntity.getWaystone()));
+                    }
+                }
             }
         }
     }
@@ -217,7 +229,7 @@ public class WaystoneBlock extends Block {
             }
 
             if (!world.isRemote) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSettingsContainerProvider(), pos);
+                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, tileEntity.getWaystone()));
             }
             return ActionResultType.SUCCESS;
         }

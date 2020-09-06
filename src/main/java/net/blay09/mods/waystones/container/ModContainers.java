@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.container;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntity;
@@ -27,15 +28,12 @@ public class ModContainers {
 
             return new WaystoneSelectionContainer(windowId, warpMode, fromWaystone);
         });
-        waystoneSettings = new ContainerType<>((IContainerFactory<WaystoneSettingsContainer>) (windowId, inv, data) -> {
-            BlockPos pos = data.readBlockPos();
-            TileEntity tileEntity = inv.player.world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntity) {
-                return new WaystoneSettingsContainer(windowId, ((WaystoneTileEntity) tileEntity).getWaystone());
-            }
 
-            return null;
+        waystoneSettings = new ContainerType<>((IContainerFactory<WaystoneSettingsContainer>) (windowId, inv, data) -> {
+            IWaystone waystone = Waystone.read(data);
+            return new WaystoneSettingsContainer(windowId, waystone);
         });
+
         registry.registerAll(
                 waystoneSelection.setRegistryName("waystone_selection"),
                 waystoneSettings.setRegistryName("waystone_settings")

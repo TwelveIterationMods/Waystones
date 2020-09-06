@@ -2,8 +2,11 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -79,6 +82,27 @@ public class Waystone implements IWaystone {
     @Override
     public UUID getOwnerUid() {
         return ownerUid;
+    }
+
+    public static IWaystone read(PacketBuffer buf) {
+        UUID waystoneUid = buf.readUniqueId();
+        String name = buf.readString();
+        boolean isGlobal = buf.readBoolean();
+        RegistryKey<World> dimension = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
+        BlockPos pos = buf.readBlockPos();
+
+        Waystone waystone = new Waystone(waystoneUid, dimension, pos, false, null);
+        waystone.setName(name);
+        waystone.setGlobal(isGlobal);
+        return waystone;
+    }
+
+    public static void write(PacketBuffer buf, IWaystone waystone) {
+        buf.writeUniqueId(waystone.getWaystoneUid());
+        buf.writeString(waystone.getName());
+        buf.writeBoolean(waystone.isGlobal());
+        buf.writeResourceLocation(waystone.getDimension().func_240901_a_());
+        buf.writeBlockPos(waystone.getPos());
     }
 
 }

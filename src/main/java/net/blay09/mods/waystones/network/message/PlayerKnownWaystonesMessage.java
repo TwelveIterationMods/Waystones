@@ -30,11 +30,7 @@ public class PlayerKnownWaystonesMessage {
     public static void encode(PlayerKnownWaystonesMessage message, PacketBuffer buf) {
         buf.writeShort(message.waystones.size());
         for (IWaystone waystone : message.waystones) {
-            buf.writeUniqueId(waystone.getWaystoneUid());
-            buf.writeString(waystone.getName());
-            buf.writeBoolean(waystone.isGlobal());
-            buf.writeResourceLocation(waystone.getDimension().func_240901_a_());
-            buf.writeBlockPos(waystone.getPos());
+            Waystone.write(buf, waystone);
         }
     }
 
@@ -42,16 +38,7 @@ public class PlayerKnownWaystonesMessage {
         int waystoneCount = buf.readShort();
         List<IWaystone> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
-            UUID waystoneUid = buf.readUniqueId();
-            String name = buf.readString();
-            boolean isGlobal = buf.readBoolean();
-            RegistryKey<World> dimension = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
-            BlockPos pos = buf.readBlockPos();
-
-            Waystone waystone = new Waystone(waystoneUid, dimension, pos, false, null);
-            waystone.setName(name);
-            waystone.setGlobal(isGlobal);
-            waystones.add(waystone);
+            waystones.add(Waystone.read(buf));
         }
         return new PlayerKnownWaystonesMessage(waystones);
     }
