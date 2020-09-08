@@ -18,7 +18,7 @@
   "gui.waystones.waystone_selection.no_waystones_activated": "Вы ещё не активировали ни одного обелиска.",
   "gui.waystones.waystone_selection.level_requirement": "Нужен уровень: %d",
   "gui.waystones.waystone_settings.is_global": "Глобальный",
-  "gui.waystones.inventory.no_waystones_activated": "Вы ещё не активировали этот обелиск.",
+  "gui.waystones.inventory.no_waystones_activated": "Вы ещё не активировали ни одного обелиска.",
   "gui.waystones.inventory.confirm_return": "Вы действительно хотите переместиться к последнему обелиску?",
   "gui.waystones.inventory.confirm_return_bound_to": "Привязан: %s",
   "gui.waystones.inventory.return_to_waystone": "Вернуться к обелиску",
