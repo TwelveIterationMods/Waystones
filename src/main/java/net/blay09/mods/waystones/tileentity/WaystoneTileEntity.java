@@ -22,8 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.IServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -87,7 +86,7 @@ public class WaystoneTileEntity extends TileEntity {
             if (state.getBlock() instanceof WaystoneBlock) {
                 DoubleBlockHalf half = state.get(WaystoneBlock.HALF);
                 if (half == DoubleBlockHalf.LOWER) {
-                    initializeWaystone(Objects.requireNonNull(world), null, true);
+                    initializeWaystone((IServerWorld) Objects.requireNonNull(world), null, true);
                 } else if (half == DoubleBlockHalf.UPPER) {
                     TileEntity tileEntity = world.getTileEntity(pos.down());
                     if (tileEntity instanceof WaystoneTileEntity) {
@@ -100,8 +99,8 @@ public class WaystoneTileEntity extends TileEntity {
         return waystone;
     }
 
-    public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(UUID.randomUUID(), ((World) world).getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+    public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
+        Waystone waystone = new Waystone(UUID.randomUUID(), world.getWorld().getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         String name = NameGenerator.get().getName(waystone, world.getRandom());
         waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);

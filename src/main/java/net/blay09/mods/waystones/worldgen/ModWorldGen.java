@@ -1,16 +1,24 @@
 package net.blay09.mods.waystones.worldgen;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
+@Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
 public class ModWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
@@ -35,31 +43,33 @@ public class ModWorldGen {
         );
     }
 
-    public static void setupRandomWorldGen() {
-        /*ForgeRegistries.BIOMES.forEach(biome -> {
-            WaystoneFeature feature = getWaystoneFeature(biome);
-            ConfiguredFeature<?, ?> configuredFeature = feature
-                    .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
-                    .withPlacement(waystonePlacement.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG));
-            biome.addFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
-        });*/
+    @SubscribeEvent
+    public static void onBiomeLoading(BiomeLoadingEvent event) {
+        WaystoneFeature feature = getWaystoneFeature(event.getCategory());
+        ConfiguredFeature<?, ?> configuredFeature = feature
+                .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
+                .withPlacement(waystonePlacement.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG));
+        event.getGeneration().withFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
     }
 
-    private static WaystoneFeature getWaystoneFeature(Biome biome) {
+    private static WaystoneFeature getWaystoneFeature(Biome.Category biomeCategory) {
         WorldGenStyle worldGenStyle = WaystoneConfig.COMMON.worldGenStyle.get();
         switch (worldGenStyle) {
             case MOSSY:
                 return mossyWaystoneFeature;
             case SANDY:
                 return sandyWaystoneFeature;
-            /*case BIOME:
-                if (BiomeDictionary.hasType(biome, Type.SANDY)) {
-                    return sandyWaystoneFeature;
-                } else if (BiomeDictionary.hasType(biome, Type.WET)) {
-                    return mossyWaystoneFeature;
-                } else {
-                    return waystoneFeature;
-                }*/
+            case BIOME:
+                switch (biomeCategory) {
+                    case DESERT:
+                        return sandyWaystoneFeature;
+                    case JUNGLE:
+                    case SWAMP:
+                    case MUSHROOM:
+                        return mossyWaystoneFeature;
+                    default:
+                        return waystoneFeature;
+                }
             default:
                 return waystoneFeature;
         }

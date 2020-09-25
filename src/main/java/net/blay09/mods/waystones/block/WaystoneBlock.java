@@ -30,10 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -161,7 +158,7 @@ public class WaystoneBlock extends Block {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WaystoneTileEntity) {
-                ((WaystoneTileEntity) tileEntity).initializeWaystone(world, placer, false);
+                ((WaystoneTileEntity) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
 
                 TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
                 if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {

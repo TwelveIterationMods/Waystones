@@ -90,9 +90,9 @@ dependencies {
             version: "${minecraft_version}-${forge_version}"
     ])
 
-    compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
-    compileOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:7.1.0.11")
+    //compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
+    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.34:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.34")
 
     def obfModsDir = new File("run/obfmods")
     obfModsDir.eachFile { file ->

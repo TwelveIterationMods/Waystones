@@ -66,6 +66,7 @@ public class Waystones {
      * <p>
      * TODO Remove in 1.17 and just move to COMMON with own sync packet - already need our own sync packet now since it
      *      used the absolute path of the file to map configs in sync, which obviously failed if environments differed
+     *      - however! check that it won't override the client-side -common.toml with the server data
      */
     private void registerSaneServerConfig(ForgeConfigSpec serverSpec, String modId) {
         final String fileName = FMLPaths.CONFIGDIR.get().resolve(modId + "-server.toml").toAbsolutePath().toString();
@@ -87,7 +88,6 @@ public class Waystones {
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
-            ModWorldGen.setupRandomWorldGen();
             ModWorldGen.setupVillageWorldGen();
         });
     }

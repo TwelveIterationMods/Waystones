@@ -37,7 +37,8 @@ public class WaystonePlacement extends TopSolidOnce {
         int chunkZ = pos.getZ() / 16;
         int devGridX = pos.getX() / 16 * maxDeviation;
         int devGridZ = pos.getZ() / 16 * maxDeviation;
-        Random random = new Random(((ISeedReader) world).getSeed() * devGridX * devGridZ);
+        long seed = world.field_242889_a.getSeed();
+        Random random = new Random(seed * devGridX * devGridZ);
         int chunkOffsetX = random.nextInt(maxDeviation);
         int chunkOffsetZ = random.nextInt(maxDeviation);
         return (chunkX + chunkOffsetX) % chunkDistance == 0 && (chunkZ + chunkOffsetZ) % chunkDistance == 0;
