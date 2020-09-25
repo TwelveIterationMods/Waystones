@@ -188,7 +188,7 @@ public class WaystoneSelectionScreen extends ContainerScreen<WaystoneSelectionCo
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        func_230459_a_(matrixStack, mouseX, mouseY); // renderHoveredTooltip
+        renderHoveredTooltip(matrixStack, mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
                 func_243308_b(matrixStack, tooltipProvider.getTooltip(), mouseX, mouseY);

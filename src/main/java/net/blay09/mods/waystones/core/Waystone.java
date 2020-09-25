@@ -88,7 +88,7 @@ public class Waystone implements IWaystone {
         UUID waystoneUid = buf.readUniqueId();
         String name = buf.readString();
         boolean isGlobal = buf.readBoolean();
-        RegistryKey<World> dimension = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
+        RegistryKey<World> dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
         BlockPos pos = buf.readBlockPos();
 
         Waystone waystone = new Waystone(waystoneUid, dimension, pos, false, null);
@@ -101,7 +101,7 @@ public class Waystone implements IWaystone {
         buf.writeUniqueId(waystone.getWaystoneUid());
         buf.writeString(waystone.getName());
         buf.writeBoolean(waystone.isGlobal());
-        buf.writeResourceLocation(waystone.getDimension().func_240901_a_());
+        buf.writeResourceLocation(waystone.getDimension().getLocation());
         buf.writeBlockPos(waystone.getPos());
     }
 

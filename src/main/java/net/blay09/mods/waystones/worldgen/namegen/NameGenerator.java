@@ -89,7 +89,7 @@ public class NameGenerator extends WorldSavedData {
     public static NameGenerator get() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            ServerWorld overworld = server.getWorld(World.field_234918_g_);
+            ServerWorld overworld = server.getWorld(World.OVERWORLD);
             DimensionSavedDataManager storage = overworld.getSavedData();
             return storage.getOrCreate(NameGenerator::new, DATA_NAME);
         }

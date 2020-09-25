@@ -82,7 +82,7 @@ public class WaystoneManager extends WorldSavedData {
             CompoundNBT compound = (CompoundNBT) tag;
             UUID waystoneUid = NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("WaystoneUid")));
             String name = compound.getString("Name");
-            RegistryKey<World> dimensionType = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(compound.getString("World")));
+            RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(compound.getString("World")));
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
             UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
@@ -100,7 +100,7 @@ public class WaystoneManager extends WorldSavedData {
             CompoundNBT compound = new CompoundNBT();
             compound.put("WaystoneUid", NBTUtil.func_240626_a_(waystone.getWaystoneUid())); // writeUniqueId
             compound.putString("Name", waystone.getName());
-            compound.putString("World", waystone.getDimension().func_240901_a_().toString());
+            compound.putString("World", waystone.getDimension().getLocation().toString());
             compound.put("BlockPos", NBTUtil.writeBlockPos(waystone.getPos()));
             compound.putBoolean("WasGenerated", waystone.wasGenerated());
             if (waystone.getOwnerUid() != null) {
@@ -116,7 +116,7 @@ public class WaystoneManager extends WorldSavedData {
     public static WaystoneManager get() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            ServerWorld overworld = server.getWorld(World.field_234918_g_);
+            ServerWorld overworld = server.getWorld(World.OVERWORLD);
             DimensionSavedDataManager storage = overworld.getSavedData();
             return storage.getOrCreate(WaystoneManager::new, DATA_NAME);
         }

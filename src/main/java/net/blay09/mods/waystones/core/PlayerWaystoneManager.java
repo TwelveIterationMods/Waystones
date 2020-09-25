@@ -89,7 +89,7 @@ public class PlayerWaystoneManager {
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
         boolean enableXPCost = !player.abilities.isCreativeMode;
-        if (waystone.getDimension() != player.world.func_234923_W_()) {
+        if (waystone.getDimension() != player.world.getDimensionKey()) {
             return enableXPCost ? WaystoneConfig.SERVER.dimensionalWarpXpCost.get() : 0;
         }
 
@@ -139,7 +139,7 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        boolean isDimensionalWarp = waystone.getDimension() != player.world.func_234923_W_();
+        boolean isDimensionalWarp = waystone.getDimension() != player.world.getDimensionKey();
         if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.cannot_dimension_warp");
             chatComponent.mergeStyle(TextFormatting.RED);

@@ -101,7 +101,7 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     public void initializeWaystone(IWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(UUID.randomUUID(), ((World) world).func_234923_W_(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+        Waystone waystone = new Waystone(UUID.randomUUID(), ((World) world).getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         String name = NameGenerator.get().getName(waystone, world.getRandom());
         waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);

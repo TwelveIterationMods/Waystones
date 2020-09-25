@@ -36,7 +36,7 @@ public class InvalidWaystone implements IWaystone {
 
     @Override
     public RegistryKey<World> getDimension() {
-        return World.field_234918_g_;
+        return World.OVERWORLD;
     }
 
     @Override
