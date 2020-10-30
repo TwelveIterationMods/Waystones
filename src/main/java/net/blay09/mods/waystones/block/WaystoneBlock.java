@@ -77,14 +77,19 @@ public class WaystoneBlock extends Block {
     }
 
     @Override
+    public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
+        super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+    }
+
+    @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         DoubleBlockHalf half = state.get(HALF);
         BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
         BlockState other = world.getBlockState(offset);
         if (other.getBlock() == this && other.get(HALF) != half) {
-            world.setBlockState(offset, Blocks.AIR.getDefaultState(), 35);
-            world.playEvent(player, 2001, offset, Block.getStateId(other));
-            if (!world.isRemote && !player.isCreative()) {
+            world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
+            if (!world.isRemote && !player.abilities.isCreativeMode) {
+                spawnDrops(state, world, pos, null, player, player.getHeldItemMainhand());
                 spawnDrops(other, world, offset, null, player, player.getHeldItemMainhand());
             }
         }

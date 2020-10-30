@@ -99,6 +99,9 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
 
         if (textField.mouseClicked(mouseX, mouseY, button)) {
             return true;
+        } else if(textField.isMouseOver(mouseX, mouseY) && button == 1) {
+            textField.setText("");
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
