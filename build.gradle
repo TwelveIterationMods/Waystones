@@ -78,7 +78,6 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
-    maven { url 'https://maven.latmod.com/' } // TODO temporary to make JEI work
     flatDir {
         dirs "run/obfmods"
     }
@@ -92,9 +91,8 @@ dependencies {
     ])
 
     //compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
-    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.34:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.3.2.34")
-    compileOnly fg.deobf('com.feed_the_beast.mods:ftb-gui-library:1.0.0.18') // TODO temporary to make JEI work
+    compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49")
 
     def obfModsDir = new File("run/obfmods")
     obfModsDir.eachFile { file ->

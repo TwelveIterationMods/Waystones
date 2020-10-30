@@ -24,8 +24,8 @@ public class WaystoneFeature extends Feature<NoFeatureConfig> {
         this.waystoneState = waystoneState;
     }
 
-    @Override // place
-    public boolean func_241855_a(ISeedReader world, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    @Override
+    public boolean generate(ISeedReader world, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
         Direction facing = Direction.values()[2 + rand.nextInt(4)];
         BlockState state = world.getBlockState(pos);
         BlockPos posAbove = pos.up();

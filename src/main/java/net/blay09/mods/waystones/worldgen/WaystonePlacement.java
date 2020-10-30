@@ -17,10 +17,10 @@ public class WaystonePlacement extends TopSolidOnce {
     }
 
 
-    @Override // getPositions
-    public Stream<BlockPos> func_241857_a(WorldDecoratingHelper world, Random random, NoPlacementConfig config, BlockPos pos) {
+    @Override
+    public Stream<BlockPos> getPositions(WorldDecoratingHelper world, Random random, NoPlacementConfig config, BlockPos pos) {
         if (isWaystoneChunk(world, pos)) {
-            return super.func_241857_a(world, random, config, pos);
+            return super.getPositions(world, random, config, pos);
         } else {
             return Stream.empty();
         }

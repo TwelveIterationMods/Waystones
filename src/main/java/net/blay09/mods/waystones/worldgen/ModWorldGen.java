@@ -5,18 +5,21 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystoneConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
 public class ModWorldGen {
@@ -27,6 +30,9 @@ public class ModWorldGen {
     private static WaystoneFeature waystoneFeature;
     private static WaystoneFeature mossyWaystoneFeature;
     private static WaystoneFeature sandyWaystoneFeature;
+    private static ConfiguredFeature<?, ?> configuredWaystoneFeature;
+    private static ConfiguredFeature<?, ?> configuredMossyWaystoneFeature;
+    private static ConfiguredFeature<?, ?> configuredSandyWaystoneFeature;
     private static WaystonePlacement waystonePlacement;
 
     public static void registerFeatures(IForgeRegistry<Feature<?>> registry) {
@@ -37,41 +43,52 @@ public class ModWorldGen {
         );
     }
 
+    public static void registerConfiguredFeatures() {
+        configuredWaystoneFeature = registerConfiguredWaystone(waystoneFeature);
+        configuredMossyWaystoneFeature = registerConfiguredWaystone(mossyWaystoneFeature);
+        configuredSandyWaystoneFeature = registerConfiguredWaystone(sandyWaystoneFeature);
+    }
+
+    private static ConfiguredFeature<?, ?> registerConfiguredWaystone(WaystoneFeature feature) {
+        ConfiguredFeature<?, ?> configuredFeature = feature
+                .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
+                .withPlacement(waystonePlacement.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG));
+        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Objects.requireNonNull(feature.getRegistryName()), configuredFeature);
+        return configuredFeature;
+    }
+
     public static void registerPlacements(IForgeRegistry<Placement<?>> registry) {
         registry.registerAll(
-                waystonePlacement = (WaystonePlacement) new WaystonePlacement(NoPlacementConfig.field_236555_a_).setRegistryName("waystone")
+                waystonePlacement = (WaystonePlacement) new WaystonePlacement(NoPlacementConfig.CODEC).setRegistryName("waystone")
         );
     }
 
     @SubscribeEvent
     public static void onBiomeLoading(BiomeLoadingEvent event) {
-        WaystoneFeature feature = getWaystoneFeature(event.getCategory());
-        ConfiguredFeature<?, ?> configuredFeature = feature
-                .withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG)
-                .withPlacement(waystonePlacement.configure(NoPlacementConfig.NO_PLACEMENT_CONFIG));
+        ConfiguredFeature<?, ?>  configuredFeature = getWaystoneFeature(event.getCategory());
         event.getGeneration().withFeature(GenerationStage.Decoration.VEGETAL_DECORATION, configuredFeature);
     }
 
-    private static WaystoneFeature getWaystoneFeature(Biome.Category biomeCategory) {
+    private static ConfiguredFeature<?, ?> getWaystoneFeature(Biome.Category biomeCategory) {
         WorldGenStyle worldGenStyle = WaystoneConfig.COMMON.worldGenStyle.get();
         switch (worldGenStyle) {
             case MOSSY:
-                return mossyWaystoneFeature;
+                return configuredMossyWaystoneFeature;
             case SANDY:
-                return sandyWaystoneFeature;
+                return configuredSandyWaystoneFeature;
             case BIOME:
                 switch (biomeCategory) {
                     case DESERT:
-                        return sandyWaystoneFeature;
+                        return configuredSandyWaystoneFeature;
                     case JUNGLE:
                     case SWAMP:
                     case MUSHROOM:
-                        return mossyWaystoneFeature;
+                        return configuredMossyWaystoneFeature;
                     default:
-                        return waystoneFeature;
+                        return configuredWaystoneFeature;
                 }
             default:
-                return waystoneFeature;
+                return configuredWaystoneFeature;
         }
     }
 

@@ -87,7 +87,8 @@ public class Waystones {
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
-        DeferredWorkQueue.runLater(() -> {
+        event.enqueueWork(() -> {
+            ModWorldGen.registerConfiguredFeatures();
             ModWorldGen.setupVillageWorldGen();
         });
     }
