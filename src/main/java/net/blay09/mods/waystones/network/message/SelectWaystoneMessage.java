@@ -31,7 +31,7 @@ public class SelectWaystoneMessage {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             ServerPlayerEntity player = context.getSender();
-            if (player == null) {
+            if (player == null || !(player.openContainer instanceof WaystoneSelectionContainer)) {
                 return;
             }
 
