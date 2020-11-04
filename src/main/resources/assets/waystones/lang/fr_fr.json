@@ -30,7 +30,7 @@
   "chat.waystones.warpstone_not_charged": "La pierre de téléportation n'est pas encore chargée.",
   "chat.waystones.only_owner_can_edit": "Le nom des waystones ne peut être changé que par leur propriétaires.",
   "chat.waystones.only_creative_can_edit": "Vous devez être en mode créatif pour modifier une waystone globale.",
-  "tooltip.waystones.cooldown_left": "Recharge: %d seconds",
+  "tooltip.waystones.cooldown_left": "Recharge: %d secondes",
   "tooltip.waystones.bound_to": "Lié à: %s",
   "tooltip.waystones.bound_to_none": "Aucune",
   "stat.waystones.waystones_activated": "Waystones activées"
