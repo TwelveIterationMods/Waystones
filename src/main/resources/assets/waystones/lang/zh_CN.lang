@@ -16,7 +16,7 @@ waystones:stoneNotCharged=传送石未完全充能.
 waystones:activatedWaystone=已激活的传送石碑: %s
 waystones:nameOccupied=名称[%s]已被占用.
 waystones:notTheOwner=只有石碑放置者才能修改名称.
-waystones:creativeRequired=在创造模式下才能创建跨世界石碑.
+waystones:creativeRequired=在创造模式下才能创建其他玩家可见的石碑.
 waystones:scrollBound=卷轴绑定: %s
 
 gui.waystones:current_location=当前位置:
@@ -27,7 +27,7 @@ gui.waystones:confirmReturn=确定要传送返回到该石碑吗?
 gui.waystones:confirmReturn.boundTo=绑定至: %s
 gui.waystones:confirmReturn.noWaystoneActive=没有激活的石碑.
 gui.waystones:editWaystone.enterName=为石碑命名:
-gui.waystones:editWaystone.isGlobal=跨世界传送
+gui.waystones:editWaystone.isGlobal=其他玩家可见
 
 tooltip.waystones:cooldownLeft=冷却时间: %d秒
 tooltip.waystones:boundTo=绑定至: %s
@@ -38,5 +38,5 @@ tooltip.waystones:levelRequirement=需要经验等级: %d
 
 stat.waystones:waystonesActivated=传送石碑已激活
 
-waystones.general.globalinterdimension=全维度传送(跨世界传送石碑)
+waystones.general.globalinterdimension=其他玩家可见的石碑
 waystones.worldgen.customnames=自定义名称
