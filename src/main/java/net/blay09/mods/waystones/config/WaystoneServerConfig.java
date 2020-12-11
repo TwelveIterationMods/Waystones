@@ -2,6 +2,9 @@ package net.blay09.mods.waystones.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.util.Collections;
+import java.util.List;
+
 public class WaystoneServerConfig {
     public final ForgeConfigSpec.IntValue blocksPerXPLevel;
     public final ForgeConfigSpec.DoubleValue minimumXpCost;
@@ -29,6 +32,11 @@ public class WaystoneServerConfig {
     public final ForgeConfigSpec.BooleanValue restrictToCreative;
     public final ForgeConfigSpec.BooleanValue restrictRenameToOwner;
     public final ForgeConfigSpec.BooleanValue generatedWaystonesUnbreakable;
+
+    public final ForgeConfigSpec.BooleanValue transportLeashed;
+    public final ForgeConfigSpec.BooleanValue transportLeashedDimensional;
+    public final ForgeConfigSpec.IntValue costPerLeashed;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> leashedBlacklist;
 
     WaystoneServerConfig(ForgeConfigSpec.Builder builder) {
         builder.comment("These options will be synced to joining clients.").push("server");
@@ -126,6 +134,28 @@ public class WaystoneServerConfig {
                 .comment("The base xp level cost when travelling between dimensions. Ignores block distance.")
                 .translation("config.waystones.dimensionalWarpXpCost")
                 .defineInRange("dimensionalWarpXpCost", 3, 0, Integer.MAX_VALUE);
+
+        builder.pop().comment("These options apply to taking leashed mobs with you when teleporting.").push("leashedMobs");
+
+        transportLeashed = builder
+                .comment("If enabled, leashed mobs/animals will be teleported with you")
+                .translation("config.waystones.transportLeashed")
+                .define("transportLeashed", true);
+
+        transportLeashedDimensional = builder
+                .comment("Take animals with you when travelling between dimensions")
+                .translation("config.waystones.transportLeashedDimensional")
+                .define("transportLeashedDimensional", true);
+
+        costPerLeashed = builder
+                .comment("How much xp is need per leashed animal to travel with you")
+                .translation("config.waystones.costPerLeashed")
+                .defineInRange("costPerLeashed", 4, 0, Integer.MAX_VALUE);
+
+        leashedBlacklist = builder
+                .comment("Which leashed mobs cannot be taken with you when travelling.")
+                .translation("config.waystones.leashedBlacklist")
+                .defineList("leashedBlacklist", Collections.singletonList("minecraft:wither"), $ -> true);
 
         builder.pop().comment("These options define restrictions when managing waystones.").push("restrictions");
 
