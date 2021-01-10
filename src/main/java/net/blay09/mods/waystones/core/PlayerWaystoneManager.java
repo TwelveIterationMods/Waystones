@@ -147,6 +147,18 @@ public class PlayerWaystoneManager {
             return false;
         }
 
+        MinecraftServer server = player.getServer();
+        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
+        BlockState state = targetWorld != null ? targetWorld.getBlockState(waystone.getPos()) : null;
+        if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
+            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_missing");
+            chatComponent.mergeStyle(TextFormatting.RED);
+            player.sendStatusMessage(chatComponent, false);
+            WaystoneManager.get().removeWaystone(waystone);
+            PlayerWaystoneManager.removeKnownWaystone(waystone);
+            return false;
+        }
+
         if (warpMode.consumesItem() && !player.abilities.isCreativeMode) {
             warpItem.shrink(1);
         }
@@ -165,7 +177,8 @@ public class PlayerWaystoneManager {
             player.addExperienceLevel(-xpLevelCost);
         }
 
-        teleportToWaystone(player, waystone);
+        Direction direction = state.get(WaystoneBlock.FACING);
+        teleportToWaystone(player, waystone, targetWorld, direction);
         return true;
     }
 
@@ -199,25 +212,12 @@ public class PlayerWaystoneManager {
         }
     }
 
-    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone) {
+    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone, ServerWorld targetWorld, Direction direction) {
         BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
-        BlockPos targetPos;
-        Direction targetDir;
+        BlockPos targetPos = pos.offset(direction);
 
-        MinecraftServer server = player.getServer();
-        ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
-        BlockState state = targetWorld.getBlockState(pos);
-        if (state.getBlock() instanceof WaystoneBlock) {
-            Direction direction = state.get(WaystoneBlock.FACING);
-            targetPos = pos.offset(direction);
-            targetDir = direction;
-        } else {
-            targetPos = pos;
-            targetDir = Direction.NORTH;
-        }
-
-        player.teleport(targetWorld, targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5, targetDir.getHorizontalAngle(), player.rotationPitch);
+        player.teleport(targetWorld, targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5, direction.getHorizontalAngle(), player.rotationPitch);
 
         // Resync some things that Vanilla is missing:
         for (EffectInstance effectinstance : player.getActivePotionEffects()) {
