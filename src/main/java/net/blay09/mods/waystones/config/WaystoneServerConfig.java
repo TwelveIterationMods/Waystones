@@ -150,7 +150,7 @@ public class WaystoneServerConfig {
         costPerLeashed = builder
                 .comment("How much xp is need per leashed animal to travel with you")
                 .translation("config.waystones.costPerLeashed")
-                .defineInRange("costPerLeashed", 4, 0, Integer.MAX_VALUE);
+                .defineInRange("costPerLeashed", 1, 0, Integer.MAX_VALUE);
 
         leashedBlacklist = builder
                 .comment("Which leashed mobs cannot be taken with you when travelling.")
