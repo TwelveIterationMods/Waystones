@@ -93,9 +93,15 @@ public class PlayerWaystoneManager {
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
+        WaystoneTeleportContext context = new WaystoneTeleportContext();
+        context.setLeashedEntities(findLeashedAnimals(player));
+        return getExperienceLevelCost(player, waystone, warpMode, context);
+    }
+
+    public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode, WaystoneTeleportContext context) {
         boolean enableXPCost = !player.abilities.isCreativeMode;
 
-        int xpForLeashed = WaystoneConfig.SERVER.costPerLeashed.get() * findLeashedAnimals(player).size();
+        int xpForLeashed = WaystoneConfig.SERVER.costPerLeashed.get() * context.getLeashedEntities().size();
 
         if (waystone.getDimension() != player.world.getDimensionKey()) {
             return enableXPCost ? WaystoneConfig.SERVER.dimensionalWarpXpCost.get() + xpForLeashed : 0;
@@ -174,11 +180,6 @@ public class PlayerWaystoneManager {
             }
         }
 
-        int xpLevelCost = getExperienceLevelCost(player, waystone, warpMode);
-        if (player.experienceLevel < xpLevelCost) {
-            return false;
-        }
-
         MinecraftServer server = player.getServer();
         ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
         BlockState state = targetWorld != null ? targetWorld.getBlockState(waystone.getPos()) : null;
@@ -188,6 +189,16 @@ public class PlayerWaystoneManager {
             player.sendStatusMessage(chatComponent, false);
             WaystoneManager.get().removeWaystone(waystone);
             PlayerWaystoneManager.removeKnownWaystone(waystone);
+            return false;
+        }
+
+        WaystoneTeleportContext context = new WaystoneTeleportContext();
+        context.setLeashedEntities(leashed);
+        context.setDirection(state.get(WaystoneBlock.FACING));
+        context.setTargetWorld(targetWorld);
+
+        int xpLevelCost = getExperienceLevelCost(player, waystone, warpMode, context);
+        if (player.experienceLevel < xpLevelCost) {
             return false;
         }
 
@@ -209,8 +220,7 @@ public class PlayerWaystoneManager {
             player.addExperienceLevel(-xpLevelCost);
         }
 
-        Direction direction = state.get(WaystoneBlock.FACING);
-        teleportToWaystone(player, waystone, targetWorld, direction, leashed);
+        teleportToWaystone(player, waystone, context);
         return true;
     }
 
@@ -250,9 +260,11 @@ public class PlayerWaystoneManager {
         );
     }
 
-    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone, ServerWorld targetWorld, Direction direction, List<MobEntity> leashed) {
+    private static void teleportToWaystone(ServerPlayerEntity player, IWaystone waystone, WaystoneTeleportContext context) {
         BlockPos sourcePos = player.getPosition();
         BlockPos pos = waystone.getPos();
+        Direction direction = context.getDirection();
+        ServerWorld targetWorld = context.getTargetWorld();
         BlockPos targetPos = pos.offset(direction);
         Vector3d targetPos3d = new Vector3d(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
@@ -267,7 +279,7 @@ public class PlayerWaystoneManager {
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> player.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
 
-        leashed.forEach(mob -> {
+        context.getLeashedEntities().forEach(mob -> {
             if (targetWorld == mob.world) mob.setPosition(targetPos3d.x, targetPos3d.y, targetPos3d.z);
             else mob.changeDimension(targetWorld, new WaystoneTeleporter(targetPos3d));
         });
