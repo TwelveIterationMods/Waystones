@@ -268,7 +268,7 @@ public class PlayerWaystoneManager {
         BlockPos targetPos = pos.offset(direction);
         Vector3d targetPos3d = new Vector3d(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
-        player.teleport(targetWorld, targetPos3d.getX(), targetPos.getY(), targetPos.getZ(), direction.getHorizontalAngle(), player.rotationPitch);
+        player.teleport(targetWorld, targetPos3d.getX(), targetPos.getY(), targetPos3d.getZ(), direction.getHorizontalAngle(), player.rotationPitch);
 
         // Resync some things that Vanilla is missing:
         for (EffectInstance effectinstance : player.getActivePotionEffects()) {
