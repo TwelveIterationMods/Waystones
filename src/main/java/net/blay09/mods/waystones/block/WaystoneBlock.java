@@ -191,11 +191,13 @@ public class WaystoneBlock extends Block {
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
-        WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
-        if (tileEntity != null) {
-            IWaystone waystone = tileEntity.getWaystone();
-            WaystoneManager.get().removeWaystone(waystone);
-            PlayerWaystoneManager.removeKnownWaystone(waystone);
+        if (!state.isIn(newState.getBlock())) {
+            WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
+            if (tileEntity != null) {
+                IWaystone waystone = tileEntity.getWaystone();
+                WaystoneManager.get().removeWaystone(waystone);
+                PlayerWaystoneManager.removeKnownWaystone(waystone);
+            }
         }
 
         super.onReplaced(state, world, pos, newState, isMoving);
