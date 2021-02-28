@@ -170,6 +170,12 @@ public class WaystoneBlock extends Block {
                     ((WaystoneTileEntity) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntity) tileEntity));
                 }
 
+                if (placer instanceof PlayerEntity && waystoneTileEntityAbove instanceof WaystoneTileEntity) {
+                    IWaystone waystone = ((WaystoneTileEntity) waystoneTileEntityAbove).getWaystone();
+                    PlayerWaystoneManager.activateWaystone(((PlayerEntity) placer), waystone);
+                    WaystoneSyncManager.sendKnownWaystones(((PlayerEntity) placer));
+                }
+
                 // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
                 if (placer instanceof ServerPlayerEntity) {
                     final ServerPlayerEntity player = (ServerPlayerEntity) placer;
