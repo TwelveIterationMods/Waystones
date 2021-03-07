@@ -1,13 +1,15 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    
+
     maven {
-        url "https://minecraft.curseforge.com/api/maven/"
+        name "tterrag maven"
+        url "https://maven.tterrag.com/"
     }
-    maven {
-        url "https://dvs1.progwml6.com/files/maven/"
-    }
+    maven { url "https://minecraft.curseforge.com/api/maven/" }
+    maven { url "https://dvs1.progwml6.com/files/maven/" }
+    maven { url "https://maven.tehnut.info/" }
+
 }
 
 configurations {
