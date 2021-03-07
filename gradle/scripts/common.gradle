@@ -5,6 +5,9 @@ repositories {
     maven {
         url "https://minecraft.curseforge.com/api/maven/"
     }
+    maven {
+        url "https://dvs1.progwml6.com/files/maven/"
+    }
 }
 
 configurations {
