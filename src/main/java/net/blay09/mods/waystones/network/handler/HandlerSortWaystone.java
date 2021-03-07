@@ -23,9 +23,23 @@ public class HandlerSortWaystone implements IMessageHandler<MessageSortWaystone,
 			if(index < 0 || index >= entries.length || otherIndex < 0 || otherIndex >= entries.length) {
 				return;
 			}
-			WaystoneEntry swap = entries[index];
-			entries[index] = entries[otherIndex];
-			entries[otherIndex] = swap;
+			if (otherIndex == 0 && index != 1) {
+				WaystoneEntry[] result = new WaystoneEntry[entries.length];
+				System.arraycopy(entries, 0, result, 1, index);
+				System.arraycopy(entries, index + 1, result, index + 1, entries.length - index - 1);
+				result[0] = entries[index];
+				System.arraycopy(result, 0, entries, 0, entries.length);
+			} else if (otherIndex == entries.length - 1 && index != entries.length - 2) {
+				WaystoneEntry[] result = new WaystoneEntry[entries.length];
+				System.arraycopy(entries, 0, result, 0, index);
+				System.arraycopy(entries, index+1, result, index, entries.length - index - 1);
+				result[entries.length - 1] = entries[index];
+				System.arraycopy(result, 0, entries, 0, entries.length);
+			} else {
+				WaystoneEntry swap = entries[index];
+				entries[index] = entries[otherIndex];
+				entries[otherIndex] = swap;
+			}
 			waystoneData.store(ctx.getServerHandler().player);
 			WaystoneManager.sendPlayerWaystones(ctx.getServerHandler().player);
 		});
