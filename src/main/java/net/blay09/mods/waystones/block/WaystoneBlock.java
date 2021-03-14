@@ -16,12 +16,14 @@ import net.minecraft.entity.monster.piglin.PiglinTasks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -69,14 +71,19 @@ public class WaystoneBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WaystoneBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
-        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER));
+        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
     }
 
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState neighbor, IWorld world, BlockPos pos, BlockPos offset) {
+        if (state.get(WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+
         DoubleBlockHalf half = state.get(HALF);
         if ((facing.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (facing == Direction.UP)) || ((neighbor.getBlock() == this) && (neighbor.get(HALF) != half))) {
             if ((half != DoubleBlockHalf.LOWER) || (facing != Direction.DOWN) || state.isValidPosition(world, pos)) {
@@ -128,8 +135,7 @@ public class WaystoneBlock extends Block {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
-        builder.add(HALF);
+        builder.add(FACING, HALF, WATERLOGGED);
     }
 
     @Override
@@ -169,10 +175,13 @@ public class WaystoneBlock extends Block {
             return null;
         }
 
+        World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (pos.getY() < context.getWorld().getHeight() - 1) {
-            if (context.getWorld().getBlockState(pos.up()).isReplaceable(context)) {
-                return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        FluidState fluidState = world.getFluidState(pos);
+        if (pos.getY() < world.getHeight() - 1) {
+            if (world.getBlockState(pos.up()).isReplaceable(context)) {
+                return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite())
+                        .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
             }
         }
 
@@ -182,7 +191,8 @@ public class WaystoneBlock extends Block {
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         BlockPos posAbove = pos.up();
-        world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER));
+        FluidState fluidStateAbove = world.getFluidState(posAbove);
+        world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER).with(WATERLOGGED, fluidStateAbove.getFluid() == Fluids.WATER));
 
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -360,4 +370,8 @@ public class WaystoneBlock extends Block {
         }
     }
 
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
 }
