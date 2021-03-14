@@ -13,6 +13,8 @@ public class WaystoneCommonConfig {
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionAllowList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionDenyList;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpAllowList;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpDenyList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
@@ -43,10 +45,20 @@ public class WaystoneCommonConfig {
         worldGenDimensionAllowList = builder
                 .comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
                 .translation("config.waystones.worldGenDimensionAllowList")
-                .defineList("worldGenDimensionAllowList", Lists.newArrayList("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"),it -> it instanceof String);
+                .defineList("worldGenDimensionAllowList", Lists.newArrayList("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"), it -> it instanceof String);
 
         worldGenDimensionDenyList = builder
                 .comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
+                .translation("config.waystones.worldGenDimensionDenyList")
+                .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
+
+        dimensionalWarpAllowList = builder
+                .comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
+                .translation("config.waystones.dimensionalWarpAllowList")
+                .defineList("dimensionalWarpAllowList", ArrayList::new, it -> it instanceof String);
+
+        dimensionalWarpDenyList = builder
+                .comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
                 .translation("config.waystones.worldGenDimensionDenyList")
                 .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
 

@@ -225,6 +225,15 @@ public class PlayerWaystoneManager {
     }
 
     private static boolean canDimensionalWarpTo(PlayerEntity player, IWaystone waystone) {
+        ResourceLocation dimension = waystone.getDimension().getLocation();
+        List<? extends String> dimensionAllowList = WaystonesConfig.COMMON.dimensionalWarpAllowList.get();
+        List<? extends String> dimensionDenyList = WaystonesConfig.COMMON.dimensionalWarpDenyList.get();
+        if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension.toString())) {
+            return false;
+        } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension.toString())) {
+            return false;
+        }
+
         DimensionalWarp dimensionalWarpMode = WaystonesConfig.SERVER.dimensionalWarp.get();
         return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal();
     }
