@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvents;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID, value = Dist.CLIENT)
 public class InventoryButtonGuiHandler {
@@ -31,7 +33,11 @@ public class InventoryButtonGuiHandler {
 
     @SubscribeEvent
     public static void onInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (!(event.getGui() instanceof InventoryScreen)) {
+        if (!(event.getGui() instanceof InventoryScreen) && !(event.getGui() instanceof CreativeScreen)) {
+            return;
+        }
+
+        if (event.getGui() != Minecraft.getInstance().currentScreen) {
             return;
         }
 
@@ -40,6 +46,8 @@ public class InventoryButtonGuiHandler {
             return;
         }
 
+        Supplier<Integer> xPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeTeleportButtonX::get : WaystonesConfig.CLIENT.teleportButtonX::get;
+        Supplier<Integer> yPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeTeleportButtonY::get : WaystonesConfig.CLIENT.teleportButtonY::get;
         buttonWarp = new WaystoneInventoryButton((ContainerScreen<?>) event.getGui(), button -> {
             Minecraft mc = event.getGui().getMinecraft();
             PlayerEntity player = mc.player;
@@ -62,14 +70,14 @@ public class InventoryButtonGuiHandler {
             } else {
                 mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
             }
-        });
+        }, xPosition, yPosition);
         event.addWidget(buttonWarp);
     }
 
     @SubscribeEvent
     public static void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         // Render the inventory button tooltip when it's hovered
-        if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
+        if ((event.getGui() instanceof InventoryScreen || event.getGui() instanceof CreativeScreen) && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
             List<ITextComponent> tooltip = new ArrayList<>();
             long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);

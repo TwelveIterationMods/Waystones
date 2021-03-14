@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class WaystoneInventoryButton extends Button {
 
@@ -24,10 +25,14 @@ public class WaystoneInventoryButton extends Button {
     private final ContainerScreen<?> parentScreen;
     private final ItemStack iconItem;
     private final ItemStack iconItemHovered;
+    private final Supplier<Integer> xPosition;
+    private final Supplier<Integer> yPosition;
 
-    public WaystoneInventoryButton(ContainerScreen<?> parentScreen, IPressable pressable) {
+    public WaystoneInventoryButton(ContainerScreen<?> parentScreen, IPressable pressable, Supplier<Integer> xPosition, Supplier<Integer> yPosition) {
         super(0, 0, 16, 16, new StringTextComponent(""), pressable);
         this.parentScreen = parentScreen;
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
         this.iconItem = new ItemStack(ModItems.boundScroll);
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
     }
@@ -35,8 +40,8 @@ public class WaystoneInventoryButton extends Button {
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
-            x = parentScreen.getGuiLeft() + WaystonesConfig.CLIENT.teleportButtonX.get();
-            y = parentScreen.getGuiTop() + WaystonesConfig.CLIENT.teleportButtonY.get();
+            x = parentScreen.getGuiLeft() + xPosition.get();
+            y = parentScreen.getGuiTop() + yPosition.get();
             isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
             PlayerEntity player = Minecraft.getInstance().player;

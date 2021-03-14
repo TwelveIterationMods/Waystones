@@ -6,6 +6,8 @@ public class WaystoneClientConfig {
 
     public final ForgeConfigSpec.ConfigValue<Integer> teleportButtonX;
     public final ForgeConfigSpec.ConfigValue<Integer> teleportButtonY;
+    public final ForgeConfigSpec.ConfigValue<Integer> creativeTeleportButtonX;
+    public final ForgeConfigSpec.ConfigValue<Integer> creativeTeleportButtonY;
     public final ForgeConfigSpec.BooleanValue disableParticles;
     public final ForgeConfigSpec.BooleanValue disableTextGlow;
     public final ForgeConfigSpec.BooleanValue displayWaystonesOnJourneyMap;
@@ -23,6 +25,16 @@ public class WaystoneClientConfig {
                 .comment("The y position of the warp button in the inventory.")
                 .translation("config.waystones.teleportButtonY")
                 .define("teleportButtonY", 60);
+
+        creativeTeleportButtonX = builder
+                .comment("The x position of the warp button in the creative menu.")
+                .translation("config.waystones.creativeTeleportButtonX")
+                .define("creativeTeleportButtonX", 58);
+
+        creativeTeleportButtonY = builder
+                .comment("The y position of the warp button in the creative menu.")
+                .translation("config.waystones.creativeTeleportButtonY")
+                .define("creativeTeleportButtonY", 60);
 
         disableParticles = builder
                 .comment("If enabled, activated waystones will not emit particles.")
