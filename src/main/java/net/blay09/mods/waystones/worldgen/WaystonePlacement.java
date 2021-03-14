@@ -2,7 +2,8 @@ package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.serialization.Codec;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,9 +22,25 @@ public class WaystonePlacement extends TopSolidOnce {
     }
 
     @Override
-    public Stream<BlockPos> getPositions(WorldDecoratingHelper world, Random random, NoPlacementConfig config, BlockPos pos) {
-        if (isWaystoneChunk(world, pos)) {
-            return super.getPositions(world, random, config, pos);
+    public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random random, NoPlacementConfig config, BlockPos pos) {
+        if (isWaystoneChunk(helper, pos)) {
+            if (helper.field_242889_a.getWorld().getDimensionKey() == World.THE_NETHER) {
+                BlockPos.Mutable mutablePos = pos.toMutable();
+                int topMostY = helper.func_242893_a(func_241858_a(config), pos.getX(), pos.getZ());
+                mutablePos.setY(topMostY);
+                BlockState stateAbove = helper.field_242889_a.getBlockState(mutablePos);
+                for (int i = mutablePos.getY(); i >= 1; i--) {
+                    mutablePos.setY(mutablePos.getY() - 1);
+                    BlockState state = helper.field_242889_a.getBlockState(mutablePos);
+                    if(!state.isAir() && stateAbove.isAir() && !state.isIn(Blocks.BEDROCK)) {
+                        mutablePos.setY(mutablePos.getY() + 1);
+                        break;
+                    }
+                    stateAbove = state;
+                }
+                return mutablePos.getY() > 0 ? Stream.of(mutablePos) : Stream.empty();
+            }
+            return super.getPositions(helper, random, config, pos);
         } else {
             return Stream.empty();
         }
