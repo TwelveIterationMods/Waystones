@@ -246,11 +246,15 @@ public class WaystoneBlock extends Block {
 
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            if (!world.isRemote && WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get()) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> {
-                    it.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
-                    it.writeBlockPos(pos);
-                });
+            if (!world.isRemote) {
+                if (WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get()) {
+                    NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> {
+                        it.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
+                        it.writeBlockPos(pos);
+                    });
+                } else {
+                    player.sendStatusMessage(new TranslationTextComponent("chat.waystones.waystone_to_waystone_disabled"), true);
+                }
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

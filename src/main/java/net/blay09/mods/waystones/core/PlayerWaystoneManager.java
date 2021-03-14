@@ -302,7 +302,7 @@ public class PlayerWaystoneManager {
             case WARP_STONE:
                 return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpStone && PlayerWaystoneManager.canUseWarpStone(player, heldItem);
             case WAYSTONE_TO_WAYSTONE:
-                return fromWaystone != null && fromWaystone.isValid();
+                return WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get() && fromWaystone != null && fromWaystone.isValid();
         }
 
         return false;
