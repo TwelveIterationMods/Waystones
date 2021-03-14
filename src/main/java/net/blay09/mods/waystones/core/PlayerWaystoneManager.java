@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -38,6 +39,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
@@ -200,7 +202,8 @@ public class PlayerWaystoneManager {
 
         MinecraftServer server = player.getServer();
         ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
-        BlockState state = targetWorld != null ? targetWorld.getBlockState(waystone.getPos()) : null;
+        BlockPos pos = waystone.getPos();
+        BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
         if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_missing");
             chatComponent.mergeStyle(TextFormatting.RED);
@@ -208,9 +211,22 @@ public class PlayerWaystoneManager {
             return false;
         }
 
+        Direction direction = state.get(WaystoneBlock.FACING);
+        Set<Direction> directionCandidates = Sets.newHashSet(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        for (Direction candidate : directionCandidates) {
+            BlockPos offsetPos = pos.offset(candidate);
+            BlockPos offsetPosUp = offsetPos.up();
+            if (targetWorld.getBlockState(offsetPos).isSuffocating(targetWorld, offsetPos) || targetWorld.getBlockState(offsetPosUp).isSuffocating(targetWorld, offsetPosUp)) {
+                continue;
+            }
+
+            direction = candidate;
+            break;
+        }
+
         WaystoneTeleportContext context = new WaystoneTeleportContext();
         context.setLeashedEntities(leashed);
-        context.setDirection(state.get(WaystoneBlock.FACING));
+        context.setDirection(direction);
         context.setTargetWorld(targetWorld);
         context.setFromWaystone(fromWaystone);
 
