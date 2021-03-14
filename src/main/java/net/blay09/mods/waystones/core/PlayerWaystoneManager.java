@@ -87,9 +87,11 @@ public class PlayerWaystoneManager {
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
+        if (!isWaystoneActivated(player, waystone)) {
+            getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
 
-        MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(player, waystone));
+            MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(player, waystone));
+        }
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
@@ -187,8 +189,6 @@ public class PlayerWaystoneManager {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_missing");
             chatComponent.mergeStyle(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);
-            WaystoneManager.get().removeWaystone(waystone);
-            PlayerWaystoneManager.removeKnownWaystone(waystone);
             return false;
         }
 

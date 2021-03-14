@@ -8,18 +8,26 @@ import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.piglin.PiglinTasks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -27,15 +35,18 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -85,12 +96,25 @@ public class WaystoneBlock extends Block {
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         DoubleBlockHalf half = state.get(HALF);
         BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity offsetTileEntity = world.getTileEntity(offset);
+
+        boolean hasSilkTouch = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
+        if (hasSilkTouch) {
+            if (tileEntity instanceof WaystoneTileEntity) {
+                ((WaystoneTileEntity) tileEntity).setSilkTouched(true);
+            }
+            if (offsetTileEntity instanceof WaystoneTileEntity) {
+                ((WaystoneTileEntity) offsetTileEntity).setSilkTouched(true);
+            }
+        }
+
         BlockState other = world.getBlockState(offset);
         if (other.getBlock() == this && other.get(HALF) != half) {
             world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
             if (!world.isRemote && !player.abilities.isCreativeMode) {
-                spawnDrops(state, world, pos, null, player, player.getHeldItemMainhand());
-                spawnDrops(other, world, offset, null, player, player.getHeldItemMainhand());
+                spawnDrops(state, world, pos, tileEntity, player, player.getHeldItemMainhand());
+                spawnDrops(other, world, offset, offsetTileEntity, player, player.getHeldItemMainhand());
             }
         }
 
@@ -163,7 +187,17 @@ public class WaystoneBlock extends Block {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WaystoneTileEntity) {
-                ((WaystoneTileEntity) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
+                CompoundNBT tag = stack.getTag();
+                WaystoneProxy existingWaystone = null;
+                if (tag != null && tag.contains("UUID", Constants.NBT.TAG_INT_ARRAY)) {
+                    existingWaystone = new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tag.get("UUID"))));
+                }
+
+                if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof Waystone) {
+                    ((WaystoneTileEntity) tileEntity).initializeFromExisting((IServerWorld) world, ((Waystone) existingWaystone.getBackingWaystone()));
+                } else {
+                    ((WaystoneTileEntity) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
+                }
 
                 TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
                 if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {
@@ -193,7 +227,7 @@ public class WaystoneBlock extends Block {
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.isIn(newState.getBlock())) {
             WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
-            if (tileEntity != null) {
+            if (tileEntity != null && !tileEntity.isSilkTouched()) {
                 IWaystone waystone = tileEntity.getWaystone();
                 WaystoneManager.get().removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(waystone);
@@ -294,6 +328,21 @@ public class WaystoneBlock extends Block {
                         world.getPendingBlockTicks().scheduleTick(offset, neighbourBlock, 2);
                     }
                 }
+            }
+        }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+
+        CompoundNBT tagCompound = stack.getTag();
+        if (tagCompound != null && tagCompound.contains("UUID", Constants.NBT.TAG_INT_ARRAY)) {
+            WaystoneProxy waystone = new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tagCompound.get("UUID"))));
+            if (waystone.isValid()) {
+                StringTextComponent component = new StringTextComponent(waystone.getName());
+                component.mergeStyle(TextFormatting.AQUA);
+                tooltip.add(component);
             }
         }
     }

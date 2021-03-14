@@ -15,9 +15,10 @@ import java.util.UUID;
 public class Waystone implements IWaystone {
 
     private final UUID waystoneUid;
-    private final RegistryKey<World> dimension;
-    private final BlockPos pos;
     private final boolean wasGenerated;
+
+    private RegistryKey<World> dimension;
+    private BlockPos pos;
 
     private String name;
     private boolean isGlobal;
@@ -82,6 +83,14 @@ public class Waystone implements IWaystone {
     @Override
     public UUID getOwnerUid() {
         return ownerUid;
+    }
+
+    public void setDimension(RegistryKey<World> dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setPos(BlockPos pos) {
+        this.pos = pos;
     }
 
     public static IWaystone read(PacketBuffer buf) {

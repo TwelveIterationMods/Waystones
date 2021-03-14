@@ -33,6 +33,7 @@ public class WaystoneTileEntity extends TileEntity {
 
     private IWaystone waystone = InvalidWaystone.INSTANCE;
     private boolean shouldNotInitialize;
+    private boolean silkTouched;
 
     public WaystoneTileEntity() {
         super(ModTileEntities.waystone);
@@ -107,6 +108,12 @@ public class WaystoneTileEntity extends TileEntity {
         this.waystone = waystone;
     }
 
+    public void initializeFromExisting(IServerWorld world, Waystone existingWaystone) {
+        waystone = existingWaystone;
+        existingWaystone.setDimension(world.getWorld().getDimensionKey());
+        existingWaystone.setPos(pos);
+    }
+
     public void initializeFromBase(WaystoneTileEntity tileEntity) {
         waystone = tileEntity.getWaystone();
     }
@@ -157,4 +164,13 @@ public class WaystoneTileEntity extends TileEntity {
             }
         };
     }
+
+    public void setSilkTouched(boolean silkTouched) {
+        this.silkTouched = silkTouched;
+    }
+
+    public boolean isSilkTouched() {
+        return silkTouched;
+    }
+
 }
