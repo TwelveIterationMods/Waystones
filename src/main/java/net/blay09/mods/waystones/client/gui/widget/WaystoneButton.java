@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -9,11 +8,9 @@ import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +22,11 @@ public class WaystoneButton extends Button {
 
     private final int xpLevelCost;
 
-    public WaystoneButton(int x, int y, IWaystone waystone, WarpMode warpMode, IPressable pressable) {
+    public WaystoneButton(int x, int y, IWaystone waystone, int xpLevelCost, IPressable pressable) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable);
         PlayerEntity player = Minecraft.getInstance().player;
-        this.xpLevelCost = Math.round(PlayerWaystoneManager.getExperienceLevelCost(Objects.requireNonNull(player), waystone, warpMode));
-        if (!PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
+        this.xpLevelCost = xpLevelCost;
+        if (player == null || !PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
             active = false;
         } else if (player.experienceLevel < xpLevelCost && !player.abilities.isCreativeMode) {
             active = false;
