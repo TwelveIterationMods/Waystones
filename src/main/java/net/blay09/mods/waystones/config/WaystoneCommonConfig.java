@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.config;
 
+import com.google.common.collect.Lists;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ public class WaystoneCommonConfig {
     public final ForgeConfigSpec.BooleanValue allowWaystoneToWaystoneTeleport;
     public final ForgeConfigSpec.IntValue worldGenFrequency;
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionAllowList;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionDenyList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
@@ -36,6 +39,16 @@ public class WaystoneCommonConfig {
                 .comment("Set to 'DEFAULT' to only generate the normally textured waystones. Set to 'MOSSY' or 'SANDY' to generate all as that variant. Set to 'BIOME' to make the style depend on the biome it is generated in.")
                 .translation("config.waystones.worldGenStyle")
                 .defineEnum("worldGenStyle", WorldGenStyle.BIOME);
+
+        worldGenDimensionAllowList = builder
+                .comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
+                .translation("config.waystones.worldGenDimensionAllowList")
+                .defineList("worldGenDimensionAllowList", Lists.newArrayList("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"),it -> it instanceof String);
+
+        worldGenDimensionDenyList = builder
+                .comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
+                .translation("config.waystones.worldGenDimensionDenyList")
+                .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
 
         customWaystoneNames = builder
                 .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")

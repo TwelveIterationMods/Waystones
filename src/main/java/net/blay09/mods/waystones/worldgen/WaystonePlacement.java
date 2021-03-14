@@ -2,19 +2,23 @@ package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.serialization.Codec;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldDecoratingHelper;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.TopSolidOnce;
 
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
 public class WaystonePlacement extends TopSolidOnce {
+
     public WaystonePlacement(Codec<NoPlacementConfig> codec) {
         super(codec);
     }
-
 
     @Override
     public Stream<BlockPos> getPositions(WorldDecoratingHelper world, Random random, NoPlacementConfig config, BlockPos pos) {
@@ -28,6 +32,15 @@ public class WaystonePlacement extends TopSolidOnce {
     private boolean isWaystoneChunk(WorldDecoratingHelper world, BlockPos pos) {
         final int chunkDistance = WaystonesConfig.COMMON.worldGenFrequency.get();
         if (chunkDistance == 0) {
+            return false;
+        }
+
+        ResourceLocation dimension = world.field_242889_a.getWorld().getDimensionKey().getLocation();
+        List<? extends String> dimensionAllowList = WaystonesConfig.COMMON.worldGenDimensionAllowList.get();
+        List<? extends String> dimensionDenyList = WaystonesConfig.COMMON.worldGenDimensionDenyList.get();
+        if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension.toString())) {
+            return false;
+        } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension.toString())) {
             return false;
         }
 
