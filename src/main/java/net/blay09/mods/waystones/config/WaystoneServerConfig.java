@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class WaystoneServerConfig {
+    public final ForgeConfigSpec.BooleanValue inverseXpCost;
     public final ForgeConfigSpec.IntValue blocksPerXPLevel;
     public final ForgeConfigSpec.DoubleValue minimumXpCost;
     public final ForgeConfigSpec.DoubleValue maximumXpCost;
@@ -43,6 +44,11 @@ public class WaystoneServerConfig {
 
         builder.comment("Note: Base XP cost is based on the distance travelled.").push("baseXpCost");
 
+        inverseXpCost = builder
+                .comment("Set to true if experience cost should be inverted, meaning the shorter the distance, the more expensive. Can be used to encourage other methods for short-distance travel.")
+                .translation("config.waystones.inverseXpCost")
+                .define("inverseXpCost", false);
+
         blocksPerXPLevel = builder
                 .comment("The amount of blocks per xp level requirement. If set to 500, the base xp cost for travelling 1000 blocks will be 2 levels.")
                 .translation("config.waystones.blocksPerXPLevel")
@@ -54,7 +60,7 @@ public class WaystoneServerConfig {
                 .defineInRange("minimumXpCost", 0, 0, Float.POSITIVE_INFINITY);
 
         maximumXpCost = builder
-                .comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all XP costs")
+                .comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all distance-based XP costs")
                 .translation("config.waystones.maximumXpCost")
                 .defineInRange("maximumXpCost", 0, 0, Float.POSITIVE_INFINITY);
 

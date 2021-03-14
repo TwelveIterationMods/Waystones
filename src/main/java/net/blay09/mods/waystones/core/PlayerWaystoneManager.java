@@ -96,13 +96,23 @@ public class PlayerWaystoneManager {
         }
     }
 
+    @Deprecated
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode) {
+        return getExperienceLevelCost(player, waystone, warpMode, (Waystone) null);
+    }
+
+    public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         WaystoneTeleportContext context = new WaystoneTeleportContext();
         context.setLeashedEntities(findLeashedAnimals(player));
+        context.setFromWaystone(fromWaystone);
         return getExperienceLevelCost(player, waystone, warpMode, context);
     }
 
     public static int getExperienceLevelCost(PlayerEntity player, IWaystone waystone, WarpMode warpMode, WaystoneTeleportContext context) {
+        if (context.getFromWaystone() != null && waystone.getWaystoneUid().equals(context.getFromWaystone().getWaystoneUid())) {
+            return 0;
+        }
+
         boolean enableXPCost = !player.abilities.isCreativeMode;
 
         int xpForLeashed = WaystonesConfig.SERVER.costPerLeashed.get() * context.getLeashedEntities().size();
@@ -123,6 +133,10 @@ public class PlayerWaystoneManager {
         double xpLevelCost;
         if (WaystonesConfig.SERVER.blocksPerXPLevel.get() > 0) {
             xpLevelCost = MathHelper.clamp(dist / (float) WaystonesConfig.SERVER.blocksPerXPLevel.get(), minimumXpCost, maximumXpCost);
+
+            if (WaystonesConfig.SERVER.inverseXpCost.get()) {
+                xpLevelCost = maximumXpCost - xpLevelCost;
+            }
         } else {
             xpLevelCost = minimumXpCost;
         }
@@ -198,6 +212,7 @@ public class PlayerWaystoneManager {
         context.setLeashedEntities(leashed);
         context.setDirection(state.get(WaystoneBlock.FACING));
         context.setTargetWorld(targetWorld);
+        context.setFromWaystone(fromWaystone);
 
         int xpLevelCost = getExperienceLevelCost(player, waystone, warpMode, context);
         if (player.experienceLevel < xpLevelCost) {
