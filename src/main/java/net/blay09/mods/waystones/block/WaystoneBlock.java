@@ -196,9 +196,10 @@ public class WaystoneBlock extends Block {
         FluidState fluidStateAbove = world.getFluidState(posAbove);
         world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER).with(WATERLOGGED, fluidStateAbove.getFluid() == Fluids.WATER));
 
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntity) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
+        if (tileEntity instanceof WaystoneTileEntity) {
+            if (!world.isRemote) {
                 CompoundNBT tag = stack.getTag();
                 WaystoneProxy existingWaystone = null;
                 if (tag != null && tag.contains("UUID", Constants.NBT.TAG_INT_ARRAY)) {
@@ -211,25 +212,27 @@ public class WaystoneBlock extends Block {
                     ((WaystoneTileEntity) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
                 }
 
-                TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
                 if (waystoneTileEntityAbove instanceof WaystoneTileEntity) {
                     ((WaystoneTileEntity) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntity) tileEntity));
                 }
+            }
 
-                if (placer instanceof PlayerEntity && waystoneTileEntityAbove instanceof WaystoneTileEntity) {
-                    IWaystone waystone = ((WaystoneTileEntity) waystoneTileEntityAbove).getWaystone();
-                    PlayerWaystoneManager.activateWaystone(((PlayerEntity) placer), waystone);
+            if (placer instanceof PlayerEntity && waystoneTileEntityAbove instanceof WaystoneTileEntity) {
+                IWaystone waystone = ((WaystoneTileEntity) waystoneTileEntityAbove).getWaystone();
+                PlayerWaystoneManager.activateWaystone(((PlayerEntity) placer), waystone);
+
+                if (!world.isRemote) {
                     WaystoneSyncManager.sendKnownWaystones(((PlayerEntity) placer));
                 }
+            }
 
-                // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
-                if (placer instanceof ServerPlayerEntity) {
-                    final ServerPlayerEntity player = (ServerPlayerEntity) placer;
-                    final WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
-                    WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
-                    if (result == WaystoneEditPermissions.ALLOW) {
-                        NetworkHooks.openGui(player, waystoneTileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, waystoneTileEntity.getWaystone()));
-                    }
+            // Open settings screen on placement since people don't realize you can shift-click waystones to edit them
+            if (!world.isRemote && placer instanceof ServerPlayerEntity) {
+                final ServerPlayerEntity player = (ServerPlayerEntity) placer;
+                final WaystoneTileEntity waystoneTileEntity = (WaystoneTileEntity) tileEntity;
+                WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
+                if (result == WaystoneEditPermissions.ALLOW) {
+                    NetworkHooks.openGui(player, waystoneTileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, waystoneTileEntity.getWaystone()));
                 }
             }
         }

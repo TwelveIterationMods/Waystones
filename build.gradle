@@ -71,6 +71,9 @@ repositories {
         url "https://minecraft.curseforge.com/api/maven/"
     }
     maven {
+        url "https://www.cursemaven.com"
+    }
+    maven {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
@@ -90,9 +93,10 @@ dependencies {
             version: "${minecraft_version}-${forge_version}"
     ])
 
-    //compileOnly "journeymap:journeymap:1.15.2:5.7.0beta1"
     compileOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.6.0.49")
+
+    compile fg.deobf("curse.maven:journeymap-32274:3222876")
 
     def obfModsDir = new File("run/obfmods")
     if(obfModsDir.exists()) {

@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.KnownWaystonesEvent;
 import net.blay09.mods.waystones.core.InMemoryPlayerWaystoneData;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
@@ -11,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -51,6 +53,7 @@ public class PlayerKnownWaystonesMessage {
             for (IWaystone waystone : message.waystones) {
                 WaystoneManager.get().updateWaystone(waystone);
             }
+            MinecraftForge.EVENT_BUS.post(new KnownWaystonesEvent(message.waystones));
         });
         context.setPacketHandled(true);
     }
