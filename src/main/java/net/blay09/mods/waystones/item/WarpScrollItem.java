@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -43,7 +43,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystoneConfig.SERVER.scrollUseTime.get();
+        return WaystonesConfig.SERVER.scrollUseTime.get();
     }
 
     @Override

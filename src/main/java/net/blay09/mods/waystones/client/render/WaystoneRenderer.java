@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.BlockState;
@@ -50,8 +50,8 @@ public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
         if (isActivated) {
             matrixStack.scale(1.05f, 1.05f, 1.05f);
             IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::getEntityCutout);
-            int light = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
-            int overlay = WaystoneConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+            int light = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
+            int overlay = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
             model.render(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
         }
         matrixStack.pop();

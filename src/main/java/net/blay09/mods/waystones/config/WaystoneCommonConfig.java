@@ -7,6 +7,7 @@ import java.util.List;
 
 public class WaystoneCommonConfig {
     public final ForgeConfigSpec.BooleanValue addVillageStructure;
+    public final ForgeConfigSpec.BooleanValue allowWaystoneToWaystoneTeleport;
     public final ForgeConfigSpec.IntValue worldGenFrequency;
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
@@ -20,6 +21,11 @@ public class WaystoneCommonConfig {
                 .comment("NOT YET IMPLEMENTED: Set to true if waystones should be added to the generation of villages. THIS OPTION DOES NOT WORK YET.")
                 .translation("config.waystones.addVillageStructure")
                 .define("addVillageStructure", false);
+
+        allowWaystoneToWaystoneTeleport = builder
+                .comment("Set to true if players should be able to teleport between waystones by simply right-clicking a waystone.")
+                .translation("config.waystones.allowWaystoneToWaystoneTeleport")
+                .define("allowWaystoneToWaystoneTeleport", true);
 
         worldGenFrequency = builder
                 .comment("Approximate chunk distance between waystones generated freely in world generation. Set to 0 to disable generation.")

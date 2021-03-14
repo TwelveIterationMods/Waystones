@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -53,7 +53,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystoneConfig.SERVER.warpStoneUseTime.get();
+        return WaystonesConfig.SERVER.warpStoneUseTime.get();
     }
 
     @Override
@@ -117,7 +117,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         }
 
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        long maxCooldown = WaystoneConfig.SERVER.warpStoneCooldown.get() * 1000;
+        long maxCooldown = WaystonesConfig.SERVER.warpStoneCooldown.get() * 1000;
         if (maxCooldown == 0) {
             return 0f;
         }

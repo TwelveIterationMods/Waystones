@@ -1,9 +1,8 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.serialization.Codec;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.feature.WorldDecoratingHelper;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.TopSolidOnce;
@@ -27,7 +26,7 @@ public class WaystonePlacement extends TopSolidOnce {
     }
 
     private boolean isWaystoneChunk(WorldDecoratingHelper world, BlockPos pos) {
-        final int chunkDistance = WaystoneConfig.COMMON.worldGenFrequency.get();
+        final int chunkDistance = WaystonesConfig.COMMON.worldGenFrequency.get();
         if (chunkDistance == 0) {
             return false;
         }

@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.client.ModScreens;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -55,9 +55,9 @@ public class Waystones {
         DeferredWorkQueue.runLater(NetworkHandler::init);
         DeferredWorkQueue.runLater(ModStats::registerStats);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WaystoneConfig.commonSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WaystoneConfig.clientSpec);
-        registerSaneServerConfig(WaystoneConfig.serverSpec, MOD_ID);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WaystonesConfig.commonSpec);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WaystonesConfig.clientSpec);
+        registerSaneServerConfig(WaystonesConfig.serverSpec, MOD_ID);
     }
 
     /**

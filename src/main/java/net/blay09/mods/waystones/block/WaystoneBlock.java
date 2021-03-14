@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.*;
@@ -246,7 +246,7 @@ public class WaystoneBlock extends Block {
 
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
-            if (!world.isRemote) {
+            if (!world.isRemote && WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get()) {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> {
                     it.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
                     it.writeBlockPos(pos);
@@ -297,7 +297,7 @@ public class WaystoneBlock extends Block {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (!WaystoneConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
+        if (!WaystonesConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
             WaystoneTileEntity tileEntity = (WaystoneTileEntity) world.getTileEntity(pos);
             PlayerEntity player = Minecraft.getInstance().player;
             if (tileEntity != null && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone())) {

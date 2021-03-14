@@ -2,21 +2,14 @@ package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
-import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.SyncConfigMessage;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
@@ -35,7 +28,7 @@ public class LoginHandler {
         WaystoneSyncManager.sendKnownWaystones(event.getPlayer());
         WaystoneSyncManager.sendWaystoneCooldowns(event.getPlayer());
 
-        WaystoneConfig.syncServerConfigs(event.getPlayer());
+        WaystonesConfig.syncServerConfigs(event.getPlayer());
     }
 
 

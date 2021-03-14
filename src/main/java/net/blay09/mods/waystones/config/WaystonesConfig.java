@@ -22,7 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class WaystoneConfig {
+public class WaystonesConfig {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -79,7 +79,7 @@ public class WaystoneConfig {
 
     public static void syncServerConfigs(PlayerEntity player) {
         try {
-            final byte[] configData = Files.readAllBytes(WaystoneConfig.getServerConfigPath());
+            final byte[] configData = Files.readAllBytes(WaystonesConfig.getServerConfigPath());
             NetworkHandler.sendTo(new SyncConfigMessage(configData), player);
         } catch (IOException e) {
             logger.error("Failed to sync Waystones config", e);

@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -35,8 +35,8 @@ public class WaystoneInventoryButton extends Button {
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
-            x = parentScreen.getGuiLeft() + WaystoneConfig.CLIENT.teleportButtonX.get();
-            y = parentScreen.getGuiTop() + WaystoneConfig.CLIENT.teleportButtonY.get();
+            x = parentScreen.getGuiLeft() + WaystonesConfig.CLIENT.teleportButtonX.get();
+            y = parentScreen.getGuiTop() + WaystonesConfig.CLIENT.teleportButtonY.get();
             isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
             PlayerEntity player = Minecraft.getInstance().player;

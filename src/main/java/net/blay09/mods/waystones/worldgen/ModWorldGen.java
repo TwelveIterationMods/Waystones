@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.worldgen;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -70,7 +70,7 @@ public class ModWorldGen {
     }
 
     private static ConfiguredFeature<?, ?> getWaystoneFeature(Biome.Category biomeCategory) {
-        WorldGenStyle worldGenStyle = WaystoneConfig.COMMON.worldGenStyle.get();
+        WorldGenStyle worldGenStyle = WaystonesConfig.COMMON.worldGenStyle.get();
         switch (worldGenStyle) {
             case MOSSY:
                 return configuredMossyWaystoneFeature;

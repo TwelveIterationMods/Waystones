@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -38,7 +38,7 @@ public class NameGenerator extends WorldSavedData {
 
     public synchronized String getName(IWaystone waystone, Random rand) {
         String name = null;
-        List<? extends String> customNames = WaystoneConfig.COMMON.customWaystoneNames.get();
+        List<? extends String> customNames = WaystonesConfig.COMMON.customWaystoneNames.get();
         Collections.shuffle(customNames, rand);
         for (String customName : customNames) {
             if (!usedNames.contains(customName)) {

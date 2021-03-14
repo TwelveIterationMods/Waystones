@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import com.electronwill.nightconfig.toml.TomlFormat;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -32,7 +32,7 @@ public class SyncConfigMessage {
                 return;
             }
 
-            WaystoneConfig.serverSpec.setConfig(TomlFormat.instance().createParser().parse(new ByteArrayInputStream(message.configData)));
+            WaystonesConfig.serverSpec.setConfig(TomlFormat.instance().createParser().parse(new ByteArrayInputStream(message.configData)));
         });
         context.setPacketHandled(true);
     }

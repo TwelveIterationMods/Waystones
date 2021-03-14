@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
@@ -35,7 +35,7 @@ public class InventoryButtonGuiHandler {
             return;
         }
 
-        InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
+        InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
         if (!inventoryButtonMode.isEnabled()) {
             return;
         }
@@ -70,7 +70,7 @@ public class InventoryButtonGuiHandler {
     public static void onDrawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         // Render the inventory button tooltip when it's hovered
         if (event.getGui() instanceof InventoryScreen && buttonWarp != null && buttonWarp.isHovered()) {
-            InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
+            InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
             List<ITextComponent> tooltip = new ArrayList<>();
             long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
             int secondsLeft = (int) (timeLeft / 1000);

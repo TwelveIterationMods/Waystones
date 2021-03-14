@@ -1,16 +1,16 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 
 import java.util.function.Supplier;
 
 public enum WarpMode {
-    INVENTORY_BUTTON(WaystoneConfig.SERVER.inventoryButtonXpCostMultiplier::get, false),
+    INVENTORY_BUTTON(WaystonesConfig.SERVER.inventoryButtonXpCostMultiplier::get, false),
     WARP_SCROLL(() -> 0.0, true),
     RETURN_SCROLL(() -> 0.0, true),
     BOUND_SCROLL(() -> 0.0, true),
-    WARP_STONE(WaystoneConfig.SERVER.warpStoneXpCostMultiplier::get, false),
-    WAYSTONE_TO_WAYSTONE(WaystoneConfig.SERVER.waystoneXpCostMultiplier::get, false);
+    WARP_STONE(WaystonesConfig.SERVER.warpStoneXpCostMultiplier::get, false),
+    WAYSTONE_TO_WAYSTONE(WaystonesConfig.SERVER.waystoneXpCostMultiplier::get, false);
 
     public static WarpMode[] values = values();
 

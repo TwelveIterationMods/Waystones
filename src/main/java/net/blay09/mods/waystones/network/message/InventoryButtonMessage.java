@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -45,7 +45,7 @@ public class InventoryButtonMessage {
     public static void handle(InventoryButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            InventoryButtonMode inventoryButtonMode = WaystoneConfig.getInventoryButtonMode();
+            InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
             if (!inventoryButtonMode.isEnabled()) {
                 return;
             }

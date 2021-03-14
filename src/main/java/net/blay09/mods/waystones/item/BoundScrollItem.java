@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.config.WaystoneConfig;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -42,7 +42,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystoneConfig.SERVER.scrollUseTime.get();
+        return WaystonesConfig.SERVER.scrollUseTime.get();
     }
 
     @Override
