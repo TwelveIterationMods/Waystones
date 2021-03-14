@@ -60,6 +60,18 @@ public class WaystoneTileEntity extends TileEntity {
     }
 
     @Override
+    public void onLoad() {
+        IWaystone backingWaystone = waystone;
+        if (waystone instanceof WaystoneProxy) {
+            backingWaystone = ((WaystoneProxy) waystone).getBackingWaystone();
+        }
+        if (backingWaystone instanceof Waystone && world != null) {
+            ((Waystone) backingWaystone).setDimension(world.getDimensionKey());
+            ((Waystone) backingWaystone).setPos(pos);
+        }
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         super.onDataPacket(net, pkt);
         read(getBlockState(), pkt.getNbtCompound());
