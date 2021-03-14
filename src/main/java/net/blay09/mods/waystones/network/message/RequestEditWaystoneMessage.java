@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.entity.player.PlayerEntity;
@@ -66,7 +67,7 @@ public class RequestEditWaystoneMessage {
                 return;
             }
 
-            NetworkHooks.openGui(player, message.containerProvider, pos);
+            NetworkHooks.openGui(player, message.containerProvider, it -> Waystone.write(it, message.waystone));
         });
         context.setPacketHandled(true);
     }
