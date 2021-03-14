@@ -169,7 +169,7 @@ public class PlayerWaystoneManager {
             }
 
             List<ResourceLocation> forbidden = WaystoneConfig.SERVER.leashedBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toList());
-            if(leashed.stream().anyMatch(e -> forbidden.contains(e.getType().getRegistryName()))) {
+            if (leashed.stream().anyMatch(e -> forbidden.contains(e.getType().getRegistryName()))) {
                 informPlayer(player, "chat.waystones.cannot_transport_this_leashed");
                 return false;
             }
@@ -336,11 +336,13 @@ public class PlayerWaystoneManager {
 
     @Nullable
     public static IWaystone getNearestWaystone(PlayerEntity player) {
-        return getPlayerWaystoneData(player.world).getWaystones(player).stream().min((first, second) -> {
-            double firstDist = first.getPos().distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), true);
-            double secondDist = second.getPos().distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), true);
-            return (int) Math.round(firstDist) - (int) Math.round(secondDist);
-        }).orElse(null);
+        return getPlayerWaystoneData(player.world).getWaystones(player).stream()
+                .filter(it -> it.getDimension() == player.world.getDimensionKey())
+                .min((first, second) -> {
+                    double firstDist = first.getPos().distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), true);
+                    double secondDist = second.getPos().distanceSq(player.getPosX(), player.getPosY(), player.getPosZ(), true);
+                    return (int) Math.round(firstDist) - (int) Math.round(secondDist);
+                }).orElse(null);
     }
 
     public static List<IWaystone> getWaystones(PlayerEntity player) {
