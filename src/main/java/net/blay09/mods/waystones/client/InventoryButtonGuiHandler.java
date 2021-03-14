@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,6 +71,13 @@ public class InventoryButtonGuiHandler {
             } else {
                 mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 0.5f));
             }
+        }, () -> {
+            if (event.getGui() instanceof CreativeScreen) {
+                CreativeScreen gui = ((CreativeScreen) event.getGui());
+                return gui.getSelectedTabIndex() == ItemGroup.INVENTORY.getIndex();
+            }
+
+            return true;
         }, xPosition, yPosition);
         event.addWidget(buttonWarp);
     }

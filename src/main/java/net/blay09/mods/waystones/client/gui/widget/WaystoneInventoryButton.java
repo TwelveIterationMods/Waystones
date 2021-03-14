@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -25,16 +24,24 @@ public class WaystoneInventoryButton extends Button {
     private final ContainerScreen<?> parentScreen;
     private final ItemStack iconItem;
     private final ItemStack iconItemHovered;
+    private final Supplier<Boolean> visiblePredicate;
     private final Supplier<Integer> xPosition;
     private final Supplier<Integer> yPosition;
 
-    public WaystoneInventoryButton(ContainerScreen<?> parentScreen, IPressable pressable, Supplier<Integer> xPosition, Supplier<Integer> yPosition) {
+    public WaystoneInventoryButton(ContainerScreen<?> parentScreen, IPressable pressable, Supplier<Boolean> visiblePredicate, Supplier<Integer> xPosition, Supplier<Integer> yPosition) {
         super(0, 0, 16, 16, new StringTextComponent(""), pressable);
         this.parentScreen = parentScreen;
+        this.visiblePredicate = visiblePredicate;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.iconItem = new ItemStack(ModItems.boundScroll);
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
+    }
+
+    @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        visible = visiblePredicate.get();
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
