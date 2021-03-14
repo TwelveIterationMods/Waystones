@@ -59,7 +59,7 @@ public class EditWaystoneMessage {
 
             if (PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
                 if (!backingWaystone.isGlobal() && message.isGlobal) {
-                    PlayerWaystoneManager.makeWaystoneGlobal(backingWaystone);
+                    PlayerWaystoneManager.activeWaystoneForEveryone(backingWaystone);
                 }
                 backingWaystone.setGlobal(message.isGlobal);
             }

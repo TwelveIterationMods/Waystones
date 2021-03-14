@@ -1,15 +1,14 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +23,18 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private final int visibleRegionHeight;
     private static boolean shiftGuard;
 
-    public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IPressable pressable) {
+    public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IWaystone waystone, IPressable pressable) {
         super(x, y, 13, 13, new StringTextComponent(""), pressable);
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
-        tooltip = Collections.singletonList(new TranslationTextComponent("gui.waystones.waystone_selection.hold_shift_to_delete"));
-        activeTooltip = Collections.singletonList(new TranslationTextComponent("gui.waystones.waystone_selection.click_to_delete"));
+        tooltip = Lists.newArrayList(new TranslationTextComponent("gui.waystones.waystone_selection.hold_shift_to_delete"));
+        activeTooltip = Lists.newArrayList(new TranslationTextComponent("gui.waystones.waystone_selection.click_to_delete"));
+        if (waystone.isGlobal()) {
+            TranslationTextComponent component = new TranslationTextComponent("gui.waystones.waystone_selection.deleting_global_for_all");
+            component.mergeStyle(TextFormatting.DARK_RED);
+            tooltip.add(component);
+            activeTooltip.add(component);
+        }
     }
 
     @Override

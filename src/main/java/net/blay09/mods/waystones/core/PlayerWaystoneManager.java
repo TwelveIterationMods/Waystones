@@ -425,7 +425,7 @@ public class PlayerWaystoneManager {
         return player.abilities.isCreativeMode || !WaystonesConfig.SERVER.globalWaystoneRequiresCreative.get();
     }
 
-    public static void makeWaystoneGlobal(IWaystone waystone) {
+    public static void activeWaystoneForEveryone(IWaystone waystone) {
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayerEntity player : players) {
             if (!isWaystoneActivated(player, waystone)) {
