@@ -9,12 +9,14 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPlayEntityEffectPacket;
+import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
@@ -277,7 +279,21 @@ public class PlayerWaystoneManager {
         BlockPos targetPos = pos.offset(direction);
         Vector3d targetPos3d = new Vector3d(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
+        Entity mount = player.getRidingEntity();
+        if (mount != null) {
+            player.stopRiding();
+            if (targetWorld == mount.world) {
+                mount.setPositionAndUpdate(targetPos3d.x, targetPos3d.y, targetPos3d.z);
+            } else {
+                mount = mount.changeDimension(targetWorld, new WaystoneTeleporter(targetPos3d));
+            }
+        }
         player.teleport(targetWorld, targetPos3d.getX(), targetPos.getY(), targetPos3d.getZ(), direction.getHorizontalAngle(), player.rotationPitch);
+
+        if (mount != null) {
+            player.startRiding(mount);
+            player.connection.sendPacket(new SSetPassengersPacket(mount));
+        }
 
         // Resync some things that Vanilla is missing:
         for (EffectInstance effectinstance : player.getActivePotionEffects()) {
