@@ -3,6 +3,7 @@
   "block.waystones.waystone": "Waystone",
   "block.waystones.mossy_waystone": "Mossy Waystone",
   "block.waystones.sandy_waystone": "Sandy Waystone",
+  "block.waystones.sharestone": "Sharestone",
   "item.waystones.warp_scroll": "Warp Scroll",
   "item.waystones.warp_scroll_bound": "Warp Scroll (Bound)",
   "item.waystones.return_scroll": "Return Scroll",

@@ -128,7 +128,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean hasEffect(ItemStack itemStack) {
-        return PlayerWaystoneManager.canUseWarpStone(Minecraft.getInstance().player, itemStack);
+        return PlayerWaystoneManager.canUseWarpStone(Minecraft.getInstance().player, itemStack) || super.hasEffect(itemStack);
     }
 
     @Override
