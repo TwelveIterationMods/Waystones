@@ -15,6 +15,11 @@ import net.minecraft.world.IBlockReader;
 
 public class WarpPlateBlock extends Block {
 
+    private static final VoxelShape SHAPE = VoxelShapes.or(
+            makeCuboidShape(0.0, 0.0, 0.0, 16.0, 1.0, 16.0),
+            makeCuboidShape(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
+    ).simplify();
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WarpPlateBlock() {
@@ -29,6 +34,6 @@ public class WarpPlateBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return VoxelShapes.empty();
+        return SHAPE;
     }
 }
