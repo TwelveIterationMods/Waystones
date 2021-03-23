@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.worldgen;
 
-import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -14,8 +13,9 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.*;
-import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -23,7 +23,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
 public class ModWorldGen {
@@ -98,11 +100,6 @@ public class ModWorldGen {
 
     public static void setupVillageWorldGen(DynamicRegistries dynamicRegistries) {
         if (WaystonesConfig.COMMON.addVillageStructure.get()) {
-            PlainsVillagePools.init();
-            SnowyVillagePools.init();
-            SavannaVillagePools.init();
-            DesertVillagePools.init();
-            TaigaVillagePools.init();
 
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(dynamicRegistries, "village/plains/houses", villageWaystoneStructure, 1);
