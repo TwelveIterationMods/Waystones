@@ -29,9 +29,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public abstract class WaystoneBlockBase extends Block {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    protected static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    protected static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+    protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WaystoneBlockBase() {
         super(AbstractBlock.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));

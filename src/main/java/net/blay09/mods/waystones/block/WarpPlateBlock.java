@@ -20,7 +20,7 @@ public class WarpPlateBlock extends Block {
             makeCuboidShape(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
     ).simplify();
 
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WarpPlateBlock() {
         super(Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));

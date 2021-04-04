@@ -12,6 +12,8 @@ public class WaystoneServerConfig {
     public final ForgeConfigSpec.DoubleValue maximumXpCost;
 
     public final ForgeConfigSpec.DoubleValue waystoneXpCostMultiplier;
+    public final ForgeConfigSpec.DoubleValue sharestoneXpCostMultiplier;
+    public final ForgeConfigSpec.DoubleValue warpPlateXpCostMultiplier;
 
     public final ForgeConfigSpec.ConfigValue<String> inventoryButton;
     public final ForgeConfigSpec.DoubleValue inventoryButtonXpCostMultiplier;
@@ -70,6 +72,16 @@ public class WaystoneServerConfig {
                 .comment("The multiplier applied to the base xp cost when teleporting from one waystone to another.")
                 .translation("config.waystones.waystoneXpCostMultiplier")
                 .defineInRange("waystoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+
+        sharestoneXpCostMultiplier = builder
+                .comment("The multiplier applied to the base xp cost when teleporting from one sharestone to another.")
+                .translation("config.waystones.sharestoneXpCostMultiplier")
+                .defineInRange("sharestoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+
+        warpPlateXpCostMultiplier = builder
+                .comment("The multiplier applied to the base xp cost when teleporting from one warp plate to another.")
+                .translation("config.waystones.warpPlateXpCostMultiplier")
+                .defineInRange("warpPlateXpCostMultiplier", 0, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to the optional Waystones button displayed in the inventory.").push("inventoryButton");
 

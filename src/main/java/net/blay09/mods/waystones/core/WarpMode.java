@@ -10,7 +10,9 @@ public enum WarpMode {
     RETURN_SCROLL(() -> 0.0, true),
     BOUND_SCROLL(() -> 0.0, true),
     WARP_STONE(WaystonesConfig.SERVER.warpStoneXpCostMultiplier::get, false),
-    WAYSTONE_TO_WAYSTONE(WaystonesConfig.SERVER.waystoneXpCostMultiplier::get, false);
+    WAYSTONE_TO_WAYSTONE(WaystonesConfig.SERVER.waystoneXpCostMultiplier::get, false),
+    SHARESTONE_TO_SHARESTONE(WaystonesConfig.SERVER.sharestoneXpCostMultiplier::get, false),
+    WARP_PLATE(WaystonesConfig.SERVER.warpPlateXpCostMultiplier::get, false);
 
     public static WarpMode[] values = values();
 
