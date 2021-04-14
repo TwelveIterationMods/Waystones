@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
@@ -32,7 +33,7 @@ public class RequestEditWaystoneMessage {
 
         @Override
         public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-            return new WaystoneSettingsContainer(i, waystone);
+            return new WaystoneSettingsContainer(ModContainers.waystoneSettings, waystone, i);
         }
     };
 

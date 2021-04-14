@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -31,7 +32,7 @@ public class InventoryButtonMessage {
 
         @Override
         public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-            return new WaystoneSelectionContainer(i, WarpMode.INVENTORY_BUTTON, null);
+            return new WaystoneSelectionContainer(ModContainers.waystoneSelection, WarpMode.INVENTORY_BUTTON, null, i);
         }
     };
 

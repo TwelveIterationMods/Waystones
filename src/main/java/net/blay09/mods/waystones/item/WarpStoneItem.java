@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -43,7 +44,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
         @Override
         public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-            return new WaystoneSelectionContainer(i, WarpMode.WARP_STONE, null);
+            return new WaystoneSelectionContainer(ModContainers.waystoneSelection, WarpMode.WARP_STONE, null, i);
         }
     };
 

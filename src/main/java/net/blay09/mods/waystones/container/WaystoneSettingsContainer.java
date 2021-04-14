@@ -3,14 +3,15 @@ package net.blay09.mods.waystones.container;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.BlockPos;
 
 public class WaystoneSettingsContainer extends Container {
 
     private final IWaystone waystone;
 
-    public WaystoneSettingsContainer(int windowId, IWaystone waystone) {
-        super(ModContainers.waystoneSettings, windowId);
+    public WaystoneSettingsContainer(ContainerType<WaystoneSettingsContainer> type, IWaystone waystone, int windowId) {
+        super(type, windowId);
         this.waystone = waystone;
     }
 

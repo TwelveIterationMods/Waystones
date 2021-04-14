@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
@@ -13,8 +14,8 @@ public class WaystoneSelectionContainer extends Container {
     private final WarpMode warpMode;
     private final IWaystone fromWaystone;
 
-    public WaystoneSelectionContainer(int windowId, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        super(ModContainers.waystoneSelection, windowId);
+    public WaystoneSelectionContainer(ContainerType<WaystoneSelectionContainer> type, WarpMode warpMode, @Nullable IWaystone fromWaystone, int windowId) {
+        super(type, windowId);
         this.warpMode = warpMode;
         this.fromWaystone = fromWaystone;
     }

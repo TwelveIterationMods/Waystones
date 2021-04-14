@@ -12,6 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModContainers {
     public static ContainerType<WaystoneSelectionContainer> waystoneSelection;
+    public static ContainerType<WaystoneSelectionContainer> sharestoneSelection;
     public static ContainerType<WaystoneSettingsContainer> waystoneSettings;
 
     public static void register(IForgeRegistry<ContainerType<?>> registry) {
@@ -26,12 +27,23 @@ public class ModContainers {
                 }
             }
 
-            return new WaystoneSelectionContainer(windowId, warpMode, fromWaystone);
+            return new WaystoneSelectionContainer(waystoneSelection, warpMode, fromWaystone, windowId);
+        });
+
+        sharestoneSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            TileEntity tileEntity = inv.player.world.getTileEntity(pos);
+            if (tileEntity instanceof WaystoneTileEntity) {
+                IWaystone fromWaystone = ((WaystoneTileEntity) tileEntity).getWaystone();
+                return new WaystoneSelectionContainer(waystoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId);
+            }
+
+            return null;
         });
 
         waystoneSettings = new ContainerType<>((IContainerFactory<WaystoneSettingsContainer>) (windowId, inv, data) -> {
             IWaystone waystone = Waystone.read(data);
-            return new WaystoneSettingsContainer(windowId, waystone);
+            return new WaystoneSettingsContainer(waystoneSettings, waystone, windowId);
         });
 
         registry.registerAll(

@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
+import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -56,8 +56,8 @@ public class WaystoneManager extends WorldSavedData {
 
     public Optional<IWaystone> getWaystoneAt(IBlockReader world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof WaystoneTileEntity) {
-            return Optional.of(((WaystoneTileEntity) tileEntity).getWaystone());
+        if (tileEntity instanceof WaystoneTileEntityBase) {
+            return Optional.of(((WaystoneTileEntityBase) tileEntity).getWaystone());
         }
 
         return Optional.empty();

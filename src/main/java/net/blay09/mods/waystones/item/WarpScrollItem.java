@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +34,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
 
         @Override
         public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-            return new WaystoneSelectionContainer(i, WarpMode.WARP_SCROLL, null);
+            return new WaystoneSelectionContainer(ModContainers.waystoneSelection, WarpMode.WARP_SCROLL, null, i);
         }
     };
 
