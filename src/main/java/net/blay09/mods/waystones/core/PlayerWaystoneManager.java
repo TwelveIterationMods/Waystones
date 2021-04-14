@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
@@ -213,7 +214,8 @@ public class PlayerWaystoneManager {
         }
 
         Direction direction = state.get(WaystoneBlock.FACING);
-        Set<Direction> directionCandidates = Sets.newHashSet(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        // Use a list to keep order intact - it might check one direction twice, but no one cares
+        List<Direction> directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
         for (Direction candidate : directionCandidates) {
             BlockPos offsetPos = pos.offset(candidate);
             BlockPos offsetPosUp = offsetPos.up();
