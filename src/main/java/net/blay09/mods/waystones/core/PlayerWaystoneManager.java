@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
@@ -204,7 +205,7 @@ public class PlayerWaystoneManager {
         ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
         BlockPos pos = waystone.getPos();
         BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
-        if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
+        if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlockBase)) {
             TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.waystone_missing");
             chatComponent.mergeStyle(TextFormatting.RED);
             player.sendStatusMessage(chatComponent, false);

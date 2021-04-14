@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.container;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.tileentity.SharestoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntity;
@@ -33,8 +34,8 @@ public class ModContainers {
         sharestoneSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             TileEntity tileEntity = inv.player.world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntity) {
-                IWaystone fromWaystone = ((WaystoneTileEntity) tileEntity).getWaystone();
+            if (tileEntity instanceof SharestoneTileEntity) {
+                IWaystone fromWaystone = ((SharestoneTileEntity) tileEntity).getWaystone();
                 return new WaystoneSelectionContainer(waystoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId);
             }
 
@@ -48,6 +49,7 @@ public class ModContainers {
 
         registry.registerAll(
                 waystoneSelection.setRegistryName("waystone_selection"),
+                sharestoneSelection.setRegistryName("sharestone_selection"),
                 waystoneSettings.setRegistryName("waystone_settings")
         );
     }
