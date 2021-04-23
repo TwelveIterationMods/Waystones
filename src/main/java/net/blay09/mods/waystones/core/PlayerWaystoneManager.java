@@ -364,7 +364,11 @@ public class PlayerWaystoneManager {
             case WARP_STONE:
                 return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpStone && PlayerWaystoneManager.canUseWarpStone(player, heldItem);
             case WAYSTONE_TO_WAYSTONE:
-                return WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get() && fromWaystone != null && fromWaystone.isValid();
+                return WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get() && fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
+            case SHARESTONE_TO_SHARESTONE:
+                return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.SHARESTONE);
+            case WARP_PLATE:
+                return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
         }
 
         return false;
