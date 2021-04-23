@@ -36,9 +36,7 @@ public class SelectWaystoneMessage {
             }
 
             WaystoneSelectionContainer container = (WaystoneSelectionContainer) player.openContainer;
-            if (PlayerWaystoneManager.isWaystoneActivated(player, message.waystone)) {
-                PlayerWaystoneManager.tryTeleportToWaystone(player, message.waystone, container.getWarpMode(), container.getWaystoneFrom());
-            }
+            PlayerWaystoneManager.tryTeleportToWaystone(player, message.waystone, container.getWarpMode(), container.getWaystoneFrom());
             player.closeScreen();
         });
         context.setPacketHandled(true);

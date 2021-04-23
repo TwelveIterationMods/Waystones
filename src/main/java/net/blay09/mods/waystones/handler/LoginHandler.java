@@ -31,6 +31,4 @@ public class LoginHandler {
         WaystonesConfig.syncServerConfigs(event.getPlayer());
     }
 
-
-
 }

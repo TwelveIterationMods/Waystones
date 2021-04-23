@@ -176,6 +176,10 @@ public class PlayerWaystoneManager {
             return false;
         }
 
+        if (!warpMode.getAllowTeleportPredicate().test(player, waystone)) {
+            return false;
+        }
+
         boolean isDimensionalWarp = waystone.getDimension() != player.world.getDimensionKey();
         if (isDimensionalWarp && !canDimensionalWarpTo(player, waystone)) {
             informPlayer(player, "chat.waystones.cannot_dimension_warp");
