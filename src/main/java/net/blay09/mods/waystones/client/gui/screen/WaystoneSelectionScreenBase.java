@@ -113,27 +113,31 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
 
                 addButton(createWaystoneButton(y, waystone));
 
-                SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(entryIndex, -1));
-                if (entryIndex == 0) {
-                    sortUpButton.active = false;
-                }
-                addButton(sortUpButton);
+                if (allowSorting()) {
+                    SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(entryIndex, -1));
+                    if (entryIndex == 0) {
+                        sortUpButton.active = false;
+                    }
+                    addButton(sortUpButton);
 
-                SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
-                if (entryIndex == waystones.size() - 1) {
-                    sortDownButton.active = false;
+                    SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
+                    if (entryIndex == waystones.size() - 1) {
+                        sortDownButton.active = false;
+                    }
+                    addButton(sortDownButton);
                 }
-                addButton(sortDownButton);
 
-                RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
-                    PlayerEntity player = Minecraft.getInstance().player;
-                    PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
-                    NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
-                    updateList();
-                });
-                // Only show the remove button for non-global waystones, or if the player is in creative mode
-                if (!waystone.isGlobal() || Minecraft.getInstance().player.abilities.isCreativeMode) {
-                    addButton(removeButton);
+                if (allowDeletion()) {
+                    RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
+                        PlayerEntity player = Minecraft.getInstance().player;
+                        PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
+                        NetworkHandler.channel.sendToServer(new RemoveWaystoneMessage(waystone));
+                        updateList();
+                    });
+                    // Only show the remove button for non-global waystones, or if the player is in creative mode
+                    if (!waystone.isGlobal() || Minecraft.getInstance().player.abilities.isCreativeMode) {
+                        addButton(removeButton);
+                    }
                 }
 
                 y += 22;
@@ -254,4 +258,11 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         }
     }
 
+    protected boolean allowSorting() {
+        return true;
+    }
+
+    protected boolean allowDeletion() {
+        return true;
+    }
 }

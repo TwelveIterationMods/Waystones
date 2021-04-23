@@ -10,4 +10,13 @@ public class SharestoneSelectionScreen extends WaystoneSelectionScreenBase {
         super(container, playerInventory, title);
     }
 
+    @Override
+    protected boolean allowSorting() {
+        return false;
+    }
+
+    @Override
+    protected boolean allowDeletion() {
+        return false;
+    }
 }

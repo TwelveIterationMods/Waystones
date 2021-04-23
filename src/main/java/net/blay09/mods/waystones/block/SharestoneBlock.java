@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.tileentity.SharestoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
@@ -53,9 +54,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Override
     protected void handleActivation(World world, BlockPos pos, PlayerEntity player, WaystoneTileEntityBase tileEntity, IWaystone waystone) {
         if (!world.isRemote) {
-            NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> {
-                it.writeBlockPos(pos);
-            });
+            NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> WaystoneSelectionContainer.writeSharestoneContainer(it, pos));
         }
     }
 }

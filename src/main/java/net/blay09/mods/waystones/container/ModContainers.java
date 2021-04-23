@@ -11,6 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModContainers {
     public static ContainerType<WaystoneSelectionContainer> waystoneSelection;
     public static ContainerType<WaystoneSelectionContainer> sharestoneSelection;
@@ -33,10 +36,16 @@ public class ModContainers {
 
         sharestoneSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
+            int count = data.readShort();
+            List<IWaystone> waystones = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                waystones.add(Waystone.read(data));
+            }
+
             TileEntity tileEntity = inv.player.world.getTileEntity(pos);
             if (tileEntity instanceof SharestoneTileEntity) {
                 IWaystone fromWaystone = ((SharestoneTileEntity) tileEntity).getWaystone();
-                return WaystoneSelectionContainer.createSharestoneSelection(windowId, fromWaystone);
+                return new WaystoneSelectionContainer(ModContainers.sharestoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
             }
 
             return null;

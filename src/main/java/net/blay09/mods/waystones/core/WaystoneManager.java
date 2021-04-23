@@ -107,6 +107,7 @@ public class WaystoneManager extends WorldSavedData {
         for (IWaystone waystone : waystones.values()) {
             CompoundNBT compound = new CompoundNBT();
             compound.put("WaystoneUid", NBTUtil.func_240626_a_(waystone.getWaystoneUid())); // writeUniqueId
+            compound.putString("Type", waystone.getWaystoneType().toString());
             compound.putString("Name", waystone.getName());
             compound.putString("World", waystone.getDimension().getLocation().toString());
             compound.put("BlockPos", NBTUtil.writeBlockPos(waystone.getPos()));
