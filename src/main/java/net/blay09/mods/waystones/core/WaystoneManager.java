@@ -71,6 +71,13 @@ public class WaystoneManager extends WorldSavedData {
         return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
     }
 
+    public List<IWaystone> getWaystonesByType(ResourceLocation type) {
+        return waystones.values().stream()
+                .filter(it -> it.getWaystoneType().equals(type))
+                .sorted(Comparator.comparing(IWaystone::getName))
+                .collect(Collectors.toList());
+    }
+
     public List<IWaystone> getGlobalWaystones() {
         return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
     }
@@ -86,7 +93,8 @@ public class WaystoneManager extends WorldSavedData {
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
             UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-            Waystone waystone = new Waystone(waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
+            ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
+            Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
             waystone.setName(name);
             waystone.setGlobal(compound.getBoolean("IsGlobal"));
             waystones.put(waystoneUid, waystone);

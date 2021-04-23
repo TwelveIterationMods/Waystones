@@ -53,12 +53,10 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
 
     public WaystoneSelectionScreenBase(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
-        waystones = getWaystones();
+        waystones = container.getWaystones();
         xSize = 270;
         ySize = 200;
     }
-
-    protected abstract List<IWaystone> getWaystones();
 
     @Override
     public void init() {
@@ -215,7 +213,7 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(matrixStack, fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), xSize / 2, height / 2 - 20, 0xFFFFFF);
+            drawCenteredString(matrixStack, fontRenderer, TextFormatting.RED + I18n.format("gui.waystones.waystone_selection.no_waystones_activated"), xSize / 2, ySize / 2 - 20, 0xFFFFFF);
         }
     }
 

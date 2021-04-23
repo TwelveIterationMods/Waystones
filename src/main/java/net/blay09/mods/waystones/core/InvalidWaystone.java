@@ -1,8 +1,10 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -59,4 +61,8 @@ public class InvalidWaystone implements IWaystone {
         return BlockPos.ZERO;
     }
 
+    @Override
+    public ResourceLocation getWaystoneType() {
+        return new ResourceLocation(Waystones.MOD_ID, "invalid");
+    }
 }

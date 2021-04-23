@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.api;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,4 +28,6 @@ public interface IWaystone {
 
     @Nullable
     UUID getOwnerUid();
+
+    ResourceLocation getWaystoneType();
 }

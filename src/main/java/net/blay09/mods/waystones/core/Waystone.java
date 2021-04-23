@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public class Waystone implements IWaystone {
 
+    private final ResourceLocation waystoneType;
     private final UUID waystoneUid;
     private final boolean wasGenerated;
 
@@ -24,7 +25,8 @@ public class Waystone implements IWaystone {
     private boolean isGlobal;
     private UUID ownerUid;
 
-    public Waystone(UUID waystoneUid, RegistryKey<World> dimension, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
+    public Waystone(ResourceLocation waystoneType, UUID waystoneUid, RegistryKey<World> dimension, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
+        this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
@@ -93,14 +95,20 @@ public class Waystone implements IWaystone {
         this.pos = pos;
     }
 
+    @Override
+    public ResourceLocation getWaystoneType() {
+        return waystoneType;
+    }
+
     public static IWaystone read(PacketBuffer buf) {
         UUID waystoneUid = buf.readUniqueId();
+        ResourceLocation waystoneType = buf.readResourceLocation();
         String name = buf.readString();
         boolean isGlobal = buf.readBoolean();
         RegistryKey<World> dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(buf.readString(250)));
         BlockPos pos = buf.readBlockPos();
 
-        Waystone waystone = new Waystone(waystoneUid, dimension, pos, false, null);
+        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, false, null);
         waystone.setName(name);
         waystone.setGlobal(isGlobal);
         return waystone;
@@ -108,6 +116,7 @@ public class Waystone implements IWaystone {
 
     public static void write(PacketBuffer buf, IWaystone waystone) {
         buf.writeUniqueId(waystone.getWaystoneUid());
+        buf.writeResourceLocation(waystone.getWaystoneType());
         buf.writeString(waystone.getName());
         buf.writeBoolean(waystone.isGlobal());
         buf.writeResourceLocation(waystone.getDimension().getLocation());

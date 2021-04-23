@@ -32,7 +32,7 @@ public class InventoryButtonMessage {
 
         @Override
         public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-            return new WaystoneSelectionContainer(ModContainers.waystoneSelection, WarpMode.INVENTORY_BUTTON, null, i);
+            return WaystoneSelectionContainer.createWaystoneSelection(i, playerEntity, WarpMode.INVENTORY_BUTTON, null);
         }
     };
 

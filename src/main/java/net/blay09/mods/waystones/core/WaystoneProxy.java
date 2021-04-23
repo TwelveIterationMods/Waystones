@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -68,5 +69,10 @@ public class WaystoneProxy implements IWaystone {
     @Override
     public BlockPos getPos() {
         return getBackingWaystone().getPos();
+    }
+
+    @Override
+    public ResourceLocation getWaystoneType() {
+        return getBackingWaystone().getWaystoneType();
     }
 }

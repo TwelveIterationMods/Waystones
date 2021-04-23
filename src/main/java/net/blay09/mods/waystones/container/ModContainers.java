@@ -28,7 +28,7 @@ public class ModContainers {
                 }
             }
 
-            return new WaystoneSelectionContainer(waystoneSelection, warpMode, fromWaystone, windowId);
+            return WaystoneSelectionContainer.createWaystoneSelection(windowId, inv.player, warpMode, fromWaystone);
         });
 
         sharestoneSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
@@ -36,7 +36,7 @@ public class ModContainers {
             TileEntity tileEntity = inv.player.world.getTileEntity(pos);
             if (tileEntity instanceof SharestoneTileEntity) {
                 IWaystone fromWaystone = ((SharestoneTileEntity) tileEntity).getWaystone();
-                return new WaystoneSelectionContainer(waystoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId);
+                return WaystoneSelectionContainer.createSharestoneSelection(windowId, fromWaystone);
             }
 
             return null;

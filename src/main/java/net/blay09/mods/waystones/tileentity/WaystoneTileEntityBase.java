@@ -2,15 +2,10 @@ package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
-import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -19,10 +14,9 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IServerWorld;
 import net.minecraftforge.common.util.Constants;
 
@@ -114,12 +108,14 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
     }
 
     public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(UUID.randomUUID(), world.getWorld().getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
+        Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getWorld().getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         String name = NameGenerator.get().getName(waystone, world.getRandom());
         waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);
         this.waystone = waystone;
     }
+
+    protected abstract ResourceLocation getWaystoneType();
 
     public void initializeFromExisting(IServerWorld world, Waystone existingWaystone) {
         waystone = existingWaystone;
