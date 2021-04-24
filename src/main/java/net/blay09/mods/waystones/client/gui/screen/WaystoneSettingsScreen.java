@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -24,10 +25,13 @@ import java.util.Objects;
 
 public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsContainer> {
 
+    private final TranslationTextComponent isGlobalText = new TranslationTextComponent("gui.waystones.waystone_settings.is_global");
+
     private TextFieldWidget textField;
     private Button btnDone;
     private ToggleWidget chkGlobal;
-    private final TranslationTextComponent isGlobalText = new TranslationTextComponent("gui.waystones.waystone_settings.is_global");
+
+    private boolean focusTextFieldNextTick;
 
     public WaystoneSettingsScreen(WaystoneSettingsContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -50,14 +54,12 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
         textField = new TextFieldWidget(Minecraft.getInstance().fontRenderer, width / 2 - 100, height / 2 - 20, 200, 20, textField, new StringTextComponent(""));
         textField.setMaxStringLength(128);
         textField.setText(oldText);
-        textField.changeFocus(true);
         addButton(textField);
         setFocusedDefault(textField);
 
         btnDone = new Button(width / 2, height / 2 + 10, 100, 20, new TranslationTextComponent("gui.done"), button -> {
             if (textField.getText().isEmpty()) {
-                textField.changeFocus(true);
-                setListener(textField);
+                focusTextFieldNextTick = true;
                 return;
             }
 
@@ -67,10 +69,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
 
         chkGlobal = new ToggleWidget(width / 2 - 100, height / 2 + 10, 20, 20, waystone.isGlobal());
         chkGlobal.initTextureValues(0, 0, 20, 20, new ResourceLocation(Waystones.MOD_ID, "textures/gui/checkbox.png"));
-        if (!PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player))) {
-            chkGlobal.visible = false;
-        }
-
+        chkGlobal.visible = waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) && PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player));
         addButton(chkGlobal);
 
         getMinecraft().keyboardListener.enableRepeatEvents(true);
@@ -97,9 +96,7 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
             return true;
         }
 
-        if (textField.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        } else if(textField.isMouseOver(mouseX, mouseY) && button == 1) {
+        if (textField.isMouseOver(mouseX, mouseY) && button == 1) {
             textField.setText("");
             return true;
         }
@@ -128,6 +125,12 @@ public class WaystoneSettingsScreen extends ContainerScreen<WaystoneSettingsCont
     @Override
     public void tick() {
         textField.tick();
+
+        // Button presses focus the button after onPress, so we can't change focus inside. Defer to here instead.
+        if (focusTextFieldNextTick) {
+            setFocusedDefault(textField);
+            focusTextFieldNextTick = false;
+        }
     }
 
     @Override
