@@ -34,8 +34,10 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             makeCuboidShape(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
     ).simplify();
 
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
     public WarpPlateBlock() {
-        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
+        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false).with(ACTIVE, false));
     }
 
     @Override
@@ -44,17 +46,27 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entityIn) {
-        super.onEntityCollision(state, world, pos, entityIn);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(ACTIVE);
+    }
+
+    @Override
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        if (entity.getPosX() >= pos.getX() && entity.getPosX() <= pos.getX() + 1
+                && entity.getPosY() >= pos.getY() && entity.getPosY() <= pos.getY() + 1
+                && entity.getPosZ() >= pos.getZ() && entity.getPosZ() <= pos.getZ() + 1) {
+            world.setBlockState(pos, state.with(ACTIVE, true), 3);
+        }
     }
 
     @Override
     public void animateTick(BlockState state, World worldIn, BlockPos pos, Random rand) {
-        super.animateTick(state, worldIn, pos, rand);
-
-        for (int i = 0; i < 50; i++) {
-            worldIn.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
-            worldIn.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);
+        if (state.get(ACTIVE)) {
+            for (int i = 0; i < 50; i++) {
+                worldIn.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
+                worldIn.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);
+            }
         }
     }
 
