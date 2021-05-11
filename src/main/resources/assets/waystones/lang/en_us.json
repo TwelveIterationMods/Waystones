@@ -41,5 +41,6 @@
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
+  "tooltip.waystones.sharestone": "Teleport to any other Sharestone",
   "stat.waystones.waystones_activated": "Waystones Activated"
 }

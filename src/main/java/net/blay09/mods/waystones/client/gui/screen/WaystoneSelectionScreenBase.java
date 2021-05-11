@@ -148,15 +148,19 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         btnNextPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
     }
 
-    private WaystoneButton createWaystoneButton(int y, IWaystone waystone) {
+    private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
         IWaystone waystoneFrom = container.getWaystoneFrom();
         PlayerEntity player = Minecraft.getInstance().player;
         int xpLevelCost = Math.round(PlayerWaystoneManager.getExperienceLevelCost(Objects.requireNonNull(player), waystone, container.getWarpMode(), waystoneFrom));
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpLevelCost, button -> NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone)));
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpLevelCost, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }
         return btnWaystone;
+    }
+
+    protected void onWaystoneSelected(IWaystone waystone) {
+        NetworkHandler.channel.sendToServer(new SelectWaystoneMessage(waystone));
     }
 
     private void sortWaystone(int index, int sortDir) {

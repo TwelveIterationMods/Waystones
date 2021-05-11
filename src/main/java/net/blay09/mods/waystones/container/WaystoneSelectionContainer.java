@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WaystoneSelectionContainer extends Container {
 
@@ -53,12 +54,17 @@ public class WaystoneSelectionContainer extends Container {
     }
 
     public static WaystoneSelectionContainer createSharestoneSelection(int windowId, IWaystone fromWaystone) {
-        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE);
+        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE).collect(Collectors.toList());
         return new WaystoneSelectionContainer(ModContainers.sharestoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 
+    public static WaystoneSelectionContainer createWarpPlateSelection(int windowId, IWaystone fromWaystone) {
+        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.WARP_PLATE).collect(Collectors.toList());
+        return new WaystoneSelectionContainer(ModContainers.warpPlateSelection, WarpMode.WARP_PLATE, fromWaystone, windowId, waystones);
+    }
+
     public static void writeSharestoneContainer(PacketBuffer buf, BlockPos pos) {
-        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE);
+        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE).collect(Collectors.toList());
 
         buf.writeBlockPos(pos);
         buf.writeShort(waystones.size());

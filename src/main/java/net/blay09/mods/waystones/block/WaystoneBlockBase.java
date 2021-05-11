@@ -50,7 +50,7 @@ public abstract class WaystoneBlockBase extends Block {
 
     public WaystoneBlockBase() {
         super(AbstractBlock.Properties.create(Material.ROCK).sound(SoundType.STONE).hardnessAndResistance(5f, 2000f));
-        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
+        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
     }
 
     @Override
@@ -59,10 +59,12 @@ public abstract class WaystoneBlockBase extends Block {
             world.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        DoubleBlockHalf half = state.get(HALF);
-        if ((facing.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (facing == Direction.UP)) || ((neighbor.getBlock() == this) && (neighbor.get(HALF) != half))) {
-            if ((half != DoubleBlockHalf.LOWER) || (facing != Direction.DOWN) || state.isValidPosition(world, pos)) {
-                return state;
+        if (isDoubleBlock(state)) {
+            DoubleBlockHalf half = state.get(HALF);
+            if ((facing.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (facing == Direction.UP)) || ((neighbor.getBlock() == this) && (neighbor.get(HALF) != half))) {
+                if ((half != DoubleBlockHalf.LOWER) || (facing != Direction.DOWN) || state.isValidPosition(world, pos)) {
+                    return state;
+                }
             }
         }
 
@@ -74,29 +76,37 @@ public abstract class WaystoneBlockBase extends Block {
         super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
     }
 
+    private boolean isDoubleBlock(BlockState state) {
+        return state.hasProperty(HALF);
+    }
+
     @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        DoubleBlockHalf half = state.get(HALF);
-        BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
         TileEntity tileEntity = world.getTileEntity(pos);
-        TileEntity offsetTileEntity = world.getTileEntity(offset);
+
+        boolean isDoubleBlock = isDoubleBlock(state);
+        DoubleBlockHalf half = isDoubleBlock ? state.get(HALF) : null;
+        BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+        TileEntity offsetTileEntity = isDoubleBlock ? world.getTileEntity(offset) : null;
 
         boolean hasSilkTouch = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
         if (hasSilkTouch) {
             if (tileEntity instanceof WaystoneTileEntityBase) {
                 ((WaystoneTileEntityBase) tileEntity).setSilkTouched(true);
             }
-            if (offsetTileEntity instanceof WaystoneTileEntityBase) {
+            if (isDoubleBlock && offsetTileEntity instanceof WaystoneTileEntityBase) {
                 ((WaystoneTileEntityBase) offsetTileEntity).setSilkTouched(true);
             }
         }
 
-        BlockState offsetState = world.getBlockState(offset);
-        if (offsetState.getBlock() == this && offsetState.get(HALF) != half) {
-            world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
-            if (!world.isRemote && !player.abilities.isCreativeMode) {
-                spawnDrops(state, world, pos, tileEntity, player, player.getHeldItemMainhand());
-                spawnDrops(offsetState, world, offset, offsetTileEntity, player, player.getHeldItemMainhand());
+        if (isDoubleBlock) {
+            BlockState offsetState = world.getBlockState(offset);
+            if (offsetState.getBlock() == this && offsetState.get(HALF) != half) {
+                world.destroyBlock(half == DoubleBlockHalf.LOWER ? pos : offset, false, player);
+                if (!world.isRemote && !player.abilities.isCreativeMode) {
+                    spawnDrops(state, world, pos, tileEntity, player, player.getHeldItemMainhand());
+                    spawnDrops(offsetState, world, offset, offsetTileEntity, player, player.getHeldItemMainhand());
+                }
             }
         }
 
@@ -105,7 +115,7 @@ public abstract class WaystoneBlockBase extends Block {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HALF, WATERLOGGED);
+        builder.add(FACING, WATERLOGGED);
     }
 
     @Override
@@ -128,6 +138,10 @@ public abstract class WaystoneBlockBase extends Block {
 
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+        if (!isDoubleBlock(state)) {
+            return true;
+        }
+
         if (state.get(HALF) == DoubleBlockHalf.LOWER) {
             return true;
         }
@@ -263,7 +277,7 @@ public abstract class WaystoneBlockBase extends Block {
         }
 
         ActionResultType result = handleDebugActions(world, player, hand, tileEntity);
-        if (result != null)  {
+        if (result != null) {
             return result;
         }
 
@@ -282,12 +296,15 @@ public abstract class WaystoneBlockBase extends Block {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        BlockPos posAbove = pos.up();
-        FluidState fluidStateAbove = world.getFluidState(posAbove);
-        world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER).with(WATERLOGGED, fluidStateAbove.getFluid() == Fluids.WATER));
-
         TileEntity tileEntity = world.getTileEntity(pos);
-        TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
+
+        BlockPos posAbove = pos.up();
+        boolean isDoubleBlock = isDoubleBlock(state);
+        if (isDoubleBlock) {
+            FluidState fluidStateAbove = world.getFluidState(posAbove);
+            world.setBlockState(posAbove, state.with(HALF, DoubleBlockHalf.UPPER).with(WATERLOGGED, fluidStateAbove.getFluid() == Fluids.WATER));
+        }
+
         if (tileEntity instanceof WaystoneTileEntityBase) {
             if (!world.isRemote) {
                 CompoundNBT tag = stack.getTag();
@@ -302,13 +319,16 @@ public abstract class WaystoneBlockBase extends Block {
                     ((WaystoneTileEntityBase) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
                 }
 
-                if (waystoneTileEntityAbove instanceof WaystoneTileEntityBase) {
-                    ((WaystoneTileEntityBase) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntityBase) tileEntity));
+                if (isDoubleBlock) {
+                    TileEntity waystoneTileEntityAbove = world.getTileEntity(posAbove);
+                    if (waystoneTileEntityAbove instanceof WaystoneTileEntityBase) {
+                        ((WaystoneTileEntityBase) waystoneTileEntityAbove).initializeFromBase(((WaystoneTileEntityBase) tileEntity));
+                    }
                 }
             }
 
-            if (placer instanceof PlayerEntity && waystoneTileEntityAbove instanceof WaystoneTileEntityBase) {
-                IWaystone waystone = ((WaystoneTileEntityBase) waystoneTileEntityAbove).getWaystone();
+            if (placer instanceof PlayerEntity) {
+                IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
                 PlayerWaystoneManager.activateWaystone(((PlayerEntity) placer), waystone);
 
                 if (!world.isRemote) {

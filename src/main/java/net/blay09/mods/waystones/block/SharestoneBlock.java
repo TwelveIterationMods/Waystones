@@ -2,23 +2,30 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.tileentity.SharestoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class SharestoneBlock extends WaystoneBlockBase {
 
@@ -56,5 +63,20 @@ public class SharestoneBlock extends WaystoneBlockBase {
         if (!world.isRemote) {
             NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSelectionContainerProvider(), it -> WaystoneSelectionContainer.writeSharestoneContainer(it, pos));
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        TranslationTextComponent component = new TranslationTextComponent("tooltip.waystones.sharestone");
+        component.mergeStyle(TextFormatting.GRAY);
+        tooltip.add(component);
+
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(HALF);
     }
 }

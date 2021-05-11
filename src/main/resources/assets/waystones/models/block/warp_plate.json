@@ -1,7 +1,9 @@
 {
+	"parent": "block/block",
 	"credit": "Made with Blockbench",
 	"textures": {
 		"texture": "waystones:block/warp_plate",
+		"particle": "waystones:block/warp_plate",
 		"inner": "waystones:block/warp_plate_inner",
 		"base": "waystones:block/warp_plate_base"
 	},

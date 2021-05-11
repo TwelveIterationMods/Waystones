@@ -13,11 +13,13 @@ import java.util.function.Supplier;
 public class ModTileEntities {
     public static TileEntityType<WaystoneTileEntity> waystone;
     public static TileEntityType<SharestoneTileEntity> sharestone;
+    public static TileEntityType<WarpPlateTileEntity> warpPlate;
 
     public static void register(IForgeRegistry<TileEntityType<?>> registry) {
         registry.registerAll(
                 waystone = build(WaystoneTileEntity::new, new ResourceLocation(Waystones.MOD_ID, "waystone"), ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone),
-                sharestone = build(SharestoneTileEntity::new, new ResourceLocation(Waystones.MOD_ID, "sharestone"), ModBlocks.sharestone)
+                sharestone = build(SharestoneTileEntity::new, new ResourceLocation(Waystones.MOD_ID, "sharestone"), ModBlocks.sharestone),
+                warpPlate = build(WarpPlateTileEntity::new, new ResourceLocation(Waystones.MOD_ID, "warp_plate"), ModBlocks.warpPlate)
         );
     }
 

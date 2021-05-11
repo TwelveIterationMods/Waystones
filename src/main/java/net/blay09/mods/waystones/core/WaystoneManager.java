@@ -23,6 +23,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WaystoneManager extends WorldSavedData {
 
@@ -71,11 +72,10 @@ public class WaystoneManager extends WorldSavedData {
         return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
     }
 
-    public List<IWaystone> getWaystonesByType(ResourceLocation type) {
+    public Stream<IWaystone> getWaystonesByType(ResourceLocation type) {
         return waystones.values().stream()
                 .filter(it -> it.getWaystoneType().equals(type))
-                .sorted(Comparator.comparing(IWaystone::getName))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(IWaystone::getName));
     }
 
     public List<IWaystone> getGlobalWaystones() {
