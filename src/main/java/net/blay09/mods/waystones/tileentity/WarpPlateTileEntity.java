@@ -1,14 +1,13 @@
 package net.blay09.mods.waystones.tileentity;
 
+import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
-import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
-import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -29,6 +28,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,21 @@ import java.util.WeakHashMap;
 public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITickableTileEntity {
 
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
-    private final ItemStackHandler itemStackHandler = new ItemStackHandler(5);
+    private final ItemStackHandler itemStackHandler = new ItemStackHandler(5) {
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (!completedFirstAttunement) {
+                return ItemStack.EMPTY;
+            }
+
+            return super.extractItem(slot, amount, simulate);
+        }
+    };
+
+    private boolean readyForAttunement;
+    private boolean completedFirstAttunement;
+    private int attunementTicks;
 
     public WarpPlateTileEntity() {
         super(ModTileEntities.warpPlate);
@@ -60,6 +75,8 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         super.write(tagCompound);
 
         tagCompound.put("Items", itemStackHandler.serializeNBT());
+        tagCompound.putBoolean("ReadyForAttunement", readyForAttunement);
+        tagCompound.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
 
         return tagCompound;
     }
@@ -69,6 +86,8 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         super.read(state, tagCompound);
 
         itemStackHandler.deserializeNBT(tagCompound.getCompound("Items"));
+        readyForAttunement = tagCompound.getBoolean("ReadyForAttunement");
+        completedFirstAttunement = tagCompound.getBoolean("CompletedFirstAttunement");
     }
 
     @Override
@@ -103,46 +122,92 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
 
     @Override
     public void tick() {
-        if (getBlockState().get(WarpPlateBlock.ACTIVE)) {
-            BlockPos pos = getPos();
-            AxisAlignedBB boundsAbove = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-            List<Entity> entities = world.getEntitiesInAABBexcluding(null, boundsAbove, EntityPredicates.IS_ALIVE);
-            if (entities.isEmpty()) {
-                world.setBlockState(pos, getBlockState().with(WarpPlateBlock.ACTIVE, false), 3);
-                ticksPassedPerEntity.clear();
-            }
-        }
+        if(!world.isRemote) {
+            if (isReadyForAttunement()) {
+                attunementTicks++;
 
-        Iterator<Map.Entry<Entity, Integer>> iterator = ticksPassedPerEntity.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Entity, Integer> entry = iterator.next();
-            Entity entity = entry.getKey();
-            Integer ticksPassed = entry.getValue();
-            if (!entity.isAlive()) {
-                iterator.remove();
-            } else if (!isEntityOnWarpPlate(entity)) {
-                iterator.remove();
-            } else if (ticksPassed > 20) {
-                IWaystone targetWaystone = getTargetWaystone();
-                if (targetWaystone != null) {
-                    PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone());
-                } else if (entity instanceof PlayerEntity) {
-                    TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_no_target");
-                    chatComponent.mergeStyle(TextFormatting.DARK_RED);
-                    ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
+                if (attunementTicks >= getMaxAttunementTicks()) {
+                    attunementTicks = 0;
+                    ItemStack attunedShard = new ItemStack(ModItems.attunedShard);
+                    AttunedShardItem.setWaystoneAttunedTo(attunedShard, getWaystone());
+                    itemStackHandler.setStackInSlot(0, attunedShard);
+                    for (int i = 1; i <= 4; i++) {
+                        itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                    completedFirstAttunement = true;
                 }
-                iterator.remove();
             } else {
-                entry.setValue(ticksPassed + 1);
+                attunementTicks = 0;
+            }
+
+            if (getBlockState().get(WarpPlateBlock.ACTIVE)) {
+                BlockPos pos = getPos();
+                AxisAlignedBB boundsAbove = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+                List<Entity> entities = world.getEntitiesInAABBexcluding(null, boundsAbove, EntityPredicates.IS_ALIVE);
+                if (entities.isEmpty()) {
+                    world.setBlockState(pos, getBlockState().with(WarpPlateBlock.ACTIVE, false), 3);
+                    ticksPassedPerEntity.clear();
+                }
+            }
+
+            Iterator<Map.Entry<Entity, Integer>> iterator = ticksPassedPerEntity.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Entity, Integer> entry = iterator.next();
+                Entity entity = entry.getKey();
+                Integer ticksPassed = entry.getValue();
+                if (!entity.isAlive()) {
+                    iterator.remove();
+                } else if (!isEntityOnWarpPlate(entity)) {
+                    iterator.remove();
+                } else if (ticksPassed > 20) {
+                    IWaystone targetWaystone = getTargetWaystone();
+                    if (targetWaystone != null) {
+                        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone());
+                    } else if (entity instanceof PlayerEntity) {
+                        TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_no_target");
+                        chatComponent.mergeStyle(TextFormatting.DARK_RED);
+                        ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
+                    }
+                    iterator.remove();
+                } else {
+                    entry.setValue(ticksPassed + 1);
+                }
             }
         }
     }
 
+    private boolean isReadyForAttunement() {
+        return readyForAttunement
+                && itemStackHandler.getStackInSlot(0).getItem() == Items.FLINT
+                && itemStackHandler.getStackInSlot(1).getItem() == ModItems.warpDust
+                && itemStackHandler.getStackInSlot(2).getItem() == ModItems.warpDust
+                && itemStackHandler.getStackInSlot(3).getItem() == ModItems.warpDust
+                && itemStackHandler.getStackInSlot(4).getItem() == ModItems.warpDust;
+    }
+
+    @Nullable
     public IWaystone getTargetWaystone() {
-        return InvalidWaystone.INSTANCE; // TODO take from item
+        ItemStack attunedItem = itemStackHandler.getStackInSlot(0);
+        if (attunedItem.getItem() instanceof IAttunementItem) {
+            return ((IAttunementItem) attunedItem.getItem()).getWaystoneAttunedTo(attunedItem);
+        }
+
+        return null;
     }
 
     public ItemStackHandler getItemStackHandler() {
         return itemStackHandler;
+    }
+
+    private int getMaxAttunementTicks() {
+        return 30;
+    }
+
+    public float getAttunementProgress() {
+        return attunementTicks / (float) getMaxAttunementTicks();
+    }
+
+    public void markReadyForAttunement() {
+        readyForAttunement = true;
     }
 }

@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.IFOVOnUse;
+import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;

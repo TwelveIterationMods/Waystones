@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -17,6 +18,7 @@ public class WarpPlateContainer extends Container {
     public WarpPlateContainer(int windowId, WarpPlateTileEntity tileEntity, PlayerInventory playerInventory) {
         super(ModContainers.warpPlate, windowId);
         this.tileEntity = tileEntity;
+        tileEntity.markReadyForAttunement();
 
         ItemStackHandler itemStackHandler = tileEntity.getItemStackHandler();
         addSlot(new SlotItemHandler(itemStackHandler, 0, 80, 45));
@@ -43,6 +45,35 @@ public class WarpPlateContainer extends Container {
     }
 
     public float getAttunementProgress() {
-        return tileEntity.getWorld().getGameTime() % 20 / 20f;
+        return tileEntity.getAttunementProgress();
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+        ItemStack itemStack = ItemStack.EMPTY;
+        Slot slot = inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack slotStack = slot.getStack();
+            itemStack = slotStack.copy();
+            if (index < 5) {
+                if (!this.mergeItemStack(slotStack, 5, this.inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.mergeItemStack(slotStack, 0, 5, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (slotStack.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+        }
+
+        return itemStack;
+    }
+
+    public IWaystone getWaystone() {
+        return tileEntity.getWaystone();
     }
 }

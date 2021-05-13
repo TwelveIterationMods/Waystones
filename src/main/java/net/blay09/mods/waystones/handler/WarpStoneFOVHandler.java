@@ -1,8 +1,7 @@
 package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.item.IFOVOnUse;
-import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;

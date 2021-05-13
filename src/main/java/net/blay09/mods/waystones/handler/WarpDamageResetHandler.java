@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.item.IResetUseOnDamage;
+import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

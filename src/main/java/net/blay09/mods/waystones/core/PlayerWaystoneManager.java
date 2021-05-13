@@ -211,6 +211,10 @@ public class PlayerWaystoneManager {
         }
 
         MinecraftServer server = entity.getServer();
+        if (server == null) {
+            return false;
+        }
+
         ServerWorld targetWorld = Objects.requireNonNull(server).getWorld(waystone.getDimension());
         BlockPos pos = waystone.getPos();
         BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;

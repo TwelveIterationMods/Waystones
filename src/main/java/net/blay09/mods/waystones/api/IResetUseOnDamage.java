@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.item;
+package net.blay09.mods.waystones.api;
 
 public interface IResetUseOnDamage {
 }
