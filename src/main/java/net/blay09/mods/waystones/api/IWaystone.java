@@ -29,5 +29,8 @@ public interface IWaystone {
     @Nullable
     UUID getOwnerUid();
 
+    @Nullable
+    IWaystone getTargetWaystone();
+
     ResourceLocation getWaystoneType();
 }

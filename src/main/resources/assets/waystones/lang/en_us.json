@@ -38,6 +38,7 @@
   "chat.waystones.only_owner_can_edit": "Waystones can only be renamed by whoever placed them.",
   "chat.waystones.only_creative_can_edit": "You have to be in creative mode to edit a global waystone.",
   "chat.waystones.waystone_to_waystone_disabled": "You touch the waystone, but nothing happens.",
+  "chat.waystones.warp_plate_has_no_target": "This warp plate is not bound to another warp plate yet.",
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",

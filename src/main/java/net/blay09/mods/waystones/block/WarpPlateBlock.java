@@ -53,19 +53,34 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (entity.getPosX() >= pos.getX() && entity.getPosX() <= pos.getX() + 1
-                && entity.getPosY() >= pos.getY() && entity.getPosY() <= pos.getY() + 1
-                && entity.getPosZ() >= pos.getZ() && entity.getPosZ() <= pos.getZ() + 1) {
+        if (entity.getPosX() >= pos.getX() && entity.getPosX() < pos.getX() + 1
+                && entity.getPosY() >= pos.getY() && entity.getPosY() < pos.getY() + 1
+                && entity.getPosZ() >= pos.getZ() && entity.getPosZ() < pos.getZ() + 1) {
             world.setBlockState(pos, state.with(ACTIVE, true), 3);
+
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof WarpPlateTileEntity) {
+                ((WarpPlateTileEntity) tileEntity).onEntityCollision(entity);
+            }
         }
     }
 
     @Override
-    public void animateTick(BlockState state, World worldIn, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
         if (state.get(ACTIVE)) {
-            for (int i = 0; i < 50; i++) {
-                worldIn.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
-                worldIn.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof WarpPlateTileEntity) {
+                IWaystone waystone = ((WarpPlateTileEntity) tileEntity).getWaystone();
+                if(waystone.getTargetWaystone() != null) {
+                    for (int i = 0; i < 50; i++) {
+                        world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
+                        world.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);
+                    }
+                } else {
+                    for (int i = 0; i < 10; i++) {
+                        world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
+                    }
+                }
             }
         }
     }

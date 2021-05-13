@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Waystone implements IWaystone {
+public class Waystone implements IWaystone, IMutableWaystone {
 
     private final ResourceLocation waystoneType;
     private final UUID waystoneUid;
@@ -23,6 +24,8 @@ public class Waystone implements IWaystone {
 
     private String name;
     private boolean isGlobal;
+    private IWaystone targetWaystone;
+
     private UUID ownerUid;
 
     public Waystone(ResourceLocation waystoneType, UUID waystoneUid, RegistryKey<World> dimension, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
@@ -44,6 +47,7 @@ public class Waystone implements IWaystone {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -63,6 +67,7 @@ public class Waystone implements IWaystone {
         return isGlobal;
     }
 
+    @Override
     public void setGlobal(boolean global) {
         isGlobal = global;
     }
@@ -85,6 +90,16 @@ public class Waystone implements IWaystone {
     @Override
     public UUID getOwnerUid() {
         return ownerUid;
+    }
+
+    @Override
+    @Nullable
+    public IWaystone getTargetWaystone() {
+        return targetWaystone;
+    }
+
+    public void setTargetWaystone(@Nullable IWaystone targetWaystone) {
+        this.targetWaystone = targetWaystone;
     }
 
     public void setDimension(RegistryKey<World> dimension) {

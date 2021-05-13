@@ -93,10 +93,14 @@ public class WaystoneManager extends WorldSavedData {
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
             UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
+            UUID targetWaystoneUid = compound.contains("TargetWaystoneUid", Constants.NBT.TAG_INT_ARRAY) ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("TargetWaystoneUid"))) : null;
             ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
             Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
             waystone.setName(name);
             waystone.setGlobal(compound.getBoolean("IsGlobal"));
+            if (targetWaystoneUid != null) {
+                waystone.setTargetWaystone(new WaystoneProxy(targetWaystoneUid));
+            }
             waystones.put(waystoneUid, waystone);
         }
     }
@@ -116,6 +120,9 @@ public class WaystoneManager extends WorldSavedData {
                 compound.put("OwnerUid", NBTUtil.func_240626_a_(waystone.getOwnerUid())); // writeUniqueId
             }
             compound.putBoolean("IsGlobal", waystone.isGlobal());
+            if (waystone.getTargetWaystone() != null) {
+                compound.put("TargetWaystoneUid", NBTUtil.func_240626_a_(waystone.getTargetWaystone().getWaystoneUid())); // writeUniqueId
+            }
             tagList.add(compound);
         }
         tagCompound.put(TAG_WAYSTONES, tagList);

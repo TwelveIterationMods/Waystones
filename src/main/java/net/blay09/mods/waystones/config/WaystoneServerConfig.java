@@ -13,7 +13,10 @@ public class WaystoneServerConfig {
 
     public final ForgeConfigSpec.DoubleValue waystoneXpCostMultiplier;
     public final ForgeConfigSpec.DoubleValue sharestoneXpCostMultiplier;
+
     public final ForgeConfigSpec.DoubleValue warpPlateXpCostMultiplier;
+    public final ForgeConfigSpec.IntValue warpPlateBindXpCost;
+    public final ForgeConfigSpec.IntValue warpPlateUseTime;
 
     public final ForgeConfigSpec.ConfigValue<String> inventoryButton;
     public final ForgeConfigSpec.DoubleValue inventoryButtonXpCostMultiplier;
@@ -78,10 +81,22 @@ public class WaystoneServerConfig {
                 .translation("config.waystones.sharestoneXpCostMultiplier")
                 .defineInRange("sharestoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
+        builder.pop().comment("These options apply to warp plates.").push("warpPlate");
+
         warpPlateXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting from one warp plate to another.")
                 .translation("config.waystones.warpPlateXpCostMultiplier")
                 .defineInRange("warpPlateXpCostMultiplier", 0, 0, Float.POSITIVE_INFINITY);
+
+        warpPlateBindXpCost = builder
+                .comment("The xp level cost needed to set or change the target of a warp plate.")
+                .translation("config.waystones.warpPlateBindXpCost")
+                .defineInRange("warpPlateBindXpCost", 3, 0, Integer.MAX_VALUE);
+
+        warpPlateUseTime = builder
+                .comment("The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.")
+                .translation("config.waystones.warpPlateUseTime")
+                .defineInRange("warpPlateUseTime", 20, 0, Integer.MAX_VALUE);
 
         builder.pop().comment("These options apply to the optional Waystones button displayed in the inventory.").push("inventoryButton");
 
