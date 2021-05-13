@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
@@ -117,7 +118,7 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
 
     protected abstract ResourceLocation getWaystoneType();
 
-    public void initializeFromExisting(IServerWorld world, Waystone existingWaystone) {
+    public void initializeFromExisting(IServerWorld world, Waystone existingWaystone, ItemStack itemStack) {
         waystone = existingWaystone;
         existingWaystone.setDimension(world.getWorld().getDimensionKey());
         existingWaystone.setPos(pos);

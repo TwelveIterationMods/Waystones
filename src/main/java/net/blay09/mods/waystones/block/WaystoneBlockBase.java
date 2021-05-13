@@ -273,11 +273,15 @@ public abstract class WaystoneBlockBase extends Block {
         if (tagCompound != null && tagCompound.contains("UUID", Constants.NBT.TAG_INT_ARRAY)) {
             WaystoneProxy waystone = new WaystoneProxy(NBTUtil.readUniqueId(Objects.requireNonNull(tagCompound.get("UUID"))));
             if (waystone.isValid()) {
-                StringTextComponent component = new StringTextComponent(waystone.getName());
-                component.mergeStyle(TextFormatting.AQUA);
-                tooltip.add(component);
+                addWaystoneNameToTooltip(tooltip, waystone);
             }
         }
+    }
+
+    protected void addWaystoneNameToTooltip(List<ITextComponent> tooltip, WaystoneProxy waystone) {
+        StringTextComponent component = new StringTextComponent(waystone.getName());
+        component.mergeStyle(TextFormatting.AQUA);
+        tooltip.add(component);
     }
 
     @Override
@@ -325,7 +329,7 @@ public abstract class WaystoneBlockBase extends Block {
                 }
 
                 if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof Waystone) {
-                    ((WaystoneTileEntityBase) tileEntity).initializeFromExisting((IServerWorld) world, ((Waystone) existingWaystone.getBackingWaystone()));
+                    ((WaystoneTileEntityBase) tileEntity).initializeFromExisting((IServerWorld) world, ((Waystone) existingWaystone.getBackingWaystone()), stack);
                 } else {
                     ((WaystoneTileEntityBase) tileEntity).initializeWaystone((IServerWorld) world, placer, false);
                 }

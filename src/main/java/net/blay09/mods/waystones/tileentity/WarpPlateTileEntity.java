@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
@@ -31,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IServerWorld;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -67,7 +69,28 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
 
     public WarpPlateTileEntity() {
         super(ModTileEntities.warpPlate);
+    }
 
+    @Override
+    public void initializeFromExisting(IServerWorld world, Waystone existingWaystone, ItemStack itemStack) {
+        super.initializeFromExisting(world, existingWaystone, itemStack);
+
+        CompoundNBT tag = itemStack.getTag();
+        completedFirstAttunement = tag != null && tag.getBoolean("CompletedFirstAttunement");
+
+        if (!completedFirstAttunement) {
+            initializeInventory();
+        }
+    }
+
+    @Override
+    public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
+        super.initializeWaystone(world, player, wasGenerated);
+
+        initializeInventory();
+    }
+
+    private void initializeInventory() {
         itemStackHandler.setStackInSlot(0, new ItemStack(Items.FLINT));
         itemStackHandler.setStackInSlot(1, new ItemStack(ModItems.warpDust));
         itemStackHandler.setStackInSlot(2, new ItemStack(ModItems.warpDust));
@@ -306,4 +329,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         ticksPassedPerEntity.put(entity, -1);
     }
 
+    public boolean isCompletedFirstAttunement() {
+        return completedFirstAttunement;
+    }
 }
