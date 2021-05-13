@@ -170,19 +170,26 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                 Map.Entry<Entity, Integer> entry = iterator.next();
                 Entity entity = entry.getKey();
                 Integer ticksPassed = entry.getValue();
-                if (!entity.isAlive()) {
-                    iterator.remove();
-                } else if (!isEntityOnWarpPlate(entity)) {
+                if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                     iterator.remove();
                 } else if (ticksPassed > 20) {
                     IWaystone targetWaystone = getTargetWaystone();
-                    if (targetWaystone != null) {
+                    if (targetWaystone != null && targetWaystone.isValid()) {
                         teleportToWarpPlate(entity, targetWaystone);
-                    } else if (entity instanceof PlayerEntity) {
-                        TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_no_target");
-                        chatComponent.mergeStyle(TextFormatting.DARK_RED);
-                        ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
                     }
+
+                    if (entity instanceof PlayerEntity) {
+                        if (targetWaystone == null) {
+                            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_no_target");
+                            chatComponent.mergeStyle(TextFormatting.DARK_RED);
+                            ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
+                        } else if (!targetWaystone.isValid()) {
+                            TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_invalid_target");
+                            chatComponent.mergeStyle(TextFormatting.DARK_RED);
+                            ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
+                        }
+                    }
+
                     iterator.remove();
                 } else if (ticksPassed != -1) {
                     entry.setValue(ticksPassed + 1);
