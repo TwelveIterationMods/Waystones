@@ -11,7 +11,7 @@ public class ModScreens {
     public static void registerScreens() {
         ScreenManager.registerFactory(ModContainers.waystoneSelection, WaystoneSelectionScreen::new);
         ScreenManager.registerFactory(ModContainers.sharestoneSelection, SharestoneSelectionScreen::new);
-        ScreenManager.registerFactory(ModContainers.warpPlateSelection, WarpPlateScreen::new);
+        ScreenManager.registerFactory(ModContainers.warpPlate, WarpPlateScreen::new);
         ScreenManager.registerFactory(ModContainers.waystoneSettings, WaystoneSettingsScreen::new);
     }
 }

@@ -156,5 +156,6 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
 
     public abstract INamedContainerProvider getWaystoneSelectionContainerProvider();
 
+    @Nullable
     public abstract INamedContainerProvider getWaystoneSettingsContainerProvider();
 }

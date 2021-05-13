@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -66,10 +67,13 @@ public abstract class WaystoneBlockBase extends Block {
                     return state;
                 }
             }
+
+            return Blocks.AIR.getDefaultState();
         }
 
-        return Blocks.AIR.getDefaultState();
+        return state;
     }
+
 
     @Override
     public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
@@ -209,7 +213,10 @@ public abstract class WaystoneBlockBase extends Block {
             }
 
             if (!world.isRemote) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), tileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, tileEntity.getWaystone()));
+                INamedContainerProvider settingsContainerProvider = tileEntity.getWaystoneSettingsContainerProvider();
+                if (settingsContainerProvider != null) {
+                    NetworkHooks.openGui(((ServerPlayerEntity) player), settingsContainerProvider, buf -> Waystone.write(buf, tileEntity.getWaystone()));
+                }
             }
             return ActionResultType.SUCCESS;
         }
@@ -342,7 +349,10 @@ public abstract class WaystoneBlockBase extends Block {
                 final WaystoneTileEntityBase waystoneTileEntity = (WaystoneTileEntityBase) tileEntity;
                 WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
                 if (result == WaystoneEditPermissions.ALLOW) {
-                    NetworkHooks.openGui(player, waystoneTileEntity.getWaystoneSettingsContainerProvider(), buf -> Waystone.write(buf, waystoneTileEntity.getWaystone()));
+                    INamedContainerProvider settingsContainerProvider = waystoneTileEntity.getWaystoneSettingsContainerProvider();
+                    if (settingsContainerProvider != null) {
+                        NetworkHooks.openGui(player, settingsContainerProvider, buf -> Waystone.write(buf, waystoneTileEntity.getWaystone()));
+                    }
                 }
             }
         }

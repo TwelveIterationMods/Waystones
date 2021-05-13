@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "waystones:warp_dust",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "tag": "forge:dyes/purple"
+    }
+  ]
+}

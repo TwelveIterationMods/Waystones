@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.container;
 
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.client.gui.screen.WarpPlateScreen;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.tileentity.SharestoneTileEntity;
@@ -19,7 +18,7 @@ import java.util.List;
 public class ModContainers {
     public static ContainerType<WaystoneSelectionContainer> waystoneSelection;
     public static ContainerType<WaystoneSelectionContainer> sharestoneSelection;
-    public static ContainerType<WaystoneSelectionContainer> warpPlateSelection;
+    public static ContainerType<WarpPlateContainer> warpPlate;
     public static ContainerType<WaystoneSettingsContainer> waystoneSettings;
 
     public static void register(IForgeRegistry<ContainerType<?>> registry) {
@@ -54,18 +53,12 @@ public class ModContainers {
             return null;
         });
 
-        warpPlateSelection = new ContainerType<>((IContainerFactory<WaystoneSelectionContainer>) (windowId, inv, data) -> {
+        warpPlate = new ContainerType<>((IContainerFactory<WarpPlateContainer>) (windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
-            int count = data.readShort();
-            List<IWaystone> waystones = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                waystones.add(Waystone.read(data));
-            }
 
             TileEntity tileEntity = inv.player.world.getTileEntity(pos);
             if (tileEntity instanceof WarpPlateTileEntity) {
-                IWaystone fromWaystone = ((WarpPlateTileEntity) tileEntity).getWaystone();
-                return new WaystoneSelectionContainer(ModContainers.warpPlateSelection, WarpMode.WARP_PLATE, fromWaystone, windowId, waystones);
+                return new WarpPlateContainer(windowId, ((WarpPlateTileEntity) tileEntity), inv);
             }
 
             return null;
@@ -79,7 +72,7 @@ public class ModContainers {
         registry.registerAll(
                 waystoneSelection.setRegistryName("waystone_selection"),
                 sharestoneSelection.setRegistryName("sharestone_selection"),
-                warpPlateSelection.setRegistryName("warp_plate_selection"),
+                warpPlate.setRegistryName("warp_plate_selection"),
                 waystoneSettings.setRegistryName("waystone_settings")
         );
     }

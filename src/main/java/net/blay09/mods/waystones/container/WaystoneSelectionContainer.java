@@ -58,11 +58,6 @@ public class WaystoneSelectionContainer extends Container {
         return new WaystoneSelectionContainer(ModContainers.sharestoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 
-    public static WaystoneSelectionContainer createWarpPlateSelection(int windowId, IWaystone fromWaystone) {
-        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.WARP_PLATE).collect(Collectors.toList());
-        return new WaystoneSelectionContainer(ModContainers.warpPlateSelection, WarpMode.WARP_PLATE, fromWaystone, windowId, waystones);
-    }
-
     public static void writeSharestoneContainer(PacketBuffer buf, BlockPos pos) {
         List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE).collect(Collectors.toList());
 
