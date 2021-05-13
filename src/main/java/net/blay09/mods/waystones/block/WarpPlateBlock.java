@@ -52,7 +52,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (entity.getPosX() >= pos.getX() && entity.getPosX() < pos.getX() + 1
                 && entity.getPosY() >= pos.getY() && entity.getPosY() < pos.getY() + 1
-                && entity.getPosZ() >= pos.getZ() && entity.getPosZ() < pos.getZ() + 1) {
+                && entity.getPosZ() >= pos.getZ() && entity.getPosZ() < pos.getZ() + 1
+                && !world.isRemote) {
             world.setBlockState(pos, state.with(ACTIVE, true), 3);
 
             TileEntity tileEntity = world.getTileEntity(pos);
@@ -67,7 +68,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         if (state.get(ACTIVE)) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WarpPlateTileEntity) {
-                if(((WarpPlateTileEntity) tileEntity).getTargetWaystone() != null) {
+                if (((WarpPlateTileEntity) tileEntity).getTargetWaystone() != null) {
                     for (int i = 0; i < 50; i++) {
                         world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
                         world.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);

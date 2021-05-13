@@ -368,16 +368,21 @@ public class PlayerWaystoneManager {
             }
             player.setExperienceLevel(player.experienceLevel);
         } else {
-            // TODO teleport other entities (for warp plates)
+            teleportEntity(entity, targetWorld, targetPos3d);
         }
 
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> entity.world.getChunkAt(sourcePos)), new TeleportEffectMessage(sourcePos));
         NetworkHandler.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> entity.world.getChunkAt(targetPos)), new TeleportEffectMessage(targetPos));
 
-        context.getLeashedEntities().forEach(mob -> {
-            if (targetWorld == mob.world) mob.setPosition(targetPos3d.x, targetPos3d.y, targetPos3d.z);
-            else mob.changeDimension(targetWorld, new WaystoneTeleporter(targetPos3d));
-        });
+        context.getLeashedEntities().forEach(mob -> teleportEntity(mob, targetWorld, targetPos3d));
+    }
+
+    private static void teleportEntity(Entity entity, ServerWorld targetWorld, Vector3d targetPos3d) {
+        if (targetWorld == entity.world) {
+            entity.setPosition(targetPos3d.x, targetPos3d.y, targetPos3d.z);
+        } else {
+            entity.changeDimension(targetWorld, new WaystoneTeleporter(targetPos3d));
+        }
     }
 
     public static void deactivateWaystone(PlayerEntity player, IWaystone waystone) {
