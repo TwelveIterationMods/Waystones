@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
@@ -12,6 +13,9 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPattern;
+import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
+import net.minecraft.world.gen.feature.jigsaw.LegacySingleJigsawPiece;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -19,6 +23,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Waystones.MOD_ID)
@@ -92,30 +98,37 @@ public class ModWorldGen {
         }
     }
 
-    public static void setupVillageWorldGen() {
-        /*JigsawManager.REGISTRY.register(new JigsawPattern(villageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
-        JigsawManager.REGISTRY.register(new JigsawPattern(desertVillageWaystoneStructure, emptyStructure, Collections.emptyList(), JigsawPattern.PlacementBehaviour.RIGID));
+    public static void setupVillageWorldGen(DynamicRegistries dynamicRegistries) {
+        if (WaystonesConfig.COMMON.addVillageStructure.get()) {
 
-        if (WaystoneConfig.COMMON.addVillageStructure.get()) {
-            PlainsVillagePools.init();
-            SnowyVillagePools.init();
-            SavannaVillagePools.init();
-            DesertVillagePools.init();
-            TaigaVillagePools.init();
+            // Add Waystone to Vanilla Villages.
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "village/plains/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "village/snowy/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "village/savanna/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "village/desert/houses", desertVillageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "village/taiga/houses", villageWaystoneStructure, 1);
 
-            addWaystoneStructureToVillageConfig("village/plains/houses", villageWaystoneStructure);
-            addWaystoneStructureToVillageConfig("village/snowy/houses", villageWaystoneStructure);
-            addWaystoneStructureToVillageConfig("village/savanna/houses", villageWaystoneStructure);
-            addWaystoneStructureToVillageConfig("village/desert/houses", desertVillageWaystoneStructure);
-            addWaystoneStructureToVillageConfig("village/taiga/houses", villageWaystoneStructure);
-        }*/
+            // Add Waystone to other mod's structures. (Make sure Waystone piece Jigsaw Block's Name matches the other mod piece Jigsaw's Target Name.
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/badlands/houses", desertVillageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/birch/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/dark_forest/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/jungle/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/mountains/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/oak/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/swamp/houses", villageWaystoneStructure, 1);
+        }
     }
 
-    private static void addWaystoneStructureToVillageConfig(String villagePiece, ResourceLocation waystoneStructure) {
-        /*JigsawPattern houses = JigsawManager.REGISTRY.get(new ResourceLocation(villagePiece));
-
-        final SingleJigsawPiece piece = new SingleJigsawPiece(waystoneStructure.toString());
-        houses.rawTemplates = ImmutableList.<Pair<JigsawPiece, Integer>>builder().addAll(houses.rawTemplates).add(Pair.of(piece, 1)).build();
-        houses.jigsawPieces.add(piece);*/
+    private static void addWaystoneStructureToVillageConfig(DynamicRegistries dynamicRegistries, String villagePiece, ResourceLocation waystoneStructure, int weight) {
+        LegacySingleJigsawPiece piece = JigsawPiece.func_242849_a(waystoneStructure.toString()).apply(JigsawPattern.PlacementBehaviour.RIGID);
+        JigsawPattern pool = dynamicRegistries.getRegistry(Registry.JIGSAW_POOL_KEY).getOptional(new ResourceLocation(villagePiece)).orElse(null);
+        if(pool != null) {
+            // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.
+            List<JigsawPiece> listOfPieces = new ArrayList<>(pool.jigsawPieces);
+            for(int i = 0; i < weight; i++){
+                listOfPieces.add(piece);
+            }
+            pool.jigsawPieces = listOfPieces;
+        }
     }
 }
