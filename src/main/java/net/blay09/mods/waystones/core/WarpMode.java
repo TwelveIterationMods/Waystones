@@ -51,7 +51,7 @@ public enum WarpMode {
     }
 
     private static boolean sharestonesOnly(Entity player, IWaystone waystone) {
-        return waystone.getWaystoneType().equals(WaystoneTypes.SHARESTONE);
+        return WaystoneTypes.isSharestone(waystone.getWaystoneType());
     }
 
     private static boolean warpPlatesOnly(Entity player, IWaystone waystone) {

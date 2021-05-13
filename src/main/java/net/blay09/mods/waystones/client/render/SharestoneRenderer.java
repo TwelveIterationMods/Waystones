@@ -29,7 +29,6 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
 
     private static final SharestoneModel model = new SharestoneModel();
     private static final RenderMaterial MATERIAL = new RenderMaterial(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
-    private static final float[] WHITE = new float[]{0f, 0f, 0f};
 
     public SharestoneRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -45,20 +44,22 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
 
         long gameTime = world.getGameTime();
 
-        matrixStack.push();
-        matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
-        matrixStack.translate(0f, -2f, 0f);
-        float scale = 1.01f;
-        matrixStack.scale(0.5f, 0.5f, 0.5f);
-        matrixStack.scale(scale, scale, scale);
-        IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::getEntityCutout);
-        int light = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
-        int overlay = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
         DyeColor color = ((SharestoneBlock) state.getBlock()).getColor();
-        float[] colors = color != null ? color.getColorComponentValues() : WHITE;
-        model.render(matrixStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
-        matrixStack.pop();
+        if(color != null) {
+            matrixStack.push();
+            matrixStack.translate(0.5f, 0f, 0.5f);
+            matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
+            matrixStack.translate(0f, -2f, 0f);
+            float scale = 1.01f;
+            matrixStack.scale(0.5f, 0.5f, 0.5f);
+            matrixStack.scale(scale, scale, scale);
+            IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::getEntityCutout);
+            int light = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
+            int overlay = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+            float[] colors = color.getColorComponentValues();
+            model.render(matrixStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
+            matrixStack.pop();
+        }
 
         float angle = gameTime / 2f % 360;
         float offsetY = (float) Math.sin(gameTime / 8f) * 0.025f;

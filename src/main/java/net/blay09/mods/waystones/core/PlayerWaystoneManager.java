@@ -404,7 +404,7 @@ public class PlayerWaystoneManager {
             case WAYSTONE_TO_WAYSTONE:
                 return WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get() && fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
             case SHARESTONE_TO_SHARESTONE:
-                return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.SHARESTONE);
+                return fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
             case WARP_PLATE:
                 return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
         }

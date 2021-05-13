@@ -1,11 +1,15 @@
 package net.blay09.mods.waystones.container;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.*;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.DyeColor;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
@@ -53,13 +57,16 @@ public class WaystoneSelectionContainer extends Container {
         return new WaystoneSelectionContainer(ModContainers.waystoneSelection, warpMode, fromWaystone, windowId, waystones);
     }
 
-    public static WaystoneSelectionContainer createSharestoneSelection(int windowId, IWaystone fromWaystone) {
-        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE).collect(Collectors.toList());
+    public static WaystoneSelectionContainer createSharestoneSelection(int windowId, IWaystone fromWaystone, BlockState state) {
+        SharestoneBlock block = (SharestoneBlock) state.getBlock();
+        ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
+        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(waystoneType).collect(Collectors.toList());
         return new WaystoneSelectionContainer(ModContainers.sharestoneSelection, WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 
-    public static void writeSharestoneContainer(PacketBuffer buf, BlockPos pos) {
-        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(WaystoneTypes.SHARESTONE).collect(Collectors.toList());
+    public static void writeSharestoneContainer(PacketBuffer buf, BlockPos pos, @Nullable DyeColor color) {
+        ResourceLocation waystoneType = WaystoneTypes.getSharestone(color);
+        List<IWaystone> waystones = WaystoneManager.get().getWaystonesByType(waystoneType).collect(Collectors.toList());
 
         buf.writeBlockPos(pos);
         buf.writeShort(waystones.size());

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.tileentity;
 
+import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
@@ -21,7 +22,7 @@ public class SharestoneTileEntity extends WaystoneTileEntityBase {
 
     @Override
     protected ResourceLocation getWaystoneType() {
-        return WaystoneTypes.SHARESTONE;
+        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class SharestoneTileEntity extends WaystoneTileEntityBase {
 
             @Override
             public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-                return WaystoneSelectionContainer.createSharestoneSelection(i, getWaystone());
+                return WaystoneSelectionContainer.createSharestoneSelection(i, getWaystone(), getBlockState());
             }
         };
     }

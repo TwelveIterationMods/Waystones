@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "waystones:pink_sharestone"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dyes/pink"
+    },
+    {
+      "tag": "waystones:sharestone"
+    }
+  ]
+}
