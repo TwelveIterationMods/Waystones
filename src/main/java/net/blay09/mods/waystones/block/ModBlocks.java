@@ -3,14 +3,18 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.Objects;
 
 public class ModBlocks {
     public static Block waystone;
     public static Block mossyWaystone;
     public static Block sandyWaystone;
     public static Block sharestone;
+    public static SharestoneBlock[] scopedSharestones;
     public static Block warpPlate;
 
     public static void register(IForgeRegistry<Block> registry) {
@@ -18,9 +22,16 @@ public class ModBlocks {
                 waystone = new WaystoneBlock().setRegistryName("waystone"),
                 mossyWaystone = new WaystoneBlock().setRegistryName("mossy_waystone"),
                 sandyWaystone = new WaystoneBlock().setRegistryName("sandy_waystone"),
-                sharestone = new SharestoneBlock().setRegistryName("sharestone"),
-                warpPlate = new WarpPlateBlock().setRegistryName("warp_plate")
+                warpPlate = new WarpPlateBlock().setRegistryName("warp_plate"),
+                sharestone = new SharestoneBlock(null).setRegistryName("sharestone")
         );
+
+        DyeColor[] colors = DyeColor.values();
+        scopedSharestones = new SharestoneBlock[16];
+        for (DyeColor color : colors) {
+            scopedSharestones[color.ordinal()] = new SharestoneBlock(color);
+            registry.register(scopedSharestones[color.ordinal()].setRegistryName(color.getTranslationKey() + "_sharestone"));
+        }
     }
 
     public static void registerBlockItems(IForgeRegistry<Item> registry) {
@@ -31,6 +42,10 @@ public class ModBlocks {
                 new BlockItem(sharestone, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("sharestone"),
                 new BlockItem(warpPlate, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("warp_plate")
         );
+        for (SharestoneBlock scopedSharestone : scopedSharestones) {
+            registry.register(new BlockItem(scopedSharestone, new Item.Properties().group(Waystones.itemGroup))
+                    .setRegistryName(Objects.requireNonNull(scopedSharestone.getColor()).getTranslationKey() + "_sharestone"));
+        }
     }
 
 }

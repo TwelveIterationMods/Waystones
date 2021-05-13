@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +29,7 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
 
     private static final SharestoneModel model = new SharestoneModel();
     private static final RenderMaterial MATERIAL = new RenderMaterial(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
+    private static final float[] WHITE = new float[]{0f, 0f, 0f};
 
     public SharestoneRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -53,7 +55,9 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
         IVertexBuilder vertexBuilder = MATERIAL.getBuffer(buffer, RenderType::getEntityCutout);
         int light = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedLightIn : 15728880;
         int overlay = WaystonesConfig.CLIENT.disableTextGlow.get() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-        model.render(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
+        DyeColor color = ((SharestoneBlock) state.getBlock()).getColor();
+        float[] colors = color != null ? color.getColorComponentValues() : WHITE;
+        model.render(matrixStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
         matrixStack.pop();
 
         float angle = gameTime / 2f % 360;

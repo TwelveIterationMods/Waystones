@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
@@ -43,7 +44,11 @@ public class SharestoneBlock extends WaystoneBlockBase {
             makeCuboidShape(0.0, 13.0, 0.0, 16.0, 16.0, 16.0)
     ).simplify();
 
-    public SharestoneBlock() {
+    @Nullable
+    private final DyeColor color;
+
+    public SharestoneBlock(@Nullable DyeColor color) {
+        this.color = color;
         this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
     }
 
@@ -67,7 +72,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        TranslationTextComponent component = new TranslationTextComponent("tooltip.waystones.sharestone");
+        TranslationTextComponent component = new TranslationTextComponent(color != null ? "tooltip.waystones." + color.getTranslationKey() + "_sharestone" : "tooltip.waystones.sharestone");
         component.mergeStyle(TextFormatting.GRAY);
         tooltip.add(component);
 
@@ -79,4 +84,10 @@ public class SharestoneBlock extends WaystoneBlockBase {
         super.fillStateContainer(builder);
         builder.add(HALF);
     }
+
+    @Nullable
+    public DyeColor getColor() {
+        return color;
+    }
+
 }
