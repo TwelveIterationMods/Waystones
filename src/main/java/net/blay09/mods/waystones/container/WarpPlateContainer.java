@@ -36,6 +36,8 @@ public class WarpPlateContainer extends Container {
         for (int j = 0; j < 9; ++j) {
             addSlot(new Slot(playerInventory, j, 8 + j * 18, 162));
         }
+
+        trackInt(tileEntity.getAttunementTicks());
     }
 
     @Override
@@ -45,7 +47,7 @@ public class WarpPlateContainer extends Container {
     }
 
     public float getAttunementProgress() {
-        return tileEntity.getAttunementProgress();
+        return tileEntity.getAttunementTicks().get() / (float) tileEntity.getMaxAttunementTicks();
     }
 
     @Override

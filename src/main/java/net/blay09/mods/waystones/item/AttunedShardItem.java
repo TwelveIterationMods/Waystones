@@ -37,7 +37,8 @@ public class AttunedShardItem extends Item implements IAttunementItem {
 
     @Override
     public boolean hasEffect(ItemStack itemStack) {
-        return true;
+        IWaystone waystoneAttunedTo = getWaystoneAttunedTo(itemStack);
+        return waystoneAttunedTo != null && waystoneAttunedTo.isValid();
     }
 
     @Override
@@ -46,7 +47,10 @@ public class AttunedShardItem extends Item implements IAttunementItem {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
         IWaystone attunedWarpPlate = getWaystoneAttunedTo(stack);
-        if (attunedWarpPlate == null) {
+        if (attunedWarpPlate == null || !attunedWarpPlate.isValid()) {
+            TranslationTextComponent textComponent = new TranslationTextComponent("tooltip.waystones.attuned_shard.attunement_lost");
+            textComponent.mergeStyle(TextFormatting.GRAY);
+            tooltip.add(textComponent);
             return;
         }
 
@@ -76,6 +80,8 @@ public class AttunedShardItem extends Item implements IAttunementItem {
             return TextFormatting.LIGHT_PURPLE;
         } else if(textFormatting == TextFormatting.DARK_GRAY) {
             return TextFormatting.DARK_PURPLE;
+        } else if(textFormatting == TextFormatting.BLACK) {
+            return TextFormatting.GOLD;
         }
         return textFormatting != null ? textFormatting : TextFormatting.GRAY;
     }

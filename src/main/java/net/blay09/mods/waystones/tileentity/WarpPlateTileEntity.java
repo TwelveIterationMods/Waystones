@@ -20,6 +20,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -51,9 +52,10 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         }
     };
 
+    private final IntReferenceHolder attunementTicks = IntReferenceHolder.single();
+
     private boolean readyForAttunement;
     private boolean completedFirstAttunement;
-    private int attunementTicks;
 
     public WarpPlateTileEntity() {
         super(ModTileEntities.warpPlate);
@@ -122,12 +124,12 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
 
     @Override
     public void tick() {
-        if(!world.isRemote) {
+        if (!world.isRemote) {
             if (isReadyForAttunement()) {
-                attunementTicks++;
+                attunementTicks.set(attunementTicks.get() + 1);
 
-                if (attunementTicks >= getMaxAttunementTicks()) {
-                    attunementTicks = 0;
+                if (attunementTicks.get() >= getMaxAttunementTicks()) {
+                    attunementTicks.set(0);
                     ItemStack attunedShard = new ItemStack(ModItems.attunedShard);
                     AttunedShardItem.setWaystoneAttunedTo(attunedShard, getWaystone());
                     itemStackHandler.setStackInSlot(0, attunedShard);
@@ -137,7 +139,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                     completedFirstAttunement = true;
                 }
             } else {
-                attunementTicks = 0;
+                attunementTicks.set(0);
             }
 
             if (getBlockState().get(WarpPlateBlock.ACTIVE)) {
@@ -169,10 +171,14 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                         ((PlayerEntity) entity).sendStatusMessage(chatComponent, true);
                     }
                     iterator.remove();
-                } else {
+                } else if (ticksPassed != -1) {
                     entry.setValue(ticksPassed + 1);
                 }
             }
+        }
+
+        if (itemStackHandler.getStackInSlot(0).getItem() != Items.FLINT) {
+            completedFirstAttunement = true;
         }
     }
 
@@ -199,15 +205,20 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         return itemStackHandler;
     }
 
-    private int getMaxAttunementTicks() {
+    public int getMaxAttunementTicks() {
         return 30;
     }
 
-    public float getAttunementProgress() {
-        return attunementTicks / (float) getMaxAttunementTicks();
+    public IntReferenceHolder getAttunementTicks() {
+        return attunementTicks;
     }
 
     public void markReadyForAttunement() {
         readyForAttunement = true;
     }
+
+    public void markEntityForCooldown(Entity entity) {
+        ticksPassedPerEntity.put(entity, -1);
+    }
+
 }

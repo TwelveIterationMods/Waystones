@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
+import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,6 +25,7 @@ import net.minecraft.network.play.server.SPlayEntityEffectPacket;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -327,7 +329,7 @@ public class PlayerWaystoneManager {
         BlockPos pos = waystone.getPos();
         Direction direction = context.getDirection();
         ServerWorld targetWorld = context.getTargetWorld();
-        BlockPos targetPos = pos.offset(direction);
+        BlockPos targetPos = waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE) ? pos : pos.offset(direction);
         Vector3d targetPos3d = new Vector3d(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
         Entity mount = entity.getRidingEntity();
@@ -338,6 +340,17 @@ public class PlayerWaystoneManager {
             } else {
                 mount = mount.changeDimension(targetWorld, new WaystoneTeleporter(targetPos3d));
             }
+        }
+
+        TileEntity targetTileEntity = context.getTargetWorld().getTileEntity(waystone.getPos());
+        if (targetTileEntity instanceof WarpPlateTileEntity) {
+            ((WarpPlateTileEntity) targetTileEntity).markEntityForCooldown(entity);
+
+            if (mount != null) {
+                ((WarpPlateTileEntity) targetTileEntity).markEntityForCooldown(mount);
+            }
+
+            context.getLeashedEntities().forEach(((WarpPlateTileEntity) targetTileEntity)::markEntityForCooldown);
         }
 
         if (entity instanceof ServerPlayerEntity) {
