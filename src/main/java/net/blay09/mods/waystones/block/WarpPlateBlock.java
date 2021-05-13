@@ -6,15 +6,12 @@ import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -70,8 +67,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         if (state.get(ACTIVE)) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WarpPlateTileEntity) {
-                IWaystone waystone = ((WarpPlateTileEntity) tileEntity).getWaystone();
-                if(waystone.getTargetWaystone() != null) {
+                if(((WarpPlateTileEntity) tileEntity).getTargetWaystone().isValid()) {
                     for (int i = 0; i < 50; i++) {
                         world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
                         world.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);

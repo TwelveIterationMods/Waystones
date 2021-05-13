@@ -24,7 +24,6 @@ public class Waystone implements IWaystone, IMutableWaystone {
 
     private String name;
     private boolean isGlobal;
-    private IWaystone targetWaystone;
 
     private UUID ownerUid;
 
@@ -90,16 +89,6 @@ public class Waystone implements IWaystone, IMutableWaystone {
     @Override
     public UUID getOwnerUid() {
         return ownerUid;
-    }
-
-    @Override
-    @Nullable
-    public IWaystone getTargetWaystone() {
-        return targetWaystone;
-    }
-
-    public void setTargetWaystone(@Nullable IWaystone targetWaystone) {
-        this.targetWaystone = targetWaystone;
     }
 
     public void setDimension(RegistryKey<World> dimension) {

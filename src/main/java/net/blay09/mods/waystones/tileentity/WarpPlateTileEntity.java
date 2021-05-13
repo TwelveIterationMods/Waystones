@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
+import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTypes;
@@ -122,7 +123,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
             } else if (!isEntityOnWarpPlate(entity)) {
                 iterator.remove();
             } else if (ticksPassed > 20) {
-                IWaystone targetWaystone = getWaystone().getTargetWaystone();
+                IWaystone targetWaystone = getTargetWaystone();
                 if (targetWaystone != null) {
                     PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone());
                 } else if (entity instanceof PlayerEntity) {
@@ -135,6 +136,10 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                 entry.setValue(ticksPassed + 1);
             }
         }
+    }
+
+    public IWaystone getTargetWaystone() {
+        return InvalidWaystone.INSTANCE; // TODO take from item
     }
 
     public ItemStackHandler getItemStackHandler() {

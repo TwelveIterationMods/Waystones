@@ -468,23 +468,4 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static void bindWaystoneTarget(ServerPlayerEntity player, IWaystone waystoneFrom, IWaystone waystoneTo) {
-        int xpLevelCost = WaystonesConfig.SERVER.warpPlateBindXpCost.get();
-        if (player.experienceLevel < xpLevelCost) {
-            return;
-        }
-
-        if (waystoneFrom instanceof IMutableWaystone) {
-            if (xpLevelCost > 0) {
-                player.addExperienceLevel(-xpLevelCost);
-            }
-
-            ((IMutableWaystone) waystoneFrom).setTargetWaystone(waystoneTo);
-
-            // If target has no waystone bound yet, auto-bind it to this one for free
-            if (waystoneTo.getTargetWaystone() == null && waystoneTo instanceof IMutableWaystone) {
-                ((IMutableWaystone) waystoneTo).setTargetWaystone(waystoneFrom);
-            }
-        }
-    }
 }

@@ -38,12 +38,6 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
         return getBackingWaystone().getOwnerUid();
     }
 
-    @Nullable
-    @Override
-    public IWaystone getTargetWaystone() {
-        return getBackingWaystone().getTargetWaystone();
-    }
-
     @Override
     public UUID getWaystoneUid() {
         return waystoneUid;
@@ -116,11 +110,4 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
         }
     }
 
-    @Override
-    public void setTargetWaystone(@Nullable IWaystone targetWaystone) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setTargetWaystone(targetWaystone);
-        }
-    }
 }

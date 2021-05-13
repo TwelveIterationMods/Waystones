@@ -61,12 +61,6 @@ public class InvalidWaystone implements IWaystone {
         return BlockPos.ZERO;
     }
 
-    @Nullable
-    @Override
-    public IWaystone getTargetWaystone() {
-        return null;
-    }
-
     @Override
     public ResourceLocation getWaystoneType() {
         return new ResourceLocation(Waystones.MOD_ID, "invalid");

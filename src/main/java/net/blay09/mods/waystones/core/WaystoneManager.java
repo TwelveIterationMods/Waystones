@@ -98,9 +98,6 @@ public class WaystoneManager extends WorldSavedData {
             Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
             waystone.setName(name);
             waystone.setGlobal(compound.getBoolean("IsGlobal"));
-            if (targetWaystoneUid != null) {
-                waystone.setTargetWaystone(new WaystoneProxy(targetWaystoneUid));
-            }
             waystones.put(waystoneUid, waystone);
         }
     }
@@ -120,9 +117,6 @@ public class WaystoneManager extends WorldSavedData {
                 compound.put("OwnerUid", NBTUtil.func_240626_a_(waystone.getOwnerUid())); // writeUniqueId
             }
             compound.putBoolean("IsGlobal", waystone.isGlobal());
-            if (waystone.getTargetWaystone() != null) {
-                compound.put("TargetWaystoneUid", NBTUtil.func_240626_a_(waystone.getTargetWaystone().getWaystoneUid())); // writeUniqueId
-            }
             tagList.add(compound);
         }
         tagCompound.put(TAG_WAYSTONES, tagList);
