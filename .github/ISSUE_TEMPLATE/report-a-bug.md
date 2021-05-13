@@ -8,6 +8,7 @@ assignees: ''
 ---
 
 **Versions**
+- Minecraft Version (exact version number):
 - Forge Version (exact version number): 
 - Mod Version (exact version number): 
 - Do you use Sponge, OptiFine or Vivecraft (and which?):

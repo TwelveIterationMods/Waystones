@@ -21,7 +21,9 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
@@ -31,6 +33,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -58,6 +61,9 @@ public class Waystones {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, WaystonesConfig.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WaystonesConfig.clientSpec);
         registerSaneServerConfig(WaystonesConfig.serverSpec, MOD_ID);
+
+        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+        forgeBus.addListener(Waystones::setupWaystoneVillages);
     }
 
     /**
@@ -89,9 +95,16 @@ public class Waystones {
     public static void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             ModWorldGen.registerConfiguredFeatures();
-            ModWorldGen.setupVillageWorldGen();
         });
     }
+
+    /*
+      Add to Village pools in FMLServerAboutToStartEvent so Waystones shows up in Villages modified by datapacks.
+     */
+    public static void setupWaystoneVillages(FMLServerAboutToStartEvent event) {
+        ModWorldGen.setupVillageWorldGen(event.getServer().func_244267_aX());
+    }
+
 
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
