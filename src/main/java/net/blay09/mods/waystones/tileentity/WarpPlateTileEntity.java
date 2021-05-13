@@ -11,13 +11,17 @@ import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.IntReferenceHolder;
@@ -31,10 +35,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 
 public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITickableTileEntity {
@@ -52,10 +53,12 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         }
     };
 
+    private final Random random = new Random();
     private final IntReferenceHolder attunementTicks = IntReferenceHolder.single();
 
     private boolean readyForAttunement;
     private boolean completedFirstAttunement;
+    private int lastAttunementSlot;
 
     public WarpPlateTileEntity() {
         super(ModTileEntities.warpPlate);
@@ -79,6 +82,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         tagCompound.put("Items", itemStackHandler.serializeNBT());
         tagCompound.putBoolean("ReadyForAttunement", readyForAttunement);
         tagCompound.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
+        tagCompound.putInt("LastAttunementSlot", lastAttunementSlot);
 
         return tagCompound;
     }
@@ -90,6 +94,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         itemStackHandler.deserializeNBT(tagCompound.getCompound("Items"));
         readyForAttunement = tagCompound.getBoolean("ReadyForAttunement");
         completedFirstAttunement = tagCompound.getBoolean("CompletedFirstAttunement");
+        lastAttunementSlot = tagCompound.getInt("LastAttunementSlot");
     }
 
     @Override
@@ -164,7 +169,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                 } else if (ticksPassed > 20) {
                     IWaystone targetWaystone = getTargetWaystone();
                     if (targetWaystone != null) {
-                        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone());
+                        teleportToWarpPlate(entity, targetWaystone);
                     } else if (entity instanceof PlayerEntity) {
                         TranslationTextComponent chatComponent = new TranslationTextComponent("chat.waystones.warp_plate_has_no_target");
                         chatComponent.mergeStyle(TextFormatting.DARK_RED);
@@ -182,6 +187,56 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         }
     }
 
+    private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
+        if (PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())) {
+            int fireSeconds = 0;
+            int poisonSeconds = 0;
+            int blindSeconds = 0;
+            int featherFallSeconds = 0;
+            int fireResistanceSeconds = 0;
+            float potency = 1;
+            List<ItemStack> curativeItems = new ArrayList<>();
+            for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+                ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+                if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                    fireSeconds += 2;
+                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                    poisonSeconds += 2;
+                } else if (itemStack.getItem() == Items.INK_SAC) {
+                    blindSeconds += 2;
+                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                    curativeItems.add(itemStack);
+                } else if (itemStack.getItem() == Items.DIAMOND) {
+                    potency += 1f;
+                } else if (itemStack.getItem() == Items.FEATHER) {
+                    featherFallSeconds += 2;
+                } else if(itemStack.getItem() == Items.MAGMA_CREAM) {
+                    fireResistanceSeconds += 2;
+                }
+            }
+            if (entity instanceof LivingEntity) {
+                if (fireSeconds > 0) {
+                    entity.setFire((int) (fireSeconds * potency));
+                }
+                if (poisonSeconds > 0) {
+                    ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.POISON, (int) (poisonSeconds * potency * 20)));
+                }
+                if (blindSeconds > 0) {
+                    ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.BLINDNESS, (int) (blindSeconds * potency * 20)));
+                }
+                if(featherFallSeconds > 0) {
+                    ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, (int) (featherFallSeconds * potency * 20)));
+                }
+                if(fireResistanceSeconds > 0) {
+                    ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
+                }
+                for (ItemStack curativeItem : curativeItems) {
+                    ((LivingEntity) entity).curePotionEffects(curativeItem);
+                }
+            }
+        }
+    }
+
     private boolean isReadyForAttunement() {
         return readyForAttunement
                 && itemStackHandler.getStackInSlot(0).getItem() == Items.FLINT
@@ -193,9 +248,24 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
 
     @Nullable
     public IWaystone getTargetWaystone() {
-        ItemStack attunedItem = itemStackHandler.getStackInSlot(0);
-        if (attunedItem.getItem() instanceof IAttunementItem) {
-            return ((IAttunementItem) attunedItem.getItem()).getWaystoneAttunedTo(attunedItem);
+        boolean useRoundRobin = false;
+        List<ItemStack> attunedShards = new ArrayList<>();
+        for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+            ItemStack itemStack = itemStackHandler.getStackInSlot(i);
+            if (itemStack.getItem() instanceof IAttunementItem) {
+                IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(itemStack);
+                if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
+                    attunedShards.add(itemStack);
+                }
+            } else if (itemStack.getItem() == Items.QUARTZ) {
+                useRoundRobin = true;
+            }
+        }
+
+        if (!attunedShards.isEmpty()) {
+            lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
+            ItemStack itemStack = useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
+            return ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(itemStack);
         }
 
         return null;
