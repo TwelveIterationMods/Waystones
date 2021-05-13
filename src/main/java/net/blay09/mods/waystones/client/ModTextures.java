@@ -15,6 +15,7 @@ public class ModTextures {
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (event.getMap().getTextureLocation().equals(Atlases.SIGN_ATLAS)) {
             event.addSprite(new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
+            event.addSprite(new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
         }
     }
 }
