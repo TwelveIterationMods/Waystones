@@ -77,7 +77,11 @@ public abstract class WaystoneBlockBase extends Block {
 
     @Override
     public void harvestBlock(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-        super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+        if (isDoubleBlock(state)) {
+            super.harvestBlock(world, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+        } else {
+            super.harvestBlock(world, player, pos, state, te, stack);
+        }
     }
 
     private boolean isDoubleBlock(BlockState state) {
