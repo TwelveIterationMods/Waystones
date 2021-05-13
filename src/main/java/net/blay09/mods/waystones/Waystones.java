@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.client.ClientProxy;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.client.ModScreens;
+import net.blay09.mods.waystones.compat.TheOneProbeAddon;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.item.ModItems;
@@ -27,6 +28,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -71,8 +73,8 @@ public class Waystones {
      * manually right away instead of on world-load.
      * <p>
      * TODO Remove in 1.17 and just move to COMMON with own sync packet - already need our own sync packet now since it
-     *      used the absolute path of the file to map configs in sync, which obviously failed if environments differed
-     *      - however! check that it won't override the client-side -common.toml with the server data
+     * used the absolute path of the file to map configs in sync, which obviously failed if environments differed
+     * - however! check that it won't override the client-side -common.toml with the server data
      */
     private void registerSaneServerConfig(ForgeConfigSpec serverSpec, String modId) {
         final String fileName = FMLPaths.CONFIGDIR.get().resolve(modId + "-server.toml").toAbsolutePath().toString();
@@ -145,7 +147,9 @@ public class Waystones {
 
     @SubscribeEvent
     public static void enqueueIMC(InterModEnqueueEvent event) {
-        // TODO FMLInterModComms.sendFunctionMessage(Compat.THEONEPROBE, "getTheOneProbe", "net.blay09.mods.waystones.compat.TheOneProbeAddon");
+        if (ModList.get().isLoaded("theoneprobe")) {
+            TheOneProbeAddon.register();
+        }
     }
 
 }
