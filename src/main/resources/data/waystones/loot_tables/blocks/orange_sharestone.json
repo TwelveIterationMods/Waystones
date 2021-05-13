@@ -10,7 +10,7 @@
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "waystones:waystone",
+              "block": "waystones:orange_sharestone",
               "properties": {
                 "half": "lower"
               }
