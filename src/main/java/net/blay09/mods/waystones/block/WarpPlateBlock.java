@@ -54,8 +54,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                 && entity.getPosY() >= pos.getY() && entity.getPosY() < pos.getY() + 1
                 && entity.getPosZ() >= pos.getZ() && entity.getPosZ() < pos.getZ() + 1
                 && !world.isRemote) {
-            world.setBlockState(pos, state.with(ACTIVE, true), 3);
-
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof WarpPlateTileEntity) {
                 ((WarpPlateTileEntity) tileEntity).onEntityCollision(entity);

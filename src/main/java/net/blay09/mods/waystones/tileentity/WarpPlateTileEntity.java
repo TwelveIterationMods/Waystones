@@ -51,6 +51,11 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
 
             return super.extractItem(slot, amount, simulate);
         }
+
+        @Override
+        protected void onContentsChanged(int slot) {
+            markDirty();
+        }
     };
 
     private final Random random = new Random();
@@ -118,7 +123,10 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
     }
 
     public void onEntityCollision(Entity entity) {
-        ticksPassedPerEntity.putIfAbsent(entity, 0);
+        Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
+        if (ticksPassed == null || ticksPassed != -1) {
+            world.setBlockState(pos, getBlockState().with(WarpPlateBlock.ACTIVE, true), 3);
+        }
     }
 
     private boolean isEntityOnWarpPlate(Entity entity) {
@@ -210,7 +218,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                     potency += 1f;
                 } else if (itemStack.getItem() == Items.FEATHER) {
                     featherFallSeconds += 2;
-                } else if(itemStack.getItem() == Items.MAGMA_CREAM) {
+                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
                     fireResistanceSeconds += 2;
                 }
             }
@@ -224,10 +232,10 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
                 if (blindSeconds > 0) {
                     ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.BLINDNESS, (int) (blindSeconds * potency * 20)));
                 }
-                if(featherFallSeconds > 0) {
+                if (featherFallSeconds > 0) {
                     ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.SLOW_FALLING, (int) (featherFallSeconds * potency * 20)));
                 }
-                if(fireResistanceSeconds > 0) {
+                if (fireResistanceSeconds > 0) {
                     ((LivingEntity) entity).addPotionEffect(new EffectInstance(Effects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
                 }
                 for (ItemStack curativeItem : curativeItems) {
