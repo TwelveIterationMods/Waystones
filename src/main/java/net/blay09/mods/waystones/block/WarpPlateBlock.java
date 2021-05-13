@@ -70,8 +70,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             if (tileEntity instanceof WarpPlateTileEntity) {
                 if (((WarpPlateTileEntity) tileEntity).getTargetWaystone() != null) {
                     for (int i = 0; i < 50; i++) {
-                        world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 1f, 0f);
-                        world.addParticle(ParticleTypes.REVERSE_PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0f, 0.1f, 0f);
+                        world.addParticle(ParticleTypes.CRIMSON_SPORE, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 0f, 0f);
+                        world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 0f, 0f);
                     }
                 } else {
                     for (int i = 0; i < 10; i++) {
