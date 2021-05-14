@@ -8,14 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WaystoneCommonConfig {
-    public final ForgeConfigSpec.BooleanValue spawnInVillages;
     public final ForgeConfigSpec.BooleanValue allowWaystoneToWaystoneTeleport;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpAllowList;
+    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpDenyList;
+
+    public final ForgeConfigSpec.BooleanValue spawnInVillages;
+    public final ForgeConfigSpec.BooleanValue forceSpawnInVillages;
+
     public final ForgeConfigSpec.IntValue worldGenFrequency;
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionAllowList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionDenyList;
-    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpAllowList;
-    public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpDenyList;
 
     public final ForgeConfigSpec.EnumValue<NameGenerationMode> nameGenerationMode;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
@@ -23,17 +26,34 @@ public class WaystoneCommonConfig {
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
         builder.push("common");
 
-        builder.push("worldgen");
-
-        spawnInVillages = builder
-                .comment("Set to true if waystones should be added to the generation of villages.")
-                .translation("config.waystones.spawnInVillages")
-                .define("spawnInVillages", true);
-
         allowWaystoneToWaystoneTeleport = builder
                 .comment("Set to true if players should be able to teleport between waystones by simply right-clicking a waystone.")
                 .translation("config.waystones.allowWaystoneToWaystoneTeleport")
                 .define("allowWaystoneToWaystoneTeleport", true);
+
+        dimensionalWarpAllowList = builder
+                .comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
+                .translation("config.waystones.dimensionalWarpAllowList")
+                .defineList("dimensionalWarpAllowList", ArrayList::new, it -> it instanceof String);
+
+        dimensionalWarpDenyList = builder
+                .comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
+                .translation("config.waystones.worldGenDimensionDenyList")
+                .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
+
+        builder.push("villagegen");
+
+        spawnInVillages = builder
+                .comment("Set to true if waystones should be added to the generation of villages. Some villages may still spawn without a waystone.")
+                .translation("config.waystones.spawnInVillages")
+                .define("spawnInVillages", true);
+
+        forceSpawnInVillages = builder
+                .comment("Ensures that pretty much every village will have a waystone, by spawning it as early as possible. In addition, this means waystones will generally be located in the center of the village.")
+                .translation("config.waystones.forceSpawnInVillages")
+                .define("forceSpawnInVillages", false);
+
+        builder.push("worldgen");
 
         worldGenFrequency = builder
                 .comment("Approximate chunk distance between waystones generated freely in world generation. Set to 0 to disable generation.")
@@ -52,16 +72,6 @@ public class WaystoneCommonConfig {
 
         worldGenDimensionDenyList = builder
                 .comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
-                .translation("config.waystones.worldGenDimensionDenyList")
-                .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
-
-        dimensionalWarpAllowList = builder
-                .comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
-                .translation("config.waystones.dimensionalWarpAllowList")
-                .defineList("dimensionalWarpAllowList", ArrayList::new, it -> it instanceof String);
-
-        dimensionalWarpDenyList = builder
-                .comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
                 .translation("config.waystones.worldGenDimensionDenyList")
                 .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
 

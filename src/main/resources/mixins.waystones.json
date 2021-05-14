@@ -1,0 +1,10 @@
+{
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "required": true,
+  "package": "net.blay09.mods.waystones.mixin",
+  "mixins": [
+    "JigsawManagerAssemblerMixin"
+  ],
+  "refmap": "refmap.waystones.json"
+}
