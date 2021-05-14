@@ -22,7 +22,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     private RegistryKey<World> dimension;
     private BlockPos pos;
 
-    private String name;
+    private String name = "";
     private boolean isGlobal;
 
     private UUID ownerUid;

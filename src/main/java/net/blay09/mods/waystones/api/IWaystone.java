@@ -30,4 +30,8 @@ public interface IWaystone {
     UUID getOwnerUid();
 
     ResourceLocation getWaystoneType();
+
+    default boolean hasName() {
+        return !getName().isEmpty();
+    }
 }

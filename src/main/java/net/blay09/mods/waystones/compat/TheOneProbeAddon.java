@@ -2,12 +2,16 @@ package net.blay09.mods.waystones.compat;
 
 import mcjty.theoneprobe.api.*;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.InterModComms;
 
@@ -41,9 +45,19 @@ public class TheOneProbeAddon {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo info, PlayerEntity playerEntity, World world, BlockState state, IProbeHitData data) {
             TileEntity tileEntity = world.getTileEntity(data.getPos());
-            if (tileEntity instanceof WaystoneTileEntityBase) {
-                String name = ((WaystoneTileEntityBase) tileEntity).getWaystone().getName();
-                info.text(new StringTextComponent(name));
+            //noinspection StatementWithEmptyBody
+            if (tileEntity instanceof WarpPlateTileEntity) {
+                /* TOP does not use the correct galactic font, so don't display for warp plates.
+                IWaystone waystone = ((WarpPlateTileEntity) tileEntity).getWaystone();
+                ITextComponent galacticName = WarpPlateBlock.getGalacticName(waystone);
+                info.text(galacticName); */
+            } else if (tileEntity instanceof WaystoneTileEntityBase) {
+                IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
+                if (waystone.hasName()) {
+                    info.text(new StringTextComponent(waystone.getName()));
+                } else {
+                    info.text(new TranslationTextComponent("tooltip.waystones.undiscovered"));
+                }
             }
         }
 

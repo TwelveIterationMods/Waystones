@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
 import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -42,11 +43,7 @@ public class WarpPlateScreen extends ContainerScreen<WarpPlateContainer> {
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
         super.drawGuiContainerForegroundLayer(matrixStack, x, y);
 
-        IWaystone waystone = container.getWaystone();
-        String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
-        StringTextComponent galacticName = new StringTextComponent(name);
-        galacticName.mergeStyle(AttunedShardItem.getColorForName(name));
-        galacticName.mergeStyle(GALACTIC_STYLE);
+        ITextComponent galacticName = WarpPlateBlock.getGalacticName(container.getWaystone());
         int width = font.getStringPropertyWidth(galacticName);
         drawString(matrixStack, font, galacticName, xSize - width - 5, 5, 0xFFFFFFFF);
     }

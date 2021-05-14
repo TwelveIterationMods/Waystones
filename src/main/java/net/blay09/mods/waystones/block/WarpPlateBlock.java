@@ -2,9 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
@@ -15,7 +13,6 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
@@ -143,8 +140,29 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     protected void addWaystoneNameToTooltip(List<ITextComponent> tooltip, WaystoneProxy waystone) {
         String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
         StringTextComponent galacticName = new StringTextComponent(name);
-        galacticName.mergeStyle(AttunedShardItem.getColorForName(name));
+        galacticName.mergeStyle(getColorForName(name));
         galacticName.mergeStyle(GALACTIC_STYLE);
         tooltip.add(galacticName);
+    }
+
+    public static TextFormatting getColorForName(String name) {
+        int colorIndex = Math.abs(name.hashCode()) % 15;
+        TextFormatting textFormatting = TextFormatting.fromColorIndex(colorIndex);
+        if (textFormatting == TextFormatting.GRAY) {
+            return TextFormatting.LIGHT_PURPLE;
+        } else if (textFormatting == TextFormatting.DARK_GRAY) {
+            return TextFormatting.DARK_PURPLE;
+        } else if (textFormatting == TextFormatting.BLACK) {
+            return TextFormatting.GOLD;
+        }
+        return textFormatting != null ? textFormatting : TextFormatting.GRAY;
+    }
+
+    public static ITextComponent getGalacticName(IWaystone waystone) {
+        String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
+        StringTextComponent galacticName = new StringTextComponent(name);
+        galacticName.mergeStyle(WarpPlateBlock.getColorForName(name));
+        galacticName.mergeStyle(GALACTIC_STYLE);
+        return galacticName;
     }
 }

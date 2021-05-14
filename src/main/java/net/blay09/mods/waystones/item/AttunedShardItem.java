@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.item;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.client.Minecraft;
@@ -29,8 +30,6 @@ public class AttunedShardItem extends Item implements IAttunementItem {
     public static final String name = "attuned_shard";
     public static final ResourceLocation registryName = new ResourceLocation(Waystones.MOD_ID, name);
 
-    private static final Style GALACTIC_STYLE = Style.EMPTY.setFontId(new ResourceLocation("minecraft", "alt"));
-
     public AttunedShardItem() {
         super(new Properties().group(Waystones.itemGroup).maxStackSize(1));
     }
@@ -54,11 +53,7 @@ public class AttunedShardItem extends Item implements IAttunementItem {
             return;
         }
 
-        String name = StringUtils.substringBeforeLast(attunedWarpPlate.getName(), " ");
-        StringTextComponent galacticName = new StringTextComponent(name);
-        galacticName.mergeStyle(getColorForName(name));
-        galacticName.mergeStyle(GALACTIC_STYLE);
-        tooltip.add(galacticName);
+        tooltip.add(WarpPlateBlock.getGalacticName(attunedWarpPlate));
 
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && player.openContainer instanceof WarpPlateContainer) {
@@ -71,19 +66,6 @@ public class AttunedShardItem extends Item implements IAttunementItem {
         } else {
             tooltip.add(new TranslationTextComponent("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
         }
-    }
-
-    public static TextFormatting getColorForName(String name) {
-        int colorIndex = Math.abs(name.hashCode()) % 15;
-        TextFormatting textFormatting = TextFormatting.fromColorIndex(colorIndex);
-        if(textFormatting == TextFormatting.GRAY) {
-            return TextFormatting.LIGHT_PURPLE;
-        } else if(textFormatting == TextFormatting.DARK_GRAY) {
-            return TextFormatting.DARK_PURPLE;
-        } else if(textFormatting == TextFormatting.BLACK) {
-            return TextFormatting.GOLD;
-        }
-        return textFormatting != null ? textFormatting : TextFormatting.GRAY;
     }
 
     @Nullable

@@ -36,7 +36,7 @@ public class NameGenerator extends WorldSavedData {
         super(DATA_NAME);
     }
 
-    public synchronized String getName(IWaystone waystone, Random rand) {
+    public synchronized String getName(IWaystone waystone, Random rand, NameGenerationMode nameGenerationMode) {
         String name = null;
         List<? extends String> customNames = WaystonesConfig.COMMON.customWaystoneNames.get();
         Collections.shuffle(customNames, rand);

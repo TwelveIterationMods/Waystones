@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.tileentity;
 
 import net.blay09.mods.waystones.api.IAttunementItem;
+import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
@@ -10,6 +11,8 @@ import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -86,6 +89,13 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
     @Override
     public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
         super.initializeWaystone(world, player, wasGenerated);
+
+        // Warp Plates generate a name on placement always
+        IWaystone waystone = getWaystone();
+        if (waystone instanceof IMutableWaystone) {
+            String name = NameGenerator.get().getName(waystone, world.getRandom(), getNameGenerationMode());
+            ((IMutableWaystone) waystone).setName(name);
+        }
 
         initializeInventory();
     }
@@ -332,4 +342,11 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
     public boolean isCompletedFirstAttunement() {
         return completedFirstAttunement;
     }
+
+    @Override
+    protected NameGenerationMode getNameGenerationMode() {
+        return NameGenerationMode.RANDOM_ONLY;
+    }
+
+
 }

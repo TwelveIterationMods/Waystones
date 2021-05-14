@@ -14,6 +14,8 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -99,6 +101,11 @@ public class PlayerWaystoneManager {
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
+        if (!waystone.hasName() && waystone instanceof IMutableWaystone) {
+            String name = NameGenerator.get().getName(waystone, player.world.rand, waystone.wasGenerated() ? NameGenerationMode.DEFAULT : NameGenerationMode.RANDOM_ONLY);
+            ((IMutableWaystone) waystone).setName(name);
+        }
+
         if (!isWaystoneActivated(player, waystone)) {
             getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
 

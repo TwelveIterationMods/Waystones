@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.container.ModContainers;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.container.WaystoneSettingsContainer;
 import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -55,4 +56,8 @@ public class SharestoneTileEntity extends WaystoneTileEntityBase {
         };
     }
 
+    @Override
+    protected NameGenerationMode getNameGenerationMode() {
+        return NameGenerationMode.RANDOM_ONLY;
+    }
 }

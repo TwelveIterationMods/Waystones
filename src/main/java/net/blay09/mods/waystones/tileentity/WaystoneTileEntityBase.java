@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.tileentity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -108,10 +109,12 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
         return waystone;
     }
 
+    protected NameGenerationMode getNameGenerationMode() {
+        return NameGenerationMode.DEFAULT;
+    }
+
     public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
         Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getWorld().getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
-        String name = NameGenerator.get().getName(waystone, world.getRandom());
-        waystone.setName(name);
         WaystoneManager.get().addWaystone(waystone);
         this.waystone = waystone;
     }
