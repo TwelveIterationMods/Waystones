@@ -132,6 +132,8 @@ dependencies {
 
     compile fg.deobf("curse.maven:journeymap-32274:3222876")
 
+    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+
     def obfModsDir = new File("run/obfmods")
     if(obfModsDir.exists()) {
         obfModsDir.eachFile { file ->
