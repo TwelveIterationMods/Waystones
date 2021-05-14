@@ -94,7 +94,7 @@ public class InventoryButtonGuiHandler {
             long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
             IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
             int xpLevelCost = waystone != null ? PlayerWaystoneManager.getExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, (IWaystone) null) : 0;
-            int secondsLeft = (int) (timeLeft / 1000);
+            int secondsLeft = (int) (timeLeft / 20);
             if (inventoryButtonMode.hasNamedTarget()) {
                 tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
                 tooltip.add(formatTranslation(TextFormatting.GRAY, "tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));

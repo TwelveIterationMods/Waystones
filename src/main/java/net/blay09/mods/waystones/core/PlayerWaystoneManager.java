@@ -284,11 +284,11 @@ public class PlayerWaystoneManager {
             PlayerEntity player = (PlayerEntity) entity;
             if (warpMode == WarpMode.INVENTORY_BUTTON) {
                 int cooldown = (int) (WaystonesConfig.SERVER.inventoryButtonCooldown.get() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(entity.world).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
+                getPlayerWaystoneData(entity.world).setInventoryButtonCooldownUntil(player, player.world.getGameTime() + cooldown * 20L);
                 WaystoneSyncManager.sendWaystoneCooldowns(player);
             } else if (warpMode == WarpMode.WARP_STONE) {
                 int cooldown = (int) (WaystonesConfig.SERVER.warpStoneCooldown.get() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(entity.world).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
+                getPlayerWaystoneData(entity.world).setWarpStoneCooldownUntil(player, player.world.getGameTime() + cooldown * 20L);
                 WaystoneSyncManager.sendWaystoneCooldowns(player);
             }
 
@@ -443,7 +443,7 @@ public class PlayerWaystoneManager {
 
     public static long getWarpStoneCooldownLeft(PlayerEntity player) {
         long cooldownUntil = getWarpStoneCooldownUntil(player);
-        return Math.max(0, cooldownUntil - System.currentTimeMillis());
+        return Math.max(0, cooldownUntil - player.world.getGameTime());
     }
 
     public static void setWarpStoneCooldownUntil(PlayerEntity player, long timeStamp) {
@@ -456,7 +456,7 @@ public class PlayerWaystoneManager {
 
     public static long getInventoryButtonCooldownLeft(PlayerEntity player) {
         long cooldownUntil = getInventoryButtonCooldownUntil(player);
-        return Math.max(0, cooldownUntil - System.currentTimeMillis());
+        return Math.max(0, cooldownUntil - player.world.getGameTime());
     }
 
     public static void setInventoryButtonCooldownUntil(PlayerEntity player, long timeStamp) {
