@@ -231,7 +231,11 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         String locationPrefix = TextFormatting.YELLOW + I18n.format("gui.waystones.waystone_selection.current_location") + " ";
         int locationPrefixWidth = fontRenderer.getStringWidth(locationPrefix);
 
-        int locationWidth = fontRenderer.getStringWidth(waystone.getName());
+        String effectiveName = waystone.getName();
+        if (effectiveName.isEmpty()) {
+            effectiveName = I18n.format("gui.waystones.waystone_selection.unnamed_waystone");
+        }
+        int locationWidth = fontRenderer.getStringWidth(effectiveName);
 
         int fullWidth = locationPrefixWidth + locationWidth;
 
@@ -247,9 +251,9 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             fullText += TextFormatting.UNDERLINE;
         }
-        fullText += waystone.getName();
+        fullText += effectiveName;
 
-        drawString(matrixStack, fontRenderer, TextFormatting.UNDERLINE + fullText, x - fullWidth / 2, y, 0xFFFFFF);
+        drawString(matrixStack, fontRenderer, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             RenderSystem.pushMatrix();

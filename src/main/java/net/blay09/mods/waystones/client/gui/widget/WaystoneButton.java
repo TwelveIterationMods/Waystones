@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
@@ -34,7 +35,11 @@ public class WaystoneButton extends Button {
     }
 
     private static ITextComponent getWaystoneNameComponent(IWaystone waystone) {
-        final StringTextComponent textComponent = new StringTextComponent(waystone.getName());
+        String effectiveName = waystone.getName();
+        if (effectiveName.isEmpty()) {
+            effectiveName = I18n.format("gui.waystones.waystone_selection.unnamed_waystone");
+        }
+        final StringTextComponent textComponent = new StringTextComponent(effectiveName);
         if (waystone.isGlobal()) {
             textComponent.mergeStyle(TextFormatting.YELLOW);
         }
