@@ -26,7 +26,7 @@ archivesBaseName = mod_name + "_" + minecraft_version
 
 sourceSets {
     main {
-        ext.refMap = "refmap.excompressum.json"
+        ext.refMap = "refmap.waystones.json"
     }
 }
 
