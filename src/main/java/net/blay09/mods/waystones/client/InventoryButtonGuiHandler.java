@@ -7,10 +7,12 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -88,7 +90,10 @@ public class InventoryButtonGuiHandler {
         if ((event.getGui() instanceof InventoryScreen || event.getGui() instanceof CreativeScreen) && buttonWarp != null && buttonWarp.isHovered()) {
             InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
             List<ITextComponent> tooltip = new ArrayList<>();
-            long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(Minecraft.getInstance().player);
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
+            IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
+            int xpLevelCost = waystone != null ? PlayerWaystoneManager.getExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, (IWaystone) null) : 0;
             int secondsLeft = (int) (timeLeft / 1000);
             if (inventoryButtonMode.hasNamedTarget()) {
                 tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
@@ -98,7 +103,7 @@ public class InventoryButtonGuiHandler {
                 }
             } else if (inventoryButtonMode.isReturnToNearest()) {
                 tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_nearest_waystone"));
-                IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
+                IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
                 if (nearestWaystone != null) {
                     tooltip.add(formatTranslation(TextFormatting.GRAY, "tooltip.waystones.bound_to", TextFormatting.DARK_AQUA + nearestWaystone.getName()));
                 } else {
@@ -109,9 +114,13 @@ public class InventoryButtonGuiHandler {
                 }
             } else if (inventoryButtonMode.isReturnToAny()) {
                 tooltip.add(formatTranslation(TextFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
-                if (PlayerWaystoneManager.getWaystones(Minecraft.getInstance().player).isEmpty()) {
+                if (PlayerWaystoneManager.getWaystones(player).isEmpty()) {
                     tooltip.add(formatTranslation(TextFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
                 }
+            }
+
+            if (xpLevelCost > 0 && player.experienceLevel < xpLevelCost) {
+                tooltip.add(formatTranslation(TextFormatting.RED, "tooltip.waystones.not_enough_xp", xpLevelCost));
             }
 
             if (secondsLeft > 0) {

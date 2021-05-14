@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WaystoneCommonConfig {
-    public final ForgeConfigSpec.BooleanValue addVillageStructure;
+    public final ForgeConfigSpec.BooleanValue spawnInVillages;
     public final ForgeConfigSpec.BooleanValue allowWaystoneToWaystoneTeleport;
     public final ForgeConfigSpec.IntValue worldGenFrequency;
     public final ForgeConfigSpec.EnumValue<WorldGenStyle> worldGenStyle;
@@ -22,10 +22,10 @@ public class WaystoneCommonConfig {
 
         builder.push("worldgen");
 
-        addVillageStructure = builder
+        spawnInVillages = builder
                 .comment("Set to true if waystones should be added to the generation of villages.")
-                .translation("config.waystones.addVillageStructure")
-                .define("addVillageStructure", true);
+                .translation("config.waystones.spawnInVillages")
+                .define("spawnInVillages", true);
 
         allowWaystoneToWaystoneTeleport = builder
                 .comment("Set to true if players should be able to teleport between waystones by simply right-clicking a waystone.")

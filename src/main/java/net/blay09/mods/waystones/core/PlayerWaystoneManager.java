@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
+import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.NetworkHandler;
@@ -39,12 +40,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
@@ -152,9 +155,22 @@ public class PlayerWaystoneManager {
         return enableXPCost ? (int) Math.round((xpLevelCost + xpForLeashed) * xpCostMultiplier) : 0;
     }
 
+    @Nullable
+    public static IWaystone getInventoryButtonWaystone(PlayerEntity player) {
+        InventoryButtonMode inventoryButtonMode = WaystonesConfig.getInventoryButtonMode();
+        if (inventoryButtonMode.isReturnToNearest()) {
+            return PlayerWaystoneManager.getNearestWaystone(player);
+        } else if (inventoryButtonMode.hasNamedTarget()) {
+            return WaystoneManager.get().findWaystoneByName(inventoryButtonMode.getNamedTarget()).orElse(null);
+        }
+
+        return null;
+    }
 
     public static boolean canUseInventoryButton(PlayerEntity player) {
-        return getInventoryButtonCooldownLeft(player) <= 0;
+        IWaystone waystone = getInventoryButtonWaystone(player);
+        int xpLevelCost = waystone != null ? getExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, (IWaystone) null) : 0;
+        return getInventoryButtonCooldownLeft(player) <= 0 && (xpLevelCost <= 0 || player.experienceLevel >= xpLevelCost);
     }
 
     public static boolean canUseWarpStone(PlayerEntity player, ItemStack heldItem) {

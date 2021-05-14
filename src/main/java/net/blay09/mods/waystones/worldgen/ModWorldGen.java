@@ -99,7 +99,7 @@ public class ModWorldGen {
     }
 
     public static void setupVillageWorldGen(DynamicRegistries dynamicRegistries) {
-        if (WaystonesConfig.COMMON.addVillageStructure.get()) {
+        if (WaystonesConfig.COMMON.spawnInVillages.get()) {
 
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(dynamicRegistries, "village/plains/houses", villageWaystoneStructure, 1);

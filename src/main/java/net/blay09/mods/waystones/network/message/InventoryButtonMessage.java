@@ -65,18 +65,13 @@ public class InventoryButtonMessage {
                 return;
             }
 
-            if (inventoryButtonMode.isReturnToNearest()) {
-                IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-                if (nearestWaystone != null) {
-                    PlayerWaystoneManager.tryTeleportToWaystone(player, nearestWaystone, WarpMode.INVENTORY_BUTTON, null);
-                }
+            IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
+            if (waystone != null) {
+                PlayerWaystoneManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
             } else if (inventoryButtonMode.isReturnToAny()) {
                 NetworkHooks.openGui(player, containerProvider, it -> {
                     it.writeByte(WarpMode.INVENTORY_BUTTON.ordinal());
                 });
-            } else if (inventoryButtonMode.hasNamedTarget()) {
-                Optional<IWaystone> waystone = WaystoneManager.get().findWaystoneByName(inventoryButtonMode.getNamedTarget());
-                waystone.ifPresent(iWaystone -> PlayerWaystoneManager.tryTeleportToWaystone(player, iWaystone, WarpMode.INVENTORY_BUTTON, null));
             }
         });
         context.setPacketHandled(true);

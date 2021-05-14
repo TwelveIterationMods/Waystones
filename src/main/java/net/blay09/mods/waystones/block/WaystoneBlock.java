@@ -55,6 +55,10 @@ public class WaystoneBlock extends WaystoneBlockBase {
             makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
     ).simplify();
 
+    public WaystoneBlock() {
+        setDefaultState(stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
+    }
+
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return state.get(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;

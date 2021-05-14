@@ -49,7 +49,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
 
     public SharestoneBlock(@Nullable DyeColor color) {
         this.color = color;
-        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
+        setDefaultState(stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
     }
 
     @Nullable
