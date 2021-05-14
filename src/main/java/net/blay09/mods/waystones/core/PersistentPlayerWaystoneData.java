@@ -9,10 +9,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
@@ -43,10 +40,13 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     public List<IWaystone> getWaystones(PlayerEntity player) {
         ListNBT activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
         List<IWaystone> waystones = new ArrayList<>();
-        for (INBT activatedWaystone : activatedWaystones) {
+        for (Iterator<INBT> iterator = activatedWaystones.iterator(); iterator.hasNext(); ) {
+            INBT activatedWaystone = iterator.next();
             WaystoneProxy proxy = new WaystoneProxy(UUID.fromString(activatedWaystone.getString()));
             if (proxy.isValid()) {
                 waystones.add(proxy);
+            } else {
+                iterator.remove();
             }
         }
 
