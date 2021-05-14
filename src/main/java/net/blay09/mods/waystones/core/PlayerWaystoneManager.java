@@ -101,9 +101,9 @@ public class PlayerWaystoneManager {
     }
 
     public static void activateWaystone(PlayerEntity player, IWaystone waystone) {
-        if (!waystone.hasName() && waystone instanceof IMutableWaystone) {
-            NameGenerationMode defaultNameGenMode = WaystonesConfig.COMMON.nameGenerationMode.get();
-            String name = NameGenerator.get().getName(waystone, player.world.rand, waystone.wasGenerated() ? defaultNameGenMode : NameGenerationMode.RANDOM_ONLY);
+        if (!waystone.hasName() && waystone instanceof IMutableWaystone && waystone.wasGenerated()) {
+            NameGenerationMode nameGenerationMode = WaystonesConfig.COMMON.nameGenerationMode.get();
+            String name = NameGenerator.get().getName(waystone, player.world.rand, nameGenerationMode);
             ((IMutableWaystone) waystone).setName(name);
         }
 
