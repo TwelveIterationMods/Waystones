@@ -54,7 +54,6 @@ public class JigsawManagerAssemblerMixin {
             return result;
         }
 
-        System.out.println("No waystone yet, with " + structurePieces.size() + " pieces");
         return pattern.getShuffledPieces(rand);
     }
 
