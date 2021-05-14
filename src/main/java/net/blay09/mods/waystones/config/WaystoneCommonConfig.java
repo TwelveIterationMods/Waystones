@@ -58,7 +58,7 @@ public class WaystoneCommonConfig {
         worldGenFrequency = builder
                 .comment("Approximate chunk distance between waystones generated freely in world generation. Set to 0 to disable generation.")
                 .translation("config.waystones.worldGenFrequency")
-                .defineInRange("worldGenFrequency", 30, 0, Integer.MAX_VALUE);
+                .defineInRange("worldGenFrequency", 25, 0, Integer.MAX_VALUE);
 
         worldGenStyle = builder
                 .comment("Set to 'DEFAULT' to only generate the normally textured waystones. Set to 'MOSSY' or 'SANDY' to generate all as that variant. Set to 'BIOME' to make the style depend on the biome it is generated in.")

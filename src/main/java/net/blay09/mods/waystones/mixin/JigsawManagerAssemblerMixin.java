@@ -36,7 +36,7 @@ public class JigsawManagerAssemblerMixin {
                 String pieceName = piece.toString();
                 return !pieceName.contains("waystones:") || !pieceName.contains("/waystone");
             }).collect(Collectors.toList());
-        } else if (forceWaystone) {
+        } else if (forceWaystone || Math.random() <= structurePieces.size() / 200f) {
             JigsawPiece waystonePiece = null;
             List<JigsawPiece> original = pattern.getShuffledPieces(rand);
             List<JigsawPiece> result = new ArrayList<>();
@@ -54,6 +54,7 @@ public class JigsawManagerAssemblerMixin {
             return result;
         }
 
+        System.out.println("No waystone yet, with " + structurePieces.size() + " pieces");
         return pattern.getShuffledPieces(rand);
     }
 
