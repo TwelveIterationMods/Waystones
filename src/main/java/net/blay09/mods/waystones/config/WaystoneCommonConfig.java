@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.config;
 
 import com.google.common.collect.Lists;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class WaystoneCommonConfig {
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldGenDimensionDenyList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpAllowList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpDenyList;
+
+    public final ForgeConfigSpec.EnumValue<NameGenerationMode> nameGenerationMode;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> customWaystoneNames;
 
     WaystoneCommonConfig(ForgeConfigSpec.Builder builder) {
@@ -62,8 +65,15 @@ public class WaystoneCommonConfig {
                 .translation("config.waystones.worldGenDimensionDenyList")
                 .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
 
+        builder.pop().push("namegen");
+
+        nameGenerationMode = builder
+                .comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
+                .translation("config.waystones.worldGenStyle")
+                .defineEnum("nameGenerationMode", NameGenerationMode.PRESET_FIRST);
+
         customWaystoneNames = builder
-                .comment("The Name Generator will pick from these names until they have all been used, then it will generate random ones again.")
+                .comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
                 .translation("config.waystones.customWaystoneNames")
                 .defineList("customWaystoneNames", ArrayList::new, it -> it instanceof String);
     }

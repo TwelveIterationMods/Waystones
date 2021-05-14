@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -18,8 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -29,35 +27,34 @@ public class NameGenerator extends WorldSavedData {
     private static final String USED_NAMES = "UsedNames";
     private static final NameGenerator clientStorageCopy = new NameGenerator();
 
-    private final MrPorkNameGenerator generator = new MrPorkNameGenerator();
     private final Set<String> usedNames = Sets.newHashSet();
 
     private NameGenerator() {
         super(DATA_NAME);
     }
 
+    private INameGenerator getNameGenerator(NameGenerationMode nameGenerationMode) {
+        switch (nameGenerationMode) {
+            case MIXED:
+                return new MixedNameGenerator(new MrPorkNameGenerator(), new CustomNameGenerator(false, usedNames));
+            case RANDOM_ONLY:
+                return new MrPorkNameGenerator();
+            case PRESET_ONLY:
+                return new CustomNameGenerator(true, usedNames);
+            case PRESET_FIRST:
+            default:
+                return new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), new MrPorkNameGenerator());
+        }
+    }
+
     public synchronized String getName(IWaystone waystone, Random rand, NameGenerationMode nameGenerationMode) {
-        String name = null;
-        List<? extends String> customNames = WaystonesConfig.COMMON.customWaystoneNames.get();
-        Collections.shuffle(customNames, rand);
-        for (String customName : customNames) {
-            if (!usedNames.contains(customName)) {
-                name = customName;
-                break;
-            }
+        INameGenerator nameGenerator = getNameGenerator(nameGenerationMode);
+        String originalName = nameGenerator.randomName(rand);
+        if (originalName == null) {
+            // This should never happen, but just in case generate a fallback if something did go wrong
+            originalName = Objects.requireNonNull(new MrPorkNameGenerator().randomName(rand));
         }
-
-        if (name == null) {
-            name = generator.randomName(rand);
-            String tryName = name;
-            int i = 1;
-            while (usedNames.contains(tryName)) {
-                tryName = name + " " + RomanNumber.toRoman(i);
-                i++;
-            }
-
-            name = tryName;
-        }
+        String name = resolveDuplicate(originalName);
 
         GenerateWaystoneNameEvent event = new GenerateWaystoneNameEvent(waystone, name);
         MinecraftForge.EVENT_BUS.post(event);
@@ -66,6 +63,16 @@ public class NameGenerator extends WorldSavedData {
         usedNames.add(name);
         markDirty();
         return name;
+    }
+
+    private String resolveDuplicate(String name) {
+        String tryName = name;
+        int i = 1;
+        while (usedNames.contains(tryName)) {
+            tryName = name + " " + RomanNumber.toRoman(i);
+            i++;
+        }
+        return tryName;
     }
 
     @Override

@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.worldgen.namegen;
 
 import java.util.Random;
 
-public class MrPorkNameGenerator {
+public class MrPorkNameGenerator implements INameGenerator {
 
     private static final String[] random1 = new String[]{
             "Kr", "Ca", "Ra",

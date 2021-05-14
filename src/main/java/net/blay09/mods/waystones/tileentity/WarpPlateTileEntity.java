@@ -93,7 +93,7 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
         // Warp Plates generate a name on placement always
         IWaystone waystone = getWaystone();
         if (waystone instanceof IMutableWaystone) {
-            String name = NameGenerator.get().getName(waystone, world.getRandom(), getNameGenerationMode());
+            String name = NameGenerator.get().getName(waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((IMutableWaystone) waystone).setName(name);
         }
 
@@ -342,11 +342,5 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
     public boolean isCompletedFirstAttunement() {
         return completedFirstAttunement;
     }
-
-    @Override
-    protected NameGenerationMode getNameGenerationMode() {
-        return NameGenerationMode.RANDOM_ONLY;
-    }
-
 
 }

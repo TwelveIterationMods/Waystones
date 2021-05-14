@@ -109,10 +109,6 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
         return waystone;
     }
 
-    protected NameGenerationMode getNameGenerationMode() {
-        return NameGenerationMode.DEFAULT;
-    }
-
     public void initializeWaystone(IServerWorld world, @Nullable LivingEntity player, boolean wasGenerated) {
         Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getWorld().getDimensionKey(), pos, wasGenerated, player != null ? player.getUniqueID() : null);
         WaystoneManager.get().addWaystone(waystone);

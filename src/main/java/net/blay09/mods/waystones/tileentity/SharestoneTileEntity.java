@@ -56,8 +56,4 @@ public class SharestoneTileEntity extends WaystoneTileEntityBase {
         };
     }
 
-    @Override
-    protected NameGenerationMode getNameGenerationMode() {
-        return NameGenerationMode.RANDOM_ONLY;
-    }
 }
