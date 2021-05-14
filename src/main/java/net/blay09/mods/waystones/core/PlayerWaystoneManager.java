@@ -108,7 +108,7 @@ public class PlayerWaystoneManager {
             ((IMutableWaystone) waystone).setOwnerUid(player.getUniqueID());
         }
 
-        if (!isWaystoneActivated(player, waystone)) {
+        if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.world).activateWaystone(player, waystone);
 
             MinecraftForge.EVENT_BUS.post(new WaystoneActivatedEvent(player, waystone));
