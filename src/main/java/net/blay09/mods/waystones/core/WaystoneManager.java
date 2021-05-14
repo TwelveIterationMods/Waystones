@@ -93,7 +93,6 @@ public class WaystoneManager extends WorldSavedData {
             BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
             boolean wasGenerated = compound.getBoolean("WasGenerated");
             UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-            UUID targetWaystoneUid = compound.contains("TargetWaystoneUid", Constants.NBT.TAG_INT_ARRAY) ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("TargetWaystoneUid"))) : null;
             ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
             Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
             waystone.setName(name);

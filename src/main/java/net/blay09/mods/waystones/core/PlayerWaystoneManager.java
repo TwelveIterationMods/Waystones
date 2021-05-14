@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
@@ -42,14 +41,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
@@ -105,6 +102,10 @@ public class PlayerWaystoneManager {
             NameGenerationMode nameGenerationMode = WaystonesConfig.COMMON.nameGenerationMode.get();
             String name = NameGenerator.get().getName(waystone, player.world.rand, nameGenerationMode);
             ((IMutableWaystone) waystone).setName(name);
+        }
+
+        if (!waystone.hasOwner() && waystone instanceof IMutableWaystone) {
+            ((IMutableWaystone) waystone).setOwnerUid(player.getUniqueID());
         }
 
         if (!isWaystoneActivated(player, waystone)) {

@@ -77,6 +77,11 @@ public class Waystone implements IWaystone, IMutableWaystone {
     }
 
     @Override
+    public void setOwnerUid(@Nullable UUID ownerUid) {
+        this.ownerUid = ownerUid;
+    }
+
+    @Override
     public BlockPos getPos() {
         return pos;
     }

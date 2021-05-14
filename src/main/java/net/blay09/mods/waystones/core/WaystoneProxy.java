@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class WaystoneProxy implements IWaystone, IMutableWaystone {
@@ -107,6 +106,14 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
         IWaystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof IMutableWaystone) {
             ((IMutableWaystone) backingWaystone).setPos(pos);
+        }
+    }
+
+    @Override
+    public void setOwnerUid(UUID ownerUid) {
+        IWaystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof IMutableWaystone) {
+            ((IMutableWaystone) backingWaystone).setOwnerUid(ownerUid);
         }
     }
 

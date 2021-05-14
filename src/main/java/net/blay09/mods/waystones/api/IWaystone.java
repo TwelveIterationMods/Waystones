@@ -34,4 +34,8 @@ public interface IWaystone {
     default boolean hasName() {
         return !getName().isEmpty();
     }
+
+    default boolean hasOwner() {
+        return getOwnerUid() != null;
+    }
 }
