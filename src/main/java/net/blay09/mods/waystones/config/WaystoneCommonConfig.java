@@ -38,8 +38,8 @@ public class WaystoneCommonConfig {
 
         dimensionalWarpDenyList = builder
                 .comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
-                .translation("config.waystones.worldGenDimensionDenyList")
-                .defineList("worldGenDimensionDenyList", ArrayList::new, it -> it instanceof String);
+                .translation("config.waystones.dimensionalWarpDenyList")
+                .defineList("dimensionalWarpDenyList", ArrayList::new, it -> it instanceof String);
 
         builder.push("villagegen");
 
