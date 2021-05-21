@@ -16,6 +16,7 @@ public class ModBlocks {
     public static Block sharestone;
     public static SharestoneBlock[] scopedSharestones;
     public static Block warpPlate;
+    public static Block accessstone;
 
     public static void register(IForgeRegistry<Block> registry) {
         registry.registerAll(
@@ -23,7 +24,8 @@ public class ModBlocks {
                 mossyWaystone = new WaystoneBlock().setRegistryName("mossy_waystone"),
                 sandyWaystone = new WaystoneBlock().setRegistryName("sandy_waystone"),
                 warpPlate = new WarpPlateBlock().setRegistryName("warp_plate"),
-                sharestone = new SharestoneBlock(null).setRegistryName("sharestone")
+                sharestone = new SharestoneBlock(null).setRegistryName("sharestone"),
+                accessstone = new AccessStone().setRegistryName("accessstone")
         );
 
         DyeColor[] colors = DyeColor.values();
@@ -40,7 +42,8 @@ public class ModBlocks {
                 new BlockItem(mossyWaystone, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("mossy_waystone"),
                 new BlockItem(sandyWaystone, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("sandy_waystone"),
                 new BlockItem(sharestone, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("sharestone"),
-                new BlockItem(warpPlate, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("warp_plate")
+                new BlockItem(warpPlate, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("warp_plate"),
+                new BlockItem(accessstone, new Item.Properties().group(Waystones.itemGroup)).setRegistryName("accessstone")
         );
         for (SharestoneBlock scopedSharestone : scopedSharestones) {
             registry.register(new BlockItem(scopedSharestone, new Item.Properties().group(Waystones.itemGroup))

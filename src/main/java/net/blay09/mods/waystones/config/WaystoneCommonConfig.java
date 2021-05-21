@@ -9,6 +9,7 @@ import java.util.List;
 
 public class WaystoneCommonConfig {
     public final ForgeConfigSpec.BooleanValue allowWaystoneToWaystoneTeleport;
+    public final ForgeConfigSpec.BooleanValue allowAccessstones;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpAllowList;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> dimensionalWarpDenyList;
 
@@ -40,6 +41,11 @@ public class WaystoneCommonConfig {
                 .comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
                 .translation("config.waystones.dimensionalWarpDenyList")
                 .defineList("dimensionalWarpDenyList", ArrayList::new, it -> it instanceof String);
+
+        allowAccessstones = builder
+                .comment("Set to true if players should be able to teleport using an access stone")
+                .translation("config.waystones.allowAccessstones")
+                .define("allowAccessstones", true);
 
         builder.push("villagegen");
 
