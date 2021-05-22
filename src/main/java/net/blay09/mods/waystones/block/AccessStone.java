@@ -51,10 +51,7 @@ public class AccessStone extends WaystoneBlockBase {
 
     private static final VoxelShape UPPER_SHAPE = VoxelShapes.or(
             makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
-            makeCuboidShape(2.0, 8.0, 2.0, 14.0, 10.0, 14.0),
-            makeCuboidShape(1.0, 10.0, 1.0, 15.0, 12.0, 15.0),
-            makeCuboidShape(3.0, 12.0, 3.0, 13.0, 14.0, 13.0),
-            makeCuboidShape(4.0, 14.0, 4.0, 12.0, 16.0, 12.0)
+            makeCuboidShape(4.0, 8.0, 4.0, 12.0, 16.0, 12.0)
     ).simplify();
 
     public AccessStone() {
