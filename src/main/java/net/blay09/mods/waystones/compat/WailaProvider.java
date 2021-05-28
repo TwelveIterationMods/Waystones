@@ -5,6 +5,8 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.tileentity.TileEntity;
@@ -33,7 +35,8 @@ public class WailaProvider implements IWailaPlugin {
                 tooltip.add(WarpPlateBlock.getGalacticName(waystone)); */
             } else if (tileEntity instanceof WaystoneTileEntityBase) {
                 IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
-                if (waystone.hasName()) {
+                boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(accessor.getPlayer(), waystone);
+                if (isActivated && waystone.hasName() && waystone.isValid()) {
                     tooltip.add(new StringTextComponent(waystone.getName()));
                 } else {
                     tooltip.add(new TranslationTextComponent("tooltip.waystones.undiscovered"));

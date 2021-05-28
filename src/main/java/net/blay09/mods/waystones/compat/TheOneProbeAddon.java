@@ -4,6 +4,8 @@ import mcjty.theoneprobe.api.*;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.tileentity.WarpPlateTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.BlockState;
@@ -53,7 +55,8 @@ public class TheOneProbeAddon {
                 info.text(galacticName); */
             } else if (tileEntity instanceof WaystoneTileEntityBase) {
                 IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
-                if (waystone.hasName()) {
+                boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(playerEntity, waystone);
+                if (isActivated && waystone.hasName() && waystone.isValid()) {
                     info.text(new StringTextComponent(waystone.getName()));
                 } else {
                     info.text(new TranslationTextComponent("tooltip.waystones.undiscovered"));
