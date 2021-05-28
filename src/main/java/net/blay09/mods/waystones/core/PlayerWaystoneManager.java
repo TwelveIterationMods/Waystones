@@ -213,7 +213,7 @@ public class PlayerWaystoneManager {
         }
 
         boolean isDimensionalWarp = waystone.getDimension() != entity.world.getDimensionKey();
-        if (isDimensionalWarp && !canDimensionalWarpTo(entity, waystone)) {
+        if (isDimensionalWarp && !canDimensionalWarpBetween(entity, waystone)) {
             informPlayer(entity, "chat.waystones.cannot_dimension_warp");
             return false;
         }
@@ -301,13 +301,14 @@ public class PlayerWaystoneManager {
         return true;
     }
 
-    private static boolean canDimensionalWarpTo(Entity player, IWaystone waystone) {
-        ResourceLocation dimension = waystone.getDimension().getLocation();
+    private static boolean canDimensionalWarpBetween(Entity player, IWaystone waystone) {
+        ResourceLocation fromDimension = player.getEntityWorld().getDimensionKey().getLocation();
+        ResourceLocation toDimension = waystone.getDimension().getLocation();
         List<? extends String> dimensionAllowList = WaystonesConfig.COMMON.dimensionalWarpAllowList.get();
         List<? extends String> dimensionDenyList = WaystonesConfig.COMMON.dimensionalWarpDenyList.get();
-        if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension.toString())) {
+        if (!dimensionAllowList.isEmpty() && (!dimensionAllowList.contains(toDimension.toString()) || !dimensionAllowList.contains(fromDimension.toString()))) {
             return false;
-        } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension.toString())) {
+        } else if (!dimensionDenyList.isEmpty() && (dimensionDenyList.contains(toDimension.toString()) || dimensionDenyList.contains(fromDimension.toString()))) {
             return false;
         }
 
