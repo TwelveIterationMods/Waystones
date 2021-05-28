@@ -1,20 +1,21 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class MixedNameGenerator implements INameGenerator {
 
-    private final INameGenerator[] nameGenerators;
+    private final List<INameGenerator> nameGenerators;
 
     public MixedNameGenerator(INameGenerator... nameGenerators) {
-        this.nameGenerators = nameGenerators;
+        this.nameGenerators = Arrays.asList(nameGenerators);
     }
 
     @Override
     public String randomName(Random rand) {
-        ArrayUtils.shuffle(nameGenerators);
+        Collections.shuffle(nameGenerators);
         for (INameGenerator nameGenerator : nameGenerators) {
             String name = nameGenerator.randomName(rand);
             if (name != null) {
