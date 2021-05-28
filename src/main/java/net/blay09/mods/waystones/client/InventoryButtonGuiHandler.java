@@ -49,8 +49,8 @@ public class InventoryButtonGuiHandler {
             return;
         }
 
-        Supplier<Integer> xPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeTeleportButtonX::get : WaystonesConfig.CLIENT.teleportButtonX::get;
-        Supplier<Integer> yPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeTeleportButtonY::get : WaystonesConfig.CLIENT.teleportButtonY::get;
+        Supplier<Integer> xPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeWarpButtonX::get : WaystonesConfig.CLIENT.teleportButtonX::get;
+        Supplier<Integer> yPosition = event.getGui() instanceof CreativeScreen ? WaystonesConfig.CLIENT.creativeWarpButtonY::get : WaystonesConfig.CLIENT.teleportButtonY::get;
         buttonWarp = new WaystoneInventoryButton((ContainerScreen<?>) event.getGui(), button -> {
             Minecraft mc = event.getGui().getMinecraft();
             PlayerEntity player = mc.player;
