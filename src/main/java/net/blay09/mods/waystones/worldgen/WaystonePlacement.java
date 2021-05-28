@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,7 +33,7 @@ public class WaystonePlacement extends TopSolidOnce {
                 for (int i = mutablePos.getY(); i >= 1; i--) {
                     mutablePos.setY(mutablePos.getY() - 1);
                     BlockState state = helper.field_242889_a.getBlockState(mutablePos);
-                    if(!state.isAir() && stateAbove.isAir() && !state.isIn(Blocks.BEDROCK)) {
+                    if(!state.isAir() && state.getFluidState().isEmpty() && stateAbove.isAir() && !state.isIn(Blocks.BEDROCK)) {
                         mutablePos.setY(mutablePos.getY() + 1);
                         break;
                     }
