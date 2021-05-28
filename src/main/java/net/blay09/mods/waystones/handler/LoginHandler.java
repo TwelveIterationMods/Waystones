@@ -25,7 +25,8 @@ public class LoginHandler {
             }
         }
 
-        WaystoneSyncManager.sendKnownWaystones(event.getPlayer());
+        WaystoneSyncManager.sendActivatedWaystones(event.getPlayer());
+        WaystoneSyncManager.sendWarpPlates(event.getPlayer());
         WaystoneSyncManager.sendWaystoneCooldowns(event.getPlayer());
 
         WaystonesConfig.syncServerConfigs(event.getPlayer());

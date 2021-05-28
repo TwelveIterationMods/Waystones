@@ -512,7 +512,7 @@ public class PlayerWaystoneManager {
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayerEntity player : players) {
             deactivateWaystone(player, waystone);
-            WaystoneSyncManager.sendKnownWaystones(player);
+            WaystoneSyncManager.sendActivatedWaystones(player);
         }
     }
 

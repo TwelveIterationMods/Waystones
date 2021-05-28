@@ -347,7 +347,7 @@ public abstract class WaystoneBlockBase extends Block {
                 PlayerWaystoneManager.activateWaystone(((PlayerEntity) placer), waystone);
 
                 if (!world.isRemote) {
-                    WaystoneSyncManager.sendKnownWaystones(((PlayerEntity) placer));
+                    WaystoneSyncManager.sendActivatedWaystones(((PlayerEntity) placer));
                 }
             }
 

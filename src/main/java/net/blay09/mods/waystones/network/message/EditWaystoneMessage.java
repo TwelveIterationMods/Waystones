@@ -65,7 +65,7 @@ public class EditWaystoneMessage {
             }
 
             WaystoneManager.get().markDirty();
-            WaystoneSyncManager.sendKnownWaystonesToAll();
+            WaystoneSyncManager.sendWaystoneUpdateToAll(backingWaystone);
 
             player.closeScreen();
         });

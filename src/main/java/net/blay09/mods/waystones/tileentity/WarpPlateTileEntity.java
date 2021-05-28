@@ -5,10 +5,7 @@ import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.container.WarpPlateContainer;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
@@ -96,6 +93,8 @@ public class WarpPlateTileEntity extends WaystoneTileEntityBase implements ITick
             String name = NameGenerator.get().getName(waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((IMutableWaystone) waystone).setName(name);
         }
+
+        WaystoneSyncManager.sendWaystoneUpdateToAll(waystone);
 
         initializeInventory();
     }

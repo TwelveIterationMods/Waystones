@@ -8,18 +8,11 @@ import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
@@ -34,7 +27,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -97,7 +89,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
                 chatComponent.mergeStyle(TextFormatting.YELLOW);
                 player.sendMessage(chatComponent, Util.DUMMY_UUID);
 
-                WaystoneSyncManager.sendKnownWaystones(player);
+                WaystoneSyncManager.sendActivatedWaystones(player);
             }
 
             notifyObserversOfAction(world, pos);
