@@ -3,6 +3,8 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +13,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Waystone implements IWaystone, IMutableWaystone {
@@ -123,6 +126,20 @@ public class Waystone implements IWaystone, IMutableWaystone {
         return waystone;
     }
 
+    public static IWaystone read(CompoundNBT compound) {
+        UUID waystoneUid = NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("WaystoneUid")));
+        String name = compound.getString("Name");
+        RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(compound.getString("World")));
+        BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
+        boolean wasGenerated = compound.getBoolean("WasGenerated");
+        UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
+        ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
+        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
+        waystone.setName(name);
+        waystone.setGlobal(compound.getBoolean("IsGlobal"));
+        return waystone;
+    }
+
     public static void write(PacketBuffer buf, IWaystone waystone) {
         buf.writeUniqueId(waystone.getWaystoneUid());
         buf.writeResourceLocation(waystone.getWaystoneType());
@@ -132,4 +149,17 @@ public class Waystone implements IWaystone, IMutableWaystone {
         buf.writeBlockPos(waystone.getPos());
     }
 
+    public static CompoundNBT write(IWaystone waystone, CompoundNBT compound) {
+        compound.put("WaystoneUid", NBTUtil.func_240626_a_(waystone.getWaystoneUid())); // writeUniqueId
+        compound.putString("Type", waystone.getWaystoneType().toString());
+        compound.putString("Name", waystone.getName());
+        compound.putString("World", waystone.getDimension().getLocation().toString());
+        compound.put("BlockPos", NBTUtil.writeBlockPos(waystone.getPos()));
+        compound.putBoolean("WasGenerated", waystone.wasGenerated());
+        if (waystone.getOwnerUid() != null) {
+            compound.put("OwnerUid", NBTUtil.func_240626_a_(waystone.getOwnerUid())); // writeUniqueId
+        }
+        compound.putBoolean("IsGlobal", waystone.isGlobal());
+        return compound;
+    }
 }

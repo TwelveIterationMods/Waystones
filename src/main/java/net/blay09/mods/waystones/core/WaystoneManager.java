@@ -87,17 +87,8 @@ public class WaystoneManager extends WorldSavedData {
         ListNBT tagList = tagCompound.getList(TAG_WAYSTONES, Constants.NBT.TAG_COMPOUND);
         for (INBT tag : tagList) {
             CompoundNBT compound = (CompoundNBT) tag;
-            UUID waystoneUid = NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("WaystoneUid")));
-            String name = compound.getString("Name");
-            RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(compound.getString("World")));
-            BlockPos pos = NBTUtil.readBlockPos(compound.getCompound("BlockPos"));
-            boolean wasGenerated = compound.getBoolean("WasGenerated");
-            UUID ownerUid = compound.contains("OwnerUid") ? NBTUtil.readUniqueId(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-            ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
-            Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
-            waystone.setName(name);
-            waystone.setGlobal(compound.getBoolean("IsGlobal"));
-            waystones.put(waystoneUid, waystone);
+            IWaystone waystone = Waystone.read(compound);
+            waystones.put(waystone.getWaystoneUid(), waystone);
         }
     }
 
@@ -105,18 +96,7 @@ public class WaystoneManager extends WorldSavedData {
     public CompoundNBT write(CompoundNBT tagCompound) {
         ListNBT tagList = new ListNBT();
         for (IWaystone waystone : waystones.values()) {
-            CompoundNBT compound = new CompoundNBT();
-            compound.put("WaystoneUid", NBTUtil.func_240626_a_(waystone.getWaystoneUid())); // writeUniqueId
-            compound.putString("Type", waystone.getWaystoneType().toString());
-            compound.putString("Name", waystone.getName());
-            compound.putString("World", waystone.getDimension().getLocation().toString());
-            compound.put("BlockPos", NBTUtil.writeBlockPos(waystone.getPos()));
-            compound.putBoolean("WasGenerated", waystone.wasGenerated());
-            if (waystone.getOwnerUid() != null) {
-                compound.put("OwnerUid", NBTUtil.func_240626_a_(waystone.getOwnerUid())); // writeUniqueId
-            }
-            compound.putBoolean("IsGlobal", waystone.isGlobal());
-            tagList.add(compound);
+            tagList.add(Waystone.write(waystone, new CompoundNBT()));
         }
         tagCompound.put(TAG_WAYSTONES, tagList);
         return tagCompound;

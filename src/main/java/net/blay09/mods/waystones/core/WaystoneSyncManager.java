@@ -6,6 +6,8 @@ import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
 import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Collections;

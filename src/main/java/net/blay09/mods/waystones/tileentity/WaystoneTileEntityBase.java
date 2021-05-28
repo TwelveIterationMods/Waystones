@@ -69,14 +69,27 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
     }
 
     @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+
+        IWaystone syncedWaystone = Waystone.read(tag);
+        WaystoneManager.get().updateWaystone(syncedWaystone);
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         super.onDataPacket(net, pkt);
         read(getBlockState(), pkt.getNbtCompound());
+
+        IWaystone syncedWaystone = Waystone.read(pkt.getNbtCompound());
+        WaystoneManager.get().updateWaystone(syncedWaystone);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());
+        CompoundNBT tagCompound = new CompoundNBT();
+        Waystone.write(getWaystone(), tagCompound);
+        return write(tagCompound);
     }
 
     @Nullable
