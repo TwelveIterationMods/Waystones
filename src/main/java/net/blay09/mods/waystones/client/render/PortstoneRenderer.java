@@ -52,6 +52,7 @@ public class PortstoneRenderer extends TileEntityRenderer<PortstoneTileEntity> {
 
         matrixStack.push();
         matrixStack.translate(0.5f, 0f, 0.5f);
+        matrixStack.rotate(new Quaternion(0f, -facing.getHorizontalAngle(), 0f, true));
         matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
         matrixStack.translate(0f, -2f, 0f);
         float scale = 1.01f;
