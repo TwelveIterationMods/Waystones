@@ -1,13 +1,11 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.tileentity.PortstoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
-import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -23,6 +21,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -42,17 +41,67 @@ import java.util.Random;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
-    private static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
-            makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
-            makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
-            makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
-            makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 13.0)
-    ).simplify();
+    private static final VoxelShape[] LOWER_SHAPES = new VoxelShape[]{
+            // South
+            VoxelShapes.or(
+                    makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+                    makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+                    makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+                    makeCuboidShape(3.0, 9.0, 3.0, 13.0, 16.0, 7.0),
+                    makeCuboidShape(4.0, 9.0, 7.0, 12.0, 16.0, 10.0),
+                    makeCuboidShape(4.0, 9.0, 10.0, 12.0, 12.0, 12.0)
+            ).simplify(),
+            // West
+            VoxelShapes.or(
+                    makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+                    makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+                    makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+                    makeCuboidShape(9.0, 9.0, 3.0, 13.0, 16.0, 13.0),
+                    makeCuboidShape(6.0, 9.0, 4.0, 9.0, 16.0, 12.0),
+                    makeCuboidShape(4.0, 9.0, 4.0, 6.0, 12.0, 12.0)
+            ).simplify(),
+            // North
+            VoxelShapes.or(
+                    makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+                    makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+                    makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+                    makeCuboidShape(3.0, 9.0, 9.0, 13.0, 16.0, 13.0),
+                    makeCuboidShape(4.0, 9.0, 6.0, 12.0, 16.0, 9.0),
+                    makeCuboidShape(4.0, 9.0, 4.0, 12.0, 12.0, 6.0)
+            ).simplify(),
+            // East
+            VoxelShapes.or(
+                    makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
+                    makeCuboidShape(1.0, 3.0, 1.0, 15.0, 7.0, 15.0),
+                    makeCuboidShape(2.0, 7.0, 2.0, 14.0, 9.0, 14.0),
+                    makeCuboidShape(3.0, 9.0, 3.0, 7.0, 16.0, 13.0),
+                    makeCuboidShape(7.0, 9.0, 4.0, 10.0, 16.0, 12.0),
+                    makeCuboidShape(10.0, 9.0, 4.0, 12.0, 12.0, 12.0)
+            ).simplify()
+    };
 
-    private static final VoxelShape UPPER_SHAPE = VoxelShapes.or(
-            makeCuboidShape(3.0, 0.0, 3.0, 13.0, 8.0, 13.0),
-            makeCuboidShape(4.0, 8.0, 4.0, 12.0, 16.0, 12.0)
-    ).simplify();
+    private static final VoxelShape[] UPPER_SHAPES = new VoxelShape[]{
+            // South
+            VoxelShapes.or(
+                    makeCuboidShape(3.0, 0.0, 3.0, 13.0, 7.0, 7.0),
+                    makeCuboidShape(4.0, 0.0, 7.0, 12.0, 2.0, 9.0)
+            ).simplify(),
+            // West
+            VoxelShapes.or(
+                    makeCuboidShape(9.0, 0.0, 3.0, 13.0, 7.0, 13.0),
+                    makeCuboidShape(7.0, 0.0, 4.0, 9.0, 2.0, 12.0)
+            ).simplify(),
+            // North
+            VoxelShapes.or(
+                    makeCuboidShape(3.0, 0.0, 9.0, 13.0, 7.0, 13.0),
+                    makeCuboidShape(4.0, 0.0, 7.0, 12.0, 2.0, 9.0)
+            ).simplify(),
+            // East
+            VoxelShapes.or(
+                    makeCuboidShape(3.0, 0.0, 3.0, 7.0, 7.0, 13.0),
+                    makeCuboidShape(7.0, 0.0, 4.0, 9.0, 2.0, 12.0)
+            ).simplify()
+    };
 
     public PortstoneBlock() {
         setDefaultState(stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
@@ -60,7 +109,8 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return state.get(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;
+        Direction direction = state.get(FACING);
+        return state.get(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPES[direction.getHorizontalIndex()] : LOWER_SHAPES[direction.getHorizontalIndex()];
     }
 
     @Nullable
