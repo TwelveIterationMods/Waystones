@@ -448,7 +448,7 @@ public class PlayerWaystoneManager {
             case WARP_PLATE:
                 return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
             case PORTSTONE_TO_WAYSTONE:
-                return WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get();
+                return true;
         }
 
         return false;

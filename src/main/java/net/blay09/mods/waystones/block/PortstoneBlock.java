@@ -151,19 +151,6 @@ public class PortstoneBlock extends WaystoneBlockBase {
         builder.add(HALF);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (!WaystonesConfig.CLIENT.disableParticles.get() && random.nextFloat() < 0.75f) {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            PlayerEntity player = Minecraft.getInstance().player;
-            if (tileEntity instanceof WaystoneTileEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), ((WaystoneTileEntity) tileEntity).getWaystone())) {
-                world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
-                world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
-            }
-        }
-    }
-
     @Nullable
     @Override
     public PathNodeType getAiPathNodeType(BlockState state, IBlockReader world, BlockPos pos, @Nullable MobEntity entity) {
