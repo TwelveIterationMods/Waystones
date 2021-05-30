@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
@@ -448,6 +447,8 @@ public class PlayerWaystoneManager {
                 return fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
             case WARP_PLATE:
                 return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
+            case PORTSTONE_TO_WAYSTONE:
+                return true;
         }
 
         return false;

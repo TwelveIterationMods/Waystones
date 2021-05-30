@@ -30,6 +30,8 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
     private static final SharestoneModel model = new SharestoneModel();
     private static final RenderMaterial MATERIAL = new RenderMaterial(Atlases.SIGN_ATLAS, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
 
+    private static ItemStack warpStoneItem;
+
     public SharestoneRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
     }
@@ -45,7 +47,7 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
         long gameTime = world.getGameTime();
 
         DyeColor color = ((SharestoneBlock) state.getBlock()).getColor();
-        if(color != null) {
+        if (color != null) {
             matrixStack.push();
             matrixStack.translate(0.5f, 0f, 0.5f);
             matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
@@ -61,19 +63,18 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
             matrixStack.pop();
         }
 
+        if (warpStoneItem == null) {
+            warpStoneItem = new ItemStack(ModItems.warpStone);
+            warpStoneItem.addEnchantment(Enchantments.UNBREAKING, 1);
+        }
+
         float angle = gameTime / 2f % 360;
         float offsetY = (float) Math.sin(gameTime / 8f) * 0.025f;
         matrixStack.push();
         matrixStack.translate(0.5f, 1f + offsetY, 0.5f);
         matrixStack.rotate(new Quaternion(0f, angle, 0f, true));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
-
-        ItemStack itemStack = new ItemStack(ModItems.warpStone);
-        itemStack.addEnchantment(Enchantments.UNBREAKING, 1);
-        Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, buffer);
-
+        Minecraft.getInstance().getItemRenderer().renderItem(warpStoneItem, ItemCameraTransforms.TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, buffer);
         matrixStack.pop();
-
-
     }
 }

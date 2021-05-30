@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.SharestoneBlock;
+import net.blay09.mods.waystones.client.render.PortstoneRenderer;
 import net.blay09.mods.waystones.client.render.SharestoneRenderer;
 import net.blay09.mods.waystones.client.render.WaystoneRenderer;
 import net.blay09.mods.waystones.tileentity.ModTileEntities;
@@ -21,6 +22,7 @@ public class ModRenderers {
     public static void registerRenderers() {
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.waystone, WaystoneRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.sharestone, SharestoneRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.portstone, PortstoneRenderer::new);
 
         RenderTypeLookup.setRenderLayer(ModBlocks.sharestone, RenderType.getCutout());
     }
