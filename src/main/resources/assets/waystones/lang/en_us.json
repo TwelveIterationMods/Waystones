@@ -64,6 +64,7 @@
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
+  "tooltip.waystones.portstone": "Can not be teleported to.",
   "tooltip.waystones.sharestone": "Teleport to any other colorless Sharestone",
   "tooltip.waystones.white_sharestone": "Teleport to any other White Sharestone",
   "tooltip.waystones.orange_sharestone": "Teleport to any other Orange Sharestone",
