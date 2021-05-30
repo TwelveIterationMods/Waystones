@@ -84,7 +84,7 @@ public class WaystoneServerConfig {
         portstoneXpCostMultiplier = builder
                 .comment("The multiplier applied to the base xp cost when teleporting from a portstone.")
                 .translation("config.waystones.portstoneXpCostMultiplier")
-                .defineInRange("portstoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+                .defineInRange("portstoneXpCostMultiplier", 0, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to warp plates.").push("warpPlate");
 
