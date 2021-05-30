@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Random;
 
-public class AccessStone extends WaystoneBlockBase {
+public class PortStone extends WaystoneBlockBase {
 
     private static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
             makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
@@ -54,7 +54,7 @@ public class AccessStone extends WaystoneBlockBase {
             makeCuboidShape(4.0, 8.0, 4.0, 12.0, 16.0, 12.0)
     ).simplify();
 
-    public AccessStone() {
+    public PortStone() {
         setDefaultState(stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
     }
 
@@ -78,24 +78,20 @@ public class AccessStone extends WaystoneBlockBase {
     @Override
     protected void handleActivation(World world, BlockPos pos, PlayerEntity player, @Nullable WaystoneTileEntityBase tile, @Nullable IWaystone waystone) {
         if (!world.isRemote) {
-            if (WaystonesConfig.COMMON.allowWaystoneToWaystoneTeleport.get()) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), new INamedContainerProvider() {
-                    @Override
-                    public ITextComponent getDisplayName() {
-                        return AccessStone.this.getTranslatedName();
-                    }
+            NetworkHooks.openGui(((ServerPlayerEntity) player), new INamedContainerProvider() {
+                @Override
+                public ITextComponent getDisplayName() {
+                    return PortStone.this.getTranslatedName();
+                }
 
-                    @Override
-                    public Container createMenu(int i, PlayerInventory menu, PlayerEntity player) {
-                        return WaystoneSelectionContainer.createWaystoneSelection(i, player, WarpMode.ACCESSSTONE_TO_WAYSTONE, null);
-                    }
-                }, it -> {
-                    it.writeByte(WarpMode.ACCESSSTONE_TO_WAYSTONE.ordinal());
-                    it.writeBlockPos(pos);
-                });
-            } else {
-                player.sendStatusMessage(new TranslationTextComponent("chat.waystones.accessstone_disabled"), true);
-            }
+                @Override
+                public Container createMenu(int i, PlayerInventory menu, PlayerEntity player) {
+                    return WaystoneSelectionContainer.createWaystoneSelection(i, player, WarpMode.PORTSTONE_TO_WAYSTONE, null);
+                }
+            }, it -> {
+                it.writeByte(WarpMode.PORTSTONE_TO_WAYSTONE.ordinal());
+                it.writeBlockPos(pos);
+            });
         }
     }
 

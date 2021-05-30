@@ -13,7 +13,7 @@ public class WaystoneServerConfig {
 
     public final ForgeConfigSpec.DoubleValue waystoneXpCostMultiplier;
     public final ForgeConfigSpec.DoubleValue sharestoneXpCostMultiplier;
-    public final ForgeConfigSpec.DoubleValue accessstoneXpCostMultiplier;
+    public final ForgeConfigSpec.DoubleValue portstoneXpCostMultiplier;
 
     public final ForgeConfigSpec.DoubleValue warpPlateXpCostMultiplier;
     public final ForgeConfigSpec.IntValue warpPlateUseTime;
@@ -81,10 +81,10 @@ public class WaystoneServerConfig {
                 .translation("config.waystones.sharestoneXpCostMultiplier")
                 .defineInRange("sharestoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
-        accessstoneXpCostMultiplier = builder
-                .comment("The multiplier applied to the base xp cost when teleporting from a accesstone.")
-                .translation("config.waystones.accessstoneXpCostMultiplier")
-                .defineInRange("accessstoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
+        portstoneXpCostMultiplier = builder
+                .comment("The multiplier applied to the base xp cost when teleporting from a portstone.")
+                .translation("config.waystones.portstoneXpCostMultiplier")
+                .defineInRange("portstoneXpCostMultiplier", 1, 0, Float.POSITIVE_INFINITY);
 
         builder.pop().comment("These options apply to warp plates.").push("warpPlate");
 

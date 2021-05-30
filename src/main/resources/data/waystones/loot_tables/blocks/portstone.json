@@ -6,11 +6,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "waystones:accessstone",
+          "name": "waystones:portstone",
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "waystones:waystone",
+              "block": "waystones:portstone",
               "properties": {
                 "half": "lower"
               }
