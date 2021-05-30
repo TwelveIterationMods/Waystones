@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.block;
 
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.tileentity.PortstoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.minecraft.block.Block;
@@ -43,6 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
@@ -135,7 +136,8 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public Container createMenu(int i, PlayerInventory menu, PlayerEntity player) {
-                    return WaystoneSelectionContainer.createWaystoneSelection(i, player, WarpMode.PORTSTONE_TO_WAYSTONE, null);
+                    final IWaystone portstone = new Waystone(WaystoneTypes.PORTSTONE, UUID.randomUUID(), world.getDimensionKey(), pos, false, null);
+                    return WaystoneSelectionContainer.createWaystoneSelection(i, player, WarpMode.PORTSTONE_TO_WAYSTONE, portstone);
                 }
             }, it -> {
                 it.writeByte(WarpMode.PORTSTONE_TO_WAYSTONE.ordinal());

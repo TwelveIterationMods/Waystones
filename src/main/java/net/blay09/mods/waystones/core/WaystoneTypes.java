@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 public class WaystoneTypes {
     public static final ResourceLocation WAYSTONE = new ResourceLocation(Waystones.MOD_ID, "waystone");
     public static final ResourceLocation WARP_PLATE = new ResourceLocation(Waystones.MOD_ID, "warp_plate");
+    public static final ResourceLocation PORTSTONE = new ResourceLocation(Waystones.MOD_ID, "portstone");
 
     private static final ResourceLocation SHARESTONE = new ResourceLocation(Waystones.MOD_ID, "sharestone");
 

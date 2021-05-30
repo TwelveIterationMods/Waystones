@@ -1,12 +1,9 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
