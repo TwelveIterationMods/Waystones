@@ -16,7 +16,8 @@ public enum WarpMode {
     WARP_STONE(WaystonesConfig.SERVER.warpStoneXpCostMultiplier::get, WarpMode::waystoneIsActivated, false),
     WAYSTONE_TO_WAYSTONE(WaystonesConfig.SERVER.waystoneXpCostMultiplier::get, WarpMode::waystoneIsActivated, false),
     SHARESTONE_TO_SHARESTONE(WaystonesConfig.SERVER.sharestoneXpCostMultiplier::get, WarpMode::sharestonesOnly, false),
-    WARP_PLATE(WaystonesConfig.SERVER.warpPlateXpCostMultiplier::get, WarpMode::warpPlatesOnly, false);
+    WARP_PLATE(WaystonesConfig.SERVER.warpPlateXpCostMultiplier::get, WarpMode::warpPlatesOnly, false),
+    ACCESSSTONE_TO_WAYSTONE(WaystonesConfig.SERVER.accessstoneXpCostMultiplier::get, WarpMode::waystoneIsActivated, false);
 
     public static WarpMode[] values = values();
 
