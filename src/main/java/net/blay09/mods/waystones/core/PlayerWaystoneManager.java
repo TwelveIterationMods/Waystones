@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
@@ -43,6 +44,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,6 +53,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final IPlayerWaystoneData persistentPlayerWaystoneData = new PersistentPlayerWaystoneData();
     private static final IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
@@ -200,20 +205,24 @@ public class PlayerWaystoneManager {
 
     public static boolean tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         if (!waystone.isValid()) {
+            logger.info("Rejected teleport to invalid waystone");
             return false;
         }
 
         ItemStack warpItem = findWarpItem(entity, warpMode);
         if (!canUseWarpMode(entity, warpMode, warpItem, fromWaystone)) {
+            logger.info("Rejected teleport using warp mode {}", warpMode);
             return false;
         }
 
         if (!warpMode.getAllowTeleportPredicate().test(entity, waystone)) {
+            logger.info("Rejected teleport due to predicate");
             return false;
         }
 
         boolean isDimensionalWarp = waystone.getDimension() != entity.world.getDimensionKey();
         if (isDimensionalWarp && !canDimensionalWarpBetween(entity, waystone)) {
+            logger.info("Rejected dimensional teleport");
             informPlayer(entity, "chat.waystones.cannot_dimension_warp");
             return false;
         }
@@ -221,17 +230,20 @@ public class PlayerWaystoneManager {
         List<MobEntity> leashed = findLeashedAnimals(entity);
         if (!leashed.isEmpty()) {
             if (!WaystonesConfig.SERVER.transportLeashed.get()) {
+                logger.info("Rejected teleport with leashed entities");
                 informPlayer(entity, "chat.waystones.cannot_transport_leashed");
                 return false;
             }
 
             List<ResourceLocation> forbidden = WaystonesConfig.SERVER.leashedBlacklist.get().stream().map(ResourceLocation::new).collect(Collectors.toList());
             if (leashed.stream().anyMatch(e -> forbidden.contains(e.getType().getRegistryName()))) {
+                logger.info("Rejected teleport with denied leashed entity");
                 informPlayer(entity, "chat.waystones.cannot_transport_this_leashed");
                 return false;
             }
 
             if (isDimensionalWarp && !WaystonesConfig.SERVER.transportLeashedDimensional.get()) {
+                logger.info("Rejected teleport with dimensionally denied leashed entity");
                 informPlayer(entity, "chat.waystones.cannot_transport_leashed_dimensional");
                 return false;
             }
@@ -239,6 +251,7 @@ public class PlayerWaystoneManager {
 
         MinecraftServer server = entity.getServer();
         if (server == null) {
+            logger.info("Rejected teleport due to missing server");
             return false;
         }
 
@@ -246,6 +259,7 @@ public class PlayerWaystoneManager {
         BlockPos pos = waystone.getPos();
         BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
         if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlockBase)) {
+            logger.info("Rejected teleport due to missing waystone");
             informPlayer(entity, "chat.waystones.waystone_missing");
             return false;
         }
@@ -272,6 +286,7 @@ public class PlayerWaystoneManager {
 
         int xpLevelCost = getExperienceLevelCost(entity, waystone, warpMode, context);
         if (entity instanceof PlayerEntity && ((PlayerEntity) entity).experienceLevel < xpLevelCost) {
+            logger.info("Rejected teleport due to missing xp");
             return false;
         }
 
