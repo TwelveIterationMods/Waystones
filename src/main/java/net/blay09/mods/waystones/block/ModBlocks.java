@@ -25,7 +25,7 @@ public class ModBlocks {
                 sandyWaystone = new WaystoneBlock().setRegistryName("sandy_waystone"),
                 warpPlate = new WarpPlateBlock().setRegistryName("warp_plate"),
                 sharestone = new SharestoneBlock(null).setRegistryName("sharestone"),
-                portstone = new PortStone().setRegistryName("portstone")
+                portstone = new PortstoneBlock().setRegistryName("portstone")
         );
 
         DyeColor[] colors = DyeColor.values();

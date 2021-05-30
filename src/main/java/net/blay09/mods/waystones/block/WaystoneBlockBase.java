@@ -249,14 +249,15 @@ public abstract class WaystoneBlockBase extends Block {
         return null;
     }
 
-    protected abstract void handleActivation(World world, BlockPos pos, PlayerEntity player, WaystoneTileEntityBase tileEntity, IWaystone waystone);
+    protected void handleActivation(World world, BlockPos pos, PlayerEntity player, WaystoneTileEntityBase tileEntity, IWaystone waystone) {
+    }
 
     @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.isIn(newState.getBlock())) {
-            WaystoneTileEntityBase tileEntity = (WaystoneTileEntityBase) world.getTileEntity(pos);
-            if (tileEntity != null && !tileEntity.isSilkTouched()) {
-                IWaystone waystone = tileEntity.getWaystone();
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof WaystoneTileEntityBase && !((WaystoneTileEntityBase) tileEntity).isSilkTouched()) {
+                IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
                 WaystoneManager.get().removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(waystone);
             }
@@ -286,26 +287,24 @@ public abstract class WaystoneBlockBase extends Block {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        WaystoneTileEntityBase tileEntity = (WaystoneTileEntityBase) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return ActionResultType.FAIL;
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof WaystoneTileEntityBase) {
+            WaystoneTileEntityBase waystoneTileEntity = (WaystoneTileEntityBase) tileEntity;
+            ActionResultType result = handleDebugActions(world, player, hand, waystoneTileEntity);
+            if (result != null) {
+                return result;
+            }
+
+            IWaystone waystone = waystoneTileEntity.getWaystone();
+            result = handleEditActions(world, player, waystoneTileEntity, waystone);
+            if (result != null) {
+                return result;
+            }
+
+            handleActivation(world, pos, player, waystoneTileEntity, waystone);
         }
 
-        ActionResultType result = handleDebugActions(world, player, hand, tileEntity);
-        if (result != null) {
-            return result;
-        }
-
-        IWaystone waystone = tileEntity.getWaystone();
-
-        result = handleEditActions(world, player, tileEntity, waystone);
-        if (result != null) {
-            return result;
-        }
-
-        handleActivation(world, pos, player, tileEntity, waystone);
-
-        return ActionResultType.SUCCESS;
+        return ActionResultType.FAIL;
     }
 
 

@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.container.WaystoneSelectionContainer;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.tileentity.PortstoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.Block;
@@ -29,7 +30,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Random;
 
-public class PortStone extends WaystoneBlockBase {
+public class PortstoneBlock extends WaystoneBlockBase {
 
     private static final VoxelShape LOWER_SHAPE = VoxelShapes.or(
             makeCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
@@ -54,7 +54,7 @@ public class PortStone extends WaystoneBlockBase {
             makeCuboidShape(4.0, 8.0, 4.0, 12.0, 16.0, 12.0)
     ).simplify();
 
-    public PortStone() {
+    public PortstoneBlock() {
         setDefaultState(stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
     }
 
@@ -66,22 +66,16 @@ public class PortStone extends WaystoneBlockBase {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return null;
+        return new PortstoneTileEntity();
     }
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult trace) {
-        handleActivation(world, pos, player, null, null);
-        return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    protected void handleActivation(World world, BlockPos pos, PlayerEntity player, @Nullable WaystoneTileEntityBase tile, @Nullable IWaystone waystone) {
         if (!world.isRemote) {
             NetworkHooks.openGui(((ServerPlayerEntity) player), new INamedContainerProvider() {
                 @Override
                 public ITextComponent getDisplayName() {
-                    return PortStone.this.getTranslatedName();
+                    return PortstoneBlock.this.getTranslatedName();
                 }
 
                 @Override
@@ -93,6 +87,7 @@ public class PortStone extends WaystoneBlockBase {
                 it.writeBlockPos(pos);
             });
         }
+        return ActionResultType.SUCCESS;
     }
 
     @Override
