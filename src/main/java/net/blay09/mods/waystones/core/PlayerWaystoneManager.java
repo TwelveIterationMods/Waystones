@@ -49,6 +49,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
@@ -63,18 +64,22 @@ public class PlayerWaystoneManager {
             return false;
         }
 
-        IWaystone waystone = WaystoneManager.get().getWaystoneAt(world, pos).orElseThrow(IllegalStateException::new);
-        if (!player.abilities.isCreativeMode) {
-            if (waystone.wasGenerated() && WaystonesConfig.SERVER.generatedWaystonesUnbreakable.get()) {
-                return false;
+        return WaystoneManager.get().getWaystoneAt(world, pos).map(waystone -> {
+
+            if (!player.abilities.isCreativeMode) {
+                if (waystone.wasGenerated() && WaystonesConfig.SERVER.generatedWaystonesUnbreakable.get()) {
+                    return false;
+                }
+
+                boolean isGlobal = waystone.isGlobal();
+                boolean mayBreakGlobalWaystones = !WaystonesConfig.SERVER.globalWaystoneRequiresCreative.get();
+                return !isGlobal || mayBreakGlobalWaystones;
             }
 
-            boolean isGlobal = waystone.isGlobal();
-            boolean mayBreakGlobalWaystones = !WaystonesConfig.SERVER.globalWaystoneRequiresCreative.get();
-            return !isGlobal || mayBreakGlobalWaystones;
-        }
 
-        return true;
+            return true;
+        }).orElse(true);
+
     }
 
     public static boolean mayPlaceWaystone(@Nullable PlayerEntity player) {
