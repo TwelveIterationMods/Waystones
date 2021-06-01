@@ -131,7 +131,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             NetworkHooks.openGui(((ServerPlayerEntity) player), new INamedContainerProvider() {
                 @Override
                 public ITextComponent getDisplayName() {
-                    return PortstoneBlock.this.getTranslatedName();
+                    return new TranslationTextComponent("block.waystones.portstone");
                 }
 
                 @Override
