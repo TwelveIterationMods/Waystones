@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Objects;
 
@@ -39,11 +39,10 @@ public class WaystoneRenderer extends TileEntityRenderer<WaystoneTileEntity> {
             return;
         }
 
-        float angle = state.get(WaystoneBlock.FACING).getHorizontalAngle();
         matrixStack.push();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.rotate(new Quaternion(0f, angle, 0f, true));
-        matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
+        matrixStack.rotate(state.get(WaystoneBlock.FACING).getRotation());
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(90f));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
         PlayerEntity player = Minecraft.getInstance().player;
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone());
