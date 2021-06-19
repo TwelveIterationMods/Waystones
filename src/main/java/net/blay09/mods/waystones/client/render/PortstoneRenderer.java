@@ -20,9 +20,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.DoubleBlockHalf;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 public class PortstoneRenderer extends TileEntityRenderer<PortstoneTileEntity> {
@@ -43,7 +43,6 @@ public class PortstoneRenderer extends TileEntityRenderer<PortstoneTileEntity> {
         if (world == null || state.get(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             return;
         }
-        Direction facing = state.get(PortstoneBlock.FACING);
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
@@ -52,8 +51,8 @@ public class PortstoneRenderer extends TileEntityRenderer<PortstoneTileEntity> {
 
         matrixStack.push();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.rotate(new Quaternion(0f, -facing.getHorizontalAngle(), 0f, true));
-        matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
+        matrixStack.rotate(state.get(PortstoneBlock.FACING).getRotation());
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(90f));
         matrixStack.translate(0f, -2f, 0f);
         float scale = 1.01f;
         matrixStack.scale(0.5f, 0.5f, 0.5f);
@@ -70,7 +69,8 @@ public class PortstoneRenderer extends TileEntityRenderer<PortstoneTileEntity> {
 
         matrixStack.push();
         matrixStack.translate(0.5f, 1f, 0.5f);
-        matrixStack.rotate(new Quaternion(0f, -facing.getHorizontalAngle(), 0f, true));
+        matrixStack.rotate(state.get(PortstoneBlock.FACING).getRotation());
+        matrixStack.rotate(Vector3f.XN.rotationDegrees(90f));
         matrixStack.translate(0f, 0f, 0.15f);
         matrixStack.rotate(new Quaternion(-25f, 0f, 0f, true));
         matrixStack.scale(0.5f, 0.5f, 0.5f);

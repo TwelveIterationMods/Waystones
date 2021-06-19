@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity> {
@@ -50,7 +51,8 @@ public class SharestoneRenderer extends TileEntityRenderer<SharestoneTileEntity>
         if (color != null) {
             matrixStack.push();
             matrixStack.translate(0.5f, 0f, 0.5f);
-            matrixStack.rotate(new Quaternion(-180f, 0f, 0f, true));
+            matrixStack.rotate(state.get(SharestoneBlock.FACING).getRotation());
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(90f));
             matrixStack.translate(0f, -2f, 0f);
             float scale = 1.01f;
             matrixStack.scale(0.5f, 0.5f, 0.5f);
