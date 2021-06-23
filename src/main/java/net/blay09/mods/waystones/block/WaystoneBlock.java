@@ -8,9 +8,11 @@ import net.blay09.mods.waystones.tileentity.WaystoneTileEntity;
 import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
@@ -119,6 +121,12 @@ public class WaystoneBlock extends WaystoneBlockBase {
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(HALF);
+    }
+
+    @Nullable
+    @Override
+    public PathNodeType getAiPathNodeType(BlockState state, IBlockReader world, BlockPos pos, @Nullable MobEntity entity) {
+        return PathNodeType.BLOCKED;
     }
 
 }
