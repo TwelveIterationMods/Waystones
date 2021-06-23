@@ -7,12 +7,10 @@ import net.blay09.mods.waystones.tileentity.WaystoneTileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
@@ -90,12 +88,6 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Nullable
     public DyeColor getColor() {
         return color;
-    }
-
-    @Nullable
-    @Override
-    public PathNodeType getAiPathNodeType(BlockState state, IBlockReader world, BlockPos pos, @Nullable MobEntity entity) {
-        return PathNodeType.BLOCKED;
     }
 
 }
