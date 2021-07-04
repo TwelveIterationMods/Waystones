@@ -3,8 +3,12 @@
 # certain platforms or Java versions, and provides a first line of defence
 # against bad commits.
 
-name: build
+name: build-fabric
 on: [push]
+
+defaults:
+  run:
+    working-directory: ./fabric
 
 jobs:
   build:
@@ -30,6 +34,7 @@ jobs:
       - name: make gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
+
       - name: build
         run: ./gradlew build
         env:
