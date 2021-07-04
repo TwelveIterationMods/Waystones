@@ -7,7 +7,8 @@ sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
+version = project.mod_version + "+" + buildNumber
 group = project.maven_group
 
 repositories {
@@ -47,7 +48,7 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modImplementation "net.blay09.mods:forbic-fabric:1.0.0.78"
+	modImplementation "net.blay09.mods:forbic-fabric:1.0.0+81"
 
 	modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
 		exclude(group: "net.fabricmc.fabric-api")
@@ -101,6 +102,9 @@ sourceSets {
 }
 
 jar {
+	from sourceSets.shared.output.classesDirs
+	from sourceSets.shared.output.resourcesDir
+
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
@@ -110,7 +114,7 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = project.archivesBaseName + '-fabric'
+			artifactId = project.archivesBaseName
 
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
