@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "id": "waystones",
+  "version": "${version}",
+
+  "name": "Waystones",
+  "description": "Teleport back to activated waystones. For Survival, Adventure or Servers.",
+  "authors": [
+    "BlayTheNinth"
+  ],
+  "contact": {
+    "homepage": "https://blay09.net/",
+    "sources": "https://github.com/blay09/Waystones",
+    "issues": "https://github.com/blay09/Waystones/issues"
+  },
+
+  "license": "All Rights Reserved",
+  "icon": "assets/waystones/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.blay09.mods.waystones.FabricWaystones"
+    ],
+    "modmenu": [
+      "net.blay09.mods.waystones.compat.ModMenuIntegration"
+    ],
+    "client": [
+      "net.blay09.mods.waystones.client.FabricWaystonesClient"
+    ]
+  },
+  "mixins": [
+    "waystones.mixins.json"
+  ],
+  "depends": {
+    "forbic-fabric": ">=1.0.0",
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/scGAfXC",
+        "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
+      }
+    }
+  }
+}

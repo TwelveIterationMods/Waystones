@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "waystones:green_sharestone"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forbic:green_dyes"
+    },
+    {
+      "tag": "waystones:sharestone"
+    }
+  ]
+}

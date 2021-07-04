@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "waystones:return_scroll",
+    "count": 3
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GEG",
+    "PPP"
+  ],
+  "key": {
+    "G": {
+      "tag": "forbic:gold_nuggets"
+    },
+    "E": {
+      "tag": "forbic:purple_dyes"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "waystones:brown_sharestone"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forbic:brown_dyes"
+    },
+    {
+      "tag": "waystones:sharestone"
+    }
+  ]
+}
