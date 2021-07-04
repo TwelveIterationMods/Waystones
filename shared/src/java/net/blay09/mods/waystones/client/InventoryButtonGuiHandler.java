@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client;
 
+import net.blay09.mods.forbic.client.ForbicScreens;
 import net.blay09.mods.forbic.event.ForbicEvents;
 import net.blay09.mods.forbic.mixin.ScreenAccessor;
 import net.blay09.mods.forbic.network.ForbicNetworking;
@@ -79,7 +80,7 @@ public class InventoryButtonGuiHandler {
 
                 return true;
             }, xPosition, yPosition);
-            ((ScreenAccessor) screen).callAddRenderableWidget(warpButton);
+            ForbicScreens.addRenderableWidget(screen, warpButton);
         });
 
         ForbicEvents.onScreenDrawn((gui, matrixStack, mouseX, mouseY) -> {

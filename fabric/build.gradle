@@ -48,7 +48,7 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modImplementation "net.blay09.mods:forbic-fabric:1.0.0+81"
+	modImplementation "net.blay09.mods:forbic-fabric:1.0.0+86"
 
 	modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
 		exclude(group: "net.fabricmc.fabric-api")
@@ -91,7 +91,7 @@ java {
 sourceSets {
 	shared {
 		java {
-			srcDirs '../shared/src/'
+			srcDirs '../shared/src/java/'
 		}
 		compileClasspath += sourceSets.main.compileClasspath
 	}
