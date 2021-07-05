@@ -33,7 +33,7 @@ body:
     id: modLoaderVersion
     attributes:
       label: Mod Loader Version
-      description: What version of the mod loader were you using?
+      description: What version of Forge / Fabric were you using?
     validations:
       required: true
   - type: input
@@ -43,11 +43,6 @@ body:
       description: What version of the mod were you using?
     validations:
       required: true
-  - type: input
-    id: optifine
-    attributes:
-      label: Do you use any performance-enhancing mods (e.g. OptiFine)?
-      description: Specify which and test whether the issue happens with those mods disabled.
   - type: textarea
     id: description
     attributes:
@@ -60,3 +55,8 @@ body:
     attributes:
       label: Logs
       description: If the game crashed, provide a link to the logs here. You can use a site like pastebin or gist to upload the latest.log content. Make sure they are set to not expire.
+  - type: input
+    id: optifine
+    attributes:
+      label: Do you use any performance-enhancing mods (e.g. OptiFine)?
+      description: Specify which and test whether the issue happens with those mods disabled.
