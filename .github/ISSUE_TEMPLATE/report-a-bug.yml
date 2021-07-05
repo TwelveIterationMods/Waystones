@@ -43,6 +43,11 @@ body:
       description: What version of the mod were you using?
     validations:
       required: true
+  - type: input
+    id: optifine
+    attributes:
+      label: Do you use any performance-enhancing mods (e.g. OptiFine)?
+      description: Specify which and test whether the issue happens with those mods disabled.
   - type: textarea
     id: description
     attributes:
