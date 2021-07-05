@@ -13,6 +13,8 @@ body:
       description: What version of Minecraft were you running?
       options:
         - 1.17
+        - 1.16
+        - 1.12
         - Other (specify below)
     validations:
       required: true
