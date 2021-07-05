@@ -33,6 +33,7 @@
     "waystones.mixins.json"
   ],
   "depends": {
+    "cloth-config2": ">=5.0.34",
     "forbic-fabric": ">=1.0.0",
     "fabricloader": ">=0.11.3",
     "fabric": "*",
