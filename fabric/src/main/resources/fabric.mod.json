@@ -22,11 +22,14 @@
     "main": [
       "net.blay09.mods.waystones.FabricWaystones"
     ],
+    "client": [
+      "net.blay09.mods.waystones.client.FabricWaystonesClient"
+    ],
     "modmenu": [
       "net.blay09.mods.waystones.compat.ModMenuIntegration"
     ],
-    "client": [
-      "net.blay09.mods.waystones.client.FabricWaystonesClient"
+    "rei_plugins": [
+      "net.blay09.mods.waystones.compat.RoughlyEnoughItemsIntegration"
     ]
   },
   "mixins": [
