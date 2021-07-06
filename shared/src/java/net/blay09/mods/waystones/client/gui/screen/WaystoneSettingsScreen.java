@@ -115,7 +115,7 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     }
 
     @Override
-    public void tick() {
+    protected void containerTick() {
         textField.tick();
 
         // Button presses focus the button after onPress, so we can't change focus inside. Defer to here instead.
