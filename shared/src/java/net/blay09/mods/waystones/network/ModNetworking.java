@@ -36,8 +36,8 @@ public class ModNetworking {
     }
 
     @NotNull
-    private static ResourceLocation id(String known_waystones) {
-        return new ResourceLocation(Waystones.MOD_ID, known_waystones);
+    private static ResourceLocation id(String name) {
+        return new ResourceLocation(Waystones.MOD_ID, name);
     }
 
 }
