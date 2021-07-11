@@ -10,13 +10,13 @@
   ],
   "key": {
     "G": {
-      "tag": "forbic:emeralds"
+      "tag": "balm:emeralds"
     },
     "E": {
       "item": "minecraft:ender_pearl"
     },
     "D": {
-      "tag": "forbic:purple_dyes"
+      "tag": "balm:purple_dyes"
     }
   }
 }

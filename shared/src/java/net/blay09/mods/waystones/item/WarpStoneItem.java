@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.forbic.client.ForbicClient;
-import net.blay09.mods.forbic.item.ForbicItem;
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.client.BalmClient;
+import net.blay09.mods.balm.item.BalmItem;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -33,9 +33,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WarpStoneItem extends ForbicItem implements IResetUseOnDamage {
+public class WarpStoneItem extends BalmItem implements IResetUseOnDamage {
 
-    private static final ForbicMenuProvider containerProvider = new ForbicMenuProvider() {
+    private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
         @Override
         public Component getDisplayName() {
             return new TranslatableComponent("container.waystones.waystone_selection");
@@ -73,7 +73,7 @@ public class WarpStoneItem extends ForbicItem implements IResetUseOnDamage {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer) {
-            ForbicNetworking.openGui(((ServerPlayer) entity), containerProvider);
+            BalmNetworking.openGui(((ServerPlayer) entity), containerProvider);
         }
 
         return stack;
@@ -107,13 +107,13 @@ public class WarpStoneItem extends ForbicItem implements IResetUseOnDamage {
     }
 
     @Override
-    public boolean forbicShowDurabilityBar(ItemStack itemStack) {
-        return forbicGetDurabilityForDisplay(itemStack) > 0;
+    public boolean balmShowDurabilityBar(ItemStack itemStack) {
+        return balmGetDurabilityForDisplay(itemStack) > 0;
     }
 
     @Override
-    public double forbicGetDurabilityForDisplay(ItemStack stack) {
-        Player player = ForbicClient.getClientPlayer();
+    public double balmGetDurabilityForDisplay(ItemStack stack) {
+        Player player = BalmClient.getClientPlayer();
         if (player == null) {
             return 0.0;
         }
@@ -129,12 +129,12 @@ public class WarpStoneItem extends ForbicItem implements IResetUseOnDamage {
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        return PlayerWaystoneManager.canUseWarpStone(ForbicClient.getClientPlayer(), itemStack) || super.isFoil(itemStack);
+        return PlayerWaystoneManager.canUseWarpStone(BalmClient.getClientPlayer(), itemStack) || super.isFoil(itemStack);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        Player player = ForbicClient.getClientPlayer();
+        Player player = BalmClient.getClientPlayer();
         if (player == null) {
             return;
         }

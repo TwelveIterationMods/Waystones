@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -61,7 +61,7 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
                 return;
             }
 
-            ForbicNetworking.sendToServer(new EditWaystoneMessage(waystone.getWaystoneUid(), textField.getValue(), isGlobalCheckbox.selected()));
+            BalmNetworking.sendToServer(new EditWaystoneMessage(waystone.getWaystoneUid(), textField.getValue(), isGlobalCheckbox.selected()));
         });
         addRenderableWidget(doneButton);
 

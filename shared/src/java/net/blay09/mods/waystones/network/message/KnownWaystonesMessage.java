@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.forbic.core.ForbicSide;
-import net.blay09.mods.forbic.event.ForbicEvents;
+import net.blay09.mods.balm.core.BalmSide;
+import net.blay09.mods.balm.event.BalmEvents;
 import net.blay09.mods.waystones.ModEvents;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
@@ -43,7 +43,7 @@ public class KnownWaystonesMessage {
 
     public static void handle(Player player, KnownWaystonesMessage message) {
         if (message.type.equals(WaystoneTypes.WAYSTONE)) {
-            InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(ForbicSide.CLIENT);
+            InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmSide.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
 
             ModEvents.KNOWN_WAYSTONES.invoke(new KnownWaystonesEvent(message.waystones));

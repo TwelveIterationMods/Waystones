@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.handler;
 
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -25,7 +25,7 @@ public class LoginHandler {
         WaystoneSyncManager.sendWarpPlates(player);
         WaystoneSyncManager.sendWaystoneCooldowns(player);
 
-        ForbicNetworking.sendTo(player, WaystonesConfig.getConfigSyncMessage());
+        BalmNetworking.sendTo(player, WaystonesConfig.getConfigSyncMessage());
     }
 
 }

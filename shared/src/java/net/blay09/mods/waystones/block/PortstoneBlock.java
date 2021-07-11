@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -122,7 +122,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (!world.isClientSide) {
-            ForbicNetworking.openGui(player, new ForbicMenuProvider() {
+            BalmNetworking.openGui(player, new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
                     return new TranslatableComponent("block.waystones.portstone");

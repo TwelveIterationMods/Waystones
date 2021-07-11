@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.api;
 
-import net.blay09.mods.forbic.event.ForbicEvent;
+import net.blay09.mods.balm.event.core.BalmEvent;
 import net.minecraft.world.entity.player.Player;
 
-public class WaystoneActivatedEvent extends ForbicEvent {
+public class WaystoneActivatedEvent extends BalmEvent {
     private final Player player;
     private final IWaystone waystone;
 

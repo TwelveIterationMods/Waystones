@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.forbic.client.ForbicClient;
+import net.blay09.mods.balm.client.BalmClient;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -169,7 +169,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        Player player = ForbicClient.getClientPlayer();
+        Player player = BalmClient.getClientPlayer();
         if (player == null) {
             return;
         }

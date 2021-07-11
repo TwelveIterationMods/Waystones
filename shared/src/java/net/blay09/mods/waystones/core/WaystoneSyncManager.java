@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
 import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
@@ -29,24 +29,24 @@ public class WaystoneSyncManager {
 
     public static void sendActivatedWaystones(Player player) {
         List<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
-        ForbicNetworking.sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
+        BalmNetworking.sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
     }
 
     public static void sendWarpPlates(ServerPlayer player) {
         List<IWaystone> warpPlates = WaystoneManager.get(player.server).getWaystonesByType(WaystoneTypes.WARP_PLATE).collect(Collectors.toList());
-        ForbicNetworking.sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WARP_PLATE, warpPlates));
+        BalmNetworking.sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WARP_PLATE, warpPlates));
     }
 
     public static void sendWaystoneUpdate(Player player, IWaystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            ForbicNetworking.sendTo(player, new KnownWaystonesMessage(waystone.getWaystoneType(), Collections.singletonList(waystone)));
+            BalmNetworking.sendTo(player, new KnownWaystonesMessage(waystone.getWaystoneType(), Collections.singletonList(waystone)));
         }
     }
 
     public static void sendWaystoneCooldowns(Player player) {
         long inventoryButtonCooldownUntil = PlayerWaystoneManager.getInventoryButtonCooldownUntil(player);
         long warpStoneCooldownUntil = PlayerWaystoneManager.getWarpStoneCooldownUntil(player);
-        ForbicNetworking.sendTo(player, new PlayerWaystoneCooldownsMessage(inventoryButtonCooldownUntil, warpStoneCooldownUntil));
+        BalmNetworking.sendTo(player, new PlayerWaystoneCooldownsMessage(inventoryButtonCooldownUntil, warpStoneCooldownUntil));
     }
 }

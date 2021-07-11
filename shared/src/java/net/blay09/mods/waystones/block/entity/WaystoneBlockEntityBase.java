@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.forbic.block.entity.ForbicBlockEntity;
+import net.blay09.mods.balm.block.entity.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
+public abstract class WaystoneBlockEntityBase extends BalmBlockEntity {
 
     private IWaystone waystone = InvalidWaystone.INSTANCE;
     private UUID waystoneUid;
@@ -56,7 +56,7 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
     }
 
     @Override
-    public void forbicOnLoad() {
+    public void balmOnLoad() {
         IWaystone backingWaystone = waystone;
         if (waystone instanceof WaystoneProxy) {
             backingWaystone = ((WaystoneProxy) waystone).getBackingWaystone();
@@ -65,24 +65,24 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
             ((Waystone) backingWaystone).setDimension(level.dimension());
             ((Waystone) backingWaystone).setPos(worldPosition);
         }
-        forbicSync();
+        balmSync();
     }
 
     @Override
-    public void forbicFromClientTag(CompoundTag tag) {
+    public void balmFromClientTag(CompoundTag tag) {
         IWaystone syncedWaystone = Waystone.read(tag);
         WaystoneManager.get(level.getServer()).updateWaystone(syncedWaystone);
         waystone = new WaystoneProxy(level.getServer(), syncedWaystone.getWaystoneUid());
     }
 
     @Override
-    public CompoundTag forbicToClientTag(CompoundTag tag) {
+    public CompoundTag balmToClientTag(CompoundTag tag) {
         Waystone.write(getWaystone(), tag);
         return tag;
     }
 
     @Override
-    public AABB forbicGetRenderBoundingBox() {
+    public AABB balmGetRenderBoundingBox() {
         return new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 2, worldPosition.getZ() + 1);
     }
 
@@ -109,7 +109,7 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
-                forbicSync();
+                balmSync();
             }
         }
 
@@ -123,7 +123,7 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
         WaystoneManager.get(world.getServer()).addWaystone(waystone);
         this.waystone = waystone;
         setChanged();
-        forbicSync();
+        balmSync();
     }
 
     public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
@@ -131,13 +131,13 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
         existingWaystone.setDimension(world.getLevel().dimension());
         existingWaystone.setPos(worldPosition);
         setChanged();
-        forbicSync();
+        balmSync();
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
         waystone = tileEntity.getWaystone();
         setChanged();
-        forbicSync();
+        balmSync();
     }
 
     public void uninitializeWaystone() {
@@ -159,7 +159,7 @@ public abstract class WaystoneBlockEntityBase extends ForbicBlockEntity {
         }
 
         setChanged();
-        forbicSync();
+        balmSync();
     }
 
     public void setSilkTouched(boolean silkTouched) {

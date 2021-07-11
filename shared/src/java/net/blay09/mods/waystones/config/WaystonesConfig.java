@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.config;
 
-import net.blay09.mods.forbic.config.ForbicConfig;
-import net.blay09.mods.forbic.event.ForbicEvents;
-import net.blay09.mods.forbic.network.ForbicNetworking;
-import net.blay09.mods.forbic.network.SyncConfigMessage;
+import net.blay09.mods.balm.config.BalmConfig;
+import net.blay09.mods.balm.event.BalmEvents;
+import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.network.SyncConfigMessage;
 import net.blay09.mods.waystones.network.message.SyncWaystonesConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +20,7 @@ public class WaystonesConfig {
     }
 
     public static WaystonesConfigData getFallback() {
-        return ForbicConfig.getConfig(WaystonesConfigData.class);
+        return BalmConfig.getConfig(WaystonesConfigData.class);
     }
 
     public static SyncConfigMessage<WaystonesConfigData> getConfigSyncMessage() {
@@ -36,16 +36,16 @@ public class WaystonesConfig {
     }
 
     public static void initialize() {
-        setActiveConfig(ForbicConfig.initialize(WaystonesConfigData.class));
+        setActiveConfig(BalmConfig.initialize(WaystonesConfigData.class));
 
-        ForbicEvents.onServerStarted(currentServer::set);
-        ForbicEvents.onServerStopped(server -> {
+        BalmEvents.onServerStarted(currentServer::set);
+        BalmEvents.onServerStopped(server -> {
             currentServer.set(null);
         });
 
-        ForbicEvents.onConfigReloaded(() -> {
+        BalmEvents.onConfigReloaded(() -> {
             if (currentServer.get() != null) {
-                ForbicNetworking.sendToAll(currentServer.get(), getConfigSyncMessage());
+                BalmNetworking.sendToAll(currentServer.get(), getConfigSyncMessage());
             }
         });
     }

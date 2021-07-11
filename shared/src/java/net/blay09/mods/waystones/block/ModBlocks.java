@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.forbic.block.ForbicBlocks;
+import net.blay09.mods.balm.block.BalmBlocks;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
-public class ModBlocks extends ForbicBlocks {
+public class ModBlocks extends BalmBlocks {
 
     public static final Block waystone = new WaystoneBlock(defaultProperties());
     public static final Block mossyWaystone = new WaystoneBlock(defaultProperties());

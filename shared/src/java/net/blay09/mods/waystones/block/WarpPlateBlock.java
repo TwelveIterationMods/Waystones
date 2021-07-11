@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
@@ -134,7 +134,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
         if (!world.isClientSide) {
-            ForbicNetworking.openGui(player, tileEntity.getMenuProvider());
+            BalmNetworking.openGui(player, tileEntity.getMenuProvider());
             return InteractionResult.SUCCESS;
         }
 

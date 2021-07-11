@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.forbic.client.ForbicClient;
+import net.blay09.mods.balm.client.BalmClient;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
@@ -49,7 +49,7 @@ public class AttunedShardItem extends Item implements IAttunementItem {
 
         list.add(WarpPlateBlock.getGalacticName(attunedWarpPlate));
 
-        Player player = ForbicClient.getClientPlayer();
+        Player player = BalmClient.getClientPlayer();
         if (player != null && player.containerMenu instanceof WarpPlateContainer) {
             IWaystone currentWarpPlate = ((WarpPlateContainer) player.containerMenu).getWaystone();
             if (attunedWarpPlate.getWaystoneUid().equals(currentWarpPlate.getWaystoneUid())) {

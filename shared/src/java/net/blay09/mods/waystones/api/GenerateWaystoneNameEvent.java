@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.api;
 
-import net.blay09.mods.forbic.event.ForbicEvent;
+import net.blay09.mods.balm.event.core.BalmEvent;
 
-public class GenerateWaystoneNameEvent extends ForbicEvent {
+public class GenerateWaystoneNameEvent extends BalmEvent {
 
     private final IWaystone waystone;
     private String name;

@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
@@ -28,7 +28,7 @@ import net.minecraft.world.level.Level;
 
 public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse {
 
-    private static final ForbicMenuProvider containerProvider = new ForbicMenuProvider() {
+    private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
         @Override
         public Component getDisplayName() {
             return new TranslatableComponent("container.waystones.waystone_selection");
@@ -66,7 +66,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer) {
-            ForbicNetworking.openGui(((ServerPlayer) entity), containerProvider);
+            BalmNetworking.openGui(((ServerPlayer) entity), containerProvider);
         }
         return itemStack;
     }

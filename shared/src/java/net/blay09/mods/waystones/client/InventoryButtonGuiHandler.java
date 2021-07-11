@@ -1,9 +1,8 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.forbic.client.ForbicScreens;
-import net.blay09.mods.forbic.event.ForbicEvents;
-import net.blay09.mods.forbic.mixin.ScreenAccessor;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.client.screen.BalmScreens;
+import net.blay09.mods.balm.event.client.BalmClientEvents;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
@@ -35,7 +34,7 @@ public class InventoryButtonGuiHandler {
     private static WaystoneInventoryButton warpButton;
 
     public static void initialize() {
-        ForbicEvents.onScreenInitialized(screen -> {
+        BalmClientEvents.onScreenInitialized(screen -> {
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
             }
@@ -68,7 +67,7 @@ public class InventoryButtonGuiHandler {
                             mc.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
-                        ForbicNetworking.sendToServer(new InventoryButtonMessage());
+                        BalmNetworking.sendToServer(new InventoryButtonMessage());
                     }
                 } else {
                     mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -80,10 +79,10 @@ public class InventoryButtonGuiHandler {
 
                 return true;
             }, xPosition, yPosition);
-            ForbicScreens.addRenderableWidget(screen, warpButton);
+            BalmScreens.addRenderableWidget(screen, warpButton);
         });
 
-        ForbicEvents.onScreenDrawn((gui, matrixStack, mouseX, mouseY) -> {
+        BalmClientEvents.onScreenDrawn((gui, matrixStack, mouseX, mouseY) -> {
             // Render the inventory button tooltip when it's hovered
             if ((gui instanceof InventoryScreen || gui instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHovered()) {
                 InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();

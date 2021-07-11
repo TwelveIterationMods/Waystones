@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -48,7 +48,7 @@ public class RequestEditWaystoneMessage {
             return;
         }
 
-        final ForbicMenuProvider containerProvider = new ForbicMenuProvider() {
+        final BalmMenuProvider containerProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
                 return new TranslatableComponent("container.waystones.waystone_settings");
@@ -64,7 +64,7 @@ public class RequestEditWaystoneMessage {
                 Waystone.write(buf, waystone);
             }
         };
-        ForbicNetworking.openGui(player, containerProvider);
+        BalmNetworking.openGui(player, containerProvider);
     }
 }
 

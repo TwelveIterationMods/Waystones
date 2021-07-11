@@ -2,8 +2,8 @@ package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.blay09.mods.forbic.mixin.ScreenAccessor;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.mixin.ScreenAccessor;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
@@ -139,7 +139,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                     RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
-                        ForbicNetworking.sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
+                        BalmNetworking.sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
                         updateList();
                     });
                     // Only show the remove button for non-global waystones, or if the player is in creative mode
@@ -168,7 +168,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     protected void onWaystoneSelected(IWaystone waystone) {
-        ForbicNetworking.sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
+        BalmNetworking.sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
     }
 
     private void sortWaystone(int index, int sortDir) {
@@ -187,14 +187,14 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
-        ForbicNetworking.sendToServer(new SortWaystoneMessage(index, otherIndex));
+        BalmNetworking.sendToServer(new SortWaystoneMessage(index, otherIndex));
         updateList();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
-            ForbicNetworking.sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getWaystoneUid()));
+            BalmNetworking.sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getWaystoneUid()));
             return true;
         }
 

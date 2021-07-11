@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 
-import net.blay09.mods.forbic.item.ForbicItems;
+import net.blay09.mods.balm.item.BalmItems;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.resources.ResourceLocation;
@@ -9,7 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class ModItems extends ForbicItems {
+public class ModItems extends BalmItems {
     public static final CreativeModeTab creativeModeTab = createCreativeModeTab(id("waystones"), () -> new ItemStack(ModBlocks.waystone));
 
     public static final Item returnScroll = new ReturnScrollItem(itemProperties(creativeModeTab));

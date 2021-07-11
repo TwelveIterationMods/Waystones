@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -30,8 +30,8 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public ForbicMenuProvider getMenuProvider() {
-        return new ForbicMenuProvider() {
+    public BalmMenuProvider getMenuProvider() {
+        return new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
                 return new TranslatableComponent("container.waystones.waystone_selection");
@@ -51,8 +51,8 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
-    public ForbicMenuProvider getSettingsMenuProvider() {
-        return new ForbicMenuProvider() {
+    public BalmMenuProvider getSettingsMenuProvider() {
+        return new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
                 return new TranslatableComponent("container.waystones.waystone_settings");

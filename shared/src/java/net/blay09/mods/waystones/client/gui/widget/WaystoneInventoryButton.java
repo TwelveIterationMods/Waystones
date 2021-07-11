@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.blay09.mods.forbic.mixin.AbstractContainerScreenAccessor;
+import net.blay09.mods.balm.mixin.AbstractContainerScreenAccessor;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;

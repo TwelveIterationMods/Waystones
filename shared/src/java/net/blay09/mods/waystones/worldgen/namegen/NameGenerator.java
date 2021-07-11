@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import com.google.common.collect.Sets;
-import net.blay09.mods.forbic.event.ForbicEvents;
+import net.blay09.mods.balm.event.BalmEvents;
 import net.blay09.mods.waystones.ModEvents;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;

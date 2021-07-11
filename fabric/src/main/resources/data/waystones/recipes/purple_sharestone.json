@@ -5,7 +5,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forbic:purple_dyes"
+      "tag": "balm:purple_dyes"
     },
     {
       "tag": "waystones:sharestone"

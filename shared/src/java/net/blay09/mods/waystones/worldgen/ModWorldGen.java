@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
-import net.blay09.mods.forbic.core.DeferredObject;
-import net.blay09.mods.forbic.worldgen.ForbicWorldGen;
+import net.blay09.mods.balm.core.DeferredObject;
+import net.blay09.mods.balm.worldgen.BalmWorldGen;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ModWorldGen extends ForbicWorldGen {
+public class ModWorldGen extends BalmWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
     private static final ResourceLocation emptyStructure = new ResourceLocation("empty");

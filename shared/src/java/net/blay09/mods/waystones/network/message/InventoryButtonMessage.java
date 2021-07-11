@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.forbic.menu.ForbicMenuProvider;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -48,7 +48,7 @@ public class InventoryButtonMessage {
         if (waystone != null) {
             PlayerWaystoneManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
         } else if (inventoryButtonMode.isReturnToAny()) {
-            final ForbicMenuProvider containerProvider = new ForbicMenuProvider() {
+            final BalmMenuProvider containerProvider = new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
                     return new TranslatableComponent("container.waystones.waystone_selection");
@@ -64,7 +64,7 @@ public class InventoryButtonMessage {
                     buf.writeByte(WarpMode.INVENTORY_BUTTON.ordinal());
                 }
             };
-            ForbicNetworking.openGui(player, containerProvider);
+            BalmNetworking.openGui(player, containerProvider);
         }
     }
 

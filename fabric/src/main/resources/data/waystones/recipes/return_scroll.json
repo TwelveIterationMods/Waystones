@@ -10,10 +10,10 @@
   ],
   "key": {
     "G": {
-      "tag": "forbic:gold_nuggets"
+      "tag": "balm:gold_nuggets"
     },
     "E": {
-      "tag": "forbic:purple_dyes"
+      "tag": "balm:purple_dyes"
     },
     "P": {
       "item": "minecraft:paper"

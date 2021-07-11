@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.forbic.core.DeferredObject;
-import net.blay09.mods.forbic.menu.ForbicModMenus;
+import net.blay09.mods.balm.core.DeferredObject;
+import net.blay09.mods.balm.menu.BalmModMenus;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModMenus extends ForbicModMenus {
+public class ModMenus extends BalmModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static DeferredObject<MenuType<WarpPlateContainer>> warpPlate;

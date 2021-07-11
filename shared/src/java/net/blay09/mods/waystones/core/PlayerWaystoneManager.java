@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.forbic.core.ForbicSide;
-import net.blay09.mods.forbic.network.ForbicNetworking;
+import net.blay09.mods.balm.core.BalmSide;
+import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.ModEvents;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -406,8 +406,8 @@ public class PlayerWaystoneManager {
         sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5f, 1f);
         targetWorld.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5f, 1f);
 
-        ForbicNetworking.sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
-        ForbicNetworking.sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
+        BalmNetworking.sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
+        BalmNetworking.sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
 
         context.getLeashedEntities().forEach(mob -> teleportEntity(mob, targetWorld, targetPos3d, direction));
     }
@@ -539,7 +539,7 @@ public class PlayerWaystoneManager {
         return world == null || world.isClientSide ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 
-    public static IPlayerWaystoneData getPlayerWaystoneData(ForbicSide side) {
+    public static IPlayerWaystoneData getPlayerWaystoneData(BalmSide side) {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 

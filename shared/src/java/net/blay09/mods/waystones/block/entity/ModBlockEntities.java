@@ -1,14 +1,14 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.forbic.block.entity.ForbicBlockEntities;
-import net.blay09.mods.forbic.core.DeferredObject;
+import net.blay09.mods.balm.block.entity.BalmBlockEntities;
+import net.blay09.mods.balm.core.DeferredObject;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.ArrayUtils;
 
-public class ModBlockEntities extends ForbicBlockEntities {
+public class ModBlockEntities extends BalmBlockEntities {
     public static DeferredObject<BlockEntityType<WaystoneBlockEntity>> waystone;
     public static DeferredObject<BlockEntityType<SharestoneBlockEntity>> sharestone;
     public static DeferredObject<BlockEntityType<WarpPlateBlockEntity>> warpPlate;
