@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones;
 
-import net.blay09.mods.balm.event.BalmEventDispatcher;
-import net.blay09.mods.balm.event.BalmEventHandler;
+import net.blay09.mods.balm.event.core.BalmEventDispatcher;
+import net.blay09.mods.balm.event.core.BalmEventHandler;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;

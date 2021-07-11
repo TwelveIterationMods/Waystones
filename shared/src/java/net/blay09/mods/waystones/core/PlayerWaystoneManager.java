@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.balm.core.BalmSide;
+import net.blay09.mods.balm.core.BalmEnvironment;
 import net.blay09.mods.balm.network.BalmNetworking;
 import net.blay09.mods.waystones.ModEvents;
 import net.blay09.mods.waystones.api.IMutableWaystone;
@@ -539,7 +539,7 @@ public class PlayerWaystoneManager {
         return world == null || world.isClientSide ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 
-    public static IPlayerWaystoneData getPlayerWaystoneData(BalmSide side) {
+    public static IPlayerWaystoneData getPlayerWaystoneData(BalmEnvironment side) {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 

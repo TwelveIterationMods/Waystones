@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.client.BalmTextures;
+import net.blay09.mods.balm.client.rendering.BalmTextures;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.resources.ResourceLocation;
