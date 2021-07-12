@@ -97,13 +97,13 @@ public class ModWorldGen extends BalmWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
 
             // Add Waystone to other mod's structures. (Make sure Waystone piece Jigsaw Block's Name matches the other mod piece Jigsaw's Target Name.
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/badlands/houses", desertVillageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/birch/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/dark_forest/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/jungle/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/mountains/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/oak/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:village/swamp/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/badlands/houses", desertVillageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/birch/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/dark_forest/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/jungle/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/mountains/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/oak/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/swamp/houses", villageWaystoneStructure, 1);
         }
     }
 
