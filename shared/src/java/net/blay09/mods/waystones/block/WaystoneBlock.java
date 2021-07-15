@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
+import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -69,6 +70,10 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
+        if (player.getMainHandItem().getItem() == ModItems.boundScroll) {
+            return InteractionResult.PASS;
+        }
+
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {

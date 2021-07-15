@@ -4,7 +4,7 @@ import net.blay09.mods.balm.client.BalmClient;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -96,8 +96,8 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
         ItemStack heldItem = player.getItemInHand(context.getHand());
         Level world = context.getLevel();
         BlockEntity tileEntity = world.getBlockEntity(context.getClickedPos());
-        if (tileEntity instanceof WarpPlateBlockEntity) {
-            IWaystone waystone = ((WarpPlateBlockEntity) tileEntity).getWaystone();
+        if (tileEntity instanceof WaystoneBlockEntity) {
+            IWaystone waystone = ((WaystoneBlockEntity) tileEntity).getWaystone();
             if (!PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
                 PlayerWaystoneManager.activateWaystone(player, waystone);
             }
