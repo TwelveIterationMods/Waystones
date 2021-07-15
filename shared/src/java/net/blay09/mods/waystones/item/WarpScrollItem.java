@@ -75,7 +75,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (!player.isUsingItem() && !world.isClientSide) {
-            world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 1f, 2f);
+            world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
         if (Compat.isVivecraftInstalled) {
             finishUsingItem(itemStack, world, player);

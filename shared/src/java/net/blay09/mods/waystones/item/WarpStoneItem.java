@@ -90,7 +90,7 @@ public class WarpStoneItem extends BalmItem implements IResetUseOnDamage {
 
         if (PlayerWaystoneManager.canUseWarpStone(player, itemStack)) {
             if (!player.isUsingItem() && !world.isClientSide) {
-                world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 1f, 2f);
+                world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
             }
             if (Compat.isVivecraftInstalled) {
                 finishUsingItem(itemStack, world, player);

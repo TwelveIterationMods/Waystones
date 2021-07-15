@@ -95,7 +95,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
                 WaystoneSyncManager.sendActivatedWaystones(player);
 
-                world.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                world.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 0.2f, 1f);
             }
 
             notifyObserversOfAction(world, pos);

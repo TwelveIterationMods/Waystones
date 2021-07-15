@@ -115,7 +115,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
                 chatComponent.withStyle(ChatFormatting.YELLOW);
                 player.displayClientMessage(chatComponent, true);
 
-                world.playSound(null, context.getClickedPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 2f);
+                world.playSound(null, context.getClickedPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 0.2f, 2f);
             }
 
             return !world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
@@ -148,7 +148,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
         IWaystone boundTo = getBoundTo(player, itemStack);
         if (boundTo != null) {
             if (!player.isUsingItem() && world.isClientSide) {
-                world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 1f, 2f);
+                world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
             }
 
             if (Compat.isVivecraftInstalled) {

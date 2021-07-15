@@ -403,8 +403,8 @@ public class PlayerWaystoneManager {
             entity.startRiding(mount);
         }
 
-        sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5f, 1f);
-        targetWorld.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5f, 1f);
+        sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
+        targetWorld.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
 
         BalmNetworking.sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
         BalmNetworking.sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
