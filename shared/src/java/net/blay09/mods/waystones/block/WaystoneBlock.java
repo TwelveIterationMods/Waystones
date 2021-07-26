@@ -83,6 +83,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
                     player.displayClientMessage(new TranslatableComponent("chat.waystones.waystone_to_waystone_disabled"), true);
                 }
             }
+            return InteractionResult.PASS;
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
@@ -106,6 +107,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
                     world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2, pos.getY() + 4, pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2, 0, -5, 0);
                 }
             }
+            return InteractionResult.PASS;
         }
 
         return InteractionResult.SUCCESS;
