@@ -1,0 +1,42 @@
+tile.waystones:waystone.name=Pierre de téléportation
+
+item.waystones:warp_scroll.name=Parchemin de téléportation
+item.waystones:warp_scroll_bound.name=Parchemin de téléportation (relié)
+item.waystones:return_scroll.name=Parchemin de retour
+item.waystones:warp_stone.name=Pierre de téléportation
+item.waystones:bound_scroll.name=Parchemin lié
+
+itemGroup.waystones=Pierres de téléportation
+
+waystones:noDimensionWarp=Vous ne pouvez pas passer d'un monde à l'autre.
+waystones:waystoneBroken=La pierre de téléportation liée a été déplacée ou détruite.
+waystones:returnImpossible=Vous n'avez pas encore activé de pierres de téléportation.
+waystones:scrollNotBound=Ce parchemin n'est pas lié à une pierre de téléportation.
+waystones:stoneNotCharged=La pierre de téléportation n'est pas encore complètement chargée.
+waystones:activatedWaystone=Pierre de téléportation activée : %s
+waystones:nameOccupied=Le nom %s est déjà utilisé.
+waystones:notTheOwner=Les pierres de téléportation ne peuvent être renommées que par celui qui les a placées.
+waystones:creativeRequired=Vous devez être en mode créatif pour modifier une pierre téléportation globale.
+waystones:scrollBound=Limite de parchemin : %s
+
+gui.waystones:current_location=Lieu actuel :
+gui.waystones:warpStone.selectDestination=Sélectionnez votre destination :
+gui.waystones:warpStone.nextPage=Suivant
+gui.waystones:warpStone.previousPage=Précédent
+gui.waystones:confirmReturn=Vous voulez vraiment retourner sur cette pierre de téléportation ?
+gui.waystones:confirmReturn.boundTo=Lié à : %s
+gui.waystones:confirmReturn.noWaystoneActive=Aucune pierre de téléportation active.
+gui.waystones:editWaystone.enterName=Entrez le nom de la pierre de téléportation :
+gui.waystones:editWaystone.isGlobal=est globale
+
+tooltip.waystones:cooldownLeft=Délais : %d secondes
+tooltip.waystones:boundTo=Lié à : %s
+tooltip.waystones:none=Aucun
+tooltip.waystones:returnToWaystone=Retourner à la pierre de téléportation
+tooltip.waystones:openWaystoneMenu=Ouvrir le menu de la pierre de téléportation
+tooltip.waystones:levelRequirement=Niveau requis : %d
+
+stat.waystones:waystonesActivated=Pierres de téléportation activées
+
+waystones.general.globalinterdimension=Téléportation interdimensionnelle (Pierres de téléportation globales)
+waystones.worldgen.customnames=Noms personnalisés
