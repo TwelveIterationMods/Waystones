@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.balm.core.DeferredObject;
-import net.blay09.mods.balm.menu.BalmMenus;
+import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
@@ -18,14 +18,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModMenus extends BalmMenus {
+public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static DeferredObject<MenuType<WarpPlateContainer>> warpPlate;
     public static DeferredObject<MenuType<WaystoneSettingsMenu>> waystoneSettings;
 
-    public static void initialize() {
-        waystoneSelection = registerMenu(id("waystone_selection"), (syncId, inventory, buf) -> {
+    public static void initialize(BalmMenus menus) {
+        waystoneSelection = menus.registerMenu(id("waystone_selection"), (syncId, inventory, buf) -> {
             WarpMode warpMode = WarpMode.values[buf.readByte()];
             IWaystone fromWaystone = null;
             if (warpMode == WarpMode.WAYSTONE_TO_WAYSTONE) {
@@ -39,7 +39,7 @@ public class ModMenus extends BalmMenus {
             return WaystoneSelectionMenu.createWaystoneSelection(syncId, inventory.player, warpMode, fromWaystone);
         });
 
-        sharestoneSelection = registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
+        sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
             BlockPos pos = buf.readBlockPos();
             int count = buf.readShort();
             List<IWaystone> waystones = new ArrayList<>(count);
@@ -56,7 +56,7 @@ public class ModMenus extends BalmMenus {
             return null;
         });
 
-        warpPlate = registerMenu(id("warp_plate"), (windowId, inv, data) -> {
+        warpPlate = menus.registerMenu(id("warp_plate"), (windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
 
             BlockEntity blockEntity = inv.player.level.getBlockEntity(pos);
@@ -67,7 +67,7 @@ public class ModMenus extends BalmMenus {
             return null;
         });
 
-        waystoneSettings = registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
+        waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
             IWaystone waystone = Waystone.read(data);
             return new WaystoneSettingsMenu(waystoneSettings.get(), waystone, windowId);
         });

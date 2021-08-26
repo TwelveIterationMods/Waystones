@@ -1,9 +1,8 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.balm.core.BalmEnvironment;
-import net.blay09.mods.balm.network.BalmNetworking;
-import net.blay09.mods.waystones.ModEvents;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
@@ -122,7 +121,7 @@ public class PlayerWaystoneManager {
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             getPlayerWaystoneData(player.level).activateWaystone(player, waystone);
 
-            ModEvents.WAYSTONE_ACTIVATED.invoke(new WaystoneActivatedEvent(player, waystone));
+            Balm.getEvents().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
     }
 
@@ -406,8 +405,8 @@ public class PlayerWaystoneManager {
         sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
         targetWorld.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
 
-        BalmNetworking.sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
-        BalmNetworking.sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
+        Balm.getNetworking().sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
+        Balm.getNetworking().sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
 
         context.getLeashedEntities().forEach(mob -> teleportEntity(mob, targetWorld, targetPos3d, direction));
     }

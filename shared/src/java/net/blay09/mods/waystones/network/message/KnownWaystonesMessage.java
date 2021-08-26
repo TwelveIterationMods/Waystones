@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.core.BalmEnvironment;
-import net.blay09.mods.waystones.ModEvents;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
 import net.blay09.mods.waystones.core.*;
@@ -45,7 +45,7 @@ public class KnownWaystonesMessage {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
 
-            ModEvents.KNOWN_WAYSTONES.invoke(new KnownWaystonesEvent(message.waystones));
+            Balm.getEvents().fireEvent(new KnownWaystonesEvent(message.waystones));
         }
 
         for (IWaystone waystone : message.waystones) {

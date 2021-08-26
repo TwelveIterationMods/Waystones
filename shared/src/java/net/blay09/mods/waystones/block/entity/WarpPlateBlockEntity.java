@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.container.ImplementedContainer;
-import net.blay09.mods.balm.entity.BalmEntities;
-import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.ImplementedContainer;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -307,7 +307,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                     ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
                 }
                 for (ItemStack curativeItem : curativeItems) {
-                    BalmEntities.curePotionEffects((LivingEntity) entity, curativeItem);
+                    Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
                 }
             }
         }

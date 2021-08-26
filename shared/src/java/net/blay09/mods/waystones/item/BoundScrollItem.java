@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.client.BalmClient;
+import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -135,7 +135,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
                     return stack;
                 }
 
-                PlayerWaystoneManager.tryTeleportToWaystone(((ServerPlayer) player), boundTo, getWarpMode(), null);
+                PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null);
             }
         }
 

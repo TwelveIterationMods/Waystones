@@ -1,8 +1,7 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import com.google.common.collect.Sets;
-import net.blay09.mods.balm.event.BalmEvents;
-import net.blay09.mods.waystones.ModEvents;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -52,7 +51,7 @@ public class NameGenerator extends SavedData {
         String name = resolveDuplicate(originalName);
 
         GenerateWaystoneNameEvent event = new GenerateWaystoneNameEvent(waystone, name);
-        ModEvents.GENERATE_WAYSTONE_NAME.invoke(event);
+        Balm.getEvents().fireEvent(event);
         name = event.getName();
 
         usedNames.add(name);

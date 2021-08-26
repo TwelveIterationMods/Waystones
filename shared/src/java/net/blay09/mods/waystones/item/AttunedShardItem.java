@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.client.BalmClient;
+import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;

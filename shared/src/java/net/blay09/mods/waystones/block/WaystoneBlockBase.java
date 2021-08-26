@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.*;
@@ -205,7 +205,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
             if (!world.isClientSide) {
                 MenuProvider settingsContainerProvider = tileEntity.getSettingsMenuProvider();
                 if (settingsContainerProvider != null) {
-                    BalmNetworking.openGui(player, settingsContainerProvider);
+                    Balm.getNetworking().openGui(player, settingsContainerProvider);
                 }
             }
             return InteractionResult.SUCCESS;
@@ -351,7 +351,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
                 if (result == WaystoneEditPermissions.ALLOW) {
                     MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
                     if (settingsContainerProvider != null) {
-                        BalmNetworking.openGui(player, settingsContainerProvider);
+                        Balm.getNetworking().openGui(player, settingsContainerProvider);
                     }
                 }
             }

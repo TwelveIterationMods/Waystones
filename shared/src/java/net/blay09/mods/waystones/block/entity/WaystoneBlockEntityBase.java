@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.block.entity.BalmBlockEntity;
+import net.blay09.mods.balm.api.block.entity.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;

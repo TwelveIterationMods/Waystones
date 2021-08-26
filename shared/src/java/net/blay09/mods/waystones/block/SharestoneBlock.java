@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -66,7 +66,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
         if (!world.isClientSide) {
-            BalmNetworking.openGui(player, tileEntity.getMenuProvider());
+            Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
             return InteractionResult.SUCCESS;
         }
 

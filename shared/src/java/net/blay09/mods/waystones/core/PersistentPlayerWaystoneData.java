@@ -1,7 +1,7 @@
 
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.balm.entity.BalmPlayers;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
@@ -106,7 +106,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     private static CompoundTag getWaystonesData(Player player) {
-        CompoundTag persistedData = BalmPlayers.getPersistentData(player);
+        CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
         CompoundTag compound = persistedData.getCompound(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;

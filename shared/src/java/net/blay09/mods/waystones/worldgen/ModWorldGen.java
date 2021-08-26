@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
-import net.blay09.mods.balm.core.DeferredObject;
-import net.blay09.mods.balm.worldgen.BalmWorldGen;
+import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ModWorldGen extends BalmWorldGen {
+public class ModWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
     private static final ResourceLocation emptyStructure = new ResourceLocation("empty");
@@ -40,23 +39,23 @@ public class ModWorldGen extends BalmWorldGen {
     private static DeferredObject<ConfiguredFeature<?, ?>> configuredSandyWaystoneFeature;
     private static DeferredObject<WaystoneDecorator> waystoneDecorator;
 
-    public static void initialize() {
-        waystoneFeature = registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()), id("waystone"));
-        mossyWaystoneFeature = registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()), id("mossy_waystone"));
-        sandyWaystoneFeature = registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()), id("sandy_waystone"));
+    public static void initialize(BalmWorldGen worldGen) {
+        waystoneFeature = worldGen.registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()), id("waystone"));
+        mossyWaystoneFeature = worldGen.registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()), id("mossy_waystone"));
+        sandyWaystoneFeature = worldGen.registerFeature(() -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()), id("sandy_waystone"));
 
-        waystoneDecorator = registerDecorator(() -> new WaystoneDecorator(HeightmapConfiguration.CODEC), id("waystone"));
+        waystoneDecorator = worldGen.registerDecorator(() -> new WaystoneDecorator(HeightmapConfiguration.CODEC), id("waystone"));
 
         Supplier<ConfiguredDecorator<HeightmapConfiguration>> configuredDecorator = () -> waystoneDecorator.get().configured(new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR_WG));
-        configuredWaystoneFeature = registerConfiguredFeature(() -> configuredFeature(waystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("waystone"));
-        configuredMossyWaystoneFeature = registerConfiguredFeature(() -> configuredFeature(mossyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("mossy_waystone"));
-        configuredSandyWaystoneFeature = registerConfiguredFeature(() -> configuredFeature(sandyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("sandy_waystone"));
+        configuredWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(waystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("waystone"));
+        configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(mossyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("mossy_waystone"));
+        configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(sandyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("sandy_waystone"));
 
-        addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.DESERT, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-        addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.JUNGLE, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.SWAMP, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.MUSHROOM, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        addFeatureToBiomes(it -> it.getBiomeCategory() != Biome.BiomeCategory.SWAMP
+        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.DESERT, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
+        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.JUNGLE, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.SWAMP, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.MUSHROOM, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() != Biome.BiomeCategory.SWAMP
                 && it.getBiomeCategory() != Biome.BiomeCategory.DESERT
                 && it.getBiomeCategory() != Biome.BiomeCategory.JUNGLE
                 && it.getBiomeCategory() != Biome.BiomeCategory.MUSHROOM, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));

@@ -1,16 +1,16 @@
 package net.blay09.mods.waystones.handler;
 
-import net.blay09.mods.balm.event.BalmEvents;
-import net.blay09.mods.balm.event.client.BalmClientEvents;
-import net.blay09.mods.waystones.ModEvents;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.LivingDamageEvent;
+import net.blay09.mods.balm.api.event.PlayerLoginEvent;
+import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 
 public class ModEventHandlers {
     public static void initialize() {
-        BalmClientEvents.onFovUpdate(WarpStoneFOVHandler::onFOV);
-
-        BalmEvents.onPlayerLogin(LoginHandler::onPlayerLogin);
-        BalmEvents.onLivingDamage(WarpDamageResetHandler::onDamage);
-        ModEvents.WAYSTONE_ACTIVATED.register(WaystoneActivationStatHandler::onWaystoneActivated);
+        Balm.getEvents().onEvent(FovUpdateEvent.class, WarpStoneFOVHandler::onFOV);
+        Balm.getEvents().onEvent(PlayerLoginEvent.class, LoginHandler::onPlayerLogin);
+        Balm.getEvents().onEvent(LivingDamageEvent.class, WarpDamageResetHandler::onDamage);
+        Balm.getEvents().onEvent(WaystoneActivatedEvent.class, WaystoneActivationStatHandler::onWaystoneActivated);
     }
 }

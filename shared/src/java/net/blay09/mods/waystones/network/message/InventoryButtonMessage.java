@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.menu.BalmMenuProvider;
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -64,7 +64,7 @@ public class InventoryButtonMessage {
                     buf.writeByte(WarpMode.INVENTORY_BUTTON.ordinal());
                 }
             };
-            BalmNetworking.openGui(player, containerProvider);
+            Balm.getNetworking().openGui(player, containerProvider);
         }
     }
 

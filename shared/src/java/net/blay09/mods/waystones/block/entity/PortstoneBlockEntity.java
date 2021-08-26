@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.block.entity.BalmBlockEntity;
+import net.blay09.mods.balm.api.block.entity.BalmBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;

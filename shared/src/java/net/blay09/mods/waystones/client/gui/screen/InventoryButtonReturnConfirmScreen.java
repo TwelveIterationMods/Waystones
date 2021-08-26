@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
@@ -24,7 +24,7 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     public InventoryButtonReturnConfirmScreen(String targetWaystone) {
         super(result -> {
             if (result) {
-                BalmNetworking.sendToServer(new InventoryButtonMessage());
+                Balm.getNetworking().sendToServer(new InventoryButtonMessage());
             }
             Minecraft.getInstance().setScreen(null);
         }, new TranslatableComponent("gui.waystones.inventory.confirm_return"), new TextComponent(""));

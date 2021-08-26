@@ -1,8 +1,10 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.client.screen.BalmScreens;
-import net.blay09.mods.balm.event.client.BalmClientEvents;
-import net.blay09.mods.balm.network.BalmNetworking;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
+import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
@@ -13,6 +15,7 @@ import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -34,7 +37,8 @@ public class InventoryButtonGuiHandler {
     private static WaystoneInventoryButton warpButton;
 
     public static void initialize() {
-        BalmClientEvents.onScreenInitialized(screen -> {
+        Balm.getEvents().onEvent(ScreenInitEvent.Post.class, event -> {
+            Screen screen = event.getScreen();
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CreativeModeInventoryScreen)) {
                 return;
             }
@@ -67,7 +71,7 @@ public class InventoryButtonGuiHandler {
                             mc.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
-                        BalmNetworking.sendToServer(new InventoryButtonMessage());
+                        Balm.getNetworking().sendToServer(new InventoryButtonMessage());
                     }
                 } else {
                     mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 0.5f));
@@ -79,12 +83,16 @@ public class InventoryButtonGuiHandler {
 
                 return true;
             }, xPosition, yPosition);
-            BalmScreens.addRenderableWidget(screen, warpButton);
+            BalmClient.getScreens().addRenderableWidget(screen, warpButton);
         });
 
-        BalmClientEvents.onScreenDrawn((gui, matrixStack, mouseX, mouseY) -> {
+        Balm.getEvents().onEvent(ScreenDrawEvent.Post.class, event -> {
+            Screen screen = event.getScreen();
+            PoseStack poseStack = event.getMatrixStack();
+            int mouseX = event.getMouseX();
+            int mouseY = event.getMouseY();
             // Render the inventory button tooltip when it's hovered
-            if ((gui instanceof InventoryScreen || gui instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHovered()) {
+            if ((screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) && warpButton != null && warpButton.isHovered()) {
                 InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
                 List<Component> tooltip = new ArrayList<>();
                 Player player = Minecraft.getInstance().player;
@@ -128,7 +136,7 @@ public class InventoryButtonGuiHandler {
                     tooltip.add(formatTranslation(ChatFormatting.GOLD, "tooltip.waystones.cooldown_left", secondsLeft));
                 }
 
-                gui.renderTooltip(matrixStack, tooltip, Optional.empty(), mouseX, mouseY);
+                screen.renderTooltip(poseStack, tooltip, Optional.empty(), mouseX, mouseY);
             }
         });
     }

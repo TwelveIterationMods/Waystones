@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.handler;
 
+import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -8,14 +9,13 @@ import net.minecraft.world.item.ItemStack;
 
 public class WarpStoneFOVHandler {
 
-    public static Float onFOV(LivingEntity entity) {
+    public static void onFOV(FovUpdateEvent event) {
+        LivingEntity entity = event.getEntity();
         ItemStack activeItemStack = entity.getUseItem();
         if (isScrollItem(activeItemStack)) {
             float fov = entity.getUseItemRemainingTicks() / 32f * 2f;
-            return Mth.lerp(Minecraft.getInstance().options.fovEffectScale, 1f, fov);
+            event.setFov(Mth.lerp(Minecraft.getInstance().options.fovEffectScale, 1f, fov));
         }
-
-        return null;
     }
 
     private static boolean isScrollItem(ItemStack activeItemStack) {

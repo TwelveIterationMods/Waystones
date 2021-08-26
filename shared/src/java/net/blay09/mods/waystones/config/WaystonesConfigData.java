@@ -3,9 +3,9 @@ package net.blay09.mods.waystones.config;
 import com.google.common.collect.Lists;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import net.blay09.mods.balm.config.Comment;
-import net.blay09.mods.balm.config.BalmConfig;
-import net.blay09.mods.balm.config.Synced;
+import net.blay09.mods.balm.api.config.BalmConfigData;
+import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.config.Synced;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config(name = Waystones.MOD_ID)
-public class WaystonesConfigData extends BalmConfig implements IWaystonesConfig {
+public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
     @ConfigEntry.Gui.CollapsibleObject
     public XpCost xpCost = new XpCost();
 

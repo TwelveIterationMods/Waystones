@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.menu.BalmMenuProvider;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.Waystone;

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -17,11 +18,11 @@ public class Waystones {
         WaystonesConfig.initialize();
         ModStats.initialize();
         ModEventHandlers.initialize();
-        ModNetworking.initialize();
-        ModBlocks.initialize();
-        ModBlockEntities.initialize();
-        ModItems.initialize();
-        ModMenus.initialize();
-        ModWorldGen.initialize();
+        ModNetworking.initialize(Balm.getNetworking());
+        ModBlocks.initialize(Balm.getBlocks());
+        ModBlockEntities.initialize(Balm.getBlockEntities());
+        ModItems.initialize(Balm.getItems());
+        ModMenus.initialize(Balm.getMenus());
+        ModWorldGen.initialize(Balm.getWorldGen());
     }
 }

@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.client.BalmClient;
-import net.blay09.mods.balm.item.BalmItem;
-import net.blay09.mods.balm.menu.BalmMenuProvider;
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.api.item.BalmItem;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -73,7 +73,7 @@ public class WarpStoneItem extends BalmItem implements IResetUseOnDamage {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer) {
-            BalmNetworking.openGui(((ServerPlayer) entity), containerProvider);
+            Balm.getNetworking().openGui(((ServerPlayer) entity), containerProvider);
         }
 
         return stack;

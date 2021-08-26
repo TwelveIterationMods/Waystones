@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -78,7 +78,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
         if (isActivated) {
             if (!world.isClientSide) {
                 if (WaystonesConfig.getActive().allowWaystoneToWaystoneTeleport()) {
-                    BalmNetworking.openGui(player, tileEntity.getMenuProvider());
+                    Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
                 } else {
                     player.displayClientMessage(new TranslatableComponent("chat.waystones.waystone_to_waystone_disabled"), true);
                 }

@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.menu.BalmMenuProvider;
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IFOVOnUse;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
@@ -66,7 +66,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
     @Override
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer) {
-            BalmNetworking.openGui(((ServerPlayer) entity), containerProvider);
+            Balm.getNetworking().openGui(((ServerPlayer) entity), containerProvider);
         }
         return itemStack;
     }

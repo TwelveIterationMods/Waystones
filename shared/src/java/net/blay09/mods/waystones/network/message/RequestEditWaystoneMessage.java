@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.balm.menu.BalmMenuProvider;
-import net.blay09.mods.balm.network.BalmNetworking;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -64,7 +64,7 @@ public class RequestEditWaystoneMessage {
                 Waystone.write(buf, waystone);
             }
         };
-        BalmNetworking.openGui(player, containerProvider);
+        Balm.getNetworking().openGui(player, containerProvider);
     }
 }
 
