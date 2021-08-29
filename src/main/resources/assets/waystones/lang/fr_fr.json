@@ -33,5 +33,5 @@
   "tooltip.waystones.cooldown_left": "Recharge: %d secondes",
   "tooltip.waystones.bound_to": "Lié à: %s",
   "tooltip.waystones.bound_to_none": "Aucune",
-  "stat.waystones.waystones_activated": "Waystones activées"
+  "stat.waystones.waystone_activated": "Waystones activées"
 }

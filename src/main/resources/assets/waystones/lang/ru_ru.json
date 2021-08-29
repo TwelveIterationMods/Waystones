@@ -33,5 +33,5 @@
   "tooltip.waystones.cooldown_left": "Перезарядка: %d секунд",
   "tooltip.waystones.bound_to": "Привязан: %s",
   "tooltip.waystones.bound_to_none": "Нет",
-  "stat.waystones.waystones_activated": "Обелиск активирован"
+  "stat.waystones.waystone_activated": "Обелиск активирован"
 }

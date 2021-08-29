@@ -33,5 +33,5 @@
   "tooltip.waystones.cooldown_left": "冷却时间: %d秒",
   "tooltip.waystones.bound_to": "绑定至: %s",
   "tooltip.waystones.bound_to_none": "无",
-  "stat.waystones.waystones_activated": "传送石碑已激活"
+  "stat.waystones.waystone_activated": "传送石碑已激活"
 }
