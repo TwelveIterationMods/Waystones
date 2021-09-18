@@ -1,7 +1,9 @@
 package net.blay09.mods.waystones.worldgen;
 
+import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -51,14 +53,27 @@ public class ModWorldGen {
         configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(mossyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("mossy_waystone"));
         configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(sandyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("sandy_waystone"));
 
-        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.DESERT, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.JUNGLE, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.SWAMP, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() == Biome.BiomeCategory.MUSHROOM, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(it -> it.getBiomeCategory() != Biome.BiomeCategory.SWAMP
-                && it.getBiomeCategory() != Biome.BiomeCategory.DESERT
-                && it.getBiomeCategory() != Biome.BiomeCategory.JUNGLE
-                && it.getBiomeCategory() != Biome.BiomeCategory.MUSHROOM, GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
+        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesNeitherCategory(Biome.BiomeCategory.SWAMP, Biome.BiomeCategory.DESERT, Biome.BiomeCategory.JUNGLE, Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+    }
+
+    private static BiomePredicate matchesCategory(Biome.BiomeCategory category) {
+        return (resourceLocation, biomeCategory, precipitation, v, v1) -> category == biomeCategory;
+    }
+
+    private static BiomePredicate matchesNeitherCategory(Biome.BiomeCategory... categories) {
+        return (resourceLocation, biomeCategory, precipitation, v, v1) -> {
+            for (Biome.BiomeCategory category : categories) {
+                if(category == biomeCategory) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
     }
 
     private static ResourceLocation id(String name) {
@@ -86,7 +101,7 @@ public class ModWorldGen {
         }
     }
 
-    public static void setupVillageWorldGen(RegistryAccess registryAccess) {
+    public static void setupVillageWorldGen(RegistryAccess registryAccess) { // TODO never called
         if (WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()) {
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(registryAccess, "village/plains/houses", villageWaystoneStructure, 1);
@@ -116,6 +131,10 @@ public class ModWorldGen {
                 listOfPieces.add(piece);
             }
             ((StructureTemplatePoolAccessor) pool).setTemplates(listOfPieces);
+
+            List<Pair<StructurePoolElement, Integer>> listOfWeightedPieces = new ArrayList<>(((StructureTemplatePoolAccessor) pool).getRawTemplates());
+            listOfWeightedPieces.add(new Pair<>(piece, weight));
+            ((StructureTemplatePoolAccessor) pool).setRawTemplates(listOfWeightedPieces);
         }
     }
 }

@@ -1,0 +1,182 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = "https://repo.spongepowered.org/maven" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "org.spongepowered.mixin"
+apply plugin: 'maven-publish'
+
+def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
+version = project.mod_version + "+" + buildNumber
+group = project.maven_group
+archivesBaseName = project.mod_id
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+minecraft {
+    mappings channel: 'official', version: '1.17.1'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+			arg "-mixin.config=waystones.mixins.json"
+
+            property "mixin.env.disableRefMap", "true"
+            property "mixin.debug.export", "true"
+            property "mixin.debug.export.decompile", "false"
+            property "mixin.debug.verbose", "true"
+            property "mixin.debug.dumpTargetOnFailure", "true"
+            property "mixin.checks", "true"
+            property "mixin.hotSwap", "true"
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                waystones {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+			arg "-mixin.config=waystones.mixins.json"
+
+            property "mixin.env.disableRefMap", "true"
+            property "mixin.debug.export", "true"
+            property "mixin.debug.export.decompile", "false"
+            property "mixin.debug.verbose", "true"
+            property "mixin.debug.dumpTargetOnFailure", "true"
+            property "mixin.checks", "true"
+            property "mixin.hotSwap", "true"
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                waystones {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.console.level', 'debug'
+
+			arg "-mixin.config=waystones.mixins.json"
+
+            property "mixin.env.disableRefMap", "true"
+            property "mixin.debug.export", "true"
+            property "mixin.debug.export.decompile", "false"
+            property "mixin.debug.verbose", "true"
+            property "mixin.debug.dumpTargetOnFailure", "true"
+            property "mixin.checks", "true"
+            property "mixin.hotSwap", "true"
+
+            args '--mod', 'waystones-forge', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                waystones {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+// Workaround to fix dependencies:
+configurations {
+    library
+    implementation.extendsFrom library
+}
+
+minecraft.runs.all {
+    lazyToken('minecraft_classpath') {
+        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+    }
+}
+
+sourceSets {
+	main {
+        java {
+            srcDirs '../shared/src/java/'
+        }
+        resources {
+            srcDirs '../shared/src/resources/'
+            srcDirs 'src/generated/resources'
+        }
+		ext.refMap = "refmap.waystones.json"
+	}
+}
+
+repositories {
+    maven { url "https://www.cursemaven.com" }
+
+    // For Cloth Config
+    maven { url "https://maven.shedaniel.me/" }
+
+    maven {
+        url "https://maven.pkg.github.com/ModdingForBlockheads/Waystones"
+        credentials {
+            username project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
+            password project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
+    implementation fg.deobf("net.blay09.mods:balm:1.5.0+13")
+
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
+
+    implementation "org.jetbrains:annotations:22.0.0"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : project.mod_id,
+                "Specification-Vendor"    : "BlayTheNinth",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "BlayTheNinth",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+				"MixinConfigs": "waystones.mixins.json"
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+			artifactId = project.archivesBaseName
+			
+            artifact jar
+        }
+    }
+    repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/" + project.github_publish)
+			credentials {
+				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
+				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
+			}
+		}
+	}
+}

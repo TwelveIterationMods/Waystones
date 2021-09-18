@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[37,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/ModdingForBlockheads/Waystones/issues"
+[[mods]]
+modId="waystones"
+version="${file.jarVersion}"
+displayName="Waystones"
+displayURL="https://blay09.net/mods/waystones"
+logoFile="waystones-icon.png"
+credits="BlayTheNinth"
+authors="BlayTheNinth"
+description='''
+Teleport back to activated waystones. For Survival, Adventure or Servers.
+'''
+[[dependencies.waystones]]
+    modId="forge"
+    mandatory=true
+    versionRange="[37,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.waystones]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.17.1,1.18)"
+    ordering="NONE"
+    side="BOTH"

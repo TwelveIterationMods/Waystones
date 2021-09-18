@@ -15,7 +15,7 @@
   },
 
   "license": "All Rights Reserved",
-  "icon": "assets/waystones/icon.png",
+  "icon": "waystones-icon.png",
 
   "environment": "*",
   "entrypoints": {

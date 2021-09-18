@@ -88,7 +88,7 @@ public class InventoryButtonGuiHandler {
 
         Balm.getEvents().onEvent(ScreenDrawEvent.Post.class, event -> {
             Screen screen = event.getScreen();
-            PoseStack poseStack = event.getMatrixStack();
+            PoseStack poseStack = event.getPoseStack();
             int mouseX = event.getMouseX();
             int mouseY = event.getMouseY();
             // Render the inventory button tooltip when it's hovered
