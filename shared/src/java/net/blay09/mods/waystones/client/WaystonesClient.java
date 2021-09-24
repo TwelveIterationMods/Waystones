@@ -9,6 +9,9 @@ import java.util.Locale;
 
 public class WaystonesClient {
     public static void initialize() {
+        BalmClient.initialize(Waystones.MOD_ID);
+
+        ModClientEventHandlers.initialize();
         ModRenderers.initialize(BalmClient.getRenderers());
         ModScreens.initialize(BalmClient.getScreens());
         ModTextures.initialize(BalmClient.getTextures());
@@ -16,7 +19,5 @@ public class WaystonesClient {
         InventoryButtonGuiHandler.initialize();
 
         Compat.isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains(Compat.VIVECRAFT);
-
-        BalmClient.initialize(Waystones.MOD_ID);
     }
 }

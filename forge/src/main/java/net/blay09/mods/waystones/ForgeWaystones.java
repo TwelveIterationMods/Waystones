@@ -1,16 +1,17 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.client.ForgeWaystonesClient;
+import net.blay09.mods.waystones.client.WaystonesClient;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Waystones.MOD_ID)
 public class ForgeWaystones {
     public ForgeWaystones() {
         Waystones.initialize();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeWaystonesClient::setupClient);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> WaystonesClient::initialize);
 
         Balm.initialize(Waystones.MOD_ID);
     }

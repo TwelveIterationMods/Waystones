@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 
 public class ModEventHandlers {
     public static void initialize() {
-        Balm.getEvents().onEvent(FovUpdateEvent.class, WarpStoneFOVHandler::onFOV);
         Balm.getEvents().onEvent(PlayerLoginEvent.class, LoginHandler::onPlayerLogin);
         Balm.getEvents().onEvent(LivingDamageEvent.class, WarpDamageResetHandler::onDamage);
         Balm.getEvents().onEvent(WaystoneActivatedEvent.class, WaystoneActivationStatHandler::onWaystoneActivated);

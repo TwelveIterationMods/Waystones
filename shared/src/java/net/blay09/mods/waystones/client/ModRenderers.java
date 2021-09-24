@@ -24,14 +24,14 @@ public class ModRenderers {
         sharestoneModel = renderers.registerModel(new ResourceLocation(Waystones.MOD_ID, "sharestone"), () -> SharestoneModel.createLayer(CubeDeformation.NONE));
         waystoneModel = renderers.registerModel(new ResourceLocation(Waystones.MOD_ID, "waystone"), () -> WaystoneModel.createLayer(CubeDeformation.NONE));
 
-        renderers.registerBlockEntityRenderer(ModBlockEntities.waystone.get(), WaystoneRenderer::new);
-        renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone.get(), SharestoneRenderer::new);
-        renderers.registerBlockEntityRenderer(ModBlockEntities.portstone.get(), PortstoneRenderer::new);
+        renderers.registerBlockEntityRenderer(ModBlockEntities.waystone::get, WaystoneRenderer::new);
+        renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
+        renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
 
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor(), ModBlocks.scopedSharestones);
-        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor(), ModBlocks.scopedSharestones);
+        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor(), () -> ModBlocks.scopedSharestones);
+        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor(), () -> ModBlocks.scopedSharestones);
 
-        renderers.setBlockRenderType(ModBlocks.sharestone, RenderType.cutout());
+        renderers.setBlockRenderType(() -> ModBlocks.sharestone, RenderType.cutout());
     }
 
 }

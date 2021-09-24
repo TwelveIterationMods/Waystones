@@ -137,7 +137,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
-    implementation fg.deobf("net.blay09.mods:balm:1.5.0+13")
+    implementation fg.deobf("net.blay09.mods:balm:1.5.0+21")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
