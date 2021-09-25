@@ -70,7 +70,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
             return InteractionResult.SUCCESS;
         }
 
-        return null;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
