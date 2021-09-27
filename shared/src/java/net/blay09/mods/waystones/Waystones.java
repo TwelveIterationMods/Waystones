@@ -24,5 +24,7 @@ public class Waystones {
         ModItems.initialize(Balm.getItems());
         ModMenus.initialize(Balm.getMenus());
         ModWorldGen.initialize(Balm.getWorldGen());
+
+        Balm.initialize(Waystones.MOD_ID);
     }
 }
