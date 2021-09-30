@@ -35,6 +35,7 @@
   "mixins": [
     "waystones.mixins.json"
   ],
+  "accessWidener": "waystones.accesswidener",
   "depends": {
     "cloth-config2": ">=5.0.34",
     "balm-fabric": ">=1.0.0",

@@ -21,7 +21,7 @@ public class JigsawPlacementMixin {
 
     @Final
     @Shadow
-    protected List<? super PoolElementStructurePiece> pieces;
+    private List<? super PoolElementStructurePiece> pieces;
 
     @Redirect(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IIZLnet/minecraft/world/level/LevelHeightAccessor;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool;getShuffledTemplates(Ljava/util/Random;)Ljava/util/List;"))

@@ -23,6 +23,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 minecraft {
     mappings channel: 'official', version: '1.17.1'
 
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -115,7 +117,7 @@ sourceSets {
             srcDirs '../shared/src/resources/'
             srcDirs 'src/generated/resources'
         }
-		ext.refMap = "refmap.waystones.json"
+		ext.refMap = "waystones.refmap.json"
 	}
 }
 
@@ -136,6 +138,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
     implementation fg.deobf("net.blay09.mods:balm:1.5.0+24")
 

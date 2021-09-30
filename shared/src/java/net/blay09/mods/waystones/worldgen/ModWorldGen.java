@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
-import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -126,15 +125,15 @@ public class ModWorldGen {
         StructureTemplatePool pool = registryAccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
             // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.
-            List<StructurePoolElement> listOfPieces = new ArrayList<>(((StructureTemplatePoolAccessor) pool).getTemplates());
+            List<StructurePoolElement> listOfPieces = new ArrayList<>(pool.templates);
             for (int i = 0; i < weight; i++) {
                 listOfPieces.add(piece);
             }
-            ((StructureTemplatePoolAccessor) pool).setTemplates(listOfPieces);
+            pool.templates = listOfPieces;
 
-            List<Pair<StructurePoolElement, Integer>> listOfWeightedPieces = new ArrayList<>(((StructureTemplatePoolAccessor) pool).getRawTemplates());
+            List<Pair<StructurePoolElement, Integer>> listOfWeightedPieces = new ArrayList<>(pool.rawTemplates);
             listOfWeightedPieces.add(new Pair<>(piece, weight));
-            ((StructureTemplatePoolAccessor) pool).setRawTemplates(listOfWeightedPieces);
+            pool.rawTemplates = listOfWeightedPieces;
         }
     }
 }

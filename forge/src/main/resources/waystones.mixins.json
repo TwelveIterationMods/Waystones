@@ -3,9 +3,9 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.waystones.mixin",
   "compatibilityLevel": "JAVA_16",
+  "refmap": "waystones.refmap.json",
   "mixins": [
-    "JigsawPlacementMixin",
-    "StructureTemplatePoolAccessor"
+    "JigsawPlacementMixin"
   ],
   "client": [
   ],

@@ -88,10 +88,17 @@ java {
 	withSourcesJar()
 }
 
+loom {
+	accessWidener = file("src/main/resources/waystones.accesswidener")
+}
+
 sourceSets {
 	shared {
 		java {
 			srcDirs '../shared/src/java/'
+		}
+		resources {
+			srcDirs '../shared/src/resources/'
 		}
 		compileClasspath += sourceSets.main.compileClasspath
 	}
