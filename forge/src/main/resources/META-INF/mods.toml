@@ -25,3 +25,9 @@ Teleport back to activated waystones. For Survival, Adventure or Servers.
     versionRange="[1.17.1,1.18)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.waystones]]
+    modId="balm"
+    mandatory=true
+    versionRange="[1.5,)"
+    ordering="NONE"
+    side="BOTH"
