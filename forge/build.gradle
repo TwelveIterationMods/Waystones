@@ -140,7 +140,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
-    implementation fg.deobf("net.blay09.mods:balm:1.5.0+24")
+    implementation fg.deobf("net.blay09.mods:balm:1.5.1+43")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
