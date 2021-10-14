@@ -40,5 +40,5 @@
   "tooltip.waystones.cooldown_left": "쿨다운: %d초",
   "tooltip.waystones.bound_to": "바운드: %s",
   "tooltip.waystones.bound_to_none": "없음",
-  "stat.waystones.waystones_activated": "웨이스톤 활성화됨"
+  "stat.waystones.waystone_activated": "웨이스톤 활성화됨"
 }

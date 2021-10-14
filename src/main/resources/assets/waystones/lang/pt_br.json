@@ -37,5 +37,5 @@
   "tooltip.waystones.cooldown_left": "Tempo de Recarga: %d segundos",
   "tooltip.waystones.bound_to": "Vinculado a: %s",
   "tooltip.waystones.bound_to_none": "Nenhum",
-  "stat.waystones.waystones_activated": "Obelisco Ativado"
+  "stat.waystones.waystone_activated": "Obelisco Ativado"
 }

@@ -33,5 +33,5 @@
   "tooltip.waystones.cooldown_left": "Visszaszámlálás: %d másodperc",
   "tooltip.waystones.bound_to": "Hozzákötve: %s",
   "tooltip.waystones.bound_to_none": "Semelyikhez",
-  "stat.waystones.waystones_activated": "Aktivált irányoszlopok"
+  "stat.waystones.waystone_activated": "Aktivált irányoszlopok"
 }
