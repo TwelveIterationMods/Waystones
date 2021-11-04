@@ -40,7 +40,6 @@ public abstract class WaystoneTileEntityBase extends TileEntity {
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
 
-        IWaystone waystone = getWaystone();
         if (waystone.isValid()) {
             tagCompound.put("UUID", NBTUtil.func_240626_a_(waystone.getWaystoneUid()));
         }
