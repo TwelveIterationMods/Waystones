@@ -38,9 +38,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity {
     public CompoundTag save(CompoundTag compound) {
         super.save(compound);
 
-        IWaystone waystone = getWaystone();
         if (waystone.isValid()) {
             compound.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
+        } else if (waystoneUid != null) {
+            compound.put("UUID", NbtUtils.createUUID(waystoneUid));
         }
 
         return compound;

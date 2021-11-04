@@ -1,7 +1,10 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.util.Pair;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
+import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
@@ -57,6 +60,9 @@ public class ModWorldGen {
         worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesNeitherCategory(Biome.BiomeCategory.SWAMP, Biome.BiomeCategory.DESERT, Biome.BiomeCategory.JUNGLE, Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+
+        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
+        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
     }
 
     private static BiomePredicate matchesCategory(Biome.BiomeCategory category) {
@@ -66,7 +72,7 @@ public class ModWorldGen {
     private static BiomePredicate matchesNeitherCategory(Biome.BiomeCategory... categories) {
         return (resourceLocation, biomeCategory, precipitation, v, v1) -> {
             for (Biome.BiomeCategory category : categories) {
-                if(category == biomeCategory) {
+                if (category == biomeCategory) {
                     return false;
                 }
             }
@@ -81,26 +87,19 @@ public class ModWorldGen {
 
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
         WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGenStyle();
-        switch (worldGenStyle) {
-            case MOSSY:
-                return configuredMossyWaystoneFeature.getIdentifier();
-            case SANDY:
-                return configuredSandyWaystoneFeature.getIdentifier();
-            case BIOME:
-                switch (biomeWorldGenStyle) {
-                    case SANDY:
-                        return configuredSandyWaystoneFeature.getIdentifier();
-                    case MOSSY:
-                        return configuredMossyWaystoneFeature.getIdentifier();
-                    default:
-                        return configuredWaystoneFeature.getIdentifier();
-                }
-            default:
-                return configuredWaystoneFeature.getIdentifier();
-        }
+        return switch (worldGenStyle) {
+            case MOSSY -> configuredMossyWaystoneFeature.getIdentifier();
+            case SANDY -> configuredSandyWaystoneFeature.getIdentifier();
+            case BIOME -> switch (biomeWorldGenStyle) {
+                case SANDY -> configuredSandyWaystoneFeature.getIdentifier();
+                case MOSSY -> configuredMossyWaystoneFeature.getIdentifier();
+                default -> configuredWaystoneFeature.getIdentifier();
+            };
+            default -> configuredWaystoneFeature.getIdentifier();
+        };
     }
 
-    public static void setupVillageWorldGen(RegistryAccess registryAccess) { // TODO never called
+    public static void setupVillageWorldGen(RegistryAccess registryAccess) {
         if (WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()) {
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(registryAccess, "village/plains/houses", villageWaystoneStructure, 1);

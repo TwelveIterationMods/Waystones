@@ -127,6 +127,12 @@ repositories {
     // For Cloth Config
     maven { url "https://maven.shedaniel.me/" }
 
+    // For JEI
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+
     maven {
         url "https://maven.pkg.github.com/ModdingForBlockheads/Waystones"
         credentials {
@@ -140,7 +146,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
-    implementation fg.deobf("net.blay09.mods:balm:1.6.0+74")
+    implementation fg.deobf("net.blay09.mods:balm:1.7.0+123")
+
+    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
