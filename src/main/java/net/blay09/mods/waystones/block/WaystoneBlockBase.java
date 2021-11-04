@@ -104,7 +104,7 @@ public abstract class WaystoneBlockBase extends Block {
         TileEntity offsetTileEntity = isDoubleBlock ? world.getTileEntity(offset) : null;
 
         boolean hasSilkTouch = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
-        if (hasSilkTouch) {
+        if (hasSilkTouch && canSilkTouch()) {
             if (tileEntity instanceof WaystoneTileEntityBase) {
                 ((WaystoneTileEntityBase) tileEntity).setSilkTouched(true);
             }
@@ -262,7 +262,7 @@ public abstract class WaystoneBlockBase extends Block {
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.isIn(newState.getBlock())) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof WaystoneTileEntityBase && !((WaystoneTileEntityBase) tileEntity).isSilkTouched()) {
+            if (tileEntity instanceof WaystoneTileEntityBase && (!canSilkTouch() || !((WaystoneTileEntityBase) tileEntity).isSilkTouched())) {
                 IWaystone waystone = ((WaystoneTileEntityBase) tileEntity).getWaystone();
                 WaystoneManager.get().removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(waystone);

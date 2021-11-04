@@ -130,10 +130,10 @@ dependencies {
     compile fg.deobf("curse.maven:hwyla-253449:3033593")
     compile fg.deobf("curse.maven:the-one-probe-245211:3108607")
 
-    compile fg.deobf("curse.maven:journeymap-32274:3355768")
+    compileOnly fg.deobf("curse.maven:journeymap-32274:3355768")
 
-    compile fg.deobf("curse.maven:abnormals-core-382216:3233486")
-    compile fg.deobf("curse.maven:endergetic-291509:3154938")
+//    compile fg.deobf("curse.maven:abnormals-core-382216:3233486")
+//    compile fg.deobf("curse.maven:endergetic-291509:3154938")
 
     // annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 
