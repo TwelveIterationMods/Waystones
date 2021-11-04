@@ -146,7 +146,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
-    implementation fg.deobf("net.blay09.mods:balm:1.7.0+123")
+    implementation fg.deobf("net.blay09.mods:balm:1.7.0+124")
 
     compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19")
