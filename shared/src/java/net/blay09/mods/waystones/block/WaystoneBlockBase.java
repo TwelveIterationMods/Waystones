@@ -83,6 +83,10 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
         return state.hasProperty(HALF);
     }
 
+    protected boolean canSilkTouch() {
+        return false;
+    }
+
     @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -93,7 +97,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
         BlockEntity offsetTileEntity = isDoubleBlock ? world.getBlockEntity(offset) : null;
 
         boolean hasSilkTouch = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
-        if (hasSilkTouch) {
+        if (hasSilkTouch && canSilkTouch()) {
             if (blockEntity instanceof WaystoneBlockEntityBase) {
                 ((WaystoneBlockEntityBase) blockEntity).setSilkTouched(true);
             }
@@ -247,7 +251,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof WaystoneBlockEntityBase && !((WaystoneBlockEntityBase) blockEntity).isSilkTouched()) {
+            if (blockEntity instanceof WaystoneBlockEntityBase && (!canSilkTouch() || !((WaystoneBlockEntityBase) blockEntity).isSilkTouched())) {
                 IWaystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
                 WaystoneManager.get(world.getServer()).removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);

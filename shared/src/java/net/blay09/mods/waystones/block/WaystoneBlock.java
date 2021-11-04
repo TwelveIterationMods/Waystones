@@ -58,6 +58,11 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
+    protected boolean canSilkTouch() {
+        return true;
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter blockGetter, BlockPos pos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? UPPER_SHAPE : LOWER_SHAPE;
     }

@@ -56,6 +56,11 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
+    protected boolean canSilkTouch() {
+        return true;
+    }
+
+    @Override
     public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof WarpPlateBlockEntity && !player.getAbilities().instabuild) {
