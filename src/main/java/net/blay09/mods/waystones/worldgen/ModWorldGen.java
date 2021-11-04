@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.worldgen;
 
+import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -129,6 +130,10 @@ public class ModWorldGen {
                 listOfPieces.add(piece);
             }
             pool.jigsawPieces = listOfPieces;
+
+            List<Pair<JigsawPiece, Integer>> listOfWeightedPieces = new ArrayList<>(pool.rawTemplates);
+            listOfWeightedPieces.add(new Pair(piece, weight));
+            pool.rawTemplates = listOfWeightedPieces;
         }
     }
 }
