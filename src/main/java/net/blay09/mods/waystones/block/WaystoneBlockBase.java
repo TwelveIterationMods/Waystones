@@ -90,6 +90,10 @@ public abstract class WaystoneBlockBase extends Block {
         return state.hasProperty(HALF);
     }
 
+    protected boolean canSilkTouch() {
+        return false;
+    }
+
     @Override
     public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         TileEntity tileEntity = world.getTileEntity(pos);

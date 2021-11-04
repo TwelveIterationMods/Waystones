@@ -80,6 +80,11 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
+    protected boolean canSilkTouch() {
+        return true;
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }

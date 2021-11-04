@@ -64,6 +64,11 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
+    protected boolean canSilkTouch() {
+        return true;
+    }
+
+    @Override
     protected void handleActivation(World world, BlockPos pos, PlayerEntity player, WaystoneTileEntityBase tileEntity, IWaystone waystone) {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
