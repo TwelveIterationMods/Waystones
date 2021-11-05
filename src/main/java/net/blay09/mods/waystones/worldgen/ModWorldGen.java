@@ -118,6 +118,7 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/oak/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/swamp/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/mushroom/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(dynamicRegistries, "repurposed_structures:village/giant_taiga/houses", villageWaystoneStructure, 1);
         }
     }
 
