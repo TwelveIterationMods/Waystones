@@ -112,8 +112,10 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/badlands/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/birch/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/dark_forest/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/giant_taiga/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/jungle/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/mountains/houses", villageWaystoneStructure, 1);
+            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/mushroom/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/oak/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/swamp/houses", villageWaystoneStructure, 1);
         }
