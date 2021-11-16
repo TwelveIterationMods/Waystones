@@ -48,7 +48,7 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
-	modImplementation "net.blay09.mods:balm-fabric:1.5.0+45"
+	modImplementation "net.blay09.mods:balm-fabric:1.8.0+168"
 
 	modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
 		exclude(group: "net.fabricmc.fabric-api")
