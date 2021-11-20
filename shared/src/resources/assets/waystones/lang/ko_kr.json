@@ -88,7 +88,7 @@
   "tooltip.waystones.not_enough_xp": "경험치가 부족합니다! (%d레벨이 필요합니다)",
   "tooltip.waystones.undiscovered": "미발견",
   "stat.waystones.waystones_activated": "전송석 활성화됨",
-  "waystones:warp_plate": "전송판"
+  "waystones:warp_plate": "전송판",
   "text.autoconfig.waystones.title": "전송석",
   "text.autoconfig.waystones.option.xpCost": "XP 비용 설정",
   "text.autoconfig.waystones.option.xpCost.inverseXpCost": "역 XP 비용",
