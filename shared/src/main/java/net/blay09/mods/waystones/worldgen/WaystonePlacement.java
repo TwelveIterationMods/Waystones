@@ -23,6 +23,10 @@ public class WaystonePlacement extends PlacementModifier {
 
     private final Heightmap.Types heightmap;
 
+    public WaystonePlacement() {
+        this(Heightmap.Types.WORLD_SURFACE_WG);
+    }
+
     public WaystonePlacement(Heightmap.Types heightmap) {
         this.heightmap = heightmap;
     }

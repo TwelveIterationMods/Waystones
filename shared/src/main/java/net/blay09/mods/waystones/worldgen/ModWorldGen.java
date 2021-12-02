@@ -18,10 +18,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.structures.LegacySinglePoolElement;
 import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
 import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.ArrayList;
@@ -38,6 +40,9 @@ public class ModWorldGen {
     private static DeferredObject<ConfiguredFeature<?, ?>> configuredWaystoneFeature;
     private static DeferredObject<ConfiguredFeature<?, ?>> configuredMossyWaystoneFeature;
     private static DeferredObject<ConfiguredFeature<?, ?>> configuredSandyWaystoneFeature;
+    private static DeferredObject<PlacedFeature> placedWaystoneFeature;
+    private static DeferredObject<PlacedFeature> placedMossyWaystoneFeature;
+    private static DeferredObject<PlacedFeature> placedSandyWaystoneFeature;
     public static DeferredObject<PlacementModifierType<WaystonePlacement>> waystonePlacement;
 
     public static void initialize(BalmWorldGen worldGen) {
@@ -47,10 +52,13 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(() -> () -> WaystonePlacement.CODEC, id("waystone"));
 
-//        Supplier<ConfiguredDecorator<HeightmapConfiguration>> configuredDecorator = () -> waystonePlacement.get().configured(new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR_WG)); TODO 1.18
-//        configuredWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(waystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("waystone"));
-//        configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(mossyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("mossy_waystone"));
-//        configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(sandyWaystoneFeature.get(), FeatureConfiguration.NONE, configuredDecorator.get()), id("sandy_waystone"));
+        configuredWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(waystoneFeature.get(), FeatureConfiguration.NONE), id("waystone"));
+        configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(mossyWaystoneFeature.get(), FeatureConfiguration.NONE), id("mossy_waystone"));
+        configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(() -> worldGen.configuredFeature(sandyWaystoneFeature.get(), FeatureConfiguration.NONE), id("sandy_waystone"));
+
+        placedWaystoneFeature = worldGen.registerPlacedFeature(() -> worldGen.placedFeature(configuredWaystoneFeature.get(), new WaystonePlacement()), id("waystone"));
+        placedMossyWaystoneFeature = worldGen.registerPlacedFeature(() -> worldGen.placedFeature(configuredMossyWaystoneFeature.get(), new WaystonePlacement()), id("mossy_waystone"));
+        placedSandyWaystoneFeature = worldGen.registerPlacedFeature(() -> worldGen.placedFeature(configuredSandyWaystoneFeature.get(), new WaystonePlacement()), id("sandy_waystone"));
 
         worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
         worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
