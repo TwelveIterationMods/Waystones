@@ -7,29 +7,30 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+		classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "org.spongepowered.mixin"
 apply plugin: 'maven-publish'
+apply plugin: "com.matthewprenger.cursegradle"
 
-def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
-version = project.mod_version + "+" + buildNumber
-group = project.maven_group
-archivesBaseName = project.mod_id
+def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
+version = mod_version + buildNumber
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+archivesBaseName = "${mod_id}-${minecraft_version}"
+group = mod_group
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: 'official', version: minecraft_version
 
     runs {
         client {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Client"
 
-			arg "-mixin.config=waystones.mixins.json"
+			arg "-mixin.config=${mod_id}.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -42,16 +43,19 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                waystones {
+                "${mod_id}" {
                     source sourceSets.main
+					source project(":shared").sourceSets.main
                 }
             }
         }
 
         server {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Server"
 
-			arg "-mixin.config=waystones.mixins.json"
+			arg "-mixin.config=${mod_id}.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -64,18 +68,21 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                waystones {
+                "${mod_id}" {
                     source sourceSets.main
+					source project(":shared").sourceSets.main
                 }
             }
         }
 
         data {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Data"
 
             property 'forge.logging.console.level', 'debug'
 
-			arg "-mixin.config=waystones.mixins.json"
+			arg "-mixin.config=${mod_id}.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -85,90 +92,45 @@ minecraft {
             property "mixin.checks", "true"
             property "mixin.hotSwap", "true"
 
-            args '--mod', 'waystones-forge', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                waystones {
+                "${mod_id}" {
                     source sourceSets.main
+					source project(":shared").sourceSets.main
                 }
             }
         }
     }
 }
 
-// Workaround to fix dependencies:
-configurations {
-    library
-    implementation.extendsFrom library
-}
-
-minecraft.runs.all {
-    lazyToken('minecraft_classpath') {
-        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
-    }
-}
-
 sourceSets {
 	main {
-        java {
-            srcDirs '../shared/src/java/'
-        }
         resources {
-            srcDirs '../shared/src/resources/'
             srcDirs 'src/generated/resources'
         }
-		ext.refMap = "waystones.refmap.json"
+		ext.refMap = "refmap.${mod_id}.json"
 	}
 }
 
-repositories {
-    maven { url "https://www.cursemaven.com" }
-
-    // For Cloth Config
-    maven { url "https://maven.shedaniel.me/" }
-
-    // For JEI
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-
-    maven {
-        url "https://maven.pkg.github.com/ModdingForBlockheads/Waystones"
-        credentials {
-            username project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
-            password project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-        }
-    }
-}
-
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	compileOnly project(":shared")
 
-    implementation fg.deobf("net.blay09.mods:balm:1.8.1+152")
-
-    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.17.1:8.1.0.19")
+    implementation fg.deobf("net.blay09.mods:balm:${balm_forge_version}")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
+    testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
     implementation "org.jetbrains:annotations:22.0.0"
 }
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : project.mod_id,
-                "Specification-Vendor"    : "BlayTheNinth",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "BlayTheNinth",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-				"MixinConfigs": "waystones.mixins.json"
-        ])
-    }
+tasks.withType(JavaCompile) {
+    source(project(":shared").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":shared").sourceSets.main.resources
 }
 
 jar.finalizedBy('reobfJar')
@@ -184,11 +146,27 @@ publishing {
     repositories {
 		maven {
 			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/" + project.github_publish)
+			url = uri("https://maven.pkg.github.com/" + github_repo)
 			credentials {
 				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
 				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
 			}
+		}
+	}
+}
+
+curseforge {
+	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
+	project {
+		id = curseforge_forge_project_id
+		releaseType = curseforge_release_type
+		changelogType = 'markdown'
+		changelog = file('../changelog.md')
+		addGameVersion minecraft_version
+		addGameVersion 'Forge'
+
+		relations {
+			requiredLibrary 'balm'
 		}
 	}
 }

@@ -1,0 +1,42 @@
+subprojects {
+    apply plugin: 'java'
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+
+    jar {
+        manifest {
+            attributes([
+                "Specification-Title": mod_id,
+                "Specification-Vendor": "BlayTheNinth",
+                "Specification-Version": "1",
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.jar.archiveVersion,
+                "Implementation-Vendor": "BlayTheNinth",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": mod_id + ".mixins.json"
+            ])
+        }
+    }
+    
+    repositories {
+        mavenCentral()
+
+        maven { url "https://www.cursemaven.com" }
+		
+		maven {
+			url "https://maven.pkg.github.com/ModdingForBlockheads/Balm"
+			credentials {
+				username project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
+				password project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
+			}
+		}
+		
+		// For Cloth Config
+		maven { url "https://maven.shedaniel.me/" }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = 'UTF-8'
+        it.options.release = java_version as int
+    }
+}

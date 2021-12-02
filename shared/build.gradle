@@ -1,0 +1,18 @@
+plugins {
+    id('java')
+    id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
+}
+
+archivesBaseName = "${mod_id}-common-${minecraft_version}"
+
+minecraft {
+    version(minecraft_version)
+}
+
+dependencies {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.4'
+    compileOnly("net.blay09.mods:balm-fabric:${balm_fabric_version}:dev") {
+        exclude(group: "net.fabricmc", module: "fabric-loader")
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+}

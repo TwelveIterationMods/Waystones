@@ -1,6 +1,0 @@
-accessWidener v1 named
-
-accessible field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
-mutable field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool templates Ljava/util/List;
-accessible field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool rawTemplates Ljava/util/List;
-mutable field net/minecraft/world/level/levelgen/feature/structures/StructureTemplatePool rawTemplates Ljava/util/List;
