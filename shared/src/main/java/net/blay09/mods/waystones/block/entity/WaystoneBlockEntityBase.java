@@ -38,6 +38,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
         if (waystone.isValid()) {
             tag.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
         } else if (waystoneUid != null) {
@@ -48,9 +50,21 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
+
         if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
             waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
         }
+
+        if (compound.contains("Waystone", Tag.TAG_COMPOUND)) {
+            var syncedWaystone = Waystone.read(compound.getCompound("Waystone"));
+            WaystoneManager.get(null).updateWaystone(syncedWaystone);
+            waystone = new WaystoneProxy(null, syncedWaystone.getWaystoneUid());
+        }
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundTag tag) {
+        tag.put("Waystone", Waystone.write(getWaystone(), new CompoundTag()));
     }
 
     @Override
@@ -63,19 +77,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             ((Waystone) backingWaystone).setDimension(level.dimension());
             ((Waystone) backingWaystone).setPos(worldPosition);
         }
-        balmSync();
-    }
-
-    public void balmFromClientTag(CompoundTag tag) { // TODO 1.18
-        IWaystone syncedWaystone = Waystone.read(tag);
-        WaystoneManager.get(level.getServer()).updateWaystone(syncedWaystone);
-        waystone = new WaystoneProxy(level.getServer(), syncedWaystone.getWaystoneUid());
-    }
-
-    @Override
-    public CompoundTag balmToClientTag(CompoundTag tag) {
-        Waystone.write(getWaystone(), tag);
-        return tag;
+        sync();
     }
 
     @Override
@@ -106,7 +108,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (waystone.isValid()) {
                 waystoneUid = waystone.getWaystoneUid();
-                balmSync();
+                sync();
             }
         }
 
@@ -120,7 +122,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         WaystoneManager.get(world.getServer()).addWaystone(waystone);
         this.waystone = waystone;
         setChanged();
-        balmSync();
+        sync();
     }
 
     public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
@@ -128,13 +130,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         existingWaystone.setDimension(world.getLevel().dimension());
         existingWaystone.setPos(worldPosition);
         setChanged();
-        balmSync();
+        sync();
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
         waystone = tileEntity.getWaystone();
         setChanged();
-        balmSync();
+        sync();
     }
 
     public void uninitializeWaystone() {
@@ -156,7 +158,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         }
 
         setChanged();
-        balmSync();
+        sync();
     }
 
     public void setSilkTouched(boolean silkTouched) {

@@ -142,6 +142,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     @Override
     public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
         ContainerHelper.saveAllItems(tag, items);
         tag.putBoolean("ReadyForAttunement", readyForAttunement);
         tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
