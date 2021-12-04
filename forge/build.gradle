@@ -18,7 +18,7 @@ apply plugin: "com.matthewprenger.cursegradle"
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
 version = mod_version + buildNumber
 
-archivesBaseName = "${mod_id}-${minecraft_version}"
+archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 group = mod_group
 
 minecraft {
