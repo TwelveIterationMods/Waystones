@@ -139,7 +139,7 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-			artifactId = project.archivesBaseName
+			artifactId = mod_id + "-forge"
 			
             artifact jar
         }

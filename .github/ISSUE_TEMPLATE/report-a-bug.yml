@@ -55,7 +55,7 @@ body:
     id: logs
     attributes:
       label: Logs
-      description: If the game crashed, provide a link to the logs here. You can use a site like pastebin or gist to upload the latest.log content. Make sure they are set to not expire.
+      description: Provide a link to the logs here. You can use a site like pastebin or gist to upload the latest.log content. Make sure they are set to not expire.
   - type: input
     id: optifine
     attributes:
