@@ -109,7 +109,7 @@ sourceSets {
         resources {
             srcDirs 'src/generated/resources'
         }
-		ext.refMap = "refmap.${mod_id}.json"
+		ext.refMap = "${mod_id}.refmap.json"
 	}
 }
 
