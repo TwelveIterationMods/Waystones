@@ -115,6 +115,7 @@ sourceSets {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 	compileOnly project(":shared")
 
     implementation fg.deobf("net.blay09.mods:balm:${balm_forge_version}")
