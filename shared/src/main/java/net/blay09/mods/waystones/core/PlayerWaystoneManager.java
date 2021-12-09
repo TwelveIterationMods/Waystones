@@ -147,10 +147,6 @@ public class PlayerWaystoneManager {
 
         int xpForLeashed = WaystonesConfig.getActive().xpCostPerLeashed() * context.getLeashedEntities().size();
 
-        if (waystone.getDimension() != player.level.dimension()) {
-            return enableXPCost ? WaystonesConfig.getActive().dimensionalWarpXpCost() + xpForLeashed : 0;
-        }
-
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
         if (waystone.isGlobal()) {
             xpCostMultiplier *= WaystonesConfig.getActive().globalWaystoneXpCostMultiplier();
@@ -161,7 +157,10 @@ public class PlayerWaystoneManager {
         final double minimumXpCost = WaystonesConfig.getActive().minimumXpCost();
         final double maximumXpCost = WaystonesConfig.getActive().maximumXpCost();
         double xpLevelCost;
-        if (WaystonesConfig.getActive().blocksPerXPLevel() > 0) {
+        if (waystone.getDimension() != player.level.dimension()) {
+            int dimensionalWarpXpCost = WaystonesConfig.getActive().dimensionalWarpXpCost();
+            xpLevelCost = Mth.clamp(dimensionalWarpXpCost, minimumXpCost, dimensionalWarpXpCost);
+        } else if (WaystonesConfig.getActive().blocksPerXPLevel() > 0) {
             xpLevelCost = Mth.clamp(dist / (float) WaystonesConfig.getActive().blocksPerXPLevel(), minimumXpCost, maximumXpCost);
 
             if (WaystonesConfig.getActive().inverseXpCost()) {
