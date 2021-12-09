@@ -24,7 +24,7 @@ public class WaystonePlacement extends PlacementModifier {
     private final Heightmap.Types heightmap;
 
     public WaystonePlacement() {
-        this(Heightmap.Types.WORLD_SURFACE_WG);
+        this(Heightmap.Types.OCEAN_FLOOR_WG);
     }
 
     public WaystonePlacement(Heightmap.Types heightmap) {
