@@ -112,18 +112,14 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/savanna/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/desert/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
-
-            // Add Waystone to other mod's structures. (Make sure Waystone piece Jigsaw Block's Name matches the other mod piece Jigsaw's Target Name.
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/badlands/houses", desertVillageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/birch/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/dark_forest/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/giant_taiga/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/jungle/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/mountains/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/mushroom/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/oak/houses", villageWaystoneStructure, 1);
-            addWaystoneStructureToVillageConfig(registryAccess, "repurposed_structures:villages/swamp/houses", villageWaystoneStructure, 1);
         }
+
+        // Registers a condition for repurposed structures compat
+        Registry.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
+            .ifPresent(registry -> Registry.register(
+                (Registry<Supplier<Boolean>>)registry,
+                new ResourceLocation("waystones", "config"),
+                () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
