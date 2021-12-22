@@ -10,7 +10,7 @@
         "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       },
-	  "condition": "waystones:config"
+      "condition": "waystones:config"
     }
   ]
 }
