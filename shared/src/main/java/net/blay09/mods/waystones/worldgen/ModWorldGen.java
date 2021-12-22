@@ -68,6 +68,13 @@ public class ModWorldGen {
 
         Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
         Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
+
+        // Registers a condition for repurposed structures compat
+        Registry.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
+            .ifPresent(registry -> Registry.register(
+                (Registry<Supplier<Boolean>>)registry,
+                new ResourceLocation("waystones", "config"),
+                () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
     }
 
     private static BiomePredicate matchesCategory(Biome.BiomeCategory category) {
@@ -113,13 +120,6 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/desert/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
         }
-
-        // Registers a condition for repurposed structures compat
-        Registry.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
-            .ifPresent(registry -> Registry.register(
-                (Registry<Supplier<Boolean>>)registry,
-                new ResourceLocation("waystones", "config"),
-                () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
