@@ -5,6 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.config.Synced;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
@@ -111,6 +112,7 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
         public boolean transportLeashedDimensional = true;
 
         @Comment("List of leashed mobs that cannot be taken with you when teleporting")
+        @ExpectedType(String.class)
         public List<String> leashedDenyList = Lists.newArrayList("minecraft:wither");
 
         @Synced
@@ -118,9 +120,11 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
         public DimensionalWarp dimensionalWarp = DimensionalWarp.ALLOW;
 
         @Comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
+        @ExpectedType(String.class)
         public List<String> dimensionalWarpAllowList = new ArrayList<>();
 
         @Comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
+        @ExpectedType(String.class)
         public List<String> dimensionalWarpDenyList = new ArrayList<>();
 
         @Comment("Set to true if players should be able to teleport between waystones by simply right-clicking a waystone.")
@@ -183,15 +187,18 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
         public int frequency = 25;
 
         @Comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
+        @ExpectedType(String.class)
         public List<String> dimensionAllowList = Lists.newArrayList("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end");
 
         @Comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
+        @ExpectedType(String.class)
         public List<String> dimensionDenyList = new ArrayList<>();
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
 
         @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
+        @ExpectedType(String.class)
         public List<String> customWaystoneNames = new ArrayList<>();
 
         @Comment("Set to true if waystones should be added to the generation of villages. Some villages may still spawn without a waystone.")
