@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 public class XaerosMinimapAddon {
   public static String invalid = "invalid";
   private static boolean invalidWarned = false;
-  private static String setName;
   private static String setNameInitiated;
 
   public static void initialize() {
@@ -42,27 +41,29 @@ public class XaerosMinimapAddon {
     return session.getWaypointsManager();
   }
 
-  public static void makeWaypoint(BlockPos pos, String name, WaypointSet set) {
-    if (name.equals(invalid)) {
-      // inform player about bad waystone name once per session
-      if (!invalidWarned) {
-        Minecraft mc = Minecraft.getInstance();
-        Player entity = mc.player;
-        TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.invalid_name_xaeros");
-        chatComponent.withStyle(ChatFormatting.DARK_RED);
-        entity.displayClientMessage(chatComponent, true);
-        invalidWarned = true;
-      }
+  public static void onKnownWaystones(KnownWaystonesEvent event) {
+    if (!Compat.isXaerosMinimapInstalled) {
       return;
     }
-    Waypoint instant = new Waypoint(pos.getX(), pos.getY() + 2, pos.getZ(), name,
-        name.substring(0, 1), (int) (Math.random() * (double) ModSettings.ENCHANT_COLORS.length), 0, false);
-    set.getList().add(instant);
+    WaypointsManager wm = getWaypointsManager();
+
+    // if world is not loaded yet, wait
+    int timeout = wm.getCurrentWorld() == null ? 500 : 0;
+    CompletableFuture.delayedExecutor(timeout, TimeUnit.MILLISECONDS).execute(() -> {
+      // if world is still not loaded, try again
+      if (wm.getCurrentWorld() == null) {
+        onKnownWaystones(event);
+      } else {
+        addKnownWaypoints(event);
+      }
+    });
   }
 
   public static void addKnownWaypoints(KnownWaystonesEvent event) {
     WaypointsManager wm = getWaypointsManager();
-    // addSet resets any existing set with setName
+    String setName = WaystonesConfig.getActive().waystonesSetNameXaeros();
+
+    // Call addSet to reset any existing set with setName
     wm.getCurrentWorld().addSet(setName);
     // prevent selected set from toggling back to Waystones on each event
     if (setNameInitiated != setName && WaystonesConfig.getActive().waystonesSetDefaultXaeros()) {
@@ -87,21 +88,25 @@ public class XaerosMinimapAddon {
     }
   }
 
-  public static void onKnownWaystones(KnownWaystonesEvent event) {
-    if (!Compat.isXaerosMinimapInstalled) {
+  public static void makeWaypoint(BlockPos pos, String name, WaypointSet set) {
+    if (name.equals(invalid)) {
+      invalidNameWarning();
       return;
     }
-    setName = WaystonesConfig.getActive().waystonesSetNameXaeros();
-    WaypointsManager wm = getWaypointsManager();
-    // if world is not loaded yet, wait
-    int timeout = wm.getCurrentWorld() == null ? 500 : 0;
-    CompletableFuture.delayedExecutor(timeout, TimeUnit.MILLISECONDS).execute(() -> {
-      // if world is still not loaded, try again
-      if (wm.getCurrentWorld() == null) {
-        onKnownWaystones(event);
-      } else {
-        addKnownWaypoints(event);
-      }
-    });
+    Waypoint instant = new Waypoint(pos.getX(), pos.getY() + 2, pos.getZ(), name,
+        name.substring(0, 1), (int) (Math.random() * (double) ModSettings.ENCHANT_COLORS.length), 0, false);
+    set.getList().add(instant);
+  }
+
+  // inform player about bad waystone name once per session
+  private static void invalidNameWarning() {
+    if (!invalidWarned) {
+      Minecraft mc = Minecraft.getInstance();
+      Player entity = mc.player;
+      TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.invalid_name_xaeros");
+      chatComponent.withStyle(ChatFormatting.DARK_RED);
+      entity.displayClientMessage(chatComponent, true);
+      invalidWarned = true;
+    }
   }
 }
