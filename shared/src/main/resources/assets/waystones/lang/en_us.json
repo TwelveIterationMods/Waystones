@@ -61,6 +61,7 @@
   "chat.waystones.waystone_to_waystone_disabled": "You touch the waystone, but nothing happens.",
   "chat.waystones.warp_plate_has_no_target": "This warp plate is not bound to another warp plate yet.",
   "chat.waystones.warp_plate_has_invalid_target": "The shard inside this warp plate has lost its attunement.",
+  "chat.waystones.invalid_name_xaeros": "Can not add Waystone name \"invalid\" to minimap.",
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
@@ -142,5 +143,8 @@
   "text.autoconfig.waystones.option.client.disableParticles": "Disable Particles",
   "text.autoconfig.waystones.option.compatibility": "Mod Integrations",
   "text.autoconfig.waystones.option.compatibility.displayWaystonesOnJourneyMap": "Display Waystones on JourneyMap",
+  "text.autoconfig.waystones.option.compatibility.displayWaystonesOnXaeros": "Display Waystones on Xaero's Minimap",
+  "text.autoconfig.waystones.option.compatibility.waystonesSetNameXaeros": "Set name for Waystones on Xaero's Minimap",
+  "text.autoconfig.waystones.option.compatibility.waystonesSetDefaultXaeros": "Default to Waystones set in Xaero's Minimap",
   "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)"
 }

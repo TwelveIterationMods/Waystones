@@ -211,6 +211,15 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
     public static class Compatibility {
         @Comment("If enabled, JourneyMap waypoints will be created for each activated waystone.")
         public boolean displayWaystonesOnJourneyMap = true;
+
+        @Comment("If enabled, Xaero's minimap waypoints will be created for each activated waystone.")
+        public boolean displayWaystonesOnXaeros = true;
+
+        @Comment("Whether to use Waystones set as the default for Xaero's minimap")
+        public boolean waystonesSetDefaultXaeros = true;
+        
+        @Comment("Name to use for Xaero's minimap waypoints set.")
+        public String waystonesSetNameXaeros = "Waystones";
     }
 
     public static class Client {
@@ -439,5 +448,20 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
     @Override
     public int warpButtonY() {
         return inventoryButton.warpButtonY;
+    }
+
+    @Override
+    public boolean displayWaystonesOnXaeros() {
+        return compatibility.displayWaystonesOnXaeros;
+    }
+    
+    @Override
+    public boolean waystonesSetDefaultXaeros() {
+        return compatibility.waystonesSetDefaultXaeros;
+    }
+
+    @Override
+    public String waystonesSetNameXaeros() {
+        return compatibility.waystonesSetNameXaeros;
     }
 }

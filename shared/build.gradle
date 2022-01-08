@@ -15,4 +15,5 @@ dependencies {
         exclude(group: "net.fabricmc", module: "fabric-loader")
         exclude(group: "net.fabricmc.fabric-api")
     }
+    compileOnly("curse.maven:xaerosminimap-263420:3582980")
 }

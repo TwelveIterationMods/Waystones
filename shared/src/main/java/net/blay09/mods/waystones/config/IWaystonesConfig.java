@@ -95,4 +95,8 @@ public interface IWaystonesConfig {
 
     int warpButtonX();
     int warpButtonY();
+
+    public boolean displayWaystonesOnXaeros();
+    boolean waystonesSetDefaultXaeros();
+    String waystonesSetNameXaeros();
 }

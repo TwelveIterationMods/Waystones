@@ -120,6 +120,9 @@ dependencies {
 
     implementation fg.deobf("net.blay09.mods:balm:${balm_forge_version}")
 
+    compileOnly fg.deobf("curse.maven:xaerosminimap-263420:3582980")
+    testCompileOnly fg.deobf("curse.maven:xaerosminimap-263420:3582980")
+
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
     testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 

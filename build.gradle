@@ -21,7 +21,12 @@ subprojects {
     repositories {
         mavenCentral()
 
-        maven { url "https://www.cursemaven.com" }
+        maven {
+            url "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
 		
 		maven {
 			url "https://maven.pkg.github.com/ModdingForBlockheads/Balm"

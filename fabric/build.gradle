@@ -27,6 +27,7 @@ dependencies {
 
 	modImplementation "curse.maven:modmenu-308702:3348711"
 
+	modCompileOnly "curse.maven:xaerosminimap-263420:3582979"
 	// Roughly Enough Items
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.264-alpha"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:6.0.264-alpha"
