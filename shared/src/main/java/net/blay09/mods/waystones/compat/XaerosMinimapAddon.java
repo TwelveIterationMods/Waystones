@@ -22,6 +22,8 @@ import xaero.minimap.XaeroMinimap;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.Random;
 
 public class XaerosMinimapAddon {
   public static String invalid = "invalid";
@@ -32,6 +34,24 @@ public class XaerosMinimapAddon {
     if (WaystonesConfig.getActive().displayWaystonesOnXaeros()) {
       Balm.getEvents().onEvent(KnownWaystonesEvent.class, XaerosMinimapAddon::onKnownWaystones);
     }
+  }
+
+  // assign same color to waypoints based on name
+  static double randomColor(String waypointName){
+    Random randnum = new Random();
+    randnum.setSeed(stringToSeed(waypointName));
+    return randnum.nextDouble() * (double) ModSettings.ENCHANT_COLORS.length;
+  }
+
+  static long stringToSeed(String s) {
+      if (s == null) {
+          return 0;
+      }
+      long hash = 0;
+      for (char c : s.toCharArray()) {
+          hash = 31L*hash + c;
+      }
+      return hash;
   }
 
   public static WaypointsManager getWaypointsManager() {
@@ -46,24 +66,26 @@ public class XaerosMinimapAddon {
       return;
     }
     WaypointsManager wm = getWaypointsManager();
-
     // if world is not loaded yet, wait
-    int timeout = wm.getCurrentWorld() == null ? 500 : 0;
-    CompletableFuture.delayedExecutor(timeout, TimeUnit.MILLISECONDS).execute(() -> {
-      // if world is still not loaded, try again
-      if (wm.getCurrentWorld() == null) {
+    if (wm.getCurrentWorld() == null) {
+      // if world is not loaded yet, wait half a second and try again
+      CompletableFuture.delayedExecutor(500, TimeUnit.MILLISECONDS).execute(() -> {
         onKnownWaystones(event);
-      } else {
-        addKnownWaypoints(event);
-      }
-    });
+      });
+    } else {
+      addKnownWaypoints(event);
+    }
   }
 
   public static void addKnownWaypoints(KnownWaystonesEvent event) {
     WaypointsManager wm = getWaypointsManager();
     String setName = WaystonesConfig.getActive().waystonesSetNameXaeros();
-
-    // Call addSet to reset any existing set with setName
+    WaypointSet originalSet = wm.getCurrentWorld().getSets().get(setName);
+    // filter out any waypoints added to the set
+    List<Waypoint> nonWaystones = originalSet.getList().stream().filter(e -> {
+      return !(e instanceof WaystoneWaypoint && e.isTemporary());
+    }).toList();
+    // Call addSet to reset existing set with setName
     wm.getCurrentWorld().addSet(setName);
     // prevent selected set from toggling back to Waystones on each event
     if (setNameInitiated != setName && WaystonesConfig.getActive().waystonesSetDefaultXaeros()) {
@@ -72,10 +94,11 @@ public class XaerosMinimapAddon {
     }
 
     WaypointSet set = wm.getCurrentWorld().getSets().get(setName);
+    set.getList().addAll(nonWaystones);
     // add waystones to set
     for (IWaystone waystone : event.getWaystones()) {
       try {
-        makeWaypoint(waystone.getPos(), waystone.hasName() ? waystone.getName() : "TEMP NAME", set);
+        makeWaypoint(waystone.getPos(), waystone.hasName() ? waystone.getName() : "TEMP", set);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -93,8 +116,8 @@ public class XaerosMinimapAddon {
       invalidNameWarning();
       return;
     }
-    Waypoint instant = new Waypoint(pos.getX(), pos.getY() + 2, pos.getZ(), name,
-        name.substring(0, 1), (int) (Math.random() * (double) ModSettings.ENCHANT_COLORS.length), 0, false);
+    WaystoneWaypoint instant = new WaystoneWaypoint(pos.getX(), pos.getY() + 2, pos.getZ(), name,
+        name.substring(0, 1), (int) randomColor(name));
     set.getList().add(instant);
   }
 
@@ -107,6 +130,14 @@ public class XaerosMinimapAddon {
       chatComponent.withStyle(ChatFormatting.DARK_RED);
       entity.displayClientMessage(chatComponent, true);
       invalidWarned = true;
+    }
+  }
+
+  // helper class to track which Waypoints were created by Waystones
+  private static class WaystoneWaypoint extends Waypoint {
+    WaystoneWaypoint(int x, int y, int z, String name, String symbol, int color) {
+      // temporary=true to allow all Waystone points to be re-created in new sessions
+      super(x, y, z, name, symbol, color, 0, true);
     }
   }
 }
