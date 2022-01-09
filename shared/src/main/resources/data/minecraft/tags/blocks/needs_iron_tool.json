@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "waystones:black_sharestone",
+    "waystones:blue_sharestone",
+    "waystones:brown_sharestone",
+    "waystones:cyan_sharestone",
+    "waystones:gray_sharestone",
+    "waystones:green_sharestone",
+    "waystones:light_blue_sharestone",
+    "waystones:light_gray_sharestone",
+    "waystones:lime_sharestone",
+    "waystones:magenta_sharestone",
+    "waystones:mossy_waystone",
+    "waystones:orange_sharestone",
+    "waystones:pink_sharestone",
+    "waystones:purple_sharestone",
+    "waystones:red_sharestone",
+    "waystones:sandy_waystone",
+    "waystones:sharestone",
+    "waystones:warp_plate",
+    "waystones:waystone",
+    "waystones:white_sharestone",
+    "waystones:yellow_sharestone"
+  ]
+}
