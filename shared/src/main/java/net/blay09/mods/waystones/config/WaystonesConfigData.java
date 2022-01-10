@@ -216,10 +216,10 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
         public boolean displayWaystonesOnXaeros = true;
 
         @Comment("Whether to use Waystones set as the default for Xaero's minimap")
-        public boolean waystonesSetDefaultXaeros = true;
+        public boolean waystonesSetDefaultXaeros = false;
         
         @Comment("Name to use for Xaero's minimap waypoints set.")
-        public String waystonesSetNameXaeros = "Waystones";
+        public String waystonesSetNameXaeros = "itemGroup.waystones.waystones";
     }
 
     public static class Client {

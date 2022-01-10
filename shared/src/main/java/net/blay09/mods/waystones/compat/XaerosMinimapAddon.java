@@ -82,9 +82,9 @@ public class XaerosMinimapAddon {
     String setName = WaystonesConfig.getActive().waystonesSetNameXaeros();
     WaypointSet originalSet = wm.getCurrentWorld().getSets().get(setName);
     // filter out any waypoints added to the set
-    List<Waypoint> nonWaystones = originalSet.getList().stream().filter(e -> {
+    List<Waypoint> nonWaystones = originalSet != null ? originalSet.getList().stream().filter(e -> {
       return !(e instanceof WaystoneWaypoint && e.isTemporary());
-    }).toList();
+    }).toList() : List.of();
     // Call addSet to reset existing set with setName
     wm.getCurrentWorld().addSet(setName);
     // prevent selected set from toggling back to Waystones on each event
