@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -116,6 +117,10 @@ public class PlayerWaystoneManager {
 
         if (!waystone.hasOwner() && waystone instanceof IMutableWaystone) {
             ((IMutableWaystone) waystone).setOwnerUid(player.getUUID());
+        }
+
+        if (player.getServer() != null) {
+            WaystoneManager.get(player.getServer()).setDirty();
         }
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
@@ -395,10 +400,10 @@ public class PlayerWaystoneManager {
             context.getLeashedEntities().forEach(((WarpPlateBlockEntity) targetTileEntity)::markEntityForCooldown);
         }
 
-        entity = teleportEntity(entity, targetWorld, targetPos3d, direction);
+        final var updatedEntity = teleportEntity(entity, targetWorld, targetPos3d, direction);
 
         if (mount != null) {
-            entity.startRiding(mount);
+            updatedEntity.startRiding(mount);
         }
 
         sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
@@ -407,7 +412,13 @@ public class PlayerWaystoneManager {
         Balm.getNetworking().sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
         Balm.getNetworking().sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
 
-        context.getLeashedEntities().forEach(mob -> teleportEntity(mob, targetWorld, targetPos3d, direction));
+        context.getLeashedEntities().forEach(mob -> {
+            Entity updatedMobEntity = teleportEntity(mob, targetWorld, targetPos3d, direction);
+            // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
+            if (updatedMobEntity instanceof Mob updatedMob) {
+                updatedMob.setLeashedTo(updatedEntity, true);
+            }
+        });
     }
 
     private static Entity teleportEntity(Entity entity, ServerLevel targetWorld, Vec3 targetPos3d, Direction direction) {
