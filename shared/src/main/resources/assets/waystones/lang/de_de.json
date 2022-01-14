@@ -66,7 +66,7 @@
   "tooltip.waystones.bound_to_none": "None",
   "tooltip.waystones.portstone": "Kann nicht dorthin teleportieren.",
   "tooltip.waystones.sharestone": "Teleportiere zu jedem anderen farblosen Teilstein",
-  "tooltip.waystones.white_sharestone": "TTeleportiere zu jedem anderen weißen Teilstein",
+  "tooltip.waystones.white_sharestone": "Teleportiere zu jedem anderen weißen Teilstein",
   "tooltip.waystones.orange_sharestone": "Teleportiere zu jedem anderen orangen Teilstein",
   "tooltip.waystones.magenta_sharestone": "Teleportiere zu jedem anderen violetten Teilstein",
   "tooltip.waystones.light_blue_sharestone": "Teleportiere zu jedem anderen hellblauen Teilstein",
@@ -141,6 +141,6 @@
   "text.autoconfig.waystones.option.client.disableTextGlow": "Textglühen deaktivieren",
   "text.autoconfig.waystones.option.client.disableParticles": "Partikel deaktivieren",
   "text.autoconfig.waystones.option.compatibility": "Mod-Integrationen",
-  "text.autoconfig.waystones.option.compatibility.displayWaystonesOnJourneyMap": "Wegsteine ​​auf JourneyMap anzeigen",
+  "text.autoconfig.waystones.option.compatibility.displayWaystonesOnJourneyMap": "Wegsteine auf JourneyMap anzeigen",
   "waystones.iconCredits": "Symbole von JoeCreates (CC-BY-SA 3.0)"
 }
