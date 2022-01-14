@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.client;
 
 import net.blay09.mods.balm.api.client.BalmClient;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.compat.Compat;
 import net.minecraft.client.ClientBrandRetriever;
 
@@ -9,8 +8,6 @@ import java.util.Locale;
 
 public class WaystonesClient {
     public static void initialize() {
-        BalmClient.initialize(Waystones.MOD_ID);
-
         ModClientEventHandlers.initialize();
         ModRenderers.initialize(BalmClient.getRenderers());
         ModScreens.initialize(BalmClient.getScreens());
