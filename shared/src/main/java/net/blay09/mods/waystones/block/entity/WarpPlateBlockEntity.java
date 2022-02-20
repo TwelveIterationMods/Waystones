@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.AttunedShardItem;
@@ -232,7 +233,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             Integer ticksPassed = entry.getValue();
             if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                 iterator.remove();
-            } else if (ticksPassed > 20) {
+            } else if (ticksPassed > WaystonesConfig.getActive().cooldowns.warpPlateUseTime) {
                 IWaystone targetWaystone = getTargetWaystone();
                 if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToWarpPlate(entity, targetWaystone);
