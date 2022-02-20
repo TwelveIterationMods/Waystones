@@ -30,7 +30,10 @@ subprojects {
 				password project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
 			}
 		}
-		
+
+        // For JEI
+        maven { url "https://dvs1.progwml6.com/files/maven/" }
+
 		// For Cloth Config
 		maven { url "https://maven.shedaniel.me/" }
     }
