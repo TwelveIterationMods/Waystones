@@ -1,3 +1,12 @@
+### Version 9.0.4 for Minecraft 1.18.x
+
+- Fixed warpPlateUseTime config option not being used
+- Fixed JEI compatibility
+- Fixed JourneyMap compatibility
+- Fixed TheOneProbe compatibility
+- Fixed Waila compatibility
+- Updated Chinese Translation (by Q2297045667)
+
 ### Version 9.0.3 for Minecraft 1.18.x
 
 - Fixed generated waystones becoming unnamed  in some cases
