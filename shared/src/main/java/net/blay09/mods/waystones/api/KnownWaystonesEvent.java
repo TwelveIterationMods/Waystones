@@ -12,7 +12,6 @@ public class KnownWaystonesEvent extends BalmEvent {
     private final List<IWaystone> waystones;
 
     public KnownWaystonesEvent(List<IWaystone> waystones) {
-
         this.waystones = waystones;
     }
 
