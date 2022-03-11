@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.stats;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -11,8 +12,7 @@ public class ModStats {
     public static final ResourceLocation waystoneActivated = new ResourceLocation(Waystones.MOD_ID, "waystone_activated");
 
     public static void initialize() {
-        Registry.register(Registry.CUSTOM_STAT, waystoneActivated.getPath(), waystoneActivated);
-        Stats.CUSTOM.get(waystoneActivated, StatFormatter.DEFAULT);
+        Balm.getStats().registerCustomStat(waystoneActivated);
     }
 
 }

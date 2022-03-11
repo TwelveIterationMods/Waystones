@@ -14,26 +14,25 @@ import net.minecraft.world.level.material.Material;
 
 public class ModBlocks {
 
-    public static final Block waystone = new WaystoneBlock(defaultProperties());
-    public static final Block mossyWaystone = new WaystoneBlock(defaultProperties());
-    public static final Block sandyWaystone = new WaystoneBlock(defaultProperties());
-    public static final Block sharestone = new SharestoneBlock(defaultProperties(), null);
-    public static final Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
-    public static final Block warpPlate = new WarpPlateBlock(defaultProperties());
-    public static final Block portstone = new PortstoneBlock(defaultProperties());
+    public static Block waystone;
+    public static Block mossyWaystone;
+    public static Block sandyWaystone;
+    public static Block sharestone;
+    public static Block warpPlate;
+    public static Block portstone;
+    public static Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
 
     public static void initialize(BalmBlocks blocks) {
-        blocks.register(() -> waystone, () -> itemBlock(waystone), id("waystone"));
-        blocks.register(() -> mossyWaystone, () -> itemBlock(mossyWaystone), id("mossy_waystone"));
-        blocks.register(() -> sandyWaystone, () -> itemBlock(sandyWaystone), id("sandy_waystone"));
-        blocks.register(() -> warpPlate, () -> itemBlock(warpPlate), id("warp_plate"));
-        blocks.register(() -> sharestone, () -> itemBlock(sharestone), id("sharestone"));
-        blocks.register(() -> portstone, () -> itemBlock(portstone), id("portstone"));
+        blocks.register(() -> waystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(waystone), id("waystone"));
+        blocks.register(() -> mossyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(mossyWaystone), id("mossy_waystone"));
+        blocks.register(() -> sandyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(sandyWaystone), id("sandy_waystone"));
+        blocks.register(() -> sharestone = new SharestoneBlock(defaultProperties(), null), () -> itemBlock(sharestone), id("sharestone"));
+        blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
+        blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
 
         DyeColor[] colors = DyeColor.values();
         for (DyeColor color : colors) {
-            scopedSharestones[color.ordinal()] = new SharestoneBlock(defaultProperties(), color);
-            blocks.register(() -> scopedSharestones[color.ordinal()], () -> itemBlock(scopedSharestones[color.ordinal()]), id(color.getSerializedName() + "_sharestone"));
+            blocks.register(() -> scopedSharestones[color.ordinal()] = new SharestoneBlock(defaultProperties(), color), () -> itemBlock(scopedSharestones[color.ordinal()]), id(color.getSerializedName() + "_sharestone"));
         }
     }
 
