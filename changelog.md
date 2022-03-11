@@ -1,3 +1,7 @@
+### Version 10.0.0 for Minecraft 1.18.2
+
+- Updated to Minecraft 1.18.2
+
 ### Version 9.0.4 for Minecraft 1.18.x
 
 - Fixed warpPlateUseTime config option not being used
