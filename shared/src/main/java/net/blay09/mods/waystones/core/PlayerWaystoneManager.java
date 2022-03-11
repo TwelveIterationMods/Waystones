@@ -534,8 +534,8 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level.dimension())
                 .min((first, second) -> {
-                    double firstDist = first.getPos().distSqr(player.getX(), player.getY(), player.getZ(), true);
-                    double secondDist = second.getPos().distSqr(player.getX(), player.getY(), player.getZ(), true);
+                    double firstDist = first.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
+                    double secondDist = second.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
                     return (int) Math.round(firstDist) - (int) Math.round(secondDist);
                 }).orElse(null);
     }
