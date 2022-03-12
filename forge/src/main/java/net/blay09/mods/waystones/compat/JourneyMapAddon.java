@@ -15,10 +15,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @ClientPlugin
 public class JourneyMapAddon implements IClientPlugin {
@@ -26,10 +23,15 @@ public class JourneyMapAddon implements IClientPlugin {
     private static final UUID WAYSTONE_GROUP_ID = UUID.fromString("005bdf11-2dbb-4a27-8aa4-0184e86fa33c");
 
     private IClientAPI api;
+    private boolean journeyMapReady;
+    private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
     @Override
     public void initialize(IClientAPI iClientAPI) {
         api = iClientAPI;
+
+        // This fires after all waypoints have been loaded
+        api.subscribe(Waystones.MOD_ID, EnumSet.of(ClientEvent.Type.MAPPING_STARTED));
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -41,6 +43,14 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @Override
     public void onEvent(ClientEvent clientEvent) {
+        if (clientEvent.type == ClientEvent.Type.MAPPING_STARTED) {
+            journeyMapReady = true;
+
+            for (Runnable scheduledJob : scheduledJobsWhenReady) {
+                scheduledJob.run();
+            }
+            scheduledJobsWhenReady.clear();
+        }
     }
 
     @SubscribeEvent
@@ -49,8 +59,27 @@ public class JourneyMapAddon implements IClientPlugin {
             return;
         }
 
+        runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
+    }
+
+    @SubscribeEvent
+    public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
+        if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
+            runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
+        }
+    }
+
+    private void runWhenJourneyMapIsReady(Runnable runnable) {
+        if (journeyMapReady) {
+            runnable.run();
+        } else {
+            scheduledJobsWhenReady.add(runnable);
+        }
+    }
+
+    private void updateAllWaypoints(List<IWaystone> waystones) {
         Set<String> stillExistingIds = new HashSet<>();
-        for (IWaystone waystone : event.getWaystones()) {
+        for (IWaystone waystone : waystones) {
             stillExistingIds.add(waystone.getWaystoneUid().toString());
             updateWaypoint(waystone);
         }
@@ -61,15 +90,6 @@ public class JourneyMapAddon implements IClientPlugin {
                 api.remove(waypoint);
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (!WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
-            return;
-        }
-
-        updateWaypoint(event.getWaystone());
     }
 
     private void updateWaypoint(IWaystone waystone) {
@@ -83,6 +103,8 @@ public class JourneyMapAddon implements IClientPlugin {
                 waypoint.setEnabled(oldWaypoint.isEnabled());
                 if (oldWaypoint.hasColor()) {
                     waypoint.setColor(oldWaypoint.getColor());
+                } else if (oldWaypoint.getIcon().getColor() != -1) { // TODO just temporary for testing, since color field is always null right now
+                    waypoint.setColor(oldWaypoint.getIcon().getColor());
                 }
                 if (oldWaypoint.hasBackgroundColor()) {
                     waypoint.setBackgroundColor(oldWaypoint.getBackgroundColor());

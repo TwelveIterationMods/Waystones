@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
 import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
+import net.blay09.mods.waystones.network.message.UpdateWaystoneMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +41,7 @@ public class WaystoneSyncManager {
     public static void sendWaystoneUpdate(Player player, IWaystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
-            Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystone.getWaystoneType(), Collections.singletonList(waystone)));
+            Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(waystone));
         }
     }
 
