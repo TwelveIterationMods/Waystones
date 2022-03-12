@@ -55,11 +55,9 @@ public class JourneyMapAddon implements IClientPlugin {
 
     @SubscribeEvent
     public void onKnownWaystones(KnownWaystonesEvent event) {
-        if (!WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
-            return;
+        if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
+            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
         }
-
-        runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
     }
 
     @SubscribeEvent
