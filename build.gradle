@@ -36,6 +36,11 @@ subprojects {
 
 		// For Cloth Config
 		maven { url "https://maven.shedaniel.me/" }
+
+        // For Journeymap api
+		maven {
+			url = "https://jm.gserv.me/repository/maven-public/"
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {

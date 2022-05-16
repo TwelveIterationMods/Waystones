@@ -25,6 +25,9 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	modApi group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
+	modRuntimeOnly "curse.maven:journeymap-${project.jm_project_id}:${project.jm_fabric_file_id}"
+
 	modImplementation "curse.maven:modmenu-308702:3348711"
 
 	// Roughly Enough Items

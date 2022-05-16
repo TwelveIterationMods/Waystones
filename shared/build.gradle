@@ -11,6 +11,7 @@ minecraft {
 
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.4'
+    compileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_common_version, changing: true
     compileOnly("net.blay09.mods:balm-fabric:${balm_fabric_version}:dev") {
         exclude(group: "net.fabricmc", module: "fabric-loader")
         exclude(group: "net.fabricmc.fabric-api")

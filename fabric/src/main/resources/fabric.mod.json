@@ -30,6 +30,9 @@
     ],
     "rei_plugins": [
       "net.blay09.mods.waystones.compat.RoughlyEnoughItemsIntegration"
+    ],
+    "journeymap": [
+      "net.blay09.mods.waystones.compat.JourneyMapAddon"
     ]
   },
   "mixins": [
