@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 public class ModWorldGen {
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registry.PROCESSOR_LIST_REGISTRY, new ResourceLocation("minecraft", "empty"));
 
     private static DeferredObject<WaystoneFeature> waystoneFeature;
     private static DeferredObject<WaystoneFeature> mossyWaystoneFeature;
@@ -125,7 +126,9 @@ public class ModWorldGen {
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
-        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString()).apply(StructureTemplatePool.Projection.RIGID);
+
+        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registry.PROCESSOR_LIST_REGISTRY).getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
+        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
         StructureTemplatePool pool = registryAccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
