@@ -6,6 +6,7 @@ import journeymap.client.api.IClientPlugin;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.event.ClientEvent;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
@@ -29,6 +30,8 @@ public class JourneyMapAddon implements IClientPlugin {
     public JourneyMapAddon()
     {
         instance = this;
+        Balm.getEvents().onEvent(KnownWaystonesEvent.class, this::onKnownWaystones);
+        Balm.getEvents().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
     }
 
     @Override
