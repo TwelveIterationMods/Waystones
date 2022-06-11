@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
@@ -112,7 +111,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-        Player player = BalmClient.getClientPlayer();
+        Player player = Balm.getProxy().getClientPlayer();
         if (player == null) {
             return 0;
         }
@@ -128,12 +127,13 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        return PlayerWaystoneManager.canUseWarpStone(BalmClient.getClientPlayer(), itemStack) || super.isFoil(itemStack);
+        Player player = Balm.getProxy().getClientPlayer();
+        return player != null ? PlayerWaystoneManager.canUseWarpStone(player, itemStack) || super.isFoil(itemStack) : super.isFoil(itemStack);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        Player player = BalmClient.getClientPlayer();
+        Player player = Balm.getProxy().getClientPlayer();
         if (player == null) {
             return;
         }
