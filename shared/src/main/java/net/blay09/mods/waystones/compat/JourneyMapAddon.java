@@ -6,15 +6,14 @@ import journeymap.client.api.IClientPlugin;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.event.ClientEvent;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
 import net.blay09.mods.waystones.api.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @ClientPlugin
@@ -26,14 +25,30 @@ public class JourneyMapAddon implements IClientPlugin {
     private boolean journeyMapReady;
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
+    private static JourneyMapAddon instance;
+
+    public JourneyMapAddon()
+    {
+        instance = this;
+        Balm.getEvents().onEvent(KnownWaystonesEvent.class, this::onKnownWaystones);
+        Balm.getEvents().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
+    }
+
     @Override
     public void initialize(IClientAPI iClientAPI) {
         api = iClientAPI;
 
         // This fires after all waypoints have been loaded
         api.subscribe(Waystones.MOD_ID, EnumSet.of(ClientEvent.Type.MAPPING_STARTED));
+    }
 
-        MinecraftForge.EVENT_BUS.register(this);
+    /**
+     * This will be null if Journeymap is not loaded.
+     */
+    @Nullable
+    public static JourneyMapAddon getInstance()
+    {
+        return instance;
     }
 
     @Override
@@ -53,14 +68,12 @@ public class JourneyMapAddon implements IClientPlugin {
         }
     }
 
-    @SubscribeEvent
     public void onKnownWaystones(KnownWaystonesEvent event) {
         if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
             runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
         }
     }
 
-    @SubscribeEvent
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
         if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
             runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
