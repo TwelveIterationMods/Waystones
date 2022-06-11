@@ -123,8 +123,8 @@ dependencies {
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
     testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
-    compileOnly fg.deobf("mezz.jei:jei-1.18.1:9.2.1.69:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.1:9.2.1.69")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193")
 
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
     compileOnly fg.deobf("curse.maven:wthit-455982:3635139")
