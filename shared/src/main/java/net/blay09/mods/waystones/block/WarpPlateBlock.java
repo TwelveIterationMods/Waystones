@@ -143,7 +143,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             return InteractionResult.SUCCESS;
         }
 
-        return null;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
