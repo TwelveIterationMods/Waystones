@@ -130,7 +130,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:wthit-455982:3635139")
 
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
-    runtimeOnly fg.deobf("curse.maven:journeymap-${project.jm_project_id}:${project.jm_forge_file_id}")
+    runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
 
     implementation "org.jetbrains:annotations:22.0.0"
 }

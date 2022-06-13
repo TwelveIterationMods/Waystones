@@ -26,7 +26,7 @@ dependencies {
 	}
 
 	modApi group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
-	modRuntimeOnly "curse.maven:journeymap-${project.jm_project_id}:${project.jm_fabric_file_id}"
+	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
 
 	modImplementation "curse.maven:modmenu-308702:3348711"
 
