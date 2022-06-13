@@ -106,20 +106,20 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public boolean isBarVisible(ItemStack itemStack) {
-        return getBarWidth(itemStack) > 0;
+        return getBarWidth(itemStack) < MAX_BAR_WIDTH;
     }
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
         Player player = Balm.getProxy().getClientPlayer();
         if (player == null) {
-            return 0;
+            return MAX_BAR_WIDTH;
         }
 
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
         int maxCooldown = WaystonesConfig.getActive().warpStoneCooldown() * 20;
         if (maxCooldown == 0) {
-            return 0;
+            return MAX_BAR_WIDTH;
         }
 
         return Math.round(MAX_BAR_WIDTH - (float) timeLeft * MAX_BAR_WIDTH / (float) maxCooldown);
