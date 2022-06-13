@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -304,8 +305,7 @@ public class PlayerWaystoneManager {
             warpItem.shrink(1);
         }
 
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (warpMode == WarpMode.INVENTORY_BUTTON) {
                 int cooldown = (int) (WaystonesConfig.getActive().inventoryButtonCooldown() * getCooldownMultiplier(waystone));
                 getPlayerWaystoneData(entity.level).setInventoryButtonCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
@@ -322,6 +322,12 @@ public class PlayerWaystoneManager {
         }
 
         teleportToWaystone(entity, waystone, context);
+
+        if (entity instanceof ServerPlayer player) {
+            // No idea why this is still needed since we're using the same code as /tp. Maybe /tp is broken too for interdimensional travel.
+            player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
+        }
+
         return true;
     }
 
