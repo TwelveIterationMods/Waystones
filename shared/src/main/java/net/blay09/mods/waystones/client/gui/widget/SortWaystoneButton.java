@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SortWaystoneButton extends Button {
@@ -14,7 +14,7 @@ public class SortWaystoneButton extends Button {
     private final int visibleRegionHeight;
 
     public SortWaystoneButton(int x, int y, int sortDir, int visibleRegionStart, int visibleRegionHeight, OnPress pressable) {
-        super(x, y, 11, 7, new TextComponent(""), pressable);
+        super(x, y, 11, 7, Component.empty(), pressable);
         this.sortDir = sortDir;
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;

@@ -10,8 +10,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -42,7 +40,7 @@ public class WaystoneButton extends Button {
         if (effectiveName.isEmpty()) {
             effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        final TextComponent textComponent = new TextComponent(effectiveName);
+        final var textComponent = Component.literal(effectiveName);
         if (waystone.isGlobal()) {
             textComponent.withStyle(ChatFormatting.YELLOW);
         }
@@ -66,7 +64,7 @@ public class WaystoneButton extends Button {
 
             if (isHovered && mouseX <= x + 16) {
                 final List<Component> tooltip = new ArrayList<>();
-                final TranslatableComponent levelRequirementText = new TranslatableComponent("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
+                final var levelRequirementText = Component.translatable("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
                 levelRequirementText.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED);
                 tooltip.add(levelRequirementText);
                 final Screen screen = Minecraft.getInstance().screen;

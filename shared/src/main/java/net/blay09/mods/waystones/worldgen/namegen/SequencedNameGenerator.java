@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 public class SequencedNameGenerator implements INameGenerator {
 
@@ -11,7 +11,7 @@ public class SequencedNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String randomName(Random rand) {
+    public String randomName(RandomSource rand) {
         for (INameGenerator nameGenerator : nameGenerators) {
             String name = nameGenerator.randomName(rand);
             if (name != null) {

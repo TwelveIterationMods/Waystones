@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[41,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/ModdingForBlockheads/Waystones/issues"
 
@@ -18,18 +18,18 @@ Teleport back to activated waystones. For Survival, Adventure or Servers.
 [[dependencies.waystones]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.waystones]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.waystones]]
     modId="balm"
     mandatory=true
-    versionRange="[3.1.0,)"
+    versionRange="[4.0.0,)"
     ordering="NONE"
     side="BOTH"

@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.mixin;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -12,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("WeakerAccess")
@@ -23,9 +23,9 @@ public class JigsawPlacementMixin {
     @Shadow
     private List<? super PoolElementStructurePiece> pieces;
 
-    @Redirect(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool;getShuffledTemplates(Ljava/util/Random;)Ljava/util/List;"))
-    private List<StructurePoolElement> getShuffledTemplates(StructureTemplatePool pool, Random rand) {
+    @Redirect(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool;getShuffledTemplates(Lnet/minecraft/util/RandomSource;)Ljava/util/List;"))
+    private List<StructurePoolElement> getShuffledTemplates(StructureTemplatePool pool, RandomSource rand) {
         boolean hasWaystone = pieces.stream()
                 .map(piece -> ((PoolElementStructurePiece) piece).getElement().toString())
                 .anyMatch(pieceName -> pieceName.contains("waystones:") && pieceName.contains("/waystone"));

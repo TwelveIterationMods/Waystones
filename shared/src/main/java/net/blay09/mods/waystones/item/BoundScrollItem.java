@@ -16,8 +16,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -111,7 +109,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
                     }
                 }
 
-                TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.scroll_bound", waystone.getName());
+                var chatComponent = Component.translatable("chat.waystones.scroll_bound", waystone.getName());
                 chatComponent.withStyle(ChatFormatting.YELLOW);
                 player.displayClientMessage(chatComponent, true);
 
@@ -159,7 +157,7 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
 
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
         } else {
-            TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.scroll_not_yet_bound");
+            var chatComponent = Component.translatable("chat.waystones.scroll_not_yet_bound");
             chatComponent.withStyle(ChatFormatting.RED);
             player.displayClientMessage(chatComponent, true);
             return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
@@ -175,12 +173,12 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
         }
 
         IWaystone boundTo = getBoundTo(player, stack);
-        MutableComponent targetText = boundTo != null ? new TextComponent(boundTo.getName()) : new TranslatableComponent("tooltip.waystones.bound_to_none");
+        MutableComponent targetText = boundTo != null ? Component.literal(boundTo.getName()) : Component.translatable("tooltip.waystones.bound_to_none");
         if (boundTo != null) {
             targetText.withStyle(ChatFormatting.AQUA);
         }
 
-        TranslatableComponent boundToText = new TranslatableComponent("tooltip.waystones.bound_to", targetText);
+        var boundToText = Component.translatable("tooltip.waystones.bound_to", targetText);
         boundToText.withStyle(ChatFormatting.GRAY);
         list.add(boundToText);
     }

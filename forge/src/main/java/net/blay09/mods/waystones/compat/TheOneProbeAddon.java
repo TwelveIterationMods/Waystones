@@ -58,7 +58,7 @@ public class TheOneProbeAddon {
                 if (isActivated && waystone.hasName() && waystone.isValid()) {
                     info.text(new TextComponent(waystone.getName()));
                 } else {
-                    info.text(new TranslatableComponent("tooltip.waystones.undiscovered"));
+                    info.text(Component.translatable("tooltip.waystones.undiscovered"));
                 }
             }
         }

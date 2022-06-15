@@ -11,8 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -199,7 +197,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
             WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
-                    TranslatableComponent chatComponent = new TranslatableComponent(result.getLangKey());
+                    var chatComponent = Component.translatable(result.getLangKey());
                     chatComponent.withStyle(ChatFormatting.RED);
                     player.displayClientMessage(chatComponent, true);
                 }
@@ -225,15 +223,15 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
             if (heldItem.getItem() == Items.BAMBOO) {
                 if (!world.isClientSide) {
                     tileEntity.uninitializeWaystone();
-                    player.displayClientMessage(new TextComponent("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
+                    player.displayClientMessage(Component.literal("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
                 }
                 return InteractionResult.SUCCESS;
             } else if (heldItem.getItem() == Items.STICK) {
                 if (!world.isClientSide) {
-                    player.displayClientMessage(new TextComponent("Server UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
+                    player.displayClientMessage(Component.literal("Server UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
                 }
                 if (world.isClientSide) {
-                    player.displayClientMessage(new TextComponent("Client UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
+                    player.displayClientMessage(Component.literal("Client UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
                 }
                 return InteractionResult.SUCCESS;
             }
@@ -275,7 +273,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
     }
 
     protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
-        TextComponent component = new TextComponent(waystone.getName());
+        var component = Component.literal(waystone.getName());
         component.withStyle(ChatFormatting.AQUA);
         tooltip.add(component);
     }

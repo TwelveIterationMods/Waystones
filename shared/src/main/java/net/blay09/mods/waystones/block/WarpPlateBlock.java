@@ -13,8 +13,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -111,7 +111,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         if (state.getValue(ACTIVE)) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof WarpPlateBlockEntity) {
@@ -166,7 +166,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     public static Component getGalacticName(IWaystone waystone) {
         String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
-        TextComponent galacticName = new TextComponent(name);
+        var galacticName = Component.literal(name);
         galacticName.withStyle(WarpPlateBlock.getColorForName(name));
         galacticName.withStyle(GALACTIC_STYLE);
         return galacticName;

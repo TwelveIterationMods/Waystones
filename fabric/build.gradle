@@ -1,8 +1,9 @@
 plugins {
-	id 'fabric-loom' version '0.10-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'idea'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
@@ -117,5 +118,20 @@ curseforge {
 	}
 	options {
 		forgeGradleIntegration = false
+	}
+}
+
+modrinth {
+	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+	projectId = project.modrinth_fabric_project_id
+	versionType = project.modrinth_release_type
+	versionNumber = project.version + "+fabric-" + project.minecraft_version
+	uploadFile = remapJar
+	changelog = rootProject.file("changelog.md").text
+	gameVersions = [project.minecraft_version]
+	syncBodyFrom = rootProject.file("modrinth.md").text
+	dependencies {
+		required.project "fabric-api"
+		required.project "balm"
 	}
 }

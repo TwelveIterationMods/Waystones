@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.util.RandomSource;
 
 import java.util.*;
 
@@ -15,9 +16,9 @@ public class CustomNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String randomName(Random rand) {
+    public String randomName(RandomSource rand) {
         List<String> customNames = WaystonesConfig.getActive().customWaystoneNames();
-        Collections.shuffle(customNames, rand);
+        Collections.shuffle(customNames);
         for (String customName : customNames) {
             if (allowDuplicates || !usedNames.contains(customName)) {
                 return customName;

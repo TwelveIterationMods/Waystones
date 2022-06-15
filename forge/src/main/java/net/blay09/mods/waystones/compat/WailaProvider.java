@@ -38,7 +38,7 @@ public class WailaProvider implements IWailaPlugin {
                 if (isActivated && waystone.hasName() && waystone.isValid()) {
                     tooltip.add(new TextComponent(waystone.getName()));
                 } else {
-                    tooltip.add(new TranslatableComponent("tooltip.waystones.undiscovered"));
+                    tooltip.add(Component.translatable("tooltip.waystones.undiscovered"));
                 }
             }
         }

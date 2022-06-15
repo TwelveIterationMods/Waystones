@@ -10,8 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
 
@@ -27,7 +26,7 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
                 Balm.getNetworking().sendToServer(new InventoryButtonMessage());
             }
             Minecraft.getInstance().setScreen(null);
-        }, new TranslatableComponent("gui.waystones.inventory.confirm_return"), new TextComponent(""));
+        }, Component.translatable("gui.waystones.inventory.confirm_return"), Component.empty());
 
         this.waystoneName = getWaystoneName(targetWaystone);
     }

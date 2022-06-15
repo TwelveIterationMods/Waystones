@@ -8,12 +8,14 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
+        classpath "com.modrinth.minotaur:Minotaur:2.+"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "org.spongepowered.mixin"
 apply plugin: 'maven-publish'
 apply plugin: "com.matthewprenger.cursegradle"
+apply plugin: "com.modrinth.minotaur"
 
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
 version = mod_version + buildNumber
@@ -178,5 +180,19 @@ curseforge {
         relations {
             requiredLibrary 'balm'
         }
+    }
+}
+
+modrinth {
+    token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+    projectId = project.modrinth_forge_project_id
+    versionType = project.modrinth_release_type
+    versionNumber = project.version + "+forge-" + project.minecraft_version
+    uploadFile = jar
+    changelog = rootProject.file("changelog.md").text
+    gameVersions = [project.minecraft_version]
+    syncBodyFrom = rootProject.file("modrinth.md").text
+    dependencies {
+        required.project "balm"
     }
 }

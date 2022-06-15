@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,7 +40,7 @@ public class AttunedShardItem extends Item implements IAttunementItem {
 
         IWaystone attunedWarpPlate = getWaystoneAttunedTo(null, stack);
         if (attunedWarpPlate == null || !attunedWarpPlate.isValid()) {
-            TranslatableComponent textComponent = new TranslatableComponent("tooltip.waystones.attuned_shard.attunement_lost");
+            var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_lost");
             textComponent.withStyle(ChatFormatting.GRAY);
             list.add(textComponent);
             return;
@@ -53,12 +52,12 @@ public class AttunedShardItem extends Item implements IAttunementItem {
         if (player != null && player.containerMenu instanceof WarpPlateContainer) {
             IWaystone currentWarpPlate = ((WarpPlateContainer) player.containerMenu).getWaystone();
             if (attunedWarpPlate.getWaystoneUid().equals(currentWarpPlate.getWaystoneUid())) {
-                list.add(new TranslatableComponent("tooltip.waystones.attuned_shard.move_to_other_warp_plate"));
+                list.add(Component.translatable("tooltip.waystones.attuned_shard.move_to_other_warp_plate"));
             } else {
-                list.add(new TranslatableComponent("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
+                list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
             }
         } else {
-            list.add(new TranslatableComponent("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
+            list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
         }
     }
 

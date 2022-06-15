@@ -14,8 +14,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
@@ -23,7 +22,7 @@ import java.util.Objects;
 
 public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSettingsMenu> {
 
-    private final TranslatableComponent isGlobalText = new TranslatableComponent("gui.waystones.waystone_settings.is_global");
+    private final MutableComponent isGlobalText = Component.translatable("gui.waystones.waystone_settings.is_global");
 
     private EditBox textField;
     private Button doneButton;
@@ -49,13 +48,13 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
             oldText = textField.getValue();
         }
 
-        textField = new EditBox(Minecraft.getInstance().font, width / 2 - 100, height / 2 - 20, 200, 20, textField, new TextComponent(""));
+        textField = new EditBox(Minecraft.getInstance().font, width / 2 - 100, height / 2 - 20, 200, 20, textField, Component.empty());
         textField.setMaxLength(128);
         textField.setValue(oldText);
         addRenderableWidget(textField);
         setInitialFocus(textField);
 
-        doneButton = new Button(width / 2, height / 2 + 10, 100, 20, new TranslatableComponent("gui.done"), button -> {
+        doneButton = new Button(width / 2, height / 2 + 10, 100, 20, Component.translatable("gui.done"), button -> {
             if (textField.getValue().isEmpty()) {
                 focusTextFieldNextTick = true;
                 return;
@@ -65,7 +64,7 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         });
         addRenderableWidget(doneButton);
 
-        isGlobalCheckbox = new Checkbox(width / 2 - 100, height / 2 + 10, 20, 20, new TextComponent(""), waystone.isGlobal());
+        isGlobalCheckbox = new Checkbox(width / 2 - 100, height / 2 + 10, 20, 20, Component.empty(), waystone.isGlobal());
         isGlobalCheckbox.visible = waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) && PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player));
         addRenderableWidget(isGlobalCheckbox);
 

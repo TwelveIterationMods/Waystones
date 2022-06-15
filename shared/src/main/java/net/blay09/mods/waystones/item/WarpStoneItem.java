@@ -11,7 +11,6 @@ import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -36,7 +35,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
         @Override
         public Component getDisplayName() {
-            return new TranslatableComponent("container.waystones.waystone_selection");
+            return Component.translatable("container.waystones.waystone_selection");
         }
 
         @Override
@@ -97,7 +96,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             }
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
         } else {
-            TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.warpstone_not_charged");
+            var chatComponent = Component.translatable("chat.waystones.warpstone_not_charged");
             chatComponent.withStyle(ChatFormatting.RED);
             player.displayClientMessage(chatComponent, true);
             return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
@@ -141,7 +140,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
         int secondsLeft = (int) (timeLeft / 20);
         if (secondsLeft > 0) {
-            TranslatableComponent secondsLeftText = new TranslatableComponent("tooltip.waystones.cooldown_left", secondsLeft);
+            var secondsLeftText = Component.translatable("tooltip.waystones.cooldown_left", secondsLeft);
             secondsLeftText.withStyle(ChatFormatting.GOLD);
             list.add(secondsLeftText);
         }

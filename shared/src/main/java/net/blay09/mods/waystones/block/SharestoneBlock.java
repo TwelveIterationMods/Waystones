@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -75,7 +74,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
-        TranslatableComponent component = new TranslatableComponent(color != null ? "tooltip.waystones." + color.getSerializedName() + "_sharestone" : "tooltip.waystones.sharestone");
+        var component = Component.translatable(color != null ? "tooltip.waystones." + color.getSerializedName() + "_sharestone" : "tooltip.waystones.sharestone");
         component.withStyle(ChatFormatting.GRAY);
         list.add(component);
 

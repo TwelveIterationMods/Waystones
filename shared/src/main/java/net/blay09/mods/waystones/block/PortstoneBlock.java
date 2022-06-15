@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -126,7 +125,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
             Balm.getNetworking().openGui(player, new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return new TranslatableComponent("block.waystones.portstone");
+                    return Component.translatable("block.waystones.portstone");
                 }
 
                 @Override
@@ -158,7 +157,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
-        TranslatableComponent component = new TranslatableComponent("tooltip.waystones.portstone");
+        var component = Component.translatable("tooltip.waystones.portstone");
         component.withStyle(ChatFormatting.GRAY);
         list.add(component);
 

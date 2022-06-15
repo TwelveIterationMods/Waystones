@@ -1,9 +1,10 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
+import net.minecraft.util.RandomSource;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class MixedNameGenerator implements INameGenerator {
 
@@ -14,7 +15,7 @@ public class MixedNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String randomName(Random rand) {
+    public String randomName(RandomSource rand) {
         Collections.shuffle(nameGenerators);
         for (INameGenerator nameGenerator : nameGenerators) {
             String name = nameGenerator.randomName(rand);

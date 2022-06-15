@@ -28,7 +28,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -77,13 +76,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         super.init();
 
         tooltipProviders.clear();
-        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, new TranslatableComponent("gui.waystones.waystone_selection.previous_page"), button -> {
+        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
         });
         addRenderableWidget(btnPrevPage);
 
-        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, new TranslatableComponent("gui.waystones.waystone_selection.next_page"), button -> {
+        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
         });

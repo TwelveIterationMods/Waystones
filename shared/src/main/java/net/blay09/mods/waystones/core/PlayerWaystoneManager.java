@@ -20,7 +20,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -207,7 +207,7 @@ public class PlayerWaystoneManager {
 
     private static void informPlayer(Entity entity, String translationKey) {
         if (entity instanceof Player) {
-            TranslatableComponent chatComponent = new TranslatableComponent(translationKey);
+            var chatComponent = Component.translatable(translationKey);
             chatComponent.withStyle(ChatFormatting.RED);
             ((Player) entity).displayClientMessage(chatComponent, false);
         }

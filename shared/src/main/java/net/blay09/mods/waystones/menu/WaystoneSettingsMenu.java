@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 
 public class WaystoneSettingsMenu extends AbstractContainerMenu {
 
@@ -13,6 +14,11 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
     public WaystoneSettingsMenu(MenuType<WaystoneSettingsMenu> type, IWaystone waystone, int windowId) {
         super(type, windowId);
         this.waystone = waystone;
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int i) {
+        return ItemStack.EMPTY;
     }
 
     @Override

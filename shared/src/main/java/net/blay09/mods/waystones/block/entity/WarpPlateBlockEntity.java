@@ -20,7 +20,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
@@ -166,7 +165,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("container.waystones.warp_plate");
+                return Component.translatable("container.waystones.warp_plate");
             }
 
             @Override
@@ -241,11 +240,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
                 if (entity instanceof Player) {
                     if (targetWaystone == null) {
-                        TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.warp_plate_has_no_target");
+                        var chatComponent = Component.translatable("chat.waystones.warp_plate_has_no_target");
                         chatComponent.withStyle(ChatFormatting.DARK_RED);
                         ((Player) entity).displayClientMessage(chatComponent, true);
                     } else if (!targetWaystone.isValid()) {
-                        TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.warp_plate_has_invalid_target");
+                        var chatComponent = Component.translatable("chat.waystones.warp_plate_has_invalid_target");
                         chatComponent.withStyle(ChatFormatting.DARK_RED);
                         ((Player) entity).displayClientMessage(chatComponent, true);
                     }

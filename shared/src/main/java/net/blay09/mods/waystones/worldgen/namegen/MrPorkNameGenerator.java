@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 public class MrPorkNameGenerator implements INameGenerator {
 
@@ -25,7 +25,8 @@ public class MrPorkNameGenerator implements INameGenerator {
             "tron", "cred",
     };
 
-    public String randomName(Random rand) {
+    @Override
+    public String randomName(RandomSource rand) {
         return random1[rand.nextInt(random1.length)] + random2[rand.nextInt(random2.length)] + random3[rand.nextInt(random3.length)];
     }
 

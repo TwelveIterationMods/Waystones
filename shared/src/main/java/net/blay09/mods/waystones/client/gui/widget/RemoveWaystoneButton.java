@@ -8,8 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -25,13 +23,13 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private static boolean shiftGuard;
 
     public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IWaystone waystone, OnPress pressable) {
-        super(x, y, 13, 13, new TextComponent(""), pressable);
+        super(x, y, 13, 13, Component.empty(), pressable);
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
-        tooltip = Lists.newArrayList(new TranslatableComponent("gui.waystones.waystone_selection.hold_shift_to_delete"));
-        activeTooltip = Lists.newArrayList(new TranslatableComponent("gui.waystones.waystone_selection.click_to_delete"));
+        tooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.hold_shift_to_delete"));
+        activeTooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.click_to_delete"));
         if (waystone.isGlobal()) {
-            TranslatableComponent component = new TranslatableComponent("gui.waystones.waystone_selection.deleting_global_for_all");
+            var component = Component.translatable("gui.waystones.waystone_selection.deleting_global_for_all");
             component.withStyle(ChatFormatting.DARK_RED);
             tooltip.add(component);
             activeTooltip.add(component);

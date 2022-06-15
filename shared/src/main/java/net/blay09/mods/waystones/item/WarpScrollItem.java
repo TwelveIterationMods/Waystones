@@ -10,7 +10,6 @@ import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,7 +30,7 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
     private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
         @Override
         public Component getDisplayName() {
-            return new TranslatableComponent("container.waystones.waystone_selection");
+            return Component.translatable("container.waystones.waystone_selection");
         }
 
         @Override

@@ -11,12 +11,12 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 
 public class NameGenerator extends SavedData {
@@ -41,7 +41,7 @@ public class NameGenerator extends SavedData {
         }
     }
 
-    public synchronized String getName(IWaystone waystone, Random rand, NameGenerationMode nameGenerationMode) {
+    public synchronized String getName(IWaystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
         INameGenerator nameGenerator = getNameGenerator(nameGenerationMode);
         String originalName = nameGenerator.randomName(rand);
         if (originalName == null) {

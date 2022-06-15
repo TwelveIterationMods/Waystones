@@ -38,7 +38,7 @@ public class WarpPlateJeiRecipeCategory implements IRecipeCategory<AttunedShardJ
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(UID.toString());
+        return Component.translatable(UID.toString());
     }
 
     @Override

@@ -21,8 +21,6 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -108,7 +106,7 @@ public class InventoryButtonGuiHandler {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
                     tooltip.add(formatTranslation(ChatFormatting.GRAY, "tooltip.waystones.bound_to", ChatFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
                     if (secondsLeft > 0) {
-                        tooltip.add(new TextComponent(""));
+                        tooltip.add(Component.empty());
                     }
                 } else if (inventoryButtonMode.isReturnToNearest()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_nearest_waystone"));
@@ -119,7 +117,7 @@ public class InventoryButtonGuiHandler {
                         tooltip.add(formatTranslation(ChatFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
                     }
                     if (secondsLeft > 0) {
-                        tooltip.add(new TextComponent(""));
+                        tooltip.add(Component.empty());
                     }
                 } else if (inventoryButtonMode.isReturnToAny()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
@@ -142,7 +140,7 @@ public class InventoryButtonGuiHandler {
     }
 
     private static Component formatTranslation(ChatFormatting formatting, String key, Object... args) {
-        final TranslatableComponent result = new TranslatableComponent(key, args);
+        final var result = Component.translatable(key, args);
         result.withStyle(formatting);
         return result;
     }

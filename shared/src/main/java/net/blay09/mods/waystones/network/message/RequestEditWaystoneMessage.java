@@ -11,7 +11,6 @@ import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +50,7 @@ public class RequestEditWaystoneMessage {
         final BalmMenuProvider containerProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("container.waystones.waystone_settings");
+                return Component.translatable("container.waystones.waystone_settings");
             }
 
             @Override

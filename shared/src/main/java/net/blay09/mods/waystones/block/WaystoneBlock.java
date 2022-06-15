@@ -13,10 +13,10 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -85,18 +85,18 @@ public class WaystoneBlock extends WaystoneBlockBase {
                 if (WaystonesConfig.getActive().allowWaystoneToWaystoneTeleport()) {
                     Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
                 } else {
-                    player.displayClientMessage(new TranslatableComponent("chat.waystones.waystone_to_waystone_disabled"), true);
+                    player.displayClientMessage(Component.translatable("chat.waystones.waystone_to_waystone_disabled"), true);
                 }
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
 
             if (!world.isClientSide) {
-                TextComponent nameComponent = new TextComponent(waystone.getName());
+                var nameComponent = Component.literal(waystone.getName());
                 nameComponent.withStyle(ChatFormatting.WHITE);
-                TranslatableComponent chatComponent = new TranslatableComponent("chat.waystones.waystone_activated", nameComponent);
+                var chatComponent = Component.translatable("chat.waystones.waystone_activated", nameComponent);
                 chatComponent.withStyle(ChatFormatting.YELLOW);
-                player.sendMessage(chatComponent, Util.NIL_UUID);
+                player.sendSystemMessage(chatComponent);
 
                 WaystoneSyncManager.sendActivatedWaystones(player);
 
@@ -117,7 +117,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         if (!WaystonesConfig.getActive().disableParticles() && random.nextFloat() < 0.75f) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             Player player = Minecraft.getInstance().player;

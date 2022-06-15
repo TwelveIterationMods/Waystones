@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +14,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-import java.util.Random;
 
 public class WaystoneFeature extends Feature<NoneFeatureConfiguration> {
 
@@ -28,7 +28,7 @@ public class WaystoneFeature extends Feature<NoneFeatureConfiguration> {
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel world = context.level();
         BlockPos pos = context.origin();
-        Random random = context.random();
+        RandomSource random = context.random();
         Direction facing = Direction.values()[2 + random.nextInt(4)];
         BlockState state = world.getBlockState(pos);
         BlockPos posAbove = pos.above();

@@ -10,7 +10,6 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +50,7 @@ public class InventoryButtonMessage {
             final BalmMenuProvider containerProvider = new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
-                    return new TranslatableComponent("container.waystones.waystone_selection");
+                    return Component.translatable("container.waystones.waystone_selection");
                 }
 
                 @Override
