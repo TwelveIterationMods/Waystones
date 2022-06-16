@@ -7,8 +7,7 @@ import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTypes;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -56,7 +55,7 @@ public class TheOneProbeAddon {
                 IWaystone waystone = ((WaystoneBlockEntityBase) tileEntity).getWaystone();
                 boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone);
                 if (isActivated && waystone.hasName() && waystone.isValid()) {
-                    info.text(new TextComponent(waystone.getName()));
+                    info.text(Component.literal(waystone.getName()));
                 } else {
                     info.text(Component.translatable("tooltip.waystones.undiscovered"));
                 }

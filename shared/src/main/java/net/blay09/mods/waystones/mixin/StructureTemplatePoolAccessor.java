@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.mixin;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,9 +20,9 @@ public interface StructureTemplatePoolAccessor {
     void setRawTemplates(List<Pair<StructurePoolElement, Integer>> rawTemplates);
 
     @Accessor
-    List<StructurePoolElement> getTemplates();
+    ObjectArrayList<StructurePoolElement> getTemplates();
 
     @Accessor
     @Mutable
-    void setTemplates(List<StructurePoolElement> templates);
+    void setTemplates(ObjectArrayList<StructurePoolElement> templates);
 }

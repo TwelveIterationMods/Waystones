@@ -126,13 +126,13 @@ dependencies {
     testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
     compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193")
+//    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193")
 
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
     compileOnly fg.deobf("curse.maven:wthit-455982:3635139")
 
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
-    runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
+//    runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
 
     implementation "org.jetbrains:annotations:22.0.0"
 }

@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.worldgen;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
@@ -17,6 +18,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -64,11 +67,14 @@ public class ModWorldGen {
         placedMossyWaystoneFeature = worldGen.registerPlacedFeature(id("mossy_waystone"), configuredMossyWaystoneFeature::get, new WaystonePlacement());
         placedSandyWaystoneFeature = worldGen.registerPlacedFeature(id("sandy_waystone"), configuredSandyWaystoneFeature::get, new WaystonePlacement());
 
-        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesCategory(Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesNeitherCategory(Biome.BiomeCategory.SWAMP, Biome.BiomeCategory.DESERT, Biome.BiomeCategory.JUNGLE, Biome.BiomeCategory.MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+        final var IS_DESERT = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_desert"));
+        final var IS_SWAMP = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_swamp"));
+        final var IS_MUSHROOM = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_mushroom"));
+        worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
+        worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
+        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
 
         Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
         Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
@@ -81,14 +87,14 @@ public class ModWorldGen {
                         () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
     }
 
-    private static BiomePredicate matchesCategory(Biome.BiomeCategory category) {
-        return (resourceLocation, biomeCategory, precipitation, v, v1) -> category == biomeCategory;
+    private static BiomePredicate matchesTag(TagKey<Biome> tag) {
+        return (resourceLocation, biome) -> biome.is(tag);
     }
 
-    private static BiomePredicate matchesNeitherCategory(Biome.BiomeCategory... categories) {
-        return (resourceLocation, biomeCategory, precipitation, v, v1) -> {
-            for (Biome.BiomeCategory category : categories) {
-                if (category == biomeCategory) {
+    private static BiomePredicate matchesNeitherTag(List<TagKey<Biome>> tags) {
+        return (resourceLocation, biome) -> {
+            for (TagKey<Biome> tag : tags) {
+                if (biome.is(tag)) {
                     return false;
                 }
             }
@@ -134,7 +140,7 @@ public class ModWorldGen {
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
             // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.
-            List<StructurePoolElement> listOfPieces = new ArrayList<>(poolAccessor.getTemplates());
+            final var listOfPieces = new ObjectArrayList<>(poolAccessor.getTemplates());
             for (int i = 0; i < weight; i++) {
                 listOfPieces.add(piece);
             }

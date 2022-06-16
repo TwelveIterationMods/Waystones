@@ -9,8 +9,6 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class WailaProvider implements IWailaPlugin {
                 IWaystone waystone = ((WaystoneBlockEntityBase) tileEntity).getWaystone();
                 boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(accessor.getPlayer(), waystone);
                 if (isActivated && waystone.hasName() && waystone.isValid()) {
-                    tooltip.add(new TextComponent(waystone.getName()));
+                    tooltip.add(Component.literal(waystone.getName()));
                 } else {
                     tooltip.add(Component.translatable("tooltip.waystones.undiscovered"));
                 }
