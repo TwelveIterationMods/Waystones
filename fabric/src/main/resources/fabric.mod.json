@@ -28,7 +28,7 @@
     "modmenu": [
       "net.blay09.mods.waystones.compat.ModMenuIntegration"
     ],
-    "rei_plugins": [
+    "rei_client": [
       "net.blay09.mods.waystones.compat.RoughlyEnoughItemsIntegration"
     ],
     "journeymap": [
