@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 /**
  * Kinda awkward but the only way I could easily avoid much duplicate code without having deobf in shared gradle.
  */
-public class JadeWaystones {
+public class WaystonesWailaUtils {
 
     public static final ResourceLocation WAYSTONE_UID = new ResourceLocation(Waystones.MOD_ID, "waystone");
 
@@ -36,7 +36,7 @@ public class JadeWaystones {
         }
     }
 
-    private JadeWaystones() {
+    private WaystonesWailaUtils() {
     }
 
 }

@@ -17,12 +17,12 @@ public class FabricJadeWaystonesPlugin implements IWailaPlugin {
     private static class WaystoneDataProvider implements IBlockComponentProvider {
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-            JadeWaystones.appendTooltip(accessor.getBlockEntity(), accessor.getPlayer(), tooltip::add);
+            WaystonesWailaUtils.appendTooltip(accessor.getBlockEntity(), accessor.getPlayer(), tooltip::add);
         }
 
         @Override
         public ResourceLocation getUid() {
-            return JadeWaystones.WAYSTONE_UID;
+            return WaystonesWailaUtils.WAYSTONE_UID;
         }
     }
 }
