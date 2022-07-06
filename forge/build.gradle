@@ -129,7 +129,10 @@ dependencies {
 //    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193")
 
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
-    compileOnly fg.deobf("curse.maven:wthit-455982:3635139")
+
+    implementation fg.deobf("curse.maven:badpackets-615134:3773642")
+    implementation fg.deobf("curse.maven:wthit-455982:3856256")
+    compileOnly fg.deobf("curse.maven:jade-324717:3834997")
 
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
 //    runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")

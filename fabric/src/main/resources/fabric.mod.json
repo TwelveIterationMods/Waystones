@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "waystones",
   "version": "${version}",
-
   "name": "Waystones",
   "description": "Teleport back to activated waystones. For Survival, Adventure or Servers.",
   "authors": [
@@ -13,10 +12,8 @@
     "sources": "https://github.com/ModdingForBlockheads/Waystones",
     "issues": "https://github.com/ModdingForBlockheads/Waystones/issues"
   },
-
   "license": "All Rights Reserved",
   "icon": "waystones-icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -33,6 +30,9 @@
     ],
     "journeymap": [
       "net.blay09.mods.waystones.compat.JourneyMapAddon"
+    ],
+    "jade": [
+      "net.blay09.mods.waystones.compat.FabricJadeWaystonesPlugin"
     ]
   },
   "mixins": [
@@ -55,6 +55,10 @@
         "modmenu.discord": "https://discord.gg/scGAfXC",
         "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
+    },
+    "waila:plugins": {
+      "id": "waystones:wthit",
+      "initializer": "net.blay09.mods.waystones.compat.WTHITWaystonesPlugin"
     }
   }
 }

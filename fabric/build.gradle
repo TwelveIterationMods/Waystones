@@ -26,6 +26,10 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+	modImplementation "curse.maven:badpackets-615134:3773641"
+	modImplementation "curse.maven:wthit-440979:3856255"
+	modCompileOnly "curse.maven:jade-324717:3836188"
+
 	modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
 //	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
 
