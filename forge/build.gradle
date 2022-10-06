@@ -130,8 +130,8 @@ dependencies {
 
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
 
-    implementation fg.deobf("curse.maven:badpackets-615134:3773642")
-    implementation fg.deobf("curse.maven:wthit-455982:3856256")
+    compileOnly fg.deobf("curse.maven:badpackets-615134:3773642")
+    compileOnly fg.deobf("curse.maven:wthit-455982:3856256")
     compileOnly fg.deobf("curse.maven:jade-324717:3834997")
 
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)

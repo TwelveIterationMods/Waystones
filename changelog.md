@@ -1,3 +1,7 @@
+### Version 11.1.1 for Minecraft 1.19.x
+
+- Changed recipe of warp stone to use Amethyst Shards instead of Purple Dye
+
 ### Version 11.1.0 for Minecraft 1.19.x
 
 - Changed recipe of warp dust to use Amethyst Shards instead of Purple Dye
