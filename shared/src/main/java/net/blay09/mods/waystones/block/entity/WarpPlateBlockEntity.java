@@ -83,23 +83,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     @Override
-    public ItemStack removeItem(int slot, int count) {
-        if (!completedFirstAttunement) {
-            return ItemStack.EMPTY;
-        }
-        return ImplementedContainer.super.removeItem(slot, count);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int slot) {
-        if (!completedFirstAttunement) {
-            return ItemStack.EMPTY;
-        }
-
-        return ImplementedContainer.super.removeItemNoUpdate(slot);
-    }
-
-    @Override
     public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
         super.initializeFromExisting(world, existingWaystone, itemStack);
 
