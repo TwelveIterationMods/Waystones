@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -28,32 +29,38 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class WaystoneSelectionScreenBase extends ContainerScreen<WaystoneSelectionContainer> {
 
     private final List<IWaystone> waystones;
+    private List<IWaystone> searchedWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
     private Button btnPrevPage;
     private Button btnNextPage;
+    private TextFieldWidget searchBox;
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
     private int buttonsPerPage;
 
-    private static final int headerHeight = 40;
+    private static final int headerHeight = 64;
     private static final int footerHeight = 25;
     private static final int entryHeight = 25;
 
     public WaystoneSelectionScreenBase(WaystoneSelectionContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         waystones = container.getWaystones();
+        searchedWaystones = new ArrayList<>(waystones);
         xSize = 270;
         ySize = 200;
     }
@@ -84,6 +91,13 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         });
         addButton(btnNextPage);
 
+        searchBox = new TextFieldWidget(font, width / 2 - 99, guiTop + headerHeight - 24, 198, 20, StringTextComponent.EMPTY);
+        searchBox.setResponder(text -> {
+            searchWaystones();
+        });
+
+        addListener(searchBox);
+
         updateList();
     }
 
@@ -99,7 +113,7 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         headerY = 0;
 
         btnPrevPage.active = pageOffset > 0;
-        btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
+        btnNextPage.active = pageOffset < (searchedWaystones.size() - 1) / buttonsPerPage;
 
         tooltipProviders.clear();
         buttons.removeIf(button -> button instanceof WaystoneButton || button instanceof SortWaystoneButton || button instanceof RemoveWaystoneButton);
@@ -108,8 +122,8 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
         int y = guiTop + headerHeight + headerY;
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
-            if (entryIndex >= 0 && entryIndex < waystones.size()) {
-                IWaystone waystone = waystones.get(entryIndex);
+            if (entryIndex >= 0 && entryIndex < searchedWaystones.size()) {
+                IWaystone waystone = searchedWaystones.get(entryIndex);
 
                 addButton(createWaystoneButton(y, waystone));
 
@@ -121,7 +135,7 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
                     addButton(sortUpButton);
 
                     SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
-                    if (entryIndex == waystones.size() - 1) {
+                    if (entryIndex == searchedWaystones.size() - 1) {
                         sortDownButton.active = false;
                     }
                     addButton(sortDownButton);
@@ -144,8 +158,8 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
             }
         }
 
-        btnPrevPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
-        btnNextPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
+        btnPrevPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (searchedWaystones.size() > 0 ? 10 : 0);
+        btnNextPage.y = guiTop + headerY + headerHeight + buttonsPerPage * 22 + (searchedWaystones.size() > 0 ? 10 : 0);
     }
 
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
@@ -180,6 +194,15 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
 
         PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
         NetworkHandler.channel.sendToServer(new SortWaystoneMessage(index, otherIndex));
+        searchWaystones();
+    }
+
+    private void searchWaystones() {
+        searchedWaystones = waystones.stream().filter((waystone) -> waystone.getName().toLowerCase().contains(searchBox.getText().toLowerCase())).collect(Collectors.toList());
+        int calculatedPageOffset = (searchedWaystones.size() - 1) / buttonsPerPage;
+        if (!searchBox.getText().isEmpty() && calculatedPageOffset < pageOffset)
+            pageOffset = calculatedPageOffset;
+
         updateList();
     }
 
@@ -203,6 +226,8 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
                 func_243308_b(matrixStack, tooltipProvider.getTooltip(), mouseX, mouseY);
             }
         }
+
+        searchBox.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -272,5 +297,13 @@ public abstract class WaystoneSelectionScreenBase extends ContainerScreen<Waysto
 
     protected boolean allowDeletion() {
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (!this.searchBox.isFocused() || (keyCode == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc())) {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+        return this.searchBox.keyPressed(keyCode, scanCode, modifiers);
     }
 }
