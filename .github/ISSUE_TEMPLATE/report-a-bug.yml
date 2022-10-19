@@ -28,7 +28,7 @@ body:
       options:
         - Forge
         - Fabric
-        - SpongeForge
+        - Quilt
     validations:
       required: true
   - type: input
@@ -60,5 +60,5 @@ body:
   - type: input
     id: optifine
     attributes:
-      label: Do you use any performance-enhancing mods (e.g. OptiFine)?
+      label: Do you use any performance-enhancing mods (e.g. OptiFine) or custom server distributions (e.g. SpongeForge)?
       description: Specify which and test whether the issue happens with those mods disabled.

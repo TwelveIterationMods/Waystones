@@ -1,0 +1,10 @@
+name: build
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    uses: ModdingForBlockheads/Workflows/.github/workflows/build.yml@main
+    secrets: inherit
