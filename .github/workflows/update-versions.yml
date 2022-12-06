@@ -17,7 +17,7 @@ on:
 
 jobs:
   update-versions:
-    uses: ModdingForBlockheads/Workflows/.github/workflows/update-versions.yml@main
+    uses: TwelveIterationMods/Workflows/.github/workflows/update-versions.yml@main
     with:
       minecraftVersion: ${{ github.event.inputs.minecraftVersion }}
       channel: ${{ github.event.inputs.channel }}

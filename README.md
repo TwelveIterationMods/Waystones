@@ -16,6 +16,6 @@ This mod is available for both Forge and Fabric (starting Minecraft 1.17).
 
 ## Contributing
 
-If you're interested in contributing to the mod, you can check out [issues labelled as "help wanted"](https://github.com/ModdingForBlockheads/Waystones/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). These should be ready to be implemented as they are.
+If you're interested in contributing to the mod, you can check out [issues labelled as "help wanted"](https://github.com/TwelveIterationMods/Waystones/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). These should be ready to be implemented as they are.
 
 If you need help, feel free to join us on [Discord](https://discord.gg/scGAfXC).

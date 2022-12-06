@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath "com.modrinth.minotaur:Minotaur:2.+"
@@ -17,11 +17,9 @@ apply plugin: 'maven-publish'
 apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: "com.modrinth.minotaur"
 
-def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
-version = mod_version + buildNumber
-
-archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 group = mod_group
+archivesBaseName = "${mod_id}-forge-${minecraft_version}"
+version = mod_version
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
@@ -32,7 +30,9 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName "Client"
 
-            arg "-mixin.config=${mod_id}.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -57,7 +57,9 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName "Server"
 
-            arg "-mixin.config=${mod_id}.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -84,7 +86,9 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            arg "-mixin.config=${mod_id}.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -120,25 +124,15 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     compileOnly project(":shared")
 
-    implementation fg.deobf("net.blay09.mods:balm:${balm_forge_version}")
+    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_forge_version}")
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
     testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
-    compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.193")
-
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:3606616")
-
-    compileOnly fg.deobf("curse.maven:badpackets-615134:3773642")
-    compileOnly fg.deobf("curse.maven:wthit-455982:3856256")
-    compileOnly fg.deobf("curse.maven:jade-324717:3834997")
-
-    compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
-//    runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
-
     implementation "org.jetbrains:annotations:22.0.0"
 }
+
+apply from: 'dependencies.gradle'
 
 tasks.withType(JavaCompile) {
     source(project(":shared").sourceSets.main.allSource)
@@ -158,26 +152,28 @@ publishing {
             artifact jar
         }
     }
+
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/" + github_repo)
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-            }
+            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials)
         }
     }
 }
 
 curseforge {
-    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
+    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
         id = curseforge_forge_project_id
         releaseType = curseforge_release_type
         changelogType = 'markdown'
-        changelog = file('../changelog.md')
-        addGameVersion minecraft_version
+        changelog = rootProject.file('CHANGELOG.md')
+        project.minecraft_versions.split(',').each {
+            addGameVersion minecraft_version
+        }
         addGameVersion 'Forge'
 
         relations {
@@ -192,9 +188,10 @@ modrinth {
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
-    changelog = rootProject.file("changelog.md").text
-    gameVersions = [project.minecraft_version]
+    changelog = rootProject.file("CHANGELOG.md").text
+    gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("modrinth.md").text
+    loaders = ['forge']
     dependencies {
         required.project "balm"
     }

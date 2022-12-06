@@ -1,0 +1,15 @@
+dependencies {
+    modImplementation "curse.maven:badpackets-615134:3773641"
+    modImplementation "curse.maven:wthit-440979:3856255"
+    modCompileOnly "curse.maven:jade-324717:3836188"
+
+    modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
+//	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
+
+    modImplementation "curse.maven:modmenu-308702:3348711"
+
+    // Roughly Enough Items
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.264-alpha"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:6.0.264-alpha"
+    modCompileOnly "me.shedaniel:architectury:2.0.9"
+}

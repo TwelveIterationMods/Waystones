@@ -14,7 +14,7 @@ on:
 
 jobs:
   create-release:
-    uses: ModdingForBlockheads/Workflows/.github/workflows/create-release.yml@main
+    uses: TwelveIterationMods/Workflows/.github/workflows/create-release.yml@main
     with:
       bump: ${{ github.event.inputs.bump }}
     secrets: inherit
