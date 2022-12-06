@@ -16,7 +16,8 @@ repositories {
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.4'
     compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
-    compileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_common_version, changing: true
+    compileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}"
+    testCompileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}" // I don't know why some deps need to be on testCompile
     compileOnly("net.blay09.mods:balm-fabric:${balm_fabric_version}:dev") {
         exclude(group: "net.fabricmc", module: "fabric-loader")
         exclude(group: "net.fabricmc.fabric-api")
