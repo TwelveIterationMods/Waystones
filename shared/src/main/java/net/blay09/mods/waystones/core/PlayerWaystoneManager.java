@@ -20,6 +20,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -246,7 +248,7 @@ public class PlayerWaystoneManager {
             }
 
             List<ResourceLocation> forbidden = WaystonesConfig.getActive().leashedDenyList().stream().map(ResourceLocation::new).collect(Collectors.toList());
-            if (leashed.stream().anyMatch(e -> forbidden.contains(Registry.ENTITY_TYPE.getKey(e.getType())))) {
+            if (leashed.stream().anyMatch(e -> forbidden.contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType())))) {
                 logger.info("Rejected teleport with denied leashed entity");
                 informPlayer(entity, "chat.waystones.cannot_transport_this_leashed");
                 return false;

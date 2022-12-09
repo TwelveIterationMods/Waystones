@@ -14,7 +14,7 @@ public class SortWaystoneButton extends Button {
     private final int visibleRegionHeight;
 
     public SortWaystoneButton(int x, int y, int sortDir, int visibleRegionStart, int visibleRegionHeight, OnPress pressable) {
-        super(x, y, 11, 7, Component.empty(), pressable);
+        super(x, y, 11, 7, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         this.sortDir = sortDir;
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
@@ -24,8 +24,8 @@ public class SortWaystoneButton extends Button {
     public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             RenderSystem.setShaderTexture(0, SERVER_SELECTION_BUTTONS);
-            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            int renderY = y - (sortDir == 1 ? 20 : 5);
+            this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+            int renderY = getY() - (sortDir == 1 ? 20 : 5);
             RenderSystem.enableBlend();
             if (active && isHovered) {
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -36,9 +36,9 @@ public class SortWaystoneButton extends Button {
             }
 
             if (isHovered && active) {
-                blit(matrixStack, x - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
+                blit(matrixStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
             } else {
-                blit(matrixStack, x - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
+                blit(matrixStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
             }
 
             RenderSystem.disableBlend();

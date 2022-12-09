@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -117,7 +118,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         ResourceLocation waystoneType = buf.readResourceLocation();
         String name = buf.readUtf();
         boolean isGlobal = buf.readBoolean();
-        ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(buf.readUtf(250)));
+        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
         BlockPos pos = buf.readBlockPos();
 
         Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, false, null);
@@ -129,7 +130,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     public static IWaystone read(CompoundTag compound) {
         UUID waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("WaystoneUid")));
         String name = compound.getString("Name");
-        ResourceKey<Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(compound.getString("World")));
+        ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
         BlockPos pos = NbtUtils.readBlockPos(compound.getCompound("BlockPos"));
         boolean wasGenerated = compound.getBoolean("WasGenerated");
         UUID ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;

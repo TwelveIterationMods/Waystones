@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.block.entity;
 
-import net.blay09.mods.balm.api.block.entity.BalmBlockEntity;
 import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
+import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;

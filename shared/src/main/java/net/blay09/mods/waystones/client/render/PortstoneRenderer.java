@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
@@ -52,8 +52,8 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         matrixStack.pushPose();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.mulPose(new Quaternion(0f, -facing.toYRot(), 0f, true));
-        matrixStack.mulPose(new Quaternion(-180f, 0f, 0f, true));
+        matrixStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+        matrixStack.mulPose(Axis.XN.rotationDegrees(180f));
         matrixStack.translate(0f, -2f, 0f);
         float scale = 1.01f;
         matrixStack.scale(0.5f, 0.5f, 0.5f);
@@ -70,9 +70,9 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         matrixStack.pushPose();
         matrixStack.translate(0.5f, 1f, 0.5f);
-        matrixStack.mulPose(new Quaternion(0f, -facing.toYRot(), 0f, true));
+        matrixStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
         matrixStack.translate(0f, 0f, 0.15f);
-        matrixStack.mulPose(new Quaternion(-25f, 0f, 0f, true));
+        matrixStack.mulPose(Axis.XN.rotationDegrees(25f));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
         matrixStack.translate(0.03125f, 0f, 0f);
         Minecraft.getInstance().getItemRenderer().renderStatic(warpStoneItem, ItemTransforms.TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, buffer, 0);

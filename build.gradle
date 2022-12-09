@@ -41,4 +41,10 @@ subprojects {
         it.options.encoding = 'UTF-8'
         it.options.release = java_version as int
     }
+
+    if (balm_version.endsWith("SNAPSHOT")) {
+        configurations.all {
+            resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
+        }
+    }
 }

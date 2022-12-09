@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import org.joml.Quaternionf;
 
 import java.util.Objects;
 
@@ -44,8 +45,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         float angle = state.getValue(WaystoneBlock.FACING).toYRot();
         matrixStack.pushPose();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.mulPose(new Quaternion(0f, angle, 0f, true));
-        matrixStack.mulPose(new Quaternion(-180f, 0f, 0f, true));
+        matrixStack.mulPose(Axis.YP.rotation(angle));
+        matrixStack.mulPose(Axis.XN.rotationDegrees(180f));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
         Player player = Minecraft.getInstance().player;
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone());

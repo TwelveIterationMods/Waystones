@@ -128,10 +128,11 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     compileOnly project(":shared")
 
-    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_forge_version}")
+    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+        changing = balm_version.endsWith("SNAPSHOT")
+    }
 
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
-    testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
 
     implementation "org.jetbrains:annotations:22.0.0"
 }
