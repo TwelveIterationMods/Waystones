@@ -114,8 +114,6 @@ public class JourneyMapAddon implements IClientPlugin {
                 waypoint.setEnabled(oldWaypoint.isEnabled());
                 if (oldWaypoint.hasColor()) {
                     waypoint.setColor(oldWaypoint.getColor());
-                } else if (oldWaypoint.getIcon().getColor() != -1) { // TODO just temporary for testing, since color field is always null right now
-                    waypoint.setColor(oldWaypoint.getIcon().getColor());
                 }
                 if (oldWaypoint.hasBackgroundColor()) {
                     waypoint.setBackgroundColor(oldWaypoint.getBackgroundColor());

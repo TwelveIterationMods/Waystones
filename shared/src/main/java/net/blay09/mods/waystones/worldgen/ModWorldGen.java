@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WorldGenStyle;
 import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ModWorldGen {
     private static final ResourceLocation waystone = new ResourceLocation("waystones", "waystone");
@@ -38,7 +40,8 @@ public class ModWorldGen {
     private static final ResourceLocation sandyWaystone = new ResourceLocation("waystones", "sandy_waystone");
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
-    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST, new ResourceLocation("minecraft", "empty"));
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
+            new ResourceLocation("minecraft", "empty"));
 
     public static DeferredObject<PlacementModifierType<WaystonePlacement>> waystonePlacement;
 
@@ -56,17 +59,12 @@ public class ModWorldGen {
         worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                getWaystoneFeature(WorldGenStyle.DEFAULT));
 
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
-        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
-
-        // Registers a condition for repurposed structures compat
-//        TODO Registry.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
-//        TODO         .ifPresent(registry -> Registry.register(
-//        TODO                 (Registry<Supplier<Boolean>>) registry,
-//        TODO                 new ResourceLocation("waystones", "config"),
-//        TODO                 () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
+        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
@@ -103,7 +101,7 @@ public class ModWorldGen {
         };
     }
 
-    public static void setupVillageWorldGen(RegistryAccess registryAccess) {
+    public static void setupDynamicRegistries(RegistryAccess registryAccess) {
         if (WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()) {
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(registryAccess, "village/plains/houses", villageWaystoneStructure, 1);
@@ -112,12 +110,25 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/desert/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
         }
+
+        // Registers a condition for repurposed structures compat
+        registryAccess.registry(ResourceKey.createRegistryKey(new ResourceLocation("repurposed_structures", "json_conditions")))
+                .ifPresent(registry -> {
+                    ResourceLocation conditionId = new ResourceLocation("waystones", "config");
+                    Supplier<Boolean> condition = () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive()
+                            .forceSpawnInVillages();
+                    if (!registry.containsKey(conditionId)) {
+                        Registry.register(registry, conditionId, condition);
+                    }
+                });
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
 
-        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registries.PROCESSOR_LIST).getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
-        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
+        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registries.PROCESSOR_LIST)
+                .getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
+        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
+                .apply(StructureTemplatePool.Projection.RIGID);
         StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
