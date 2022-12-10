@@ -26,7 +26,7 @@ public class ModItems {
         items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
         items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
         items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));
-        items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"));
+        items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"), null);
 
         creativeModeTab = items.registerCreativeModeTab(id("waystones"), () -> new ItemStack(ModBlocks.waystone));
     }

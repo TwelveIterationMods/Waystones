@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/portstone"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
     private final PortstoneModel model;

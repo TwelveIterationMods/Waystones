@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/sharestone_color"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 

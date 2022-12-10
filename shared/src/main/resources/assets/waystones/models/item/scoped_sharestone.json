@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [256, 256],
 	"textures": {
-		"1": "waystones:waystone_overlays/sharestone_color",
+		"1": "minecraft:waystone_overlays/sharestone_color",
 		"particle": "minecraft:block/andesite",
 		"texture": "waystones:block/andesite_waystone"
 	},

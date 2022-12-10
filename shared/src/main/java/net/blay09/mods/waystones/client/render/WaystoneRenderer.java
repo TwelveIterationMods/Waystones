@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/waystone_active"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/waystone_active"));
 
     private final SharestoneModel model;
 
@@ -45,7 +45,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         float angle = state.getValue(WaystoneBlock.FACING).toYRot();
         matrixStack.pushPose();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.mulPose(Axis.YP.rotation(angle));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(angle));
         matrixStack.mulPose(Axis.XN.rotationDegrees(180f));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
         Player player = Minecraft.getInstance().player;
