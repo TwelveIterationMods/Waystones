@@ -16,18 +16,18 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import org.joml.Quaternionf;
 
 import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/waystone_active"));
 
     private final SharestoneModel model;
 

@@ -12,11 +12,11 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/portstone"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
     private final PortstoneModel model;

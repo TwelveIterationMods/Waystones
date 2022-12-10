@@ -40,10 +40,10 @@
   ],
   "depends": {
     "cloth-config2": ">=5.0.34",
-    "balm-fabric": ">=4.1.0",
+    "balm-fabric": ">=4.5.3",
     "fabricloader": ">=0.14.7",
-    "fabric": "*",
-    "minecraft": "1.19.x",
+    "fabric-api": "*",
+    "minecraft": ">=1.19.3",
     "java": ">=17"
   },
   "suggests": {

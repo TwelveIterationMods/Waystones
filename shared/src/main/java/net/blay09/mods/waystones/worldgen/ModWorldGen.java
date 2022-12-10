@@ -49,14 +49,6 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        // TODO configuredWaystoneFeature = worldGen.registerConfiguredFeature(id("waystone"), waystoneFeature::get, () -> FeatureConfiguration.NONE);
-        // TODO configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(id("mossy_waystone"), mossyWaystoneFeature::get, () -> FeatureConfiguration.NONE);
-        // TODO configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(id("sandy_waystone"), sandyWaystoneFeature::get, () -> FeatureConfiguration.NONE);
-
-        // TODO placedWaystoneFeature = worldGen.registerPlacedFeature(id("waystone"), configuredWaystoneFeature::get, new WaystonePlacement());
-        // TODO placedMossyWaystoneFeature = worldGen.registerPlacedFeature(id("mossy_waystone"), configuredMossyWaystoneFeature::get, new WaystonePlacement());
-        // TODO placedSandyWaystoneFeature = worldGen.registerPlacedFeature(id("sandy_waystone"), configuredSandyWaystoneFeature::get, new WaystonePlacement());
-
         final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
         final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
         final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));

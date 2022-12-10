@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -28,7 +29,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(Waystones.MOD_ID, "waystone_overlays/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 
