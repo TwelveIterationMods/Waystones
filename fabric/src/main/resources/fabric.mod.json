@@ -22,17 +22,20 @@
     "client": [
       "net.blay09.mods.waystones.client.FabricWaystonesClient"
     ],
+    "fabric-datagen": [
+      "net.blay09.mods.waystones.datagen.WaystonesDataGenerator"
+    ],
     "modmenu": [
       "net.blay09.mods.waystones.compat.ModMenuIntegration"
     ],
     "rei_client": [
-      "net.blay09.mods.waystones.compat.RoughlyEnoughItemsIntegration"
+      "net.blay09.mods.waystones.compat.rei.RoughlyEnoughItemsIntegration"
     ],
     "journeymap": [
-      "net.blay09.mods.waystones.compat.JourneyMapAddon"
+      "net.blay09.mods.waystones.compat.JourneyMapIntegration"
     ],
     "jade": [
-      "net.blay09.mods.waystones.compat.FabricJadeWaystonesPlugin"
+      "net.blay09.mods.waystones.compat.JadeIntegration"
     ]
   },
   "mixins": [

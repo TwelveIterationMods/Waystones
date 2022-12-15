@@ -1,8 +1,10 @@
 repositories {
-    maven { url "https://maven.bai.lol" }
+    // For JourneyMap
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
 }
 
 dependencies {
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
     compileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}"
 }

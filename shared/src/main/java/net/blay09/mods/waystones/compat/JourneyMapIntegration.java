@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @ClientPlugin
-public class JourneyMapAddon implements IClientPlugin {
+public class JourneyMapIntegration implements IClientPlugin {
 
     private static final UUID WAYSTONE_GROUP_ID = UUID.fromString("005bdf11-2dbb-4a27-8aa4-0184e86fa33c");
 
@@ -25,9 +25,9 @@ public class JourneyMapAddon implements IClientPlugin {
     private boolean journeyMapReady;
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
-    private static JourneyMapAddon instance;
+    private static JourneyMapIntegration instance;
 
-    public JourneyMapAddon()
+    public JourneyMapIntegration()
     {
         instance = this;
         Balm.getEvents().onEvent(KnownWaystonesEvent.class, this::onKnownWaystones);
@@ -46,7 +46,7 @@ public class JourneyMapAddon implements IClientPlugin {
      * This will be null if Journeymap is not loaded.
      */
     @Nullable
-    public static JourneyMapAddon getInstance()
+    public static JourneyMapIntegration getInstance()
     {
         return instance;
     }
