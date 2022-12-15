@@ -1,33 +1,27 @@
 plugins {
     id('java')
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
     id 'maven-publish'
 }
 group = mod_group
 version = mod_version
 archivesBaseName = "${mod_id}-common-${minecraft_version}"
 
-repositories {
-    maven {
-        url = 'https://maven.minecraftforge.net'
-    }
+minecraft {
+    version(minecraft_version)
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    compileOnly 'org.spongepowered:mixin:0.8.4'
+    compileOnly 'org.spongepowered:mixin:0.8.5'
 
-    modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "net.fabricmc")
+    compileOnly("net.blay09.mods:balm-common:${balm_version}") {
+        exclude(group: "net.blay09.mods", module: "shared-bridge")
+        changing = balm_version.endsWith("SNAPSHOT")
     }
 
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
-
-    modCompileOnly("net.blay09.mods:balm-fabric:${balm_version}") {
-        transitive = false
-        changing = balm_version.endsWith("SNAPSHOT")
+    compileOnly("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
+        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "net.fabricmc")
     }
 }
 
@@ -40,12 +34,6 @@ configurations {
 jar {
     from("LICENSE") {
         rename { "${it}_${mod_id}" }
-    }
-}
-
-loom {
-    mixin {
-        useLegacyMixinAp = false
     }
 }
 

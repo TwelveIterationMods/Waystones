@@ -19,7 +19,7 @@ dependencies {
 	implementation project(path: ":shared", configuration: "namedElements")
 
 	modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
-		transitive = false
+		exclude(group: "net.blay09.mods", module: "shared-bridge")
 		changing = balm_version.endsWith("SNAPSHOT")
 	}
 
