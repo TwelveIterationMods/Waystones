@@ -76,7 +76,7 @@ public class InventoryButtonGuiHandler {
                 }
             }, () -> {
                 if (screen instanceof CreativeModeInventoryScreen creativeModeInventoryScreen) {
-                    return creativeModeInventoryScreen.getSelectedTab() == CreativeModeTab.TAB_INVENTORY.getId();
+                    return creativeModeInventoryScreen.isInventoryOpen();
                 }
 
                 return true;

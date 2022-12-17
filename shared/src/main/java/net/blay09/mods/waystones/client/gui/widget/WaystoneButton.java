@@ -25,7 +25,7 @@ public class WaystoneButton extends Button {
     private final int xpLevelCost;
 
     public WaystoneButton(int x, int y, IWaystone waystone, int xpLevelCost, OnPress pressable) {
-        super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable);
+        super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         Player player = Minecraft.getInstance().player;
         this.xpLevelCost = xpLevelCost;
         if (player == null || !PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
@@ -56,13 +56,13 @@ public class WaystoneButton extends Button {
         if (xpLevelCost > 0) {
             boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.getAbilities().instabuild;
             RenderSystem.setShaderTexture(0, ENCHANTMENT_TABLE_GUI_TEXTURE);
-            blit(matrixStack, x + 2, y + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+            blit(matrixStack, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
             if (xpLevelCost > 3) {
-                mc.font.draw(matrixStack, "+", x + 17, y + 6, 0xC8FF8F);
+                mc.font.draw(matrixStack, "+", getX() + 17, getY() + 6, 0xC8FF8F);
             }
 
-            if (isHovered && mouseX <= x + 16) {
+            if (isHovered && mouseX <= getX() + 16) {
                 final List<Component> tooltip = new ArrayList<>();
                 final var levelRequirementText = Component.translatable("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
                 levelRequirementText.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED);

@@ -1,28 +1,73 @@
 plugins {
     id('java')
     id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
+    id 'maven-publish'
 }
 
+group = mod_group
+version = mod_version
 archivesBaseName = "${mod_id}-common-${minecraft_version}"
 
 minecraft {
     version(minecraft_version)
 }
 
-repositories {
-    maven { url "https://maven.bai.lol" }
+dependencies {
+    compileOnly "org.spongepowered:mixin:$mixin_version"
+
+    compileOnly("net.blay09.mods:balm-common:$balm_version") {
+        exclude(group: "net.blay09.mods", module: "shared-bridge")
+        changing = balm_version.endsWith("SNAPSHOT")
+    }
+
+    compileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
+        transitive = false
+    }
+
+    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
+
+    compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
-dependencies {
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.4'
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
-    compileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}"
-    compileOnly("net.blay09.mods:balm-fabric:${balm_fabric_version}:dev") {
-        exclude(group: "net.fabricmc", module: "fabric-loader")
-        exclude(group: "net.fabricmc.fabric-api")
+apply from: 'dependencies.gradle'
+
+jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
     }
 }
 
-configurations {
-    testImplementation.extendsFrom compileOnly
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id + "-common"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
+
+            artifact jar
+
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+
+            artifact project.javadocJar {
+                classifier 'javadoc'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials)
+        }
+    }
 }

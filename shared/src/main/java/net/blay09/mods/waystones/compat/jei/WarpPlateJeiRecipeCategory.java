@@ -34,16 +34,6 @@ public class WarpPlateJeiRecipeCategory implements IRecipeCategory<AttunedShardJ
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-    @Override
-    public Class<? extends AttunedShardJeiRecipe> getRecipeClass() {
-        return AttunedShardJeiRecipe.class;
-    }
-
-    @Override
     public Component getTitle() {
         return Component.translatable(UID.toString());
     }

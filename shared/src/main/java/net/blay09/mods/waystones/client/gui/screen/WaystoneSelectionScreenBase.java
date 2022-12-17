@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -82,31 +82,30 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         super.init();
 
         tooltipProviders.clear();
-        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
+        btnPrevPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
-        });
+        }).pos(width / 2 - 100, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnPrevPage);
 
-        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
+        btnNextPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
-        });
+        }).pos(width / 2 + 5, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnNextPage);
 
         updateList();
 
-
         searchBox = new EditBox(font, width / 2 - 99, topPos + headerHeight - 24, 198, 20, Component.empty());
         searchBox.setResponder(text -> {
-           searchWaystones();
+            searchWaystones();
         });
 
         addRenderableWidget(searchBox);
     }
 
     @Override
-    protected <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T widget) {
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
         if (widget instanceof ITooltipProvider) {
             tooltipProviders.add((ITooltipProvider) widget);
         }
@@ -165,8 +164,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             }
         }
 
-        btnPrevPage.y = topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0);
-        btnNextPage.y = topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0);
+        btnPrevPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
+        btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
     }
 
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
@@ -205,7 +204,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void searchWaystones() {
-        filteredWaystones = waystones.stream().filter((waystone) -> waystone.getName().toLowerCase().contains(searchBox.getValue().toLowerCase())).collect(Collectors.toList());
+        filteredWaystones = waystones.stream()
+                .filter((waystone) -> waystone.getName().toLowerCase().contains(searchBox.getValue().toLowerCase()))
+                .collect(Collectors.toList());
         int calculatedPageOffset = (filteredWaystones.size() - 1) / buttonsPerPage;
         if (!searchBox.getValue().isEmpty() && calculatedPageOffset < pageOffset) {
             pageOffset = calculatedPageOffset;
@@ -252,7 +253,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(matrixStack, fontRenderer, ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"), imageWidth / 2, imageHeight / 2 - 20, 0xFFFFFF);
+            drawCenteredString(matrixStack,
+                    fontRenderer,
+                    ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
+                    imageWidth / 2,
+                    imageHeight / 2 - 20,
+                    0xFFFFFF);
         }
     }
 

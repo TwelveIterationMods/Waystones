@@ -1,0 +1,7 @@
+{
+  "waystones:plugin": {
+    "initializer": "net.blay09.mods.compat.WTHITIntegration",
+    "side": "*",
+    "required": []
+  }
+}

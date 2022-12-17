@@ -119,21 +119,27 @@ sourceSets {
     }
 }
 
-configurations {
-    testImplementation.extendsFrom compileOnly
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     compileOnly project(":shared")
 
-    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_forge_version}")
-
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
-    testCompileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
+    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+        changing = balm_version.endsWith("SNAPSHOT")
+    }
 
     implementation "org.jetbrains:annotations:22.0.0"
+
+    compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
+    if (jei_minecraft_version == minecraft_version) {
+        runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
+    }
+
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:$cloth_config_version")
+
+    compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
+    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
+    compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
 }
 
 apply from: 'dependencies.gradle'
@@ -146,12 +152,19 @@ processResources {
     from project(":shared").sourceSets.main.resources
 }
 
+jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
 jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = mod_id + "-forge"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             artifact jar
         }
