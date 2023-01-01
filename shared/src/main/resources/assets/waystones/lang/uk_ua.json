@@ -142,5 +142,7 @@
   "text.autoconfig.waystones.option.client.disableParticles": "Вимкнути частинки",
   "text.autoconfig.waystones.option.compatibility": "Інтеграції модів",
   "text.autoconfig.waystones.option.compatibility.displayWaystonesOnJourneyMap": "Відображати дороговказуючі камені на карті JourneyMap",
-  "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)"
+  "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)",
+  "waystones.map.untitled_waystone": "Безіменний дороговказуючий камінь",
+  "config.jade.plugin_waystones.waystone": "Waystones"
 }

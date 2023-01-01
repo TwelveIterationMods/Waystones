@@ -16,16 +16,14 @@ import net.blay09.mods.waystones.mixin.StructureTemplatePoolAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -37,54 +35,36 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class ModWorldGen {
+    private static final ResourceLocation waystone = new ResourceLocation("waystones", "waystone");
+    private static final ResourceLocation mossyWaystone = new ResourceLocation("waystones", "mossy_waystone");
+    private static final ResourceLocation sandyWaystone = new ResourceLocation("waystones", "sandy_waystone");
     private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
     private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
-    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registry.PROCESSOR_LIST_REGISTRY, new ResourceLocation("minecraft", "empty"));
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
+            new ResourceLocation("minecraft", "empty"));
 
-    private static DeferredObject<WaystoneFeature> waystoneFeature;
-    private static DeferredObject<WaystoneFeature> mossyWaystoneFeature;
-    private static DeferredObject<WaystoneFeature> sandyWaystoneFeature;
-    private static DeferredObject<ConfiguredFeature<NoneFeatureConfiguration, WaystoneFeature>> configuredWaystoneFeature;
-    private static DeferredObject<ConfiguredFeature<NoneFeatureConfiguration, WaystoneFeature>> configuredMossyWaystoneFeature;
-    private static DeferredObject<ConfiguredFeature<NoneFeatureConfiguration, WaystoneFeature>> configuredSandyWaystoneFeature;
-    private static DeferredObject<PlacedFeature> placedWaystoneFeature;
-    private static DeferredObject<PlacedFeature> placedMossyWaystoneFeature;
-    private static DeferredObject<PlacedFeature> placedSandyWaystoneFeature;
     public static DeferredObject<PlacementModifierType<WaystonePlacement>> waystonePlacement;
 
     public static void initialize(BalmWorldGen worldGen) {
-        waystoneFeature = worldGen.registerFeature(id("waystone"), () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
-        mossyWaystoneFeature = worldGen.registerFeature(id("mossy_waystone"), () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
-        sandyWaystoneFeature = worldGen.registerFeature(id("sandy_waystone"), () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
+        worldGen.registerFeature(waystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.waystone.defaultBlockState()));
+        worldGen.registerFeature(mossyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.mossyWaystone.defaultBlockState()));
+        worldGen.registerFeature(sandyWaystone, () -> new WaystoneFeature(NoneFeatureConfiguration.CODEC, ModBlocks.sandyWaystone.defaultBlockState()));
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        configuredWaystoneFeature = worldGen.registerConfiguredFeature(id("waystone"), waystoneFeature::get, () -> FeatureConfiguration.NONE);
-        configuredMossyWaystoneFeature = worldGen.registerConfiguredFeature(id("mossy_waystone"), mossyWaystoneFeature::get, () -> FeatureConfiguration.NONE);
-        configuredSandyWaystoneFeature = worldGen.registerConfiguredFeature(id("sandy_waystone"), sandyWaystoneFeature::get, () -> FeatureConfiguration.NONE);
-
-        placedWaystoneFeature = worldGen.registerPlacedFeature(id("waystone"), configuredWaystoneFeature::get, new WaystonePlacement());
-        placedMossyWaystoneFeature = worldGen.registerPlacedFeature(id("mossy_waystone"), configuredMossyWaystoneFeature::get, new WaystonePlacement());
-        placedSandyWaystoneFeature = worldGen.registerPlacedFeature(id("sandy_waystone"), configuredSandyWaystoneFeature::get, new WaystonePlacement());
-
-        final var IS_DESERT = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_desert"));
-        final var IS_SWAMP = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_swamp"));
-        final var IS_MUSHROOM = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("waystones", "is_mushroom"));
+        final var IS_DESERT = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_desert"));
+        final var IS_SWAMP = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_swamp"));
+        final var IS_MUSHROOM = TagKey.create(Registries.BIOME, new ResourceLocation("waystones", "is_mushroom"));
         worldGen.addFeatureToBiomes(matchesTag(IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
         worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesTag(IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
         worldGen.addFeatureToBiomes(matchesTag(IS_MUSHROOM), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.DEFAULT));
+        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(IS_SWAMP, IS_DESERT, BiomeTags.IS_JUNGLE, IS_MUSHROOM)),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                getWaystoneFeature(WorldGenStyle.DEFAULT));
 
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
-        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupVillageWorldGen(event.getServer().registryAccess()));
-
-        // Registers a condition for repurposed structures compat
-        Registry.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
-                .ifPresent(registry -> Registry.register(
-                        (Registry<Supplier<Boolean>>) registry,
-                        new ResourceLocation("waystones", "config"),
-                        () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
+        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+        Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
@@ -110,18 +90,18 @@ public class ModWorldGen {
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
         WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGenStyle();
         return switch (worldGenStyle) {
-            case MOSSY -> configuredMossyWaystoneFeature.getIdentifier();
-            case SANDY -> configuredSandyWaystoneFeature.getIdentifier();
+            case MOSSY -> mossyWaystone;
+            case SANDY -> sandyWaystone;
             case BIOME -> switch (biomeWorldGenStyle) {
-                case SANDY -> configuredSandyWaystoneFeature.getIdentifier();
-                case MOSSY -> configuredMossyWaystoneFeature.getIdentifier();
-                default -> configuredWaystoneFeature.getIdentifier();
+                case SANDY -> sandyWaystone;
+                case MOSSY -> mossyWaystone;
+                default -> waystone;
             };
-            default -> configuredWaystoneFeature.getIdentifier();
+            default -> waystone;
         };
     }
 
-    public static void setupVillageWorldGen(RegistryAccess registryAccess) {
+    public static void setupDynamicRegistries(RegistryAccess registryAccess) {
         if (WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()) {
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(registryAccess, "village/plains/houses", villageWaystoneStructure, 1);
@@ -130,13 +110,26 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/desert/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
         }
+
+        // Registers a condition for repurposed structures compat
+        registryAccess.registry(ResourceKey.createRegistryKey(new ResourceLocation("repurposed_structures", "json_conditions")))
+                .ifPresent(registry -> {
+                    ResourceLocation conditionId = new ResourceLocation("waystones", "config");
+                    Supplier<Boolean> condition = () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive()
+                            .forceSpawnInVillages();
+                    if (!registry.containsKey(conditionId)) {
+                        Registry.register(registry, conditionId, condition);
+                    }
+                });
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
 
-        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registry.PROCESSOR_LIST_REGISTRY).getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
-        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
-        StructureTemplatePool pool = registryAccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY).getOptional(new ResourceLocation(villagePiece)).orElse(null);
+        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registries.PROCESSOR_LIST)
+                .getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
+        LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
+                .apply(StructureTemplatePool.Projection.RIGID);
+        StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
             // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.

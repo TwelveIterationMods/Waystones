@@ -18,9 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class TheOneProbeAddon {
+public class TheOneProbeIntegration {
 
-    public TheOneProbeAddon() {
+    public TheOneProbeIntegration() {
         InterModComms.sendTo("theoneprobe", "getTheOneProbe", TopInitializer::new);
     }
 

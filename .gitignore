@@ -22,3 +22,5 @@ eclipse
 run
 runserver
 logs
+
+shared/src/main/generated/.cache

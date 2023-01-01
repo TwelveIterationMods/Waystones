@@ -9,8 +9,8 @@
   ],
   "contact": {
     "homepage": "https://blay09.net/",
-    "sources": "https://github.com/ModdingForBlockheads/Waystones",
-    "issues": "https://github.com/ModdingForBlockheads/Waystones/issues"
+    "sources": "https://github.com/TwelveIterationMods/Waystones",
+    "issues": "https://github.com/TwelveIterationMods/Waystones/issues"
   },
   "license": "All Rights Reserved",
   "icon": "waystones-icon.png",
@@ -22,28 +22,31 @@
     "client": [
       "net.blay09.mods.waystones.client.FabricWaystonesClient"
     ],
+    "fabric-datagen": [
+      "net.blay09.mods.waystones.datagen.WaystonesDataGenerator"
+    ],
     "modmenu": [
       "net.blay09.mods.waystones.compat.ModMenuIntegration"
     ],
     "rei_client": [
-      "net.blay09.mods.waystones.compat.RoughlyEnoughItemsIntegration"
+      "net.blay09.mods.waystones.compat.rei.RoughlyEnoughItemsIntegration"
     ],
     "journeymap": [
-      "net.blay09.mods.waystones.compat.JourneyMapAddon"
+      "net.blay09.mods.waystones.compat.JourneyMapIntegration"
     ],
     "jade": [
-      "net.blay09.mods.waystones.compat.FabricJadeWaystonesPlugin"
+      "net.blay09.mods.waystones.compat.JadeIntegration"
     ]
   },
   "mixins": [
     "waystones.mixins.json"
   ],
   "depends": {
-    "cloth-config2": ">=5.0.34",
-    "balm-fabric": ">=4.1.0",
+    "cloth-config": ">=9.0.0",
+    "balm-fabric": ">=5.0.0",
     "fabricloader": ">=0.14.7",
-    "fabric": "*",
-    "minecraft": "1.19.x",
+    "fabric-api": "*",
+    "minecraft": ">=1.19.3",
     "java": ">=17"
   },
   "suggests": {

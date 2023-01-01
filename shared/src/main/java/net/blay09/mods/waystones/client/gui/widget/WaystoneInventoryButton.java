@@ -30,7 +30,7 @@ public class WaystoneInventoryButton extends Button {
     private final Supplier<Integer> yPosition;
 
     public WaystoneInventoryButton(AbstractContainerScreen<?> parentScreen, OnPress pressable, Supplier<Boolean> visiblePredicate, Supplier<Integer> xPosition, Supplier<Integer> yPosition) {
-        super(0, 0, 16, 16, Component.empty(), pressable);
+        super(0, 0, 16, 16, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         this.parentScreen = parentScreen;
         this.visiblePredicate = visiblePredicate;
         this.xPosition = xPosition;
@@ -48,20 +48,20 @@ public class WaystoneInventoryButton extends Button {
     @Override
     public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
-            x = ((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get();
-            y = ((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get();
-            isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+            setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
+            setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
+            isHovered = mouseX >= getX() && mouseY >= getY() && mouseX <getX() + width && mouseY < getY() + height;
 
             Player player = Minecraft.getInstance().player;
             if (PlayerWaystoneManager.canUseInventoryButton(Objects.requireNonNull(player))) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
                 ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-                itemRenderer.renderAndDecorateItem(icon, x, y);
+                itemRenderer.renderAndDecorateItem(icon, getX(), getY());
             } else {
                 RenderSystem.setShaderTexture(0, INVENTORY_BUTTON_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderColor(1f, 1f, 1f, 0.5f);
-                blit(matrixStack, x, y, 0, 0, 16, 16, 16, 16);
+                blit(matrixStack, getX(), getY(), 0, 0, 16, 16, 16, 16);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderSystem.disableBlend();
             }

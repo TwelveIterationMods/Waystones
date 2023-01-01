@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.compat;
 import mcp.mobius.waila.api.*;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 
-public class WTHITWaystonesPlugin implements IWailaPlugin {
+public class WTHITIntegration implements IWailaPlugin {
 
     @Override
     public void register(IRegistrar registrar) {

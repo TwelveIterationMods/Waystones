@@ -54,27 +54,20 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         addRenderableWidget(textField);
         setInitialFocus(textField);
 
-        doneButton = new Button(width / 2, height / 2 + 10, 100, 20, Component.translatable("gui.done"), button -> {
+        doneButton = Button.builder(Component.translatable("gui.done"), button -> {
             if (textField.getValue().isEmpty()) {
                 focusTextFieldNextTick = true;
                 return;
             }
 
             Balm.getNetworking().sendToServer(new EditWaystoneMessage(waystone.getWaystoneUid(), textField.getValue(), isGlobalCheckbox.selected()));
-        });
+        }).pos(width / 2, height / 2 + 10).size(100, 20).build();
         addRenderableWidget(doneButton);
 
         isGlobalCheckbox = new Checkbox(width / 2 - 100, height / 2 + 10, 20, 20, Component.empty(), waystone.isGlobal());
-        isGlobalCheckbox.visible = waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) && PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player));
+        isGlobalCheckbox.visible = waystone.getWaystoneType()
+                .equals(WaystoneTypes.WAYSTONE) && PlayerWaystoneManager.mayEditGlobalWaystones(Objects.requireNonNull(Minecraft.getInstance().player));
         addRenderableWidget(isGlobalCheckbox);
-
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

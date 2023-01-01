@@ -20,7 +20,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,32 +33,37 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
     private final List<IWaystone> waystones;
+    private List<IWaystone> filteredWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
     private Button btnPrevPage;
     private Button btnNextPage;
+    private EditBox searchBox;
     private int pageOffset;
     private int headerY;
     private boolean isLocationHeaderHovered;
     private int buttonsPerPage;
 
-    private static final int headerHeight = 40;
+    private static final int headerHeight = 64;
     private static final int footerHeight = 25;
     private static final int entryHeight = 25;
 
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         waystones = container.getWaystones();
+        filteredWaystones = new ArrayList<>(waystones);
         imageWidth = 270;
         imageHeight = 200;
     }
@@ -76,23 +82,30 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         super.init();
 
         tooltipProviders.clear();
-        btnPrevPage = new Button(width / 2 - 100, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
+        btnPrevPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.previous_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? 0 : pageOffset - 1;
             updateList();
-        });
+        }).pos(width / 2 - 100, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnPrevPage);
 
-        btnNextPage = new Button(width / 2 + 5, height / 2 + 40, 95, 20, Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
+        btnNextPage = Button.builder(Component.translatable("gui.waystones.waystone_selection.next_page"), button -> {
             pageOffset = Screen.hasShiftDown() ? (waystones.size() - 1) / buttonsPerPage : pageOffset + 1;
             updateList();
-        });
+        }).pos(width / 2 + 5, height / 2 + 40).size(95, 20).build();
         addRenderableWidget(btnNextPage);
 
         updateList();
+
+        searchBox = new EditBox(font, width / 2 - 99, topPos + headerHeight - 24, 198, 20, Component.empty());
+        searchBox.setResponder(text -> {
+            searchWaystones();
+        });
+
+        addRenderableWidget(searchBox);
     }
 
     @Override
-    protected <T extends GuiEventListener & Widget & NarratableEntry> T addRenderableWidget(T widget) {
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
         if (widget instanceof ITooltipProvider) {
             tooltipProviders.add((ITooltipProvider) widget);
         }
@@ -103,7 +116,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         headerY = 0;
 
         btnPrevPage.active = pageOffset > 0;
-        btnNextPage.active = pageOffset < (waystones.size() - 1) / buttonsPerPage;
+        btnNextPage.active = pageOffset < (filteredWaystones.size() - 1) / buttonsPerPage;
 
         tooltipProviders.clear();
 
@@ -115,8 +128,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         int y = topPos + headerHeight + headerY;
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
-            if (entryIndex >= 0 && entryIndex < waystones.size()) {
-                IWaystone waystone = waystones.get(entryIndex);
+            if (entryIndex >= 0 && entryIndex < filteredWaystones.size()) {
+                IWaystone waystone = filteredWaystones.get(entryIndex);
 
                 addRenderableWidget(createWaystoneButton(y, waystone));
 
@@ -128,7 +141,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                     addRenderableWidget(sortUpButton);
 
                     SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
-                    if (entryIndex == waystones.size() - 1) {
+                    if (entryIndex == filteredWaystones.size() - 1) {
                         sortDownButton.active = false;
                     }
                     addRenderableWidget(sortDownButton);
@@ -151,8 +164,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             }
         }
 
-        btnPrevPage.y = topPos + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
-        btnNextPage.y = topPos + headerY + headerHeight + buttonsPerPage * 22 + (waystones.size() > 0 ? 10 : 0);
+        btnPrevPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
+        btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
     }
 
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
@@ -187,6 +200,18 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
         Balm.getNetworking().sendToServer(new SortWaystoneMessage(index, otherIndex));
+        searchWaystones();
+    }
+
+    private void searchWaystones() {
+        filteredWaystones = waystones.stream()
+                .filter((waystone) -> waystone.getName().toLowerCase().contains(searchBox.getValue().toLowerCase()))
+                .collect(Collectors.toList());
+        int calculatedPageOffset = (filteredWaystones.size() - 1) / buttonsPerPage;
+        if (!searchBox.getValue().isEmpty() && calculatedPageOffset < pageOffset) {
+            pageOffset = calculatedPageOffset;
+        }
+
         updateList();
     }
 
@@ -228,7 +253,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(matrixStack, fontRenderer, ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"), imageWidth / 2, imageHeight / 2 - 20, 0xFFFFFF);
+            drawCenteredString(matrixStack,
+                    fontRenderer,
+                    ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
+                    imageWidth / 2,
+                    imageHeight / 2 - 20,
+                    0xFFFFFF);
         }
     }
 
@@ -280,5 +310,14 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     protected boolean allowDeletion() {
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (!this.searchBox.isFocused() || (key == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc())) {
+            return super.keyPressed(key, scanCode, modifiers);
+        }
+
+        return this.searchBox.keyPressed(key, scanCode, modifiers);
     }
 }

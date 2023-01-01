@@ -7,7 +7,7 @@ import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 
 @WailaPlugin(Waystones.MOD_ID)
-public class ForgeJadeWaystonesPlugin implements IWailaPlugin {
+public class JadeIntegration implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {

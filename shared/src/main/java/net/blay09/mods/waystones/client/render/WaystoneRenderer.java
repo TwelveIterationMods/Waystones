@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import com.mojang.math.Axis;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +27,7 @@ import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/waystone_active"));
 
     private final SharestoneModel model;
 
@@ -44,8 +45,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         float angle = state.getValue(WaystoneBlock.FACING).toYRot();
         matrixStack.pushPose();
         matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.mulPose(new Quaternion(0f, angle, 0f, true));
-        matrixStack.mulPose(new Quaternion(-180f, 0f, 0f, true));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(angle));
+        matrixStack.mulPose(Axis.XN.rotationDegrees(180f));
         matrixStack.scale(0.5f, 0.5f, 0.5f);
         Player player = Minecraft.getInstance().player;
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), tileEntity.getWaystone());
