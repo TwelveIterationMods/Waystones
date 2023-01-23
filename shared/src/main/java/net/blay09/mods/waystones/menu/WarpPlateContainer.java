@@ -23,11 +23,11 @@ public class WarpPlateContainer extends AbstractContainerMenu {
 
         checkContainerDataCount(containerData, 1);
 
-        addSlot(new Slot(warpPlate, 0, 80, 45));
-        addSlot(new Slot(warpPlate, 1, 80, 17));
-        addSlot(new Slot(warpPlate, 2, 108, 45));
-        addSlot(new Slot(warpPlate, 3, 80, 73));
-        addSlot(new Slot(warpPlate, 4, 52, 45));
+        addSlot(new WarpPlateAttunementSlot(warpPlate, 0, 80, 45));
+        addSlot(new WarpPlateAttunementSlot(warpPlate, 1, 80, 17));
+        addSlot(new WarpPlateAttunementSlot(warpPlate, 2, 108, 45));
+        addSlot(new WarpPlateAttunementSlot(warpPlate, 3, 80, 73));
+        addSlot(new WarpPlateAttunementSlot(warpPlate, 4, 52, 45));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
