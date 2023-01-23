@@ -1,1 +1,2 @@
-- Updated to Minecraft 1.19.3
+- Fixed Warp Dust dupe bug
+- Added Polish Translation (by CrazyBarkley)
