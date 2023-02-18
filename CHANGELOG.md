@@ -1,2 +1,3 @@
-- Fixed Warp Dust dupe bug
-- Added Polish Translation (by CrazyBarkley)
+- Fixed Repurposed Structures support
+- Added Vietnamese Translation (by bl205vn)
+- Added Spanish Translation (by Bksp)
