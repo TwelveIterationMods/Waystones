@@ -110,17 +110,6 @@ public class ModWorldGen {
             addWaystoneStructureToVillageConfig(registryAccess, "village/desert/houses", desertVillageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/taiga/houses", villageWaystoneStructure, 1);
         }
-
-        // Registers a condition for repurposed structures compat
-        registryAccess.registry(ResourceKey.createRegistryKey(new ResourceLocation("repurposed_structures", "json_conditions")))
-                .ifPresent(registry -> {
-                    ResourceLocation conditionId = new ResourceLocation("waystones", "config");
-                    Supplier<Boolean> condition = () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive()
-                            .forceSpawnInVillages();
-                    if (!registry.containsKey(conditionId)) {
-                        Registry.register(registry, conditionId, condition);
-                    }
-                });
     }
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {

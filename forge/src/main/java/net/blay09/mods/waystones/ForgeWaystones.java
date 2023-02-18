@@ -7,13 +7,29 @@ import net.blay09.mods.waystones.compat.Compat;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
 
 @Mod(Waystones.MOD_ID)
 public class ForgeWaystones {
+
+    private static final Logger logger = LoggerFactory.getLogger(ForgeWaystones.class);
+
     public ForgeWaystones() {
         Balm.initialize(Waystones.MOD_ID, Waystones::initialize);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, WaystonesClient::initialize));
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeAddon");
+
+        // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
+        if (Balm.isModLoaded("repurposed_structures")) {
+            try {
+                Class.forName("net.blay09.mods.waystones.compat.RepurposedStructuresIntegration").getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException e) {
+                logger.error("Failed to load Repurposed Structures integration", e);
+            }
+        }
     }
 }
