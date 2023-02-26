@@ -7,12 +7,12 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
+import net.blay09.mods.waystones.client.ModTextures;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
+    private static final Material MATERIAL = new Material(ModTextures.SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 
