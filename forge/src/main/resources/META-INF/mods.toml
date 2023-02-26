@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[40,)"
 license="All rights reserved"
-issueTrackerURL="https://github.com/ModdingForBlockheads/Waystones/issues"
+issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
 
 [[mods]]
 modId="waystones"

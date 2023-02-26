@@ -10,8 +10,8 @@
   ],
   "contact": {
     "homepage": "https://blay09.net/",
-    "sources": "https://github.com/ModdingForBlockheads/Waystones",
-    "issues": "https://github.com/ModdingForBlockheads/Waystones/issues"
+    "sources": "https://github.com/TwelveIterationMods/Waystones",
+    "issues": "https://github.com/TwelveIterationMods/Waystones/issues"
   },
 
   "license": "All Rights Reserved",
@@ -52,7 +52,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/scGAfXC",
+        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j",
         "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
     }
