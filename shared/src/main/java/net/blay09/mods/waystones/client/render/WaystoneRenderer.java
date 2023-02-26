@@ -7,12 +7,12 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
+import net.blay09.mods.waystones.client.ModTextures;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(Sheets.SIGN_SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
+    private static final Material MATERIAL = new Material(ModTextures.SHEET, new ResourceLocation(Waystones.MOD_ID, "entity/waystone_active"));
 
     private final SharestoneModel model;
 
