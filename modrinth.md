@@ -10,7 +10,7 @@
     <a style="text-decoration: none;" href="https://twitter.com/BlayTheNinth">
         <img src="https://blay09.net/files/brand/twitter.png" alt="Follow me on Twitter" width="51" height="51" />
     </a>
-    <a style="text-decoration: none;" href="https://discord.gg/scGAfXC">
+    <a style="text-decoration: none;" href="https://discord.gg/VAfZ2Nau6j">
         <img src="https://blay09.net/files/brand/discord.png" alt="Join our Discord" width="51" height="51" />
     </a>
 </p>
