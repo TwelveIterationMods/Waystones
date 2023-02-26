@@ -1,8 +1,11 @@
 plugins {
     id('java')
     id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
+    id 'maven-publish'
 }
 
+group = mod_group
+version = mod_version
 archivesBaseName = "${mod_id}-common-${minecraft_version}"
 
 minecraft {
@@ -25,4 +28,45 @@ dependencies {
 
 configurations {
     testImplementation.extendsFrom compileOnly
+}
+
+jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id + "-common"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
+
+            artifact jar
+
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+
+            artifact project.javadocJar {
+                classifier 'javadoc'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials)
+        }
+    }
 }
