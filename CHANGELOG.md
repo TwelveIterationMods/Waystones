@@ -1,2 +1,1 @@
-- Fixed Warp Dust dupe bug
-- Fixed premature classloading of Sheets resulting in banner patterns from other mods not working
+- Fixed portstones and other blocks not supporting rotating and mirroring in structures
