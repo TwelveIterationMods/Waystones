@@ -1,2 +1,4 @@
+- Added preferJourneyMapIntegration option (default: true) which will disable automatic JourneyMap waypoints if the mod 'JourneyMap Integration' is installed
 - Fixed portstones and other blocks not supporting rotating and mirroring in structures
 - Fixed blocksPerXPLevel cost being linearly rounded rather than staggered
+- Fixed displayWaystonesOnJourneyMap option being overwritten by servers even though it is client-only (update to latest Balm)
