@@ -101,7 +101,7 @@ curseforge {
 		id = curseforge_fabric_project_id
 		releaseType = curseforge_release_type
 		changelogType = 'markdown'
-		changelog = file('../changelog.md')
+		changelog = file('../CHANGELOG.md')
 		addGameVersion minecraft_version
 		addGameVersion 'Fabric'
 
