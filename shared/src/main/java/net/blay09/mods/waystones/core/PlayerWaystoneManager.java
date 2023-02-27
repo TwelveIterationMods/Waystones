@@ -159,7 +159,7 @@ public class PlayerWaystoneManager {
         }
 
         BlockPos pos = waystone.getPos();
-        double dist = Math.sqrt(player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()));
+        double dist = Math.sqrt(player.distanceToSqr(pos.getX(), player.getY(), pos.getZ())); // ignore y distance
         final double minimumXpCost = WaystonesConfig.getActive().minimumXpCost();
         final double maximumXpCost = WaystonesConfig.getActive().maximumXpCost();
         double xpLevelCost;
@@ -167,7 +167,7 @@ public class PlayerWaystoneManager {
             int dimensionalWarpXpCost = WaystonesConfig.getActive().dimensionalWarpXpCost();
             xpLevelCost = Mth.clamp(dimensionalWarpXpCost, minimumXpCost, dimensionalWarpXpCost);
         } else if (WaystonesConfig.getActive().blocksPerXPLevel() > 0) {
-            xpLevelCost = Mth.clamp(dist / (float) WaystonesConfig.getActive().blocksPerXPLevel(), minimumXpCost, maximumXpCost);
+            xpLevelCost = Mth.clamp(Math.floor(dist / (float) WaystonesConfig.getActive().blocksPerXPLevel()), minimumXpCost, maximumXpCost);
 
             if (WaystonesConfig.getActive().inverseXpCost()) {
                 xpLevelCost = maximumXpCost - xpLevelCost;
