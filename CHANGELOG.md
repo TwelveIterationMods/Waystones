@@ -1,5 +1,1 @@
-- Fixed Repurposed Structures support
-- Fixed Warp Dust dupe bug
-- Added Polish Translation (by CrazyBarkley)
-- Added Vietnamese Translation (by bl205vn)
-- Added Spanish Translation (by Bksp)
+- Fixed portstones and other blocks not supporting rotating and mirroring in structures
