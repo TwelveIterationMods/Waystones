@@ -12,8 +12,10 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
 import net.blay09.mods.waystones.api.WaystoneUpdateReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 @ClientPlugin
@@ -69,13 +71,22 @@ public class JourneyMapAddon implements IClientPlugin {
     }
 
     public void onKnownWaystones(KnownWaystonesEvent event) {
-        if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
+        if (shouldManageWaypoints()) {
             runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
         }
     }
 
+    private static boolean shouldManageWaypoints() {
+        WaystonesConfigData config = WaystonesConfig.getActive();
+        if (config.compatibility.preferJourneyMapIntegration && Balm.isModLoaded("jmi")) {
+            return false;
+        }
+
+        return config.compatibility.displayWaystonesOnJourneyMap;
+    }
+
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (WaystonesConfig.getActive().compatibility.displayWaystonesOnJourneyMap) {
+        if (shouldManageWaypoints()) {
             runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
         }
     }

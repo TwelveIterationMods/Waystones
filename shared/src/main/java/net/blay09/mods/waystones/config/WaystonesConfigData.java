@@ -211,6 +211,9 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
     public static class Compatibility {
         @Comment("If enabled, JourneyMap waypoints will be created for each activated waystone.")
         public boolean displayWaystonesOnJourneyMap = true;
+
+        @Comment("If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed")
+        public boolean preferJourneyMapIntegration = true;
     }
 
     public static class Client {
