@@ -1,1 +1,2 @@
 - Fixed portstones and other blocks not supporting rotating and mirroring in structures
+- Fixed blocksPerXPLevel cost being linearly rounded rather than staggered
