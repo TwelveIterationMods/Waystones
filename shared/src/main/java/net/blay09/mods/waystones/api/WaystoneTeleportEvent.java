@@ -23,31 +23,31 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             return context;
         }
 
-        int getXpCost() {
+        public int getXpCost() {
             return context.getXpCost();
         }
 
-        void setXpCost(int xpCost) {
+        public void setXpCost(int xpCost) {
             context.setXpCost(xpCost);
         }
 
-        int getCooldown() {
+        public int getCooldown() {
             return context.getCooldown();
         }
 
-        void setCooldown(int cooldown) {
+        public void setCooldown(int cooldown) {
             context.setCooldown(cooldown);
         }
 
-        TeleportDestination getDestination() {
+        public TeleportDestination getDestination() {
             return context.getDestination();
         }
 
-        void setDestination(ServerLevel level, Vec3 location, Direction direction) {
+        public void setDestination(ServerLevel level, Vec3 location, Direction direction) {
             context.setDestination(new TeleportDestination(level, location, direction));
         }
 
-        void addAdditionalEntity(Entity additionalEntity) {
+        public void addAdditionalEntity(Entity additionalEntity) {
             context.addAdditionalEntity(additionalEntity);
         }
 
