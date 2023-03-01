@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -26,7 +27,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
-public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse {
+import java.util.Random;
+
+public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage {
 
     private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
         @Override
@@ -52,15 +55,6 @@ public class WarpScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse
     @Override
     public int getUseDuration(ItemStack itemStack) {
         return WaystonesConfig.getActive().scrollUseTime();
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        if (Compat.isVivecraftInstalled) {
-            return UseAnim.NONE;
-        }
-
-        return UseAnim.BOW;
     }
 
     @Override
