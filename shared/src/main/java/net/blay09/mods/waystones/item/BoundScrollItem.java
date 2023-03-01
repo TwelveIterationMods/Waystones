@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUse {
+public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse {
 
     public BoundScrollItem(Properties properties) {
         super(properties);
@@ -45,15 +45,6 @@ public class BoundScrollItem extends Item implements IResetUseOnDamage, IFOVOnUs
     @Override
     public int getUseDuration(ItemStack itemStack) {
         return WaystonesConfig.getActive().scrollUseTime();
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack itemStack) {
-        if (Compat.isVivecraftInstalled) {
-            return UseAnim.NONE;
-        }
-
-        return UseAnim.BOW;
     }
 
     private void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {
