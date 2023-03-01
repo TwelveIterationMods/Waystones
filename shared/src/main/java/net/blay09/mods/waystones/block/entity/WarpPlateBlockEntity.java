@@ -263,51 +263,55 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
-        if (PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())) {
-            int fireSeconds = 0;
-            int poisonSeconds = 0;
-            int blindSeconds = 0;
-            int featherFallSeconds = 0;
-            int fireResistanceSeconds = 0;
-            float potency = 1;
-            List<ItemStack> curativeItems = new ArrayList<>();
-            for (int i = 0; i < getContainerSize(); i++) {
-                ItemStack itemStack = getItem(i);
-                if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                    fireSeconds += 2;
-                } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                    poisonSeconds += 2;
-                } else if (itemStack.getItem() == Items.INK_SAC) {
-                    blindSeconds += 2;
-                } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
-                    curativeItems.add(itemStack);
-                } else if (itemStack.getItem() == Items.DIAMOND) {
-                    potency += 1f;
-                } else if (itemStack.getItem() == Items.FEATHER) {
-                    featherFallSeconds += 2;
-                } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                    fireResistanceSeconds += 2;
-                }
+        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone()).ifLeft(it -> {
+            applyWarpPlateEffects(entity);
+        });
+    }
+
+    private void applyWarpPlateEffects(Entity entity) {
+        int fireSeconds = 0;
+        int poisonSeconds = 0;
+        int blindSeconds = 0;
+        int featherFallSeconds = 0;
+        int fireResistanceSeconds = 0;
+        float potency = 1;
+        List<ItemStack> curativeItems = new ArrayList<>();
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack itemStack = getItem(i);
+            if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                fireSeconds += 2;
+            } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                poisonSeconds += 2;
+            } else if (itemStack.getItem() == Items.INK_SAC) {
+                blindSeconds += 2;
+            } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                curativeItems.add(itemStack);
+            } else if (itemStack.getItem() == Items.DIAMOND) {
+                potency += 1f;
+            } else if (itemStack.getItem() == Items.FEATHER) {
+                featherFallSeconds += 2;
+            } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
+                fireResistanceSeconds += 2;
             }
-            if (entity instanceof LivingEntity) {
-                if (fireSeconds > 0) {
-                    entity.setSecondsOnFire((int) (fireSeconds * potency));
-                }
-                if (poisonSeconds > 0) {
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, (int) (poisonSeconds * potency * 20)));
-                }
-                if (blindSeconds > 0) {
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) (blindSeconds * potency * 20)));
-                }
-                if (featherFallSeconds > 0) {
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, (int) (featherFallSeconds * potency * 20)));
-                }
-                if (fireResistanceSeconds > 0) {
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
-                }
-                for (ItemStack curativeItem : curativeItems) {
-                    Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
-                }
+        }
+        if (entity instanceof LivingEntity) {
+            if (fireSeconds > 0) {
+                entity.setSecondsOnFire((int) (fireSeconds * potency));
+            }
+            if (poisonSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, (int) (poisonSeconds * potency * 20)));
+            }
+            if (blindSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) (blindSeconds * potency * 20)));
+            }
+            if (featherFallSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, (int) (featherFallSeconds * potency * 20)));
+            }
+            if (fireResistanceSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
+            }
+            for (ItemStack curativeItem : curativeItems) {
+                Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
             }
         }
     }

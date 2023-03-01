@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.tag.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -75,7 +76,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
-        if (player.getMainHandItem().getItem() == ModItems.boundScroll) {
+        if (player.getMainHandItem().is(ModTags.BOUND_SCROLLS)) {
             return InteractionResult.PASS;
         }
 
@@ -107,8 +108,20 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
             if (world.isClientSide) {
                 for (int i = 0; i < 32; i++) {
-                    world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2, pos.getY() + 3, pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2, 0, -5, 0);
-                    world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2, pos.getY() + 4, pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2, 0, -5, 0);
+                    world.addParticle(ParticleTypes.ENCHANT,
+                            pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getY() + 3,
+                            pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            0,
+                            -5,
+                            0);
+                    world.addParticle(ParticleTypes.ENCHANT,
+                            pos.getX() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            pos.getY() + 4,
+                            pos.getZ() + 0.5 + (world.random.nextDouble() - 0.5) * 2,
+                            0,
+                            -5,
+                            0);
                 }
             }
         }
@@ -121,9 +134,22 @@ public class WaystoneBlock extends WaystoneBlockBase {
         if (!WaystonesConfig.getActive().disableParticles() && random.nextFloat() < 0.75f) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             Player player = Minecraft.getInstance().player;
-            if (blockEntity instanceof WaystoneBlockEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player), ((WaystoneBlockEntity) blockEntity).getWaystone())) {
-                world.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
-                world.addParticle(ParticleTypes.ENCHANT, pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5, pos.getY() + 0.5, pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5, 0, 0, 0);
+            if (blockEntity instanceof WaystoneBlockEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player),
+                    ((WaystoneBlockEntity) blockEntity).getWaystone())) {
+                world.addParticle(ParticleTypes.PORTAL,
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
+                        pos.getY() + 0.5,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
+                        0,
+                        0,
+                        0);
+                world.addParticle(ParticleTypes.ENCHANT,
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
+                        pos.getY() + 0.5,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
+                        0,
+                        0,
+                        0);
             }
         }
     }
