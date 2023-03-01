@@ -30,6 +30,14 @@ configurations {
     testImplementation.extendsFrom compileOnly
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/main/generated'
+        }
+    }
+}
+
 jar {
     from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_id}" }

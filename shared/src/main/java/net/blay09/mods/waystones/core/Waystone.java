@@ -1,18 +1,27 @@
 package net.blay09.mods.waystones.core;
 
+import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.tag.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -110,6 +119,34 @@ public class Waystone implements IWaystone, IMutableWaystone {
     @Override
     public ResourceLocation getWaystoneType() {
         return waystoneType;
+    }
+
+    @Override
+    public boolean isValidInLevel(ServerLevel level) {
+        BlockState state = level.getBlockState(pos);
+        return state.is(ModTags.IS_TELEPORT_TARGET);
+    }
+
+    @Override
+    public TeleportDestination resolveDestination(ServerLevel level) {
+        BlockState state = level.getBlockState(pos);
+        Direction direction = state.getValue(WaystoneBlock.FACING);
+        // Use a list to keep order intact - it might check one direction twice, but no one cares
+        List<Direction> directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        for (Direction candidate : directionCandidates) {
+            BlockPos offsetPos = pos.relative(candidate);
+            BlockPos offsetPosUp = offsetPos.above();
+            if (level.getBlockState(offsetPos).isSuffocating(level, offsetPos) || level.getBlockState(offsetPosUp).isSuffocating(level, offsetPosUp)) {
+                continue;
+            }
+
+            direction = candidate;
+            break;
+        }
+
+        BlockPos targetPos = getWaystoneType().equals(WaystoneTypes.WARP_PLATE) ? getPos() : getPos().relative(direction);
+        Vec3 location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+        return new TeleportDestination(level, location, direction);
     }
 
     public static IWaystone read(FriendlyByteBuf buf) {

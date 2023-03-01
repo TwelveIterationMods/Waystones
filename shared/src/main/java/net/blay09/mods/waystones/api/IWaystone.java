@@ -1,10 +1,13 @@
 package net.blay09.mods.waystones.api;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -38,4 +41,13 @@ public interface IWaystone {
     default boolean hasOwner() {
         return getOwnerUid() != null;
     }
+
+    default boolean isValidInLevel(ServerLevel level) {
+        return false;
+    }
+
+    default TeleportDestination resolveDestination(ServerLevel level) {
+        return new TeleportDestination(level, Vec3.atCenterOf(getPos()), Direction.NORTH);
+    }
+
 }

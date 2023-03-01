@@ -1,19 +1,15 @@
 package net.blay09.mods.waystones.core;
 
-import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
-import net.blay09.mods.waystones.api.IMutableWaystone;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
-import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
+import net.blay09.mods.waystones.tag.ModTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
@@ -22,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
-import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -30,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,18 +38,16 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PlayerWaystoneManager {
 
@@ -131,19 +125,17 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static int getExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        WaystoneTeleportContext context = new WaystoneTeleportContext();
-        context.setLeashedEntities(findLeashedAnimals(player));
+    public static int predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+        WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
+        context.getLeashedEntities().addAll(findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
         return getExperienceLevelCost(player, waystone, warpMode, context);
     }
 
-    public static int getExperienceLevelCost(Entity entity, IWaystone waystone, WarpMode warpMode, WaystoneTeleportContext context) {
-        if (!(entity instanceof Player)) {
+    public static int getExperienceLevelCost(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystoneTeleportContext context) {
+        if (!(entity instanceof Player player)) {
             return 0;
         }
-
-        Player player = (Player) entity;
 
         if (context.getFromWaystone() != null && waystone.getWaystoneUid().equals(context.getFromWaystone().getWaystoneUid())) {
             return 0;
@@ -193,7 +185,7 @@ public class PlayerWaystoneManager {
 
     public static boolean canUseInventoryButton(Player player) {
         IWaystone waystone = getInventoryButtonWaystone(player);
-        int xpLevelCost = waystone != null ? getExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, (IWaystone) null) : 0;
+        int xpLevelCost = waystone != null ? predictExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, null) : 0;
         return getInventoryButtonCooldownLeft(player) <= 0 && (xpLevelCost <= 0 || player.experienceLevel >= xpLevelCost);
     }
 
@@ -213,122 +205,109 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static boolean tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        if (!waystone.isValid()) {
-            logger.info("Rejected teleport to invalid waystone");
-            return false;
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+        return WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
+                .flatMap(PlayerWaystoneManager::tryTeleport)
+                .ifRight(error -> {
+                    logger.info("Rejected teleport: " + error.getClass().getSimpleName());
+                    if (error.getTranslationKey() != null) {
+                        informPlayer(entity, error.getTranslationKey());
+                    }
+                });
+    }
+
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
+        WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
+        Balm.getEvents().fireEvent(event);
+        if (event.isCanceled()) {
+            return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
 
-        ItemStack warpItem = findWarpItem(entity, warpMode);
-        if (!canUseWarpMode(entity, warpMode, warpItem, fromWaystone)) {
-            logger.info("Rejected teleport using warp mode {}", warpMode);
-            return false;
+        final var waystone = context.getTargetWaystone();
+        final var entity = context.getEntity();
+        final var warpMode = context.getWarpMode();
+        if (!canUseWarpMode(entity, warpMode, context.getWarpItem(), context.getFromWaystone())) {
+            return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
         if (!warpMode.getAllowTeleportPredicate().test(entity, waystone)) {
-            logger.info("Rejected teleport due to predicate");
-            return false;
+            return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
-        boolean isDimensionalWarp = waystone.getDimension() != entity.level.dimension();
-        if (isDimensionalWarp && !canDimensionalWarpBetween(entity, waystone)) {
-            logger.info("Rejected dimensional teleport");
-            informPlayer(entity, "chat.waystones.cannot_dimension_warp");
-            return false;
+        if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult().withDefault(() -> canDimensionalWarpBetween(entity, waystone))) {
+            return Either.right(new WaystoneTeleportError.DimensionalWarpDenied());
         }
 
-        List<Mob> leashed = findLeashedAnimals(entity);
-        if (!leashed.isEmpty()) {
+        if (!context.getLeashedEntities().isEmpty()) {
             if (!WaystonesConfig.getActive().transportLeashed()) {
-                logger.info("Rejected teleport with leashed entities");
-                informPlayer(entity, "chat.waystones.cannot_transport_leashed");
-                return false;
+                return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
-            List<ResourceLocation> forbidden = WaystonesConfig.getActive().leashedDenyList().stream().map(ResourceLocation::new).collect(Collectors.toList());
-            if (leashed.stream().anyMatch(e -> forbidden.contains(Registry.ENTITY_TYPE.getKey(e.getType())))) {
-                logger.info("Rejected teleport with denied leashed entity");
-                informPlayer(entity, "chat.waystones.cannot_transport_this_leashed");
-                return false;
+            List<ResourceLocation> forbidden = WaystonesConfig.getActive().leashedDenyList().stream().map(ResourceLocation::new).toList();
+            if (context.getLeashedEntities().stream().anyMatch(e -> forbidden.contains(Registry.ENTITY_TYPE.getKey(e.getType())))) {
+                return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied());
             }
 
-            if (isDimensionalWarp && !WaystonesConfig.getActive().transportLeashedDimensional()) {
-                logger.info("Rejected teleport with dimensionally denied leashed entity");
-                informPlayer(entity, "chat.waystones.cannot_transport_leashed_dimensional");
-                return false;
+            if (context.isDimensionalTeleport() && !WaystonesConfig.getActive().transportLeashedDimensional()) {
+                return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }
 
-        MinecraftServer server = entity.getServer();
-        if (server == null) {
-            logger.info("Rejected teleport due to missing server");
-            return false;
-        }
-
-        ServerLevel targetWorld = Objects.requireNonNull(server).getLevel(waystone.getDimension());
-        BlockPos pos = waystone.getPos();
-        BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
-        if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlockBase)) {
-            logger.info("Rejected teleport due to missing waystone");
-            informPlayer(entity, "chat.waystones.waystone_missing");
-            return false;
-        }
-
-        Direction direction = state.getValue(WaystoneBlock.FACING);
-        // Use a list to keep order intact - it might check one direction twice, but no one cares
-        List<Direction> directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
-        for (Direction candidate : directionCandidates) {
-            BlockPos offsetPos = pos.relative(candidate);
-            BlockPos offsetPosUp = offsetPos.above();
-            if (targetWorld.getBlockState(offsetPos).isSuffocating(targetWorld, offsetPos) || targetWorld.getBlockState(offsetPosUp).isSuffocating(targetWorld, offsetPosUp)) {
-                continue;
-            }
-
-            direction = candidate;
-            break;
-        }
-
-        WaystoneTeleportContext context = new WaystoneTeleportContext();
-        context.setLeashedEntities(leashed);
-        context.setDirection(direction);
-        context.setTargetWorld(targetWorld);
-        context.setFromWaystone(fromWaystone);
-
-        int xpLevelCost = getExperienceLevelCost(entity, waystone, warpMode, context);
-        if (entity instanceof Player && ((Player) entity).experienceLevel < xpLevelCost) {
-            logger.info("Rejected teleport due to missing xp");
-            return false;
+        if (entity instanceof Player && ((Player) entity).experienceLevel < context.getXpCost()) {
+            return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
         boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
-        if (warpMode.consumesItem() && !isCreativeMode) {
-            warpItem.shrink(1);
+        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> warpMode.consumesItem() && !isCreativeMode)) {
+            context.getWarpItem().shrink(1);
         }
 
         if (entity instanceof Player player) {
-            if (warpMode == WarpMode.INVENTORY_BUTTON) {
-                int cooldown = (int) (WaystonesConfig.getActive().inventoryButtonCooldown() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(entity.level).setInventoryButtonCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
-                WaystoneSyncManager.sendWaystoneCooldowns(player);
-            } else if (warpMode == WarpMode.WARP_STONE) {
-                int cooldown = (int) (WaystonesConfig.getActive().warpStoneCooldown() * getCooldownMultiplier(waystone));
-                getPlayerWaystoneData(entity.level).setWarpStoneCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
-                WaystoneSyncManager.sendWaystoneCooldowns(player);
-            }
-
-            if (xpLevelCost > 0) {
-                player.giveExperienceLevels(-xpLevelCost);
-            }
+            applyCooldown(warpMode, player, context.getCooldown());
+            applyXpCost(player, context.getXpCost());
         }
 
-        teleportToWaystone(entity, waystone, context);
+        final var teleportedEntities = doTeleport(context);
 
+        Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(teleportedEntities));
+
+        return Either.left(teleportedEntities);
+    }
+
+    private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
         if (entity instanceof ServerPlayer player) {
             // No idea why this is still needed since we're using the same code as /tp. Maybe /tp is broken too for interdimensional travel.
             player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
         }
+    }
 
-        return true;
+    private static void applyXpCost(Player player, int xpLevelCost) {
+        if (xpLevelCost > 0) {
+            player.giveExperienceLevels(-xpLevelCost);
+        }
+    }
+
+    private static void applyCooldown(WarpMode warpMode, Player player, int cooldown) {
+        if (cooldown > 0) {
+            switch (warpMode) {
+                case INVENTORY_BUTTON ->
+                        getPlayerWaystoneData(player.level).setInventoryButtonCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
+                case WARP_STONE -> getPlayerWaystoneData(player.level).setWarpStoneCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
+            }
+            WaystoneSyncManager.sendWaystoneCooldowns(player);
+        }
+    }
+
+    public static int getCooldownPeriod(WarpMode warpMode, IWaystone waystone) {
+        return (int) (getCooldownPeriod(warpMode) * getCooldownMultiplier(waystone));
+    }
+
+    private static int getCooldownPeriod(WarpMode warpMode) {
+        return switch (warpMode) {
+            case INVENTORY_BUTTON -> WaystonesConfig.getActive().inventoryButtonCooldown();
+            case WARP_STONE -> WaystonesConfig.getActive().warpStoneCooldown();
+            default -> 0;
+        };
     }
 
     private static boolean canDimensionalWarpBetween(Entity player, IWaystone waystone) {
@@ -346,27 +325,21 @@ public class PlayerWaystoneManager {
         return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal();
     }
 
-    private static ItemStack findWarpItem(Entity entity, WarpMode warpMode) {
-        switch (warpMode) {
-            case WARP_SCROLL:
-                return findWarpItem(entity, ModItems.warpScroll);
-            case WARP_STONE:
-                return findWarpItem(entity, ModItems.warpStone);
-            case RETURN_SCROLL:
-                return findWarpItem(entity, ModItems.returnScroll);
-            case BOUND_SCROLL:
-                return findWarpItem(entity, ModItems.boundScroll);
-            default:
-                return ItemStack.EMPTY;
-        }
+    public static ItemStack findWarpItem(Entity entity, WarpMode warpMode) {
+        return switch (warpMode) {
+            case WARP_SCROLL -> findWarpItem(entity, ModTags.WARP_SCROLLS);
+            case WARP_STONE -> findWarpItem(entity, ModTags.WARP_STONES);
+            case RETURN_SCROLL -> findWarpItem(entity, ModTags.RETURN_SCROLLS);
+            case BOUND_SCROLL -> findWarpItem(entity, ModTags.BOUND_SCROLLS);
+            default -> ItemStack.EMPTY;
+        };
     }
 
-    private static ItemStack findWarpItem(Entity entity, Item warpItem) {
-        if (entity instanceof LivingEntity) {
-            LivingEntity livingEntity = ((LivingEntity) entity);
-            if (livingEntity.getMainHandItem().getItem() == warpItem) {
+    private static ItemStack findWarpItem(Entity entity, TagKey<Item> warpItemTag) {
+        if (entity instanceof LivingEntity livingEntity) {
+            if (livingEntity.getMainHandItem().is(warpItemTag)) {
                 return livingEntity.getMainHandItem();
-            } else if (livingEntity.getOffhandItem().getItem() == warpItem) {
+            } else if (livingEntity.getOffhandItem().is(warpItemTag)) {
                 return livingEntity.getOffhandItem();
             }
         }
@@ -374,57 +347,79 @@ public class PlayerWaystoneManager {
         return ItemStack.EMPTY;
     }
 
-    private static List<Mob> findLeashedAnimals(Entity player) {
+    public static List<Mob> findLeashedAnimals(Entity player) {
         return player.level.getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(10),
                 e -> player.equals(e.getLeashHolder())
         );
     }
 
-    private static void teleportToWaystone(Entity entity, IWaystone waystone, WaystoneTeleportContext context) {
-        ServerLevel sourceWorld = (ServerLevel) entity.level;
-        BlockPos sourcePos = entity.blockPosition();
-        BlockPos pos = waystone.getPos();
-        Direction direction = context.getDirection();
-        ServerLevel targetWorld = context.getTargetWorld();
-        BlockPos targetPos = waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE) ? pos : pos.relative(direction);
-        Vec3 targetPos3d = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+    public static List<Entity> doTeleport(IWaystoneTeleportContext context) {
+        List<Entity> teleportedEntities = new ArrayList<>();
 
-        Entity mount = entity.getVehicle();
+        teleportEntityAndAttached(context.getEntity(), context);
+        context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
+
+        ServerLevel sourceWorld = (ServerLevel) context.getEntity().level;
+        BlockPos sourcePos = context.getEntity().blockPosition();
+
+        final var destination = context.getDestination();
+        final var targetLevel = destination.getLevel();
+        final var targetPos = new BlockPos(destination.getLocation());
+
+        BlockEntity targetTileEntity = targetLevel.getBlockEntity(targetPos);
+        if (targetTileEntity instanceof WarpPlateBlockEntity warpPlate) {
+            teleportedEntities.forEach(warpPlate::markEntityForCooldown);
+        }
+
+        if (context.playsSound()) {
+            sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
+            targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
+        }
+
+        if (context.playsEffect()) {
+            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos)));
+            Balm.getNetworking().sendToTracking(targetLevel, targetPos, new TeleportEffectMessage(targetPos));
+        }
+
+        return teleportedEntities;
+    }
+
+    private static List<Entity> teleportEntityAndAttached(Entity entity, IWaystoneTeleportContext context) {
+        final var teleportedEntities = new ArrayList<Entity>();
+
+        final var destination = context.getDestination();
+        final var targetLevel = destination.getLevel();
+        final var targetLocation = destination.getLocation();
+        final var targetDirection = destination.getDirection();
+
+        final var mount = entity.getVehicle();
+        Entity teleportedMount = null;
         if (mount != null) {
             entity.stopRiding();
-            mount = teleportEntity(mount, targetWorld, targetPos3d, direction);
+            teleportedMount = teleportEntity(mount, targetLevel, targetLocation, targetDirection);
+            teleportedEntities.add(teleportedMount);
         }
 
-        BlockEntity targetTileEntity = context.getTargetWorld().getBlockEntity(waystone.getPos());
-        if (targetTileEntity instanceof WarpPlateBlockEntity) {
-            ((WarpPlateBlockEntity) targetTileEntity).markEntityForCooldown(entity);
+        final var teleportedEntity = teleportEntity(entity, targetLevel, targetLocation, targetDirection);
+        teleportedEntities.add(teleportedEntity);
 
-            if (mount != null) {
-                ((WarpPlateBlockEntity) targetTileEntity).markEntityForCooldown(mount);
-            }
-
-            context.getLeashedEntities().forEach(((WarpPlateBlockEntity) targetTileEntity)::markEntityForCooldown);
+        if (teleportedEntity instanceof Player player) {
+            List<Mob> leashedAnimals = findLeashedAnimals(player);
+            leashedAnimals.forEach(leashedEntity -> {
+                Entity teleportedLeashedEntity = teleportEntity(leashedEntity, targetLevel, targetLocation, targetDirection);
+                // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
+                if (teleportedLeashedEntity instanceof Mob updatedMob) {
+                    updatedMob.setLeashedTo(teleportedEntity, true);
+                }
+                teleportedEntities.add(teleportedLeashedEntity);
+            });
         }
 
-        final var updatedEntity = teleportEntity(entity, targetWorld, targetPos3d, direction);
-
-        if (mount != null) {
-            updatedEntity.startRiding(mount);
+        if (teleportedMount != null) {
+            teleportedEntity.startRiding(teleportedMount);
         }
 
-        sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
-        targetWorld.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
-
-        Balm.getNetworking().sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos));
-        Balm.getNetworking().sendToTracking(targetWorld, targetPos, new TeleportEffectMessage(targetPos));
-
-        context.getLeashedEntities().forEach(mob -> {
-            Entity updatedMobEntity = teleportEntity(mob, targetWorld, targetPos3d, direction);
-            // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
-            if (updatedMobEntity instanceof Mob updatedMob) {
-                updatedMob.setLeashedTo(updatedEntity, true);
-            }
-        });
+        return teleportedEntities;
     }
 
     private static Entity teleportEntity(Entity entity, ServerLevel targetWorld, Vec3 targetPos3d, Direction direction) {
@@ -477,6 +472,8 @@ public class PlayerWaystoneManager {
             ((PathfinderMob) entity).getNavigation().stop();
         }
 
+        sendHackySyncPacketsAfterTeleport(entity);
+
         return entity;
     }
 
@@ -485,28 +482,22 @@ public class PlayerWaystoneManager {
     }
 
     private static boolean canUseWarpMode(Entity entity, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
-        switch (warpMode) {
-            case INVENTORY_BUTTON:
-                return entity instanceof Player && PlayerWaystoneManager.canUseInventoryButton(((Player) entity));
-            case WARP_SCROLL:
-                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpScroll;
-            case BOUND_SCROLL:
-                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.boundScroll;
-            case RETURN_SCROLL:
-                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.returnScroll;
-            case WARP_STONE:
-                return !heldItem.isEmpty() && heldItem.getItem() == ModItems.warpStone && entity instanceof Player && PlayerWaystoneManager.canUseWarpStone(((Player) entity), heldItem);
-            case WAYSTONE_TO_WAYSTONE:
-                return WaystonesConfig.getActive().allowWaystoneToWaystoneTeleport() && fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
-            case SHARESTONE_TO_SHARESTONE:
-                return fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
-            case WARP_PLATE:
-                return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
-            case PORTSTONE_TO_WAYSTONE:
-                return fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE);
-        }
+        return switch (warpMode) {
+            case INVENTORY_BUTTON -> entity instanceof Player && PlayerWaystoneManager.canUseInventoryButton(((Player) entity));
+            case WARP_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.WARP_SCROLLS);
+            case BOUND_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.BOUND_SCROLLS);
+            case RETURN_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.RETURN_SCROLLS);
+            case WARP_STONE -> !heldItem.isEmpty() && heldItem.is(ModTags.WARP_STONES) && entity instanceof Player
+                    && PlayerWaystoneManager.canUseWarpStone(((Player) entity), heldItem);
+            case WAYSTONE_TO_WAYSTONE -> WaystonesConfig.getActive()
+                    .allowWaystoneToWaystoneTeleport() && fromWaystone != null && fromWaystone.isValid()
+                    && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
+            case SHARESTONE_TO_SHARESTONE -> fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
+            case WARP_PLATE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
+            case PORTSTONE_TO_WAYSTONE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE);
+            case CUSTOM -> true;
+        };
 
-        return false;
     }
 
     public static long getWarpStoneCooldownUntil(Player player) {
