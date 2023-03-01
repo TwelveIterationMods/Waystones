@@ -354,9 +354,7 @@ public class PlayerWaystoneManager {
     }
 
     public static List<Entity> doTeleport(IWaystoneTeleportContext context) {
-        List<Entity> teleportedEntities = new ArrayList<>();
-
-        teleportEntityAndAttached(context.getEntity(), context);
+        List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
         ServerLevel sourceWorld = (ServerLevel) context.getEntity().level;
