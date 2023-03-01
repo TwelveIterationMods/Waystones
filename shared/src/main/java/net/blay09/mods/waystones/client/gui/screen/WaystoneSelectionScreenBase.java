@@ -35,10 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -47,6 +44,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private final List<IWaystone> waystones;
     private List<IWaystone> filteredWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
+
+    private String searchText = "";
 
     private Button btnPrevPage;
     private Button btnNextPage;
@@ -99,7 +98,9 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         searchBox = new EditBox(font, width / 2 - 99, topPos + headerHeight - 24, 198, 20, Component.empty());
         searchBox.setResponder(text -> {
-           searchWaystones();
+            pageOffset = 0;
+            searchText = text;
+            updateList();
         });
 
         addRenderableWidget(searchBox);
@@ -114,6 +115,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void updateList() {
+        filteredWaystones = waystones.stream()
+                .filter((waystone) -> waystone.getName().toLowerCase().contains(searchText.toLowerCase()))
+                .collect(Collectors.toList());
+
         headerY = 0;
 
         btnPrevPage.active = pageOffset > 0;
@@ -201,16 +206,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
         Balm.getNetworking().sendToServer(new SortWaystoneMessage(index, otherIndex));
-        searchWaystones();
-    }
-
-    private void searchWaystones() {
-        filteredWaystones = waystones.stream().filter((waystone) -> waystone.getName().toLowerCase().contains(searchBox.getValue().toLowerCase())).collect(Collectors.toList());
-        int calculatedPageOffset = (filteredWaystones.size() - 1) / buttonsPerPage;
-        if (!searchBox.getValue().isEmpty() && calculatedPageOffset < pageOffset) {
-            pageOffset = calculatedPageOffset;
-        }
-
         updateList();
     }
 
@@ -237,22 +232,27 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    protected void renderBg(PoseStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(PoseStack poseStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         Font fontRenderer = Minecraft.getInstance().font;
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         IWaystone fromWaystone = menu.getWaystoneFrom();
-        drawCenteredString(matrixStack, fontRenderer, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
+        drawCenteredString(poseStack, fontRenderer, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(matrixStack, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
+            drawLocationHeader(poseStack, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(matrixStack, fontRenderer, ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"), imageWidth / 2, imageHeight / 2 - 20, 0xFFFFFF);
+            drawCenteredString(poseStack,
+                    fontRenderer,
+                    ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
+                    imageWidth / 2,
+                    imageHeight / 2 - 20,
+                    0xFFFFFF);
         }
     }
 
