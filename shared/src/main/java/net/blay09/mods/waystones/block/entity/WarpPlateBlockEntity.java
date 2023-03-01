@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -218,7 +219,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         }
 
         if (getBlockState().getValue(WarpPlateBlock.ACTIVE)) {
-            AABB boundsAbove = new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 1, worldPosition.getZ() + 1);
+            AABB boundsAbove = new AABB(worldPosition.getX(),
+                    worldPosition.getY(),
+                    worldPosition.getZ(),
+                    worldPosition.getX() + 1,
+                    worldPosition.getY() + 1,
+                    worldPosition.getZ() + 1);
             List<Entity> entities = level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
             if (entities.isEmpty()) {
                 level.setBlock(worldPosition, getBlockState().setValue(WarpPlateBlock.ACTIVE, false), 3);
@@ -226,6 +232,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             }
         }
 
+        final var useTime = getWarpPlateUseTime();
         Iterator<Map.Entry<Entity, Integer>> iterator = ticksPassedPerEntity.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<Entity, Integer> entry = iterator.next();
@@ -233,7 +240,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             Integer ticksPassed = entry.getValue();
             if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                 iterator.remove();
-            } else if (ticksPassed > WaystonesConfig.getActive().cooldowns.warpPlateUseTime) {
+            } else if (ticksPassed > useTime) {
                 IWaystone targetWaystone = getTargetWaystone();
                 if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToWarpPlate(entity, targetWaystone);
@@ -262,10 +269,24 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         }
     }
 
+    private int getWarpPlateUseTime() {
+        float useTimeMultiplier = 1;
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack itemStack = getItem(i);
+            if (itemStack.getItem() == Items.AMETHYST_SHARD) {
+                useTimeMultiplier -= 0.016f * itemStack.getCount();
+            } else if (itemStack.getItem() == Items.SLIME_BALL) {
+                useTimeMultiplier += 0.016f * itemStack.getCount();
+            }
+        }
+
+        int configuredUseTime = WaystonesConfig.getActive().cooldowns.warpPlateUseTime;
+        return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
+    }
+
     private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
-        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone()).ifLeft(it -> {
-            applyWarpPlateEffects(entity);
-        });
+        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
+                .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects));
     }
 
     private void applyWarpPlateEffects(Entity entity) {
@@ -274,41 +295,48 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         int blindSeconds = 0;
         int featherFallSeconds = 0;
         int fireResistanceSeconds = 0;
-        float potency = 1;
+        int witherSeconds = 0;
+        int potency = 1;
         List<ItemStack> curativeItems = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
             if (itemStack.getItem() == Items.BLAZE_POWDER) {
-                fireSeconds += 2;
+                fireSeconds += itemStack.getCount();
             } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
-                poisonSeconds += 2;
+                poisonSeconds += itemStack.getCount();
             } else if (itemStack.getItem() == Items.INK_SAC) {
-                blindSeconds += 2;
+                blindSeconds += itemStack.getCount();
             } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
                 curativeItems.add(itemStack);
             } else if (itemStack.getItem() == Items.DIAMOND) {
-                potency += 1f;
+                potency = Math.min(4, potency + itemStack.getCount());
             } else if (itemStack.getItem() == Items.FEATHER) {
-                featherFallSeconds += 2;
+                featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
             } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
-                fireResistanceSeconds += 2;
+                fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
+            } else if (itemStack.getItem() == Items.WITHER_ROSE) {
+                witherSeconds += itemStack.getCount();
             }
         }
+
         if (entity instanceof LivingEntity) {
             if (fireSeconds > 0) {
-                entity.setSecondsOnFire((int) (fireSeconds * potency));
+                entity.setSecondsOnFire(fireSeconds);
             }
             if (poisonSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, (int) (poisonSeconds * potency * 20)));
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, poisonSeconds * 20, potency));
             }
             if (blindSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, (int) (blindSeconds * potency * 20)));
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindSeconds * 20, potency));
             }
             if (featherFallSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, (int) (featherFallSeconds * potency * 20)));
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, featherFallSeconds * 20, potency));
             }
             if (fireResistanceSeconds > 0) {
-                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, (int) (fireResistanceSeconds * potency * 20)));
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, fireResistanceSeconds * 20, potency));
+            }
+            if (witherSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
             }
             for (ItemStack curativeItem : curativeItems) {
                 Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
