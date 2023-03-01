@@ -17,7 +17,8 @@ public enum WarpMode {
     WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().waystoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false),
     SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().sharestoneXpCostMultiplier(), WarpMode::sharestonesOnly, false),
     WARP_PLATE(() -> WaystonesConfig.getActive().warpPlateXpCostMultiplier(), WarpMode::warpPlatesOnly, false),
-    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().portstoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false);
+    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().portstoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false),
+    CUSTOM(() -> 0.0, WarpMode::always, false);
 
     public static WarpMode[] values = values();
 
@@ -44,11 +45,13 @@ public enum WarpMode {
     }
 
     private static boolean waystoneIsActivatedOrNamed(Entity player, IWaystone waystone) {
-        return WaystonesConfig.getActive().getInventoryButtonMode().hasNamedTarget() || (waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) && player instanceof Player && PlayerWaystoneManager.isWaystoneActivated(((Player) player), waystone));
+        return WaystonesConfig.getActive().getInventoryButtonMode().hasNamedTarget() || (waystone.getWaystoneType()
+                .equals(WaystoneTypes.WAYSTONE) && player instanceof Player && PlayerWaystoneManager.isWaystoneActivated(((Player) player), waystone));
     }
 
     private static boolean waystoneIsActivated(Entity player, IWaystone waystone) {
-        return waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) && player instanceof Player && PlayerWaystoneManager.isWaystoneActivated(((Player) player), waystone);
+        return waystone.getWaystoneType()
+                .equals(WaystoneTypes.WAYSTONE) && player instanceof Player && PlayerWaystoneManager.isWaystoneActivated(((Player) player), waystone);
     }
 
     private static boolean sharestonesOnly(Entity player, IWaystone waystone) {
