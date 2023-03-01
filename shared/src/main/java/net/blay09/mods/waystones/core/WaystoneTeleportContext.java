@@ -26,8 +26,8 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private ItemStack warpItem;
     private int xpCost;
     private int cooldown;
-    private boolean playsSound;
-    private boolean playsEffect;
+    private boolean playsSound = true;
+    private boolean playsEffect = true;
 
     public WaystoneTeleportContext(Entity entity, IWaystone targetWaystone, TeleportDestination destination) {
         this.entity = entity;
