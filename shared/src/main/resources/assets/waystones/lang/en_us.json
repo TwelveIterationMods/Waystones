@@ -121,6 +121,7 @@
   "text.autoconfig.waystones.option.cooldowns.warpStoneCooldown": "Warp Stone Cooldown",
   "text.autoconfig.waystones.option.cooldowns.warpStoneUseTime": "Warp Stone Charge Time",
   "text.autoconfig.waystones.option.cooldowns.scrollUseTime": "Scroll Charge Time",
+  "text.autoconfig.waystones.option.cooldowns.warpPlateUseTime": "Warp Plate Charge Time",
   "text.autoconfig.waystones.option.cooldowns.inventoryButtonCooldown": "Inventory Button Cooldown",
   "text.autoconfig.waystones.option.inventoryButton": "Inventory Button",
   "text.autoconfig.waystones.option.inventoryButton.inventoryButton": "Inventory Button Mode",
