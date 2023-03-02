@@ -69,10 +69,19 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
     }
 
     public static class Post extends WaystoneTeleportEvent {
+        private final IWaystoneTeleportContext context;
         private final List<Entity> teleportedEntities;
 
-        public Post(List<Entity> teleportedEntities) {
+        public Post(IWaystoneTeleportContext context, List<Entity> teleportedEntities) {
+            this.context = context;
             this.teleportedEntities = teleportedEntities;
+        }
+
+        /**
+         * The context that was used for this teleport. Changes made at this point are ignored.
+         */
+        public IWaystoneTeleportContext getContext() {
+            return context;
         }
 
         public List<Entity> getTeleportedEntities() {
