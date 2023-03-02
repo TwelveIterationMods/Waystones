@@ -1,0 +1,11 @@
+repositories {
+    // For JourneyMap
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
+}
+
+dependencies {
+    modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
+//	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
+}

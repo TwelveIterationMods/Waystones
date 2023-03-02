@@ -1,42 +1,49 @@
 plugins {
-	id 'fabric-loom' version '0.10-SNAPSHOT'
+	id 'fabric-loom' version '1.1-SNAPSHOT'
 	id 'maven-publish'
 	id 'idea'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
-def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
-version = mod_version + buildNumber
-
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 group = mod_group
+archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+version = mod_version
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	mappings loom.officialMojangMappings()
-	
+
 	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 	implementation project(":shared")
 
-	modImplementation "net.blay09.mods:balm-fabric:${balm_fabric_version}"
-
-	modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
-		exclude(group: "net.fabricmc.fabric-api")
+	modImplementation("net.blay09.mods:balm-fabric:${balm_version}") {
+		transitive = false
+		changing = balm_version.endsWith("SNAPSHOT")
 	}
 
-	modApi group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
-	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
-
-	modImplementation "curse.maven:modmenu-308702:3348711"
-
-	// Roughly Enough Items
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:6.0.264-alpha"
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:6.0.264-alpha"
-	modCompileOnly "me.shedaniel:architectury:2.0.9"
-
 	implementation "org.jetbrains:annotations:22.0.0"
+
+
+	modImplementation "curse.maven:modmenu-308702:$modmenu_version"
+
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version")
+
+	modImplementation "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
+	if (jei_minecraft_version == minecraft_version) {
+		modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
+	}
+
+	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
+		transitive = false
+	}
+
+	modImplementation "curse.maven:jade-324717:$jade_forge_version"
+	modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
+
+apply from: 'dependencies.gradle'
 
 loom {
 	runs {
@@ -52,6 +59,16 @@ loom {
 			ideConfigGenerated(true)
 			runDir("run")
 		}
+		data {
+			inherit client
+			setConfigName("fabric Data")
+			ideConfigGenerated(true)
+			runDir("build/datagen")
+
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+		}
 	}
 }
 
@@ -65,12 +82,12 @@ processResources {
 }
 
 tasks.withType(JavaCompile) {
-    source(project(":shared").sourceSets.main.allSource)
+	source(project(":shared").sourceSets.main.allSource)
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${mod_id}"}
+	from(rootProject.file("LICENSE")) {
+		rename { "${it}_${mod_id}" }
 	}
 }
 
@@ -78,6 +95,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId = mod_id + "-fabric"
+			version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
 			from components.java
 		}
@@ -85,24 +103,25 @@ publishing {
 
 	repositories {
 		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/" + github_repo)
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
-				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-			}
+			var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+			var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+			url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+			name = "twelveIterationsNexus"
+			credentials(PasswordCredentials)
 		}
 	}
 }
 
 curseforge {
-	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
+	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 	project {
 		id = curseforge_fabric_project_id
 		releaseType = curseforge_release_type
 		changelogType = 'markdown'
-		changelog = file('../CHANGELOG.md')
-		addGameVersion minecraft_version
+		changelog = rootProject.file('CHANGELOG.md')
+		project.minecraft_versions.split(',').each {
+			addGameVersion it
+		}
 		addGameVersion 'Fabric'
 
 		relations {
@@ -117,5 +136,21 @@ curseforge {
 	}
 	options {
 		forgeGradleIntegration = false
+	}
+}
+
+modrinth {
+	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+	projectId = project.modrinth_fabric_project_id
+	versionType = project.modrinth_release_type
+	versionNumber = project.version + "+fabric-" + project.minecraft_version
+	uploadFile = remapJar
+	changelog = rootProject.file("CHANGELOG.md").text
+	gameVersions = project.minecraft_versions.split(',').toList()
+	syncBodyFrom = rootProject.file("modrinth.md").text
+	loaders = ['fabric']
+	dependencies {
+		required.project "fabric-api"
+		required.project "balm"
 	}
 }
