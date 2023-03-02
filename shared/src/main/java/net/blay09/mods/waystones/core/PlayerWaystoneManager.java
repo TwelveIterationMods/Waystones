@@ -269,7 +269,7 @@ public class PlayerWaystoneManager {
 
         final var teleportedEntities = doTeleport(context);
 
-        Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(teleportedEntities));
+        Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities));
 
         return Either.left(teleportedEntities);
     }
