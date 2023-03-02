@@ -15,9 +15,9 @@ minecraft {
 dependencies {
     compileOnly "org.spongepowered:mixin:$mixin_version"
 
-    compileOnly("net.blay09.mods:balm-fabric:$balm_version") {
-        exclude(group: "net.blay09.mods", module: "shared-bridge")
-        changing = balm_version.endsWith("SNAPSHOT")
+    compileOnly("net.blay09.mods:balm-fabric:3.2.0+327:dev") {
+        exclude(group: "net.fabricmc", module: "fabric-loader")
+        exclude(group: "net.fabricmc.fabric-api")
     }
 
     compileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
