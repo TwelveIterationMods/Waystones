@@ -39,7 +39,7 @@ dependencies {
 		transitive = false
 	}
 
-	modImplementation "curse.maven:jade-324717:$jade_forge_version"
+	//modImplementation "curse.maven:jade-324717:$jade_forge_version"
 	modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
