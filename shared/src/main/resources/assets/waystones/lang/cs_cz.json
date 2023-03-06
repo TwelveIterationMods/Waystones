@@ -121,6 +121,7 @@
   "text.autoconfig.waystones.option.cooldowns.warpStoneCooldown": "Obnova teleportačního kamene",
   "text.autoconfig.waystones.option.cooldowns.warpStoneUseTime": "Čas obnovení kamene zvlnění",
   "text.autoconfig.waystones.option.cooldowns.scrollUseTime": "Čas nabití svitku",
+  "text.autoconfig.waystones.option.cooldowns.warpPlateUseTime": "Nabíjecí čas desky zvlnění",
   "text.autoconfig.waystones.option.cooldowns.inventoryButtonCooldown": "Obnova tlačítka inventáře",
   "text.autoconfig.waystones.option.inventoryButton": "Tlačítko inventáře",
   "text.autoconfig.waystones.option.inventoryButton.inventoryButton": "Režim tlačítka inventáře",
