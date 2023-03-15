@@ -43,10 +43,10 @@
   ],
   "depends": {
     "cloth-config": ">=9.0.0",
-    "balm-fabric": ">=5.0.0",
+    "balm-fabric": ">=6.0.0",
     "fabricloader": ">=0.14.7",
     "fabric-api": "*",
-    "minecraft": ">=1.19.3",
+    "minecraft": ">=1.19.4",
     "java": ">=17"
   },
   "suggests": {
@@ -55,7 +55,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/scGAfXC",
+        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j",
         "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
     },

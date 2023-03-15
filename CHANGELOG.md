@@ -1,5 +1,4 @@
-- Added WaystoneTeleportEvent to allow other mods to hook into teleportation
-- Added particle effects to scroll and warp stone charge-up
-- Added a way to speed up or slow down warp plate activation through amethyst shards or slime balls inside
-- Fixed deleting a waystone not removing it from the list until search updates
-- Removed FOV effect on warp scroll
+- Updated to Minecraft 1.19.4
+- Added Italian Translation (by Zano1999)
+- Updated Vietnamese Translation (by bl205vn)
+- Updated Czech Translation (by RomanPlayer22)
