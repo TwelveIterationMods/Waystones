@@ -2,10 +2,12 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.TeleportDestination;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +23,16 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
     public WaystoneProxy(@Nullable MinecraftServer server, UUID waystoneUid) {
         this.server = server;
         this.waystoneUid = waystoneUid;
+    }
+
+    @Override
+    public boolean isValidInLevel(ServerLevel level) {
+        return getBackingWaystone().isValidInLevel(level);
+    }
+
+    @Override
+    public TeleportDestination resolveDestination(ServerLevel level) {
+        return getBackingWaystone().resolveDestination(level);
     }
 
     @Override
@@ -120,5 +132,4 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
             ((IMutableWaystone) backingWaystone).setOwnerUid(ownerUid);
         }
     }
-
 }

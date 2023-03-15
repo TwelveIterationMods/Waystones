@@ -72,14 +72,6 @@ loom {
 	}
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs 'src/generated/resources'
-		}
-	}
-}
-
 processResources {
 	from project(":shared").sourceSets.main.resources
 	inputs.property "version", project.version
@@ -128,7 +120,7 @@ curseforge {
 		changelogType = 'markdown'
 		changelog = rootProject.file('CHANGELOG.md')
 		project.minecraft_versions.split(',').each {
-			addGameVersion minecraft_version
+			addGameVersion it
 		}
 		addGameVersion 'Fabric'
 

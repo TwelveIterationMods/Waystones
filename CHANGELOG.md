@@ -1,17 +1,5 @@
-### Version 11.1.1 for Minecraft 1.19.x
-
-- Changed recipe of warp stone to use Amethyst Shards instead of Purple Dye
-
-### Version 11.1.0 for Minecraft 1.19.x
-
-- Changed recipe of warp dust to use Amethyst Shards instead of Purple Dye
-- Fixed Jade / WTHIT compatibility
-- Added Vietnamese translation (by baooduy)
-
-### Version 11.0.1 for Minecraft 1.19.x
-
-- Fix crash on dedicated server
-
-### Version 11.0.0 for Minecraft 1.19.x
-
-- Updated to Minecraft 1.19
+- Added WaystoneTeleportEvent to allow other mods to hook into teleportation
+- Added particle effects to scroll and warp stone charge-up
+- Added a way to speed up or slow down warp plate activation through amethyst shards or slime balls inside
+- Fixed deleting a waystone not removing it from the list until search updates
+- Removed FOV effect on warp scroll
