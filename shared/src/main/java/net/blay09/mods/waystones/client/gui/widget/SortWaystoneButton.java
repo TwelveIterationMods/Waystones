@@ -21,7 +21,7 @@ public class SortWaystoneButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
             RenderSystem.setShaderTexture(0, SERVER_SELECTION_BUTTONS);
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -36,9 +36,9 @@ public class SortWaystoneButton extends Button {
             }
 
             if (isHovered && active) {
-                blit(matrixStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
+                blit(poseStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
             } else {
-                blit(matrixStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
+                blit(poseStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
             }
 
             RenderSystem.disableBlend();

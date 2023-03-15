@@ -40,13 +40,13 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         visible = visiblePredicate.get();
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
@@ -56,12 +56,12 @@ public class WaystoneInventoryButton extends Button {
             if (PlayerWaystoneManager.canUseInventoryButton(Objects.requireNonNull(player))) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
                 ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-                itemRenderer.renderAndDecorateItem(icon, getX(), getY());
+                itemRenderer.renderAndDecorateItem(poseStack, icon, getX(), getY());
             } else {
                 RenderSystem.setShaderTexture(0, INVENTORY_BUTTON_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderColor(1f, 1f, 1f, 0.5f);
-                blit(matrixStack, getX(), getY(), 0, 0, 16, 16, 16, 16);
+                blit(poseStack, getX(), getY(), 0, 0, 16, 16, 16, 16);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderSystem.disableBlend();
             }

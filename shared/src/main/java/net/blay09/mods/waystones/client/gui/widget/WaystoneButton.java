@@ -48,18 +48,18 @@ public class WaystoneButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.renderWidget(poseStack, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         Minecraft mc = Minecraft.getInstance();
         if (xpLevelCost > 0) {
             boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.getAbilities().instabuild;
             RenderSystem.setShaderTexture(0, ENCHANTMENT_TABLE_GUI_TEXTURE);
-            blit(matrixStack, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+            blit(poseStack, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
             if (xpLevelCost > 3) {
-                mc.font.draw(matrixStack, "+", getX() + 17, getY() + 6, 0xC8FF8F);
+                mc.font.draw(poseStack, "+", getX() + 17, getY() + 6, 0xC8FF8F);
             }
 
             if (isHovered && mouseX <= getX() + 16) {
@@ -68,7 +68,7 @@ public class WaystoneButton extends Button {
                 levelRequirementText.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED);
                 tooltip.add(levelRequirementText);
                 final Screen screen = Minecraft.getInstance().screen;
-                Objects.requireNonNull(screen).renderTooltip(matrixStack, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
+                Objects.requireNonNull(screen).renderTooltip(poseStack, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
             }
         }
     }

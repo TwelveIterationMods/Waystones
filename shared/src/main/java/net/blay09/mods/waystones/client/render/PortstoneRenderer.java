@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -37,10 +38,10 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
     }
 
     @Override
-    public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        Level world = tileEntity.getLevel();
+    public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+        Level level = tileEntity.getLevel();
         BlockState state = tileEntity.getBlockState();
-        if (world == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
+        if (level == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             return;
         }
         Direction facing = state.getValue(PortstoneBlock.FACING);
@@ -50,32 +51,32 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             warpStoneItem.enchant(Enchantments.UNBREAKING, 1);
         }
 
-        matrixStack.pushPose();
-        matrixStack.translate(0.5f, 0f, 0.5f);
-        matrixStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
-        matrixStack.mulPose(Axis.XN.rotationDegrees(180f));
-        matrixStack.translate(0f, -2f, 0f);
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 0f, 0.5f);
+        poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+        poseStack.mulPose(Axis.XN.rotationDegrees(180f));
+        poseStack.translate(0f, -2f, 0f);
         float scale = 1.01f;
-        matrixStack.scale(0.5f, 0.5f, 0.5f);
-        matrixStack.scale(scale, scale, scale);
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.scale(scale, scale, scale);
 
         VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
         int light = WaystonesConfig.getActive().disableTextGlow() ? combinedLightIn : 15728880;
         int overlay = WaystonesConfig.getActive().disableTextGlow() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-        long gameTime = world.getGameTime();
+        long gameTime = level.getGameTime();
         float min = 0.7f;
         float color = (float) Math.max(min, min + Math.abs(Math.sin(gameTime / 32f)) * (1f - min));
-        model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, color, color, color, 1f);
-        matrixStack.popPose();
+        model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color, color, color, 1f);
+        poseStack.popPose();
 
-        matrixStack.pushPose();
-        matrixStack.translate(0.5f, 1f, 0.5f);
-        matrixStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
-        matrixStack.translate(0f, 0f, 0.15f);
-        matrixStack.mulPose(Axis.XN.rotationDegrees(25f));
-        matrixStack.scale(0.5f, 0.5f, 0.5f);
-        matrixStack.translate(0.03125f, 0f, 0f);
-        Minecraft.getInstance().getItemRenderer().renderStatic(warpStoneItem, ItemTransforms.TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, buffer, 0);
-        matrixStack.popPose();
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 1f, 0.5f);
+        poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+        poseStack.translate(0f, 0f, 0.15f);
+        poseStack.mulPose(Axis.XN.rotationDegrees(25f));
+        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.translate(0.03125f, 0f, 0f);
+        Minecraft.getInstance().getItemRenderer().renderStatic(warpStoneItem, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, buffer, level, 0);
+        poseStack.popPose();
     }
 }

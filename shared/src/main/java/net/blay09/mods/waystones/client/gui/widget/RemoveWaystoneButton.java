@@ -47,7 +47,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         boolean shiftDown = Screen.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;
@@ -62,7 +62,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
             } else {
                 RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.5f);
             }
-            blit(matrixStack, getX(), getY(), 114, 223, 13, 13);
+            blit(poseStack, getX(), getY(), 114, 223, 13, 13);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
     }

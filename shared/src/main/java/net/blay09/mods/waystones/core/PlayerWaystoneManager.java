@@ -362,7 +362,7 @@ public class PlayerWaystoneManager {
 
         final var destination = context.getDestination();
         final var targetLevel = destination.getLevel();
-        final var targetPos = new BlockPos(destination.getLocation());
+        final var targetPos = BlockPos.containing(destination.getLocation());
 
         BlockEntity targetTileEntity = targetLevel.getBlockEntity(targetPos);
         if (targetTileEntity instanceof WarpPlateBlockEntity warpPlate) {
@@ -426,7 +426,7 @@ public class PlayerWaystoneManager {
         double y = targetPos3d.y;
         double z = targetPos3d.z;
         if (entity instanceof ServerPlayer) {
-            ChunkPos chunkPos = new ChunkPos(new BlockPos(x, y, z));
+            ChunkPos chunkPos = new ChunkPos(BlockPos.containing(x, y, z));
             targetWorld.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
             entity.stopRiding();
             if (((ServerPlayer) entity).isSleeping()) {

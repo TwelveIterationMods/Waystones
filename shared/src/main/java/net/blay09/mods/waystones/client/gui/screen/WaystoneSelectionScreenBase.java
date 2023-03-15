@@ -255,7 +255,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
     }
 
-    private void drawLocationHeader(PoseStack matrixStack, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(PoseStack poseStack, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
         Font fontRenderer = Minecraft.getInstance().font;
 
         String locationPrefix = ChatFormatting.YELLOW + I18n.get("gui.waystones.waystone_selection.current_location") + " ";
@@ -283,7 +283,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
         fullText += effectiveName;
 
-        drawString(matrixStack, fontRenderer, fullText, x - fullWidth / 2, y, 0xFFFFFF);
+        drawString(poseStack, fontRenderer, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
             PoseStack modelViewStack = RenderSystem.getModelViewStack();
@@ -292,7 +292,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
             float scale = 0.5f;
             modelViewStack.scale(scale, scale, scale);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
+            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, new ItemStack(Items.WRITABLE_BOOK), 0, 0);
             modelViewStack.popPose();
         }
     }
