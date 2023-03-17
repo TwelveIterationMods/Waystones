@@ -143,6 +143,7 @@
   "text.autoconfig.waystones.option.client.disableParticles": "Disable Particles",
   "text.autoconfig.waystones.option.compatibility": "Mod Integrations",
   "text.autoconfig.waystones.option.compatibility.displayWaystonesOnJourneyMap": "Display Waystones on JourneyMap",
+  "text.autoconfig.waystones.option.compatibility.preferJourneyMapIntegration": "Prefer 'JourneyMap Integration' mod",
   "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)",
   "waystones.map.untitled_waystone": "Untitled Waystone",
   "config.jade.plugin_waystones.waystone": "Waystones"
