@@ -1,4 +1,7 @@
 - Updated to Minecraft 1.19.4
+- Removed default xp cost for all except dimensional travel (see also https://github.com/TwelveIterationMods/Waystones/issues/684)
+- Reduced default warp stone cooldown to 30 seconds (see also https://github.com/TwelveIterationMods/Waystones/issues/683)
+- Fixed leashed entities no longer being teleported with the player
 - Added Italian Translation (by Zano1999)
 - Updated Vietnamese Translation (by bl205vn)
 - Updated Czech Translation (by RomanPlayer22)
