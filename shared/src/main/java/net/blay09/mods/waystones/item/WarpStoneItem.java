@@ -58,7 +58,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     };
 
     public WarpStoneItem(Properties properties) {
-        super(properties);
+        super(properties.durability(100));
     }
 
     @Override
