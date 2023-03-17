@@ -55,7 +55,7 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
 
         @Synced
         @Comment("How much xp is needed per leashed animal to travel with you")
-        public int xpCostPerLeashed = 1;
+        public int xpCostPerLeashed = 0;
 
         @Synced
         @Comment("The base xp level cost when travelling between dimensions. Ignores block distance.")
@@ -63,7 +63,7 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting to a global waystone through any method.")
-        public double globalWaystoneXpCostMultiplier = 1f;
+        public double globalWaystoneXpCostMultiplier = 0f;
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting using a Warp Stone item (not the Waystone block, Konstantin)")
@@ -71,11 +71,11 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting from one waystone to another.")
-        public double waystoneXpCostMultiplier = 1f;
+        public double waystoneXpCostMultiplier = 0f;
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting from one sharestone to another.")
-        public double sharestoneXpCostMultiplier = 1f;
+        public double sharestoneXpCostMultiplier = 0f;
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting from a portstone.")
@@ -142,7 +142,7 @@ public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
 
         @Synced
         @Comment("The cooldown between usages of the warp stone in seconds. This is bound to the player, not the item, so multiple warp stones share the same cooldown.")
-        public int warpStoneCooldown = 300;
+        public int warpStoneCooldown = 30;
 
         @Synced
         @Comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
