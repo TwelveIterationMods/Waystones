@@ -398,20 +398,23 @@ public class PlayerWaystoneManager {
             teleportedEntities.add(teleportedMount);
         }
 
+        final List<Mob> leashedEntities = context.getLeashedEntities();
+        final List<Entity> teleportedLeashedEntities = new ArrayList<>();
+        leashedEntities.forEach(leashedEntity -> {
+            Entity teleportedLeashedEntity = teleportEntity(leashedEntity, targetLevel, targetLocation, targetDirection);
+            teleportedEntities.add(teleportedLeashedEntity);
+            teleportedLeashedEntities.add(teleportedLeashedEntity);
+        });
+
         final var teleportedEntity = teleportEntity(entity, targetLevel, targetLocation, targetDirection);
         teleportedEntities.add(teleportedEntity);
 
-        if (teleportedEntity instanceof Player player) {
-            List<Mob> leashedAnimals = findLeashedAnimals(player);
-            leashedAnimals.forEach(leashedEntity -> {
-                Entity teleportedLeashedEntity = teleportEntity(leashedEntity, targetLevel, targetLocation, targetDirection);
-                // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
-                if (teleportedLeashedEntity instanceof Mob updatedMob) {
-                    updatedMob.setLeashedTo(teleportedEntity, true);
-                }
-                teleportedEntities.add(teleportedLeashedEntity);
-            });
-        }
+        // We have to update the leashedToEntity in case the player was cloned during dimensional teleport
+        teleportedLeashedEntities.forEach(teleportedLeashedEntity -> {
+            if (teleportedLeashedEntity instanceof Mob teleportedLeashedMob) {
+                teleportedLeashedMob.setLeashedTo(teleportedEntity, true);
+            }
+        });
 
         if (teleportedMount != null) {
             teleportedEntity.startRiding(teleportedMount);
