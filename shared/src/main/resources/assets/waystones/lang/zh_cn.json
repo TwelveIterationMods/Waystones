@@ -121,7 +121,7 @@
   "text.autoconfig.waystones.option.cooldowns.warpStoneCooldown": "传送石冷却",
   "text.autoconfig.waystones.option.cooldowns.warpStoneUseTime": "传送石充能时间",
   "text.autoconfig.waystones.option.cooldowns.scrollUseTime": "卷轴充能时间",
-  "text.autoconfig.waystones.option.cooldowns.warpPlateUseTime": "Warp Plate Charge Time",
+  "text.autoconfig.waystones.option.cooldowns.warpPlateUseTime": "传送石板充能时间",
   "text.autoconfig.waystones.option.cooldowns.inventoryButtonCooldown": "背包按钮冷却时间",
   "text.autoconfig.waystones.option.inventoryButton": "背包按钮",
   "text.autoconfig.waystones.option.inventoryButton.inventoryButton": "背包按钮模式",
