@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -93,8 +94,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (!waystone.isValid()) {
                 BlockState state = getBlockState();
-                if (state.getBlock() instanceof WaystoneBlock) {
-                    DoubleBlockHalf half = state.getValue(WaystoneBlock.HALF);
+                if (state.getBlock() instanceof WaystoneBlockBase) {
+                    DoubleBlockHalf half = state.hasProperty(WaystoneBlock.HALF) ? state.getValue(WaystoneBlock.HALF) : DoubleBlockHalf.LOWER;
                     if (half == DoubleBlockHalf.LOWER) {
                         initializeWaystone((ServerLevelAccessor) Objects.requireNonNull(level), null, true);
                     } else if (half == DoubleBlockHalf.UPPER) {

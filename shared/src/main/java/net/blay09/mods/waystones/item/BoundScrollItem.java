@@ -47,7 +47,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
         return WaystonesConfig.getActive().scrollUseTime();
     }
 
-    private void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {
+    public static void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
