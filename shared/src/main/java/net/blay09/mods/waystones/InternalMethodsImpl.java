@@ -1,16 +1,32 @@
 package net.blay09.mods.waystones;
 
 import com.mojang.datafixers.util.Either;
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportContext;
+import net.blay09.mods.waystones.item.AttunedShardItem;
+import net.blay09.mods.waystones.item.BoundScrollItem;
+import net.blay09.mods.waystones.item.ModItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class InternalMethodsImpl implements InternalMethods {
 
@@ -69,5 +85,51 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public List<Entity> forceTeleport(IWaystoneTeleportContext context) {
         return PlayerWaystoneManager.doTeleport(context);
+    }
+
+    @Override
+    public Optional<IWaystone> getWaystoneAt(Level level, BlockPos pos) {
+        return WaystoneManager.get(level.getServer()).getWaystoneAt(level, pos);
+    }
+
+    @Override
+    public Optional<IWaystone> getWaystone(Level level, UUID uuid) {
+        return WaystoneManager.get(level.getServer()).getWaystoneById(uuid);
+    }
+
+    @Override
+    public ItemStack createAttunedShard(IWaystone warpPlate) {
+        ItemStack itemStack = new ItemStack(ModItems.attunedShard);
+        AttunedShardItem.setWaystoneAttunedTo(itemStack, warpPlate);
+        return itemStack;
+    }
+
+    @Override
+    public ItemStack createBoundScroll(IWaystone waystone) {
+        ItemStack itemStack = new ItemStack(ModItems.boundScroll);
+        BoundScrollItem.setBoundTo(itemStack, waystone);
+        return itemStack;
+    }
+
+    @Override
+    public Optional<IWaystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
+        Block block = Balm.getRegistries().getBlock(style.getBlockRegistryName());
+        level.setBlock(pos, block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
+        level.setBlock(pos.above(), block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
+        return getWaystoneAt(level, pos);
+    }
+
+    @Override
+    public Optional<IWaystone> placeSharestone(Level level, BlockPos pos, @Nullable DyeColor color) {
+        Block sharestone = color != null ? ModBlocks.scopedSharestones[color.ordinal()] : ModBlocks.sharestone;
+        level.setBlock(pos, sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
+        level.setBlock(pos.above(), sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
+        return getWaystoneAt(level, pos);
+    }
+
+    @Override
+    public Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos) {
+        level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState(), 3);
+        return getWaystoneAt(level, pos);
     }
 }
