@@ -1,8 +1,3 @@
-- Added WaystoneTeleportEvent to allow other mods to hook into teleportation
-- Added particle effects to scroll and warp stone charge-up
-- Added a way to speed up or slow down warp plate activation through amethyst shards or slime balls inside
-- Added preferJourneyMapIntegration option (default: true) which will disable automatic JourneyMap waypoints if the mod 'JourneyMap Integration' is installed
-- Fixed portstones and other blocks not supporting rotating and mirroring in structures
-- Fixed blocksPerXPLevel cost being linearly rounded rather than staggered
-- Fixed displayWaystonesOnJourneyMap option being overwritten by servers even though it is client-only (update to latest Balm)
-- Removed FOV effect on warp scroll
+- Fixed desync when teleporting while riding a horse. For now, teleporting will teleport both, but always dismount you.
+- Fixed the book icon not showing up in the correct place when hovering over the waystone name in the selection screen
+- Fixed leashed entities no longer being teleported with the player
