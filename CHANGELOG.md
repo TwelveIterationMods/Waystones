@@ -1,7 +1,6 @@
-- Updated to Minecraft 1.19.4
-- Removed default xp cost for all except dimensional travel (see also https://github.com/TwelveIterationMods/Waystones/issues/684)
-- Reduced default warp stone cooldown to 30 seconds (see also https://github.com/TwelveIterationMods/Waystones/issues/683)
-- Fixed leashed entities no longer being teleported with the player
-- Added Italian Translation (by Zano1999)
-- Updated Vietnamese Translation (by bl205vn)
-- Updated Czech Translation (by RomanPlayer22)
+- Fixed desync when teleporting while riding a horse. For now, teleporting will teleport both, but always dismount you.
+- Fixed the book icon not showing up in the correct place when hovering over the waystone name in the selection screen
+- Added some API methods for placing waystones and creating attuned shards and bound scrolls
+- Added Portuguese Translation (by An12854)
+- Added Turkish Translation (by isocuk)
+- Updated Simplified Chinese Translation (by GodGun968)
