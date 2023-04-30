@@ -20,7 +20,7 @@ public class ScrollItemBase extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack itemStack) {
-        if (Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
             return UseAnim.NONE;
         }
 
