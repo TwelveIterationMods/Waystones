@@ -71,7 +71,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
         if (!player.isUsingItem() && !world.isClientSide) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
-        if (Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
             finishUsingItem(itemStack, world, player);
         } else {
             player.startUsingItem(hand);
