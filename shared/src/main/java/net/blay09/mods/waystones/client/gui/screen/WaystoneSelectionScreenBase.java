@@ -264,14 +264,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         drawString(matrixStack, fontRenderer, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
-            PoseStack modelViewStack = RenderSystem.getModelViewStack();
-            modelViewStack.pushPose();
-            modelViewStack.translate(x + fullWidth / 2f + 4, y, 0f);
+            matrixStack.pushPose();
+            matrixStack.translate(x + fullWidth / 2f + 4, y, 0f);
             float scale = 0.5f;
-            modelViewStack.scale(scale, scale, scale);
+            matrixStack.scale(scale, scale, scale);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
-            modelViewStack.popPose();
+            matrixStack.popPose();
         }
     }
 
