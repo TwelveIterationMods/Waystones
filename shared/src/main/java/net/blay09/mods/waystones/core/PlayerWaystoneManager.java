@@ -393,7 +393,6 @@ public class PlayerWaystoneManager {
         final var mount = entity.getVehicle();
         Entity teleportedMount = null;
         if (mount != null) {
-            entity.stopRiding();
             teleportedMount = teleportEntity(mount, targetLevel, targetLocation, targetDirection);
             teleportedEntities.add(teleportedMount);
         }
@@ -417,7 +416,8 @@ public class PlayerWaystoneManager {
         });
 
         if (teleportedMount != null) {
-            teleportedEntity.startRiding(teleportedMount);
+            // TODO We do not remount currently. It causes weird sync issues and it seems that Vanilla does not do it either.
+            //      Would have to look further at what point it's safe to remount without triggering movement correction.
         }
 
         return teleportedEntities;
