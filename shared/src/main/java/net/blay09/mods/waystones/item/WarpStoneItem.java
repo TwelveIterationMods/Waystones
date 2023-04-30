@@ -68,7 +68,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public UseAnim getUseAnimation(ItemStack itemStack) {
-        if (Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
             return UseAnim.NONE;
         }
 
@@ -166,7 +166,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             if (!player.isUsingItem() && !world.isClientSide) {
                 world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
             }
-            if (Compat.isVivecraftInstalled) {
+            if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
                 finishUsingItem(itemStack, world, player);
             } else {
                 player.startUsingItem(hand);
