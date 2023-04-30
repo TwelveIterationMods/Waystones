@@ -1,3 +1,4 @@
+- Added some API methods for placing waystones and creating attuned shards and bound scrolls
 - Fixed desync when teleporting while riding a horse. For now, teleporting will teleport both, but always dismount you.
 - Fixed the book icon not showing up in the correct place when hovering over the waystone name in the selection screen
 - Fixed crash when setting scroll / warp stone charge time to 0
