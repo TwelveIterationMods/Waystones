@@ -37,7 +37,7 @@ public class RequestEditWaystoneMessage {
 
     public static void handle(ServerPlayer player, RequestEditWaystoneMessage message) {
         WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);
-        WaystoneEditPermissions permissions = PlayerWaystoneManager.mayEditWaystone(player, player.level, waystone);
+        WaystoneEditPermissions permissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
         if (permissions != WaystoneEditPermissions.ALLOW) {
             return;
         }

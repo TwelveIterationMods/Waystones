@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[45,)"
+loaderVersion="[46,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
 
@@ -7,7 +7,7 @@ issueTrackerURL="https://github.com/TwelveIterationMods/Waystones/issues"
 modId="waystones"
 version="${file.jarVersion}"
 displayName="Waystones"
-displayURL="https://blay09.net/mods/waystones"
+displayURL="https://mods.twelveiterations.com/mc/waystones"
 logoFile="waystones-icon.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
@@ -18,18 +18,18 @@ Teleport back to activated waystones. For Survival, Adventure or Servers.
 [[dependencies.waystones]]
     modId="forge"
     mandatory=true
-    versionRange="[45,)"
+    versionRange="[46,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.waystones]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="[1.20,1.21)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.waystones]]
     modId="balm"
     mandatory=true
-    versionRange="[6.0.0,)"
+    versionRange="[7.0.0,)"
     ordering="NONE"
     side="BOTH"

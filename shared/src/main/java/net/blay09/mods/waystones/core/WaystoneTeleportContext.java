@@ -93,7 +93,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     @Override
     public boolean isDimensionalTeleport() {
-        return targetWaystone.getDimension() != entity.level.dimension();
+        return targetWaystone.getDimension() != entity.level().dimension();
     }
 
     @Override

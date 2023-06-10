@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -8,6 +7,7 @@ import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -45,9 +45,9 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         Font font = Minecraft.getInstance().font;
-        drawCenteredString(matrixStack, font, waystoneName, width / 2, 100, 0xFFFFFF);
+        guiGraphics.drawCenteredString(font, waystoneName, width / 2, 100, 0xFFFFFF);
     }
 }

@@ -45,7 +45,7 @@ subprojects {
             }
         }
 
-        maven { url "https://nexus.twelveiterations.com/repository/maven-public/" }
+        maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
 
         // For Cloth Config and REI
         maven { url "https://maven.shedaniel.me/" }
@@ -70,7 +70,7 @@ subprojects {
 
     if (balm_version.endsWith("SNAPSHOT")) {
         configurations.configureEach {
-            resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
+            resolutionStrategy.cacheChangingModulesFor 1, 'minutes'
         }
     }
 }

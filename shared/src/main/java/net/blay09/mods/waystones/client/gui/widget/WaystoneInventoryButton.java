@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -40,13 +41,13 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         visible = visiblePredicate.get();
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
@@ -55,13 +56,12 @@ public class WaystoneInventoryButton extends Button {
             Player player = Minecraft.getInstance().player;
             if (PlayerWaystoneManager.canUseInventoryButton(Objects.requireNonNull(player))) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
-                ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-                itemRenderer.renderAndDecorateItem(poseStack, icon, getX(), getY());
+                guiGraphics.renderItem(icon, getX(), getY());
+                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, icon, getX(), getY());
             } else {
-                RenderSystem.setShaderTexture(0, INVENTORY_BUTTON_TEXTURE);
                 RenderSystem.enableBlend();
-                RenderSystem.setShaderColor(1f, 1f, 1f, 0.5f);
-                blit(poseStack, getX(), getY(), 0, 0, 16, 16, 16, 16);
+                guiGraphics.setColor(1f, 1f, 1f, 0.5f);
+                guiGraphics.blit(INVENTORY_BUTTON_TEXTURE, getX(), getY(), 0, 0, 16, 16, 16, 16);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderSystem.disableBlend();
             }

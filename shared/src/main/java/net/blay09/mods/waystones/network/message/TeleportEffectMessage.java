@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class TeleportEffectMessage {
 
@@ -23,9 +24,10 @@ public class TeleportEffectMessage {
     }
 
     public static void handle(Player player, TeleportEffectMessage message) {
-        if (player.level != null) {
+        Level level = player.level();
+        if (level != null) {
             for (int i = 0; i < 128; i++) {
-                player.level.addParticle(ParticleTypes.PORTAL, message.pos.getX() + (player.level.random.nextDouble() - 0.5) * 3, message.pos.getY() + player.level.random.nextDouble() * 3, message.pos.getZ() + (player.level.random.nextDouble() - 0.5) * 3, (player.level.random.nextDouble() - 0.5) * 2, -player.level.random.nextDouble(), (player.level.random.nextDouble() - 0.5) * 2);
+                level.addParticle(ParticleTypes.PORTAL, message.pos.getX() + (level.random.nextDouble() - 0.5) * 3, message.pos.getY() + level.random.nextDouble() * 3, message.pos.getZ() + (level.random.nextDouble() - 0.5) * 3, (level.random.nextDouble() - 0.5) * 2, -level.random.nextDouble(), (level.random.nextDouble() - 0.5) * 2);
             }
         }
     }

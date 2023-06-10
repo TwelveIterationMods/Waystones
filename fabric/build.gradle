@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.1-SNAPSHOT'
+	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
 	id 'idea'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -23,14 +23,12 @@ dependencies {
 		changing = balm_version.endsWith("SNAPSHOT")
 	}
 
-	implementation "org.jetbrains:annotations:22.0.0"
+	compileOnly "org.jetbrains:annotations:22.0.0"
 
 
-	modImplementation "curse.maven:modmenu-308702:$modmenu_version"
+	modCompileOnly "curse.maven:modmenu-308702:$modmenu_version"
 
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version")
-
-	modImplementation "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
+	modCompileOnly "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
 	if (jei_minecraft_version == minecraft_version) {
 		modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
 	}
@@ -39,7 +37,7 @@ dependencies {
 		transitive = false
 	}
 
-	modImplementation "curse.maven:jade-324717:$jade_forge_version"
+	modCompileOnly "curse.maven:jade-324717:$jade_forge_version"
 	modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
@@ -103,8 +101,8 @@ publishing {
 
 	repositories {
 		maven {
-			var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
-			var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+			var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
+			var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
 			url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
 			name = "twelveIterationsNexus"
 			credentials(PasswordCredentials)

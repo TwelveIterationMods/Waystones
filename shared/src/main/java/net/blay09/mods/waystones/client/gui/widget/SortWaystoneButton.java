@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -21,28 +21,26 @@ public class SortWaystoneButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
-            RenderSystem.setShaderTexture(0, SERVER_SELECTION_BUTTONS);
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int renderY = getY() - (sortDir == 1 ? 20 : 5);
             RenderSystem.enableBlend();
             if (active && isHovered) {
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                guiGraphics.setColor(1f, 1f, 1f, 1f);
             } else if (active) {
-                RenderSystem.setShaderColor(1f, 1f, 1f, 0.75f);
+                guiGraphics.setColor(1f, 1f, 1f, 0.75f);
             } else {
-                RenderSystem.setShaderColor(1f, 1f, 1f, 0.25f);
+                guiGraphics.setColor(1f, 1f, 1f, 0.25f);
             }
 
             if (isHovered && active) {
-                blit(poseStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
+                guiGraphics.blit(SERVER_SELECTION_BUTTONS, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
             } else {
-                blit(poseStack, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
+                guiGraphics.blit(SERVER_SELECTION_BUTTONS, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
             }
 
             RenderSystem.disableBlend();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
     }
 

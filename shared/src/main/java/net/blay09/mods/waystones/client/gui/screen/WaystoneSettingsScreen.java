@@ -8,6 +8,8 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
@@ -118,22 +120,22 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        drawString(matrixStack, font, getTitle(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
+        guiGraphics.drawString(font, getTitle(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);
 
         if (isGlobalCheckbox.visible) {
-            drawString(matrixStack, font, isGlobalText, width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
+            guiGraphics.drawString(font, isGlobalText, width / 2 - 100 + 25, height / 2 + 16, 0xFFFFFF);
         }
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
     }
 
     @Override
-    protected void renderLabels(PoseStack p_230451_1_, int p_230451_2_, int p_230451_3_) {
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     }
 }

@@ -19,6 +19,8 @@ import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
@@ -176,7 +178,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
         IWaystone waystoneFrom = menu.getWaystoneFrom();
         Player player = Minecraft.getInstance().player;
-        int xpLevelCost = Math.round(PlayerWaystoneManager.predictExperienceLevelCost(Objects.requireNonNull(player), waystone, menu.getWarpMode(), waystoneFrom));
+        int xpLevelCost = Math.round(PlayerWaystoneManager.predictExperienceLevelCost(Objects.requireNonNull(player),
+                waystone,
+                menu.getWarpMode(),
+                waystoneFrom));
         WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpLevelCost, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
@@ -219,35 +224,34 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        renderTooltip(matrixStack, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        renderTooltip(guiGraphics, mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {
             if (tooltipProvider.shouldShowTooltip()) {
-                renderTooltip(matrixStack, tooltipProvider.getTooltip(), Optional.empty(), mouseX, mouseY);
+                guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
             }
         }
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(GuiGraphics guiGraphics, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        Font fontRenderer = Minecraft.getInstance().font;
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        Font font = Minecraft.getInstance().font;
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         IWaystone fromWaystone = menu.getWaystoneFrom();
-        drawCenteredString(poseStack, fontRenderer, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
+        guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
-            drawLocationHeader(poseStack, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
+            drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
         }
 
         if (waystones.size() == 0) {
-            drawCenteredString(poseStack,
-                    fontRenderer,
+            guiGraphics.drawCenteredString(font,
                     ChatFormatting.RED + I18n.get("gui.waystones.waystone_selection.no_waystones_activated"),
                     imageWidth / 2,
                     imageHeight / 2 - 20,
@@ -255,27 +259,27 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
     }
 
-    private void drawLocationHeader(PoseStack poseStack, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
-        Font fontRenderer = Minecraft.getInstance().font;
+    private void drawLocationHeader(GuiGraphics guiGraphics, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
+        Font font = Minecraft.getInstance().font;
 
         String locationPrefix = ChatFormatting.YELLOW + I18n.get("gui.waystones.waystone_selection.current_location") + " ";
-        int locationPrefixWidth = fontRenderer.width(locationPrefix);
+        int locationPrefixWidth = font.width(locationPrefix);
 
         String effectiveName = waystone.getName();
         if (effectiveName.isEmpty()) {
             effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        int locationWidth = fontRenderer.width(effectiveName);
+        int locationWidth = font.width(effectiveName);
 
         int fullWidth = locationPrefixWidth + locationWidth;
 
         int startX = x - fullWidth / 2 + locationPrefixWidth;
         int startY = y + topPos;
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
-                && mouseY >= startY && mouseY < startY + fontRenderer.lineHeight;
+                && mouseY >= startY && mouseY < startY + font.lineHeight;
 
         Player player = Minecraft.getInstance().player;
-        WaystoneEditPermissions waystoneEditPermissions = PlayerWaystoneManager.mayEditWaystone(player, player.level, waystone);
+        WaystoneEditPermissions waystoneEditPermissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
 
         String fullText = locationPrefix + ChatFormatting.WHITE;
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
@@ -283,15 +287,15 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
         fullText += effectiveName;
 
-        drawString(poseStack, fontRenderer, fullText, x - fullWidth / 2, y, 0xFFFFFF);
+        guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             float scale = 0.5f;
             poseStack.translate(x + fullWidth / 2f + 4, y, 0f);
             poseStack.scale(scale, scale, scale);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, new ItemStack(Items.WRITABLE_BOOK), 0, 0);
+            guiGraphics.renderItem(new ItemStack(Items.WRITABLE_BOOK), 0, 0);
             poseStack.popPose();
         }
     }

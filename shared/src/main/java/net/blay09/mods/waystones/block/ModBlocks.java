@@ -3,14 +3,12 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 
 public class ModBlocks {
 
@@ -45,6 +43,6 @@ public class ModBlocks {
     }
 
     private static BlockBehaviour.Properties defaultProperties() {
-        return Balm.getBlocks().blockProperties(Material.STONE).sound(SoundType.STONE).strength(5f, 2000f);
+        return Balm.getBlocks().blockProperties().sound(SoundType.STONE).strength(5f, 2000f);
     }
 }

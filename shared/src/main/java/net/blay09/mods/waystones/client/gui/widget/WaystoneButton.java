@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -48,18 +49,17 @@ public class WaystoneButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        super.renderWidget(poseStack, mouseX, mouseY, partialTicks);
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         Minecraft mc = Minecraft.getInstance();
         if (xpLevelCost > 0) {
             boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.getAbilities().instabuild;
-            RenderSystem.setShaderTexture(0, ENCHANTMENT_TABLE_GUI_TEXTURE);
-            blit(poseStack, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+            guiGraphics.blit(ENCHANTMENT_TABLE_GUI_TEXTURE, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
 
             if (xpLevelCost > 3) {
-                mc.font.draw(poseStack, "+", getX() + 17, getY() + 6, 0xC8FF8F);
+                guiGraphics.drawString(mc.font, "+", getX() + 17, getY() + 6, 0xC8FF8F);
             }
 
             if (isHovered && mouseX <= getX() + 16) {
@@ -67,8 +67,7 @@ public class WaystoneButton extends Button {
                 final var levelRequirementText = Component.translatable("gui.waystones.waystone_selection.level_requirement", xpLevelCost);
                 levelRequirementText.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED);
                 tooltip.add(levelRequirementText);
-                final Screen screen = Minecraft.getInstance().screen;
-                Objects.requireNonNull(screen).renderTooltip(poseStack, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
+                guiGraphics.renderTooltip(mc.font, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
             }
         }
     }

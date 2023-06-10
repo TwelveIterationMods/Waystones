@@ -1,39 +1,21 @@
 package net.blay09.mods.waystones.config;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import net.blay09.mods.balm.api.config.BalmConfigData;
-import net.blay09.mods.balm.api.config.Comment;
-import net.blay09.mods.balm.api.config.ExpectedType;
-import net.blay09.mods.balm.api.config.Synced;
+import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Config(name = Waystones.MOD_ID)
+@Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData, IWaystonesConfig {
-    @ConfigEntry.Gui.CollapsibleObject
     public XpCost xpCost = new XpCost();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public Restrictions restrictions = new Restrictions();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public Cooldowns cooldowns = new Cooldowns();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public InventoryButton inventoryButton = new InventoryButton();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public WorldGen worldGen = new WorldGen();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public Client client = new Client();
-
-    @ConfigEntry.Gui.CollapsibleObject
     public Compatibility compatibility = new Compatibility();
 
     public static class XpCost {

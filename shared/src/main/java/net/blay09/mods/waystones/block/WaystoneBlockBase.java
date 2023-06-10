@@ -44,7 +44,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WaystoneBlockBase(Properties properties) {
-        super(properties);
+        super(properties.pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
@@ -169,11 +169,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
     }
 
     protected void notifyObserversOfAction(Level world, BlockPos pos) {

@@ -1,10 +1,9 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -47,7 +46,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         boolean shiftDown = Screen.hasShiftDown();
         if (!shiftDown) {
             shiftGuard = false;
@@ -55,15 +54,12 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         active = !shiftGuard && shiftDown;
 
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.setShaderTexture(0, BEACON);
             if (isHovered && active) {
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                guiGraphics.setColor(1f, 1f, 1f, 1f);
             } else {
-                RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.5f);
+                guiGraphics.setColor(0.5f, 0.5f, 0.5f, 0.5f);
             }
-            blit(poseStack, getX(), getY(), 114, 223, 13, 13);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            guiGraphics.blit(BEACON, getX(), getY(), 114, 223, 13, 13);
         }
     }
 
@@ -73,7 +69,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     }
 
     @Override
-    public List<Component> getTooltip() {
+    public List<Component> getTooltipComponents() {
         return active ? activeTooltip : tooltip;
     }
 }

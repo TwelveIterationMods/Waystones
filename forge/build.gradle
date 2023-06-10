@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath "com.modrinth.minotaur:Minotaur:2.+"
@@ -128,7 +128,7 @@ dependencies {
         changing = balm_version.endsWith("SNAPSHOT")
     }
 
-    implementation "org.jetbrains:annotations:22.0.0"
+    compileOnly "org.jetbrains:annotations:22.0.0"
 
     compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
     if (jei_minecraft_version == minecraft_version) {
@@ -174,8 +174,8 @@ publishing {
 
     repositories {
         maven {
-            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
-            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
             url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
             name = "twelveIterationsNexus"
             credentials(PasswordCredentials)

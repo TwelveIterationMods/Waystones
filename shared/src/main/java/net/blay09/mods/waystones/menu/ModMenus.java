@@ -30,7 +30,7 @@ public class ModMenus {
             IWaystone fromWaystone = null;
             if (warpMode == WarpMode.WAYSTONE_TO_WAYSTONE) {
                 BlockPos pos = buf.readBlockPos();
-                BlockEntity blockEntity = inventory.player.level.getBlockEntity(pos);
+                BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
                 if (blockEntity instanceof WaystoneBlockEntity) {
                     fromWaystone = ((WaystoneBlockEntity) blockEntity).getWaystone();
                 }
@@ -47,7 +47,7 @@ public class ModMenus {
                 waystones.add(Waystone.read(buf));
             }
 
-            BlockEntity blockEntity = inventory.player.level.getBlockEntity(pos);
+            BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
             if (blockEntity instanceof SharestoneBlockEntity) {
                 IWaystone fromWaystone = ((SharestoneBlockEntity) blockEntity).getWaystone();
                 return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, syncId, waystones);
@@ -59,7 +59,7 @@ public class ModMenus {
         warpPlate = menus.registerMenu(id("warp_plate"), (windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
 
-            BlockEntity blockEntity = inv.player.level.getBlockEntity(pos);
+            BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
                 return new WarpPlateContainer(windowId, warpPlate, warpPlate.getContainerData(), inv);
             }

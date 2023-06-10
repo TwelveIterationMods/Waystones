@@ -7,5 +7,5 @@ import java.util.List;
 public interface ITooltipProvider {
     boolean shouldShowTooltip();
 
-    List<Component> getTooltip();
+    List<Component> getTooltipComponents();
 }

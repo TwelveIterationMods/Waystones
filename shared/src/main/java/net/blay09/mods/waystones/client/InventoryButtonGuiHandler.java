@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
@@ -15,6 +14,7 @@ import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -85,7 +85,7 @@ public class InventoryButtonGuiHandler {
 
         Balm.getEvents().onEvent(ScreenDrawEvent.Post.class, event -> {
             Screen screen = event.getScreen();
-            PoseStack poseStack = event.getPoseStack();
+            GuiGraphics guiGraphics = event.getGuiGraphics();
             int mouseX = event.getMouseX();
             int mouseY = event.getMouseY();
             // Render the inventory button tooltip when it's hovered
@@ -133,7 +133,7 @@ public class InventoryButtonGuiHandler {
                     tooltip.add(formatTranslation(ChatFormatting.GOLD, "tooltip.waystones.cooldown_left", secondsLeft));
                 }
 
-                screen.renderTooltip(poseStack, tooltip, Optional.empty(), mouseX, mouseY);
+                guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
             }
         });
     }

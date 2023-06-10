@@ -100,13 +100,13 @@ public class PlayerWaystoneManager {
     }
 
     public static boolean isWaystoneActivated(Player player, IWaystone waystone) {
-        return getPlayerWaystoneData(player.level).isWaystoneActivated(player, waystone);
+        return getPlayerWaystoneData(player.level()).isWaystoneActivated(player, waystone);
     }
 
     public static void activateWaystone(Player player, IWaystone waystone) {
         if (!waystone.hasName() && waystone instanceof IMutableWaystone && waystone.wasGenerated()) {
             NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().nameGenerationMode();
-            String name = NameGenerator.get(player.getServer()).getName(waystone, player.level.random, nameGenerationMode);
+            String name = NameGenerator.get(player.getServer()).getName(waystone, player.level().random, nameGenerationMode);
             ((IMutableWaystone) waystone).setName(name);
         }
 
@@ -119,7 +119,7 @@ public class PlayerWaystoneManager {
         }
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
-            getPlayerWaystoneData(player.level).activateWaystone(player, waystone);
+            getPlayerWaystoneData(player.level()).activateWaystone(player, waystone);
 
             Balm.getEvents().fireEvent(new WaystoneActivatedEvent(player, waystone));
         }
@@ -155,7 +155,7 @@ public class PlayerWaystoneManager {
         final double minimumXpCost = WaystonesConfig.getActive().minimumXpCost();
         final double maximumXpCost = WaystonesConfig.getActive().maximumXpCost();
         double xpLevelCost;
-        if (waystone.getDimension() != player.level.dimension()) {
+        if (waystone.getDimension() != player.level().dimension()) {
             int dimensionalWarpXpCost = WaystonesConfig.getActive().dimensionalWarpXpCost();
             xpLevelCost = Mth.clamp(dimensionalWarpXpCost, minimumXpCost, dimensionalWarpXpCost);
         } else if (WaystonesConfig.getActive().blocksPerXPLevel() > 0) {
@@ -289,10 +289,11 @@ public class PlayerWaystoneManager {
 
     private static void applyCooldown(WarpMode warpMode, Player player, int cooldown) {
         if (cooldown > 0) {
+            final Level level = player.level();
             switch (warpMode) {
                 case INVENTORY_BUTTON ->
-                        getPlayerWaystoneData(player.level).setInventoryButtonCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
-                case WARP_STONE -> getPlayerWaystoneData(player.level).setWarpStoneCooldownUntil(player, player.level.getGameTime() + cooldown * 20L);
+                        getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, level.getGameTime() + cooldown * 20L);
+                case WARP_STONE -> getPlayerWaystoneData(level).setWarpStoneCooldownUntil(player, level.getGameTime() + cooldown * 20L);
             }
             WaystoneSyncManager.sendWaystoneCooldowns(player);
         }
@@ -311,7 +312,7 @@ public class PlayerWaystoneManager {
     }
 
     private static boolean canDimensionalWarpBetween(Entity player, IWaystone waystone) {
-        ResourceLocation fromDimension = player.level.dimension().location();
+        ResourceLocation fromDimension = player.level().dimension().location();
         ResourceLocation toDimension = waystone.getDimension().location();
         Collection<String> dimensionAllowList = WaystonesConfig.getActive().dimensionalWarpAllowList();
         Collection<String> dimensionDenyList = WaystonesConfig.getActive().dimensionalWarpDenyList();
@@ -348,7 +349,7 @@ public class PlayerWaystoneManager {
     }
 
     public static List<Mob> findLeashedAnimals(Entity player) {
-        return player.level.getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(10),
+        return player.level().getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(10),
                 e -> player.equals(e.getLeashHolder())
         );
     }
@@ -357,7 +358,7 @@ public class PlayerWaystoneManager {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
-        ServerLevel sourceWorld = (ServerLevel) context.getEntity().level;
+        ServerLevel sourceWorld = (ServerLevel) context.getEntity().level();
         BlockPos sourcePos = context.getEntity().blockPosition();
 
         final var destination = context.getDestination();
@@ -436,7 +437,7 @@ public class PlayerWaystoneManager {
                 ((ServerPlayer) entity).stopSleepInBed(true, true);
             }
 
-            if (targetWorld == entity.level) {
+            if (targetWorld == entity.level()) {
                 ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot(), Collections.emptySet());
             } else {
                 ((ServerPlayer) entity).teleportTo(targetWorld, x, y, z, yaw, entity.getXRot());
@@ -445,7 +446,7 @@ public class PlayerWaystoneManager {
             entity.setYHeadRot(yaw);
         } else {
             float pitch = Mth.clamp(entity.getXRot(), -90.0F, 90.0F);
-            if (targetWorld == entity.level) {
+            if (targetWorld == entity.level()) {
                 entity.moveTo(x, y, z, yaw, pitch);
                 entity.setYHeadRot(yaw);
             } else {
@@ -479,7 +480,7 @@ public class PlayerWaystoneManager {
     }
 
     public static void deactivateWaystone(Player player, IWaystone waystone) {
-        getPlayerWaystoneData(player.level).deactivateWaystone(player, waystone);
+        getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
     }
 
     private static boolean canUseWarpMode(Entity entity, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
@@ -502,35 +503,35 @@ public class PlayerWaystoneManager {
     }
 
     public static long getWarpStoneCooldownUntil(Player player) {
-        return getPlayerWaystoneData(player.level).getWarpStoneCooldownUntil(player);
+        return getPlayerWaystoneData(player.level()).getWarpStoneCooldownUntil(player);
     }
 
     public static long getWarpStoneCooldownLeft(Player player) {
         long cooldownUntil = getWarpStoneCooldownUntil(player);
-        return Math.max(0, cooldownUntil - player.level.getGameTime());
+        return Math.max(0, cooldownUntil - player.level().getGameTime());
     }
 
     public static void setWarpStoneCooldownUntil(Player player, long timeStamp) {
-        getPlayerWaystoneData(player.level).setWarpStoneCooldownUntil(player, timeStamp);
+        getPlayerWaystoneData(player.level()).setWarpStoneCooldownUntil(player, timeStamp);
     }
 
     public static long getInventoryButtonCooldownUntil(Player player) {
-        return getPlayerWaystoneData(player.level).getInventoryButtonCooldownUntil(player);
+        return getPlayerWaystoneData(player.level()).getInventoryButtonCooldownUntil(player);
     }
 
     public static long getInventoryButtonCooldownLeft(Player player) {
         long cooldownUntil = getInventoryButtonCooldownUntil(player);
-        return Math.max(0, cooldownUntil - player.level.getGameTime());
+        return Math.max(0, cooldownUntil - player.level().getGameTime());
     }
 
     public static void setInventoryButtonCooldownUntil(Player player, long timeStamp) {
-        getPlayerWaystoneData(player.level).setInventoryButtonCooldownUntil(player, timeStamp);
+        getPlayerWaystoneData(player.level()).setInventoryButtonCooldownUntil(player, timeStamp);
     }
 
     @Nullable
     public static IWaystone getNearestWaystone(Player player) {
-        return getPlayerWaystoneData(player.level).getWaystones(player).stream()
-                .filter(it -> it.getDimension() == player.level.dimension())
+        return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
+                .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
                     double firstDist = first.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
                     double secondDist = second.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
@@ -539,7 +540,7 @@ public class PlayerWaystoneManager {
     }
 
     public static List<IWaystone> getWaystones(Player player) {
-        return getPlayerWaystoneData(player.level).getWaystones(player);
+        return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
     public static IPlayerWaystoneData getPlayerWaystoneData(@Nullable Level world) {
@@ -555,7 +556,7 @@ public class PlayerWaystoneManager {
     }
 
     public static void swapWaystoneSorting(Player player, int index, int otherIndex) {
-        getPlayerWaystoneData(player.level).swapWaystoneSorting(player, index, otherIndex);
+        getPlayerWaystoneData(player.level()).swapWaystoneSorting(player, index, otherIndex);
     }
 
     public static boolean mayEditGlobalWaystones(Player player) {
