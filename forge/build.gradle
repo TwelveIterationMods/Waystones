@@ -235,12 +235,11 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     group = 'publishing'
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-    mainFile.releaseType = "release"
 
     def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.addRequirement("balm")
-    // TODO not sure if necessary mainFile.addGameVersion(project.minecraft_versions.split(','))
+    mainFile.releaseType = "release"
 }
 
 modrinth {
