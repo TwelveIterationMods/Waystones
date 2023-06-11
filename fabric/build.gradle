@@ -111,9 +111,12 @@ publishing {
 }
 
 task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+	dependsOn('build')
 	description = 'Publishes the Fabric build to CurseForge.'
+	group = 'publishing'
 
 	apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
+	releaseType = "release"
 
 	def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
 	mainFile.changelog = rootProject.file('CHANGELOG.md').text
