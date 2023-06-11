@@ -1,1 +1,1 @@
-- Update to Minecraft 1.20
+- Updated to Minecraft 1.20

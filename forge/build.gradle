@@ -187,7 +187,7 @@ def replaceProperties = [
         minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
         forge_version: forge_version, forge_version_range: forge_version_range,
         forge_loader_version_range: forge_loader_version_range,
-        mod_id: mod_id, mod_version: mod_version, balm_versio_range: balm_version_range,
+        mod_id: mod_id, mod_version: mod_version, balm_version_range: balm_version_range,
 ]
 processResources {
     from project(":shared").sourceSets.main.resources
@@ -235,7 +235,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     group = 'publishing'
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-    releaseType = "release"
+    mainFile.releaseType = "release"
 
     def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text

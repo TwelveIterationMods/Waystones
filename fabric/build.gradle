@@ -70,6 +70,14 @@ loom {
 	}
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDirs 'src/generated/resources'
+		}
+	}
+}
+
 processResources {
 	from project(":shared").sourceSets.main.resources
 	inputs.property "version", project.version
@@ -116,7 +124,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 	group = 'publishing'
 
 	apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-	releaseType = "release"
+	mainFile.releaseType = "release"
 
 	def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
 	mainFile.changelog = rootProject.file('CHANGELOG.md').text
