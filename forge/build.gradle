@@ -1,21 +1,22 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = "https://repo.spongepowered.org/maven" }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
-        classpath "com.modrinth.minotaur:Minotaur:2.+"
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
+
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'maven-publish'
+    id 'idea'
+    id 'net.darkhax.curseforgegradle' version '1.0.14'
+    id "com.modrinth.minotaur" version "2.+"
+}
+
 apply plugin: "org.spongepowered.mixin"
-apply plugin: 'maven-publish'
-apply plugin: "com.matthewprenger.cursegradle"
-apply plugin: "com.modrinth.minotaur"
 
 group = mod_group
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
@@ -23,6 +24,8 @@ version = mod_version
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+
+    copyIdeResources = true
 
     runs {
         client {
@@ -43,6 +46,8 @@ minecraft {
             property "mixin.hotSwap", "true"
 
             property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
                 "${mod_id}" {
@@ -70,6 +75,37 @@ minecraft {
             property "mixin.hotSwap", "true"
 
             property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', mod_id
+
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                    source project(":shared").sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "GameTest"
+
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
+
+            property "mixin.env.disableRefMap", "true"
+            property "mixin.debug.export", "true"
+            property "mixin.debug.export.decompile", "false"
+            property "mixin.debug.verbose", "true"
+            property "mixin.debug.dumpTargetOnFailure", "true"
+            property "mixin.checks", "true"
+            property "mixin.hotSwap", "true"
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
                 "${mod_id}" {
@@ -135,10 +171,6 @@ dependencies {
         runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
     }
 
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config:$cloth_config_version") {
-        transitive = false
-    }
-
     compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
     compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
@@ -150,8 +182,22 @@ tasks.withType(JavaCompile) {
     source(project(":shared").sourceSets.main.allSource)
 }
 
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version, forge_version_range: forge_version_range,
+        forge_loader_version_range: forge_loader_version_range,
+        mod_id: mod_id, mod_version: mod_version, balm_versio_range: balm_version_range,
+]
 processResources {
     from project(":shared").sourceSets.main.resources
+
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
 }
 
 jar {
@@ -183,22 +229,15 @@ publishing {
     }
 }
 
-curseforge {
-    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-    project {
-        id = curseforge_forge_project_id
-        releaseType = curseforge_release_type
-        changelogType = 'markdown'
-        changelog = rootProject.file('CHANGELOG.md')
-        project.minecraft_versions.split(',').each {
-            addGameVersion it
-        }
-        addGameVersion 'Forge'
+task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    description = 'Publishes the Forge build to CurseForge.'
 
-        relations {
-            requiredLibrary 'balm'
-        }
-    }
+    apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
+
+    def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+    mainFile.changelog = rootProject.file('CHANGELOG.md').text
+    mainFile.addRequirement("balm")
+    // TODO not sure if necessary mainFile.addGameVersion(project.minecraft_versions.split(','))
 }
 
 modrinth {

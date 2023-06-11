@@ -2,7 +2,7 @@ plugins {
 	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
 	id 'idea'
-	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'net.darkhax.curseforgegradle' version '1.0.14'
 	id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -110,31 +110,15 @@ publishing {
 	}
 }
 
-curseforge {
-	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
-	project {
-		id = curseforge_fabric_project_id
-		releaseType = curseforge_release_type
-		changelogType = 'markdown'
-		changelog = rootProject.file('CHANGELOG.md')
-		project.minecraft_versions.split(',').each {
-			addGameVersion it
-		}
-		addGameVersion 'Fabric'
+task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+	description = 'Publishes the Fabric build to CurseForge.'
 
-		relations {
-			requiredLibrary 'balm-fabric'
-		}
+	apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-		mainArtifact(remapJar)
-
-		afterEvaluate {
-			uploadTask.dependsOn(remapJar)
-		}
-	}
-	options {
-		forgeGradleIntegration = false
-	}
+	def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+	mainFile.changelog = rootProject.file('CHANGELOG.md').text
+	mainFile.addRequirement("balm-fabric")
+	// TODO not sure if necessary mainFile.addGameVersion(project.minecraft_versions.split(','))
 }
 
 modrinth {
@@ -148,7 +132,6 @@ modrinth {
 	syncBodyFrom = rootProject.file("modrinth.md").text
 	loaders = ['fabric']
 	dependencies {
-		required.project "fabric-api"
 		required.project "balm"
 	}
 }
