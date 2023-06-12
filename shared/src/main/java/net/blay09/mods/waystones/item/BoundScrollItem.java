@@ -44,7 +44,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystonesConfig.getActive().scrollUseTime();
+        return WaystonesConfig.getActive().cooldowns.scrollUseTime;
     }
 
     public static void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {

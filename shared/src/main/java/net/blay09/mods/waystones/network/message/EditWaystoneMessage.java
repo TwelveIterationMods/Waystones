@@ -64,7 +64,7 @@ public class EditWaystoneMessage {
     }
 
     private static String makeNameLegal(MinecraftServer server, String name) {
-        String inventoryButtonMode = WaystonesConfig.getActive().inventoryButton();
+        String inventoryButtonMode = WaystonesConfig.getActive().inventoryButton.inventoryButton;
         if (inventoryButtonMode.equals(name) && WaystoneManager.get(server).findWaystoneByName(name).isPresent()) {
             return name + "*";
         }

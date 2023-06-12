@@ -9,15 +9,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public enum WarpMode {
-    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().inventoryButtonXpCostMultiplier(), WarpMode::waystoneIsActivatedOrNamed, false),
+    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().xpCost.inventoryButtonXpCostMultiplier, WarpMode::waystoneIsActivatedOrNamed, false),
     WARP_SCROLL(() -> 0.0, WarpMode::waystoneIsActivated, true),
     RETURN_SCROLL(() -> 0.0, WarpMode::waystoneIsActivated, true),
     BOUND_SCROLL(() -> 0.0, WarpMode::always, true),
-    WARP_STONE(() -> WaystonesConfig.getActive().warpStoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false),
-    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().waystoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false),
-    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().sharestoneXpCostMultiplier(), WarpMode::sharestonesOnly, false),
-    WARP_PLATE(() -> WaystonesConfig.getActive().warpPlateXpCostMultiplier(), WarpMode::warpPlatesOnly, false),
-    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().portstoneXpCostMultiplier(), WarpMode::waystoneIsActivated, false),
+    WARP_STONE(() -> WaystonesConfig.getActive().xpCost.warpStoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
+    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.waystoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
+    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().xpCost.sharestoneXpCostMultiplier, WarpMode::sharestonesOnly, false),
+    WARP_PLATE(() -> WaystonesConfig.getActive().xpCost.warpPlateXpCostMultiplier, WarpMode::warpPlatesOnly, false),
+    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.portstoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
     CUSTOM(() -> 0.0, WarpMode::always, false);
 
     public static WarpMode[] values = values();

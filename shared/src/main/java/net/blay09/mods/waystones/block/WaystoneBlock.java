@@ -83,7 +83,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {
-                if (WaystonesConfig.getActive().allowWaystoneToWaystoneTeleport()) {
+                if (WaystonesConfig.getActive().restrictions.allowWaystoneToWaystoneTeleport) {
                     Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
                 } else {
                     player.displayClientMessage(Component.translatable("chat.waystones.waystone_to_waystone_disabled"), true);
@@ -131,7 +131,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (!WaystonesConfig.getActive().disableParticles() && random.nextFloat() < 0.75f) {
+        if (!WaystonesConfig.getActive().client.disableParticles && random.nextFloat() < 0.75f) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             Player player = Minecraft.getInstance().player;
             if (blockEntity instanceof WaystoneBlockEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player),

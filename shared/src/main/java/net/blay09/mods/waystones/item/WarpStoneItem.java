@@ -63,7 +63,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystonesConfig.getActive().warpStoneUseTime();
+        return WaystonesConfig.getActive().cooldowns.warpStoneUseTime;
     }
 
     @Override
@@ -193,7 +193,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         }
 
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        int maxCooldown = WaystonesConfig.getActive().warpStoneCooldown() * 20;
+        int maxCooldown = WaystonesConfig.getActive().cooldowns.warpStoneCooldown * 20;
         if (maxCooldown == 0) {
             return MAX_BAR_WIDTH;
         }

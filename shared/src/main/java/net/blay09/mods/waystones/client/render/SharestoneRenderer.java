@@ -59,8 +59,8 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             poseStack.scale(0.5f, 0.5f, 0.5f);
             poseStack.scale(scale, scale, scale);
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-            int light = WaystonesConfig.getActive().disableTextGlow() ? combinedLightIn : 15728880;
-            int overlay = WaystonesConfig.getActive().disableTextGlow() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+            int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
+            int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
             float[] colors = color.getTextureDiffuseColors();
             model.renderToBuffer(poseStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
             poseStack.popPose();

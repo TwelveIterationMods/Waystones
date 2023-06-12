@@ -29,7 +29,7 @@ public class JigsawPlacementMixin {
         boolean hasWaystone = pieces.stream()
                 .map(piece -> ((PoolElementStructurePiece) piece).getElement().toString())
                 .anyMatch(pieceName -> pieceName.contains("waystones:") && pieceName.contains("/waystone"));
-        boolean forceWaystone = WaystonesConfig.getActive().forceSpawnInVillages();
+        boolean forceWaystone = WaystonesConfig.getActive().worldGen.forceSpawnInVillages;
         if (hasWaystone) {
             return pool.getShuffledTemplates(rand).stream().filter(piece -> {
                 String pieceName = piece.toString();

@@ -13,6 +13,6 @@ public class RepurposedStructuresIntegration {
                 .ifPresent(registry -> Registry.register(
                         (Registry<Supplier<Boolean>>) registry,
                         new ResourceLocation("waystones", "config"),
-                        () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()));
+                        () -> WaystonesConfig.getActive().worldGen.spawnInVillages || WaystonesConfig.getActive().worldGen.forceSpawnInVillages));
     }
 }

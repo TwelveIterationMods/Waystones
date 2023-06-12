@@ -52,8 +52,8 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
         if (isActivated) {
             matrixStack.scale(1.05f, 1.05f, 1.05f);
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-            int light = WaystonesConfig.getActive().disableTextGlow() ? combinedLightIn : 15728880;
-            int overlay = WaystonesConfig.getActive().disableTextGlow() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+            int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
+            int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
             model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, 1f, 1f, 1f, 1f);
         }
         matrixStack.popPose();

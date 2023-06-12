@@ -88,7 +88,7 @@ public class ModWorldGen {
     }
 
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
-        WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGenStyle();
+        WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGen.worldGenStyle;
         return switch (worldGenStyle) {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;
@@ -102,7 +102,7 @@ public class ModWorldGen {
     }
 
     public static void setupDynamicRegistries(RegistryAccess registryAccess) {
-        if (WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages()) {
+        if (WaystonesConfig.getActive().worldGen.spawnInVillages || WaystonesConfig.getActive().worldGen.forceSpawnInVillages) {
             // Add Waystone to Vanilla Villages.
             addWaystoneStructureToVillageConfig(registryAccess, "village/plains/houses", villageWaystoneStructure, 1);
             addWaystoneStructureToVillageConfig(registryAccess, "village/snowy/houses", villageWaystoneStructure, 1);

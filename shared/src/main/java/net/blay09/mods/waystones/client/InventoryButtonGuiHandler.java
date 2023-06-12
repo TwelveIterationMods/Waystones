@@ -50,8 +50,8 @@ public class InventoryButtonGuiHandler {
                 return;
             }
 
-            Supplier<Integer> xPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().creativeWarpButtonX() : () -> WaystonesConfig.getActive().warpButtonX();
-            Supplier<Integer> yPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().creativeWarpButtonY() : () -> WaystonesConfig.getActive().warpButtonY();
+            Supplier<Integer> xPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeWarpButtonX : () -> WaystonesConfig.getActive().inventoryButton.warpButtonX;
+            Supplier<Integer> yPosition = screen instanceof CreativeModeInventoryScreen ? () -> WaystonesConfig.getActive().inventoryButton.creativeWarpButtonY : () -> WaystonesConfig.getActive().inventoryButton.warpButtonY;
             warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, button -> {
                 Player player = mc.player;
 

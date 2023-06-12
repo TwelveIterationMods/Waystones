@@ -67,14 +67,14 @@ public class WaystonePlacement extends PlacementModifier {
     }
 
     private boolean isWaystoneChunk(PlacementContext world, BlockPos pos) {
-        final int chunkDistance = WaystonesConfig.getActive().worldGenFrequency();
+        final int chunkDistance = WaystonesConfig.getActive().worldGen.frequency;
         if (chunkDistance == 0) {
             return false;
         }
 
         ResourceLocation dimension = world.getLevel().getLevel().dimension().location();
-        List<? extends String> dimensionAllowList = WaystonesConfig.getActive().worldGenDimensionAllowList();
-        List<? extends String> dimensionDenyList = WaystonesConfig.getActive().worldGenDimensionDenyList();
+        List<? extends String> dimensionAllowList = WaystonesConfig.getActive().worldGen.dimensionAllowList;
+        List<? extends String> dimensionDenyList = WaystonesConfig.getActive().worldGen.dimensionDenyList;
         if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension.toString())) {
             return false;
         } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension.toString())) {

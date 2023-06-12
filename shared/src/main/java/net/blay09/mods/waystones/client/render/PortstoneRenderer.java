@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
@@ -12,7 +11,6 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -61,8 +59,8 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         poseStack.scale(scale, scale, scale);
 
         VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-        int light = WaystonesConfig.getActive().disableTextGlow() ? combinedLightIn : 15728880;
-        int overlay = WaystonesConfig.getActive().disableTextGlow() ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+        int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
+        int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
         long gameTime = level.getGameTime();
         float min = 0.7f;
         float color = (float) Math.max(min, min + Math.abs(Math.sin(gameTime / 32f)) * (1f - min));
