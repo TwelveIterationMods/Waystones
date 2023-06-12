@@ -8,4 +8,7 @@ repositories {
 dependencies {
     modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
 //	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
+
+    modRuntimeOnly "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
+    modRuntimeOnly "com.terraformersmc:modmenu:7.0.1"
 }
