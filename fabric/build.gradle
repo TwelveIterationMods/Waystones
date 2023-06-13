@@ -130,13 +130,13 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 	mainFile.changelogType = "markdown"
 	mainFile.addRequirement("balm-fabric")
 	project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-	mainFile.releaseType = curseforge_release_type
+	mainFile.releaseType = release_type
 }
 
 modrinth {
 	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
 	projectId = project.modrinth_fabric_project_id
-	versionType = project.modrinth_release_type
+	versionType = project.release_type
 	versionNumber = project.version + "+fabric-" + project.minecraft_version
 	uploadFile = remapJar
 	changelog = rootProject.file("CHANGELOG.md").text

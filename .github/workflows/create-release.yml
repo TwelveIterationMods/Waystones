@@ -11,6 +11,15 @@ on:
           - major
           - minor
           - patch
+      type:
+        description: 'The type for this release'
+        required: true
+        type: choice
+        default: release
+        options:
+          - release
+          - beta
+          - alpha
 
 jobs:
   create-release:
