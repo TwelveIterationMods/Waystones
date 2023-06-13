@@ -240,7 +240,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.addRequirement("balm")
     project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-    mainFile.releaseType = "release"
+    mainFile.releaseType = curseforge_release_type
 }
 
 modrinth {
