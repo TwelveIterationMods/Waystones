@@ -19,7 +19,11 @@ public interface IWaystone {
 
     ResourceKey<Level> getDimension();
 
-    boolean wasGenerated();
+    default boolean wasGenerated() {
+        return getOrigin() == WaystoneOrigin.VILLAGE || getOrigin() == WaystoneOrigin.WILDERNESS || getOrigin() == WaystoneOrigin.DUNGEON;
+    }
+
+    WaystoneOrigin getOrigin();
 
     boolean isGlobal();
 

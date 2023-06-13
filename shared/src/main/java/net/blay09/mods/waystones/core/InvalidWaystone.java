@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -42,8 +43,8 @@ public class InvalidWaystone implements IWaystone {
     }
 
     @Override
-    public boolean wasGenerated() {
-        return false;
+    public WaystoneOrigin getOrigin() {
+        return WaystoneOrigin.UNKNOWN;
     }
 
     @Override

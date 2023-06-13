@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
@@ -113,8 +114,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     @Override
-    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, boolean wasGenerated) {
-        super.initializeWaystone(world, player, wasGenerated);
+    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
+        super.initializeWaystone(world, player, origin);
 
         // Warp Plates generate a name on placement always
         IWaystone waystone = getWaystone();

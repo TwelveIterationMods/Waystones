@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tag.ModTags;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
 
     private final ResourceLocation waystoneType;
     private final UUID waystoneUid;
-    private final boolean wasGenerated;
+    private final WaystoneOrigin origin;
 
     private ResourceKey<Level> dimension;
     private BlockPos pos;
@@ -39,12 +40,12 @@ public class Waystone implements IWaystone, IMutableWaystone {
 
     private UUID ownerUid;
 
-    public Waystone(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, boolean wasGenerated, @Nullable UUID ownerUid) {
+    public Waystone(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
         this.pos = pos;
-        this.wasGenerated = wasGenerated;
+        this.origin = origin;
         this.ownerUid = ownerUid;
     }
 
@@ -69,8 +70,8 @@ public class Waystone implements IWaystone, IMutableWaystone {
     }
 
     @Override
-    public boolean wasGenerated() {
-        return wasGenerated;
+    public WaystoneOrigin getOrigin() {
+        return origin;
     }
 
     @Override
@@ -156,8 +157,9 @@ public class Waystone implements IWaystone, IMutableWaystone {
         boolean isGlobal = buf.readBoolean();
         ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
         BlockPos pos = buf.readBlockPos();
+        WaystoneOrigin origin = buf.readEnum(WaystoneOrigin.class);
 
-        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, false, null);
+        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, origin, null);
         waystone.setName(name);
         waystone.setGlobal(isGlobal);
         return waystone;
@@ -168,10 +170,17 @@ public class Waystone implements IWaystone, IMutableWaystone {
         String name = compound.getString("Name");
         ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
         BlockPos pos = NbtUtils.readBlockPos(compound.getCompound("BlockPos"));
-        boolean wasGenerated = compound.getBoolean("WasGenerated");
+        boolean wasGenerated = compound.getBoolean("WasGenerated"); // legacy
+        WaystoneOrigin origin = wasGenerated ? WaystoneOrigin.WILDERNESS : WaystoneOrigin.UNKNOWN;
+        if (compound.contains("Origin")) {
+            try {
+                origin = WaystoneOrigin.valueOf(compound.getString("Origin"));
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
         UUID ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
         ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
-        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, wasGenerated, ownerUid);
+        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
         waystone.setGlobal(compound.getBoolean("IsGlobal"));
         return waystone;
@@ -184,6 +193,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         buf.writeBoolean(waystone.isGlobal());
         buf.writeResourceLocation(waystone.getDimension().location());
         buf.writeBlockPos(waystone.getPos());
+        buf.writeEnum(waystone.getOrigin());
     }
 
     public static CompoundTag write(IWaystone waystone, CompoundTag compound) {
@@ -192,7 +202,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         compound.putString("Name", waystone.getName());
         compound.putString("World", waystone.getDimension().location().toString());
         compound.put("BlockPos", NbtUtils.writeBlockPos(waystone.getPos()));
-        compound.putBoolean("WasGenerated", waystone.wasGenerated());
+        compound.putString("Origin", waystone.getOrigin().name());
         if (waystone.getOwnerUid() != null) {
             compound.put("OwnerUid", NbtUtils.createUUID(waystone.getOwnerUid()));
         }

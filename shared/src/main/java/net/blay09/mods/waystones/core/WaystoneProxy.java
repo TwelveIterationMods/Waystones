@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -71,6 +72,11 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
     @Override
     public boolean wasGenerated() {
         return getBackingWaystone().wasGenerated();
+    }
+
+    @Override
+    public WaystoneOrigin getOrigin() {
+        return getBackingWaystone().getOrigin();
     }
 
     @Override

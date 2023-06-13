@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.core.*;
@@ -95,9 +96,10 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             if (!waystone.isValid()) {
                 BlockState state = getBlockState();
                 if (state.getBlock() instanceof WaystoneBlockBase) {
-                    DoubleBlockHalf half = state.hasProperty(WaystoneBlock.HALF) ? state.getValue(WaystoneBlock.HALF) : DoubleBlockHalf.LOWER;
+                    DoubleBlockHalf half = state.hasProperty(WaystoneBlockBase.HALF) ? state.getValue(WaystoneBlockBase.HALF) : DoubleBlockHalf.LOWER;
+                    WaystoneOrigin origin = state.hasProperty(WaystoneBlockBase.ORIGIN) ? state.getValue(WaystoneBlockBase.ORIGIN) : WaystoneOrigin.UNKNOWN;
                     if (half == DoubleBlockHalf.LOWER) {
-                        initializeWaystone((ServerLevelAccessor) Objects.requireNonNull(level), null, true);
+                        initializeWaystone((ServerLevelAccessor) Objects.requireNonNull(level), null, origin);
                     } else if (half == DoubleBlockHalf.UPPER) {
                         BlockEntity blockEntity = level.getBlockEntity(worldPosition.below());
                         if (blockEntity instanceof WaystoneBlockEntityBase) {
@@ -118,8 +120,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     protected abstract ResourceLocation getWaystoneType();
 
-    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, boolean wasGenerated) {
-        Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getLevel().dimension(), worldPosition, wasGenerated, player != null ? player.getUUID() : null);
+    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
+        Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getLevel().dimension(), worldPosition, origin, player != null ? player.getUUID() : null);
         WaystoneManager.get(world.getServer()).addWaystone(waystone);
         this.waystone = waystone;
         setChanged();

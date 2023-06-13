@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.ChatFormatting;
@@ -42,10 +43,11 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final EnumProperty<WaystoneOrigin> ORIGIN = EnumProperty.create("origin", WaystoneOrigin.class);
 
     public WaystoneBlockBase(Properties properties) {
         super(properties.pushReaction(PushReaction.BLOCK));
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(ORIGIN, WaystoneOrigin.UNKNOWN));
     }
 
     @Override
@@ -56,7 +58,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
 
         if (isDoubleBlock(state)) {
             DoubleBlockHalf half = state.getValue(HALF);
-            if ((direction.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (direction == Direction.UP)) || ((directionState.getBlock() == this) && (directionState.getValue(HALF) != half))) {
+            if ((direction.getAxis() != Direction.Axis.Y) || ((half == DoubleBlockHalf.LOWER) != (direction == Direction.UP)) || ((directionState.getBlock() == this) && (directionState.getValue(
+                    HALF) != half))) {
                 if ((half != DoubleBlockHalf.LOWER) || (direction != Direction.DOWN) || state.canSurvive(world, pos)) {
                     return state;
                 }
@@ -120,7 +123,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, WATERLOGGED);
+        builder.add(FACING, WATERLOGGED, ORIGIN);
     }
 
     @Override
@@ -306,7 +309,10 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
         boolean isDoubleBlock = isDoubleBlock(state);
         if (isDoubleBlock) {
             FluidState fluidStateAbove = world.getFluidState(posAbove);
-            world.setBlockAndUpdate(posAbove, state.setValue(HALF, DoubleBlockHalf.UPPER).setValue(WATERLOGGED, fluidStateAbove.getType() == Fluids.WATER));
+            world.setBlockAndUpdate(posAbove,
+                    state.setValue(HALF, DoubleBlockHalf.UPPER)
+                            .setValue(WATERLOGGED, fluidStateAbove.getType() == Fluids.WATER)
+                            .setValue(ORIGIN, WaystoneOrigin.PLAYER));
         }
 
         if (blockEntity instanceof WaystoneBlockEntityBase) {
@@ -318,9 +324,11 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock {
                 }
 
                 if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof Waystone) {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world, ((Waystone) existingWaystone.getBackingWaystone()), stack);
+                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world,
+                            ((Waystone) existingWaystone.getBackingWaystone()),
+                            stack);
                 } else {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) world, placer, false);
+                    ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) world, placer, WaystoneOrigin.PLAYER);
                 }
 
                 if (isDoubleBlock) {
