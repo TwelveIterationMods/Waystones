@@ -14,7 +14,7 @@ public class RepurposedStructuresIntegration {
             new ResourceLocation("repurposed_structures", "json_conditions"), "waystones");
 
     public static final RegistryObject<Supplier<Boolean>> WAYSTONE_CONFIG_CONDITION = RS_CONDITIONS_REGISTRY.register(
-            "config", () -> () -> WaystonesConfig.getActive().spawnInVillages() || WaystonesConfig.getActive().forceSpawnInVillages());
+            "config", () -> () -> WaystonesConfig.getActive().worldGen.spawnInVillages || WaystonesConfig.getActive().worldGen.forceSpawnInVillages);
 
     public RepurposedStructuresIntegration() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
