@@ -1,5 +1,4 @@
-- Updated to Minecraft 1.20
-
-**Note: This is a preliminary update that does not include the planned balance/progression/config changes yet.**
-
-**If you are a modpack developer, you will likely have to reconfigure Waystones once it moves out of beta.**
+- Fixed massive performance issues in world generation, particularly in the Nether
+- Improved forceSpawnInVillages option and one-per-village limitation to be more reliable
+- Fixed incorrect WTHIT plugin definition
+- Updated Ukrainian Translation (by unroman)
