@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "waystones.refmap.json",
   "mixins": [
-    "JigsawPlacementMixin",
+    "JigsawPlacementPlacerMixin",
+    "SinglePoolElementMixin",
     "StructureTemplatePoolAccessor"
   ],
   "client": [

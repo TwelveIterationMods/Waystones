@@ -118,6 +118,9 @@ public class ModWorldGen {
                 .getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
         LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
                 .apply(StructureTemplatePool.Projection.RIGID);
+        if (piece instanceof WaystoneStructurePoolElement element) {
+            element.setIsWaystone(true);
+        }
         StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
