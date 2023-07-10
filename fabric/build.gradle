@@ -24,8 +24,6 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	modImplementation "curse.maven:modmenu-308702:3348711"
-
 	implementation "org.jetbrains:annotations:22.0.0"
 }
 
