@@ -49,12 +49,10 @@ public abstract class SinglePoolElementMixin implements WaystoneStructurePoolEle
                 // therefore, only block nearby waystones if it's not literally the waystone that's supposed to be blocking it
                 // future blay will smh at past blay when this breaks due to relying on an identity check instead of comparing the BlockPos values
                 if (blockPos != existingPos && existingPos.distSqr(blockPos) < 100*100) {
-                    System.out.println("Refusing duplicate waystone to spawn in village at " + blockPos);
                     callbackInfo.setReturnValue(false);
                     return;
                 }
             }
-            System.out.println("Waystone spawned in village at " + blockPos);
             generatedWaystones.add(blockPos);
         }
     }
