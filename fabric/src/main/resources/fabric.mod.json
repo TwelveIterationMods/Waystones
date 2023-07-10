@@ -60,7 +60,7 @@
     },
     "waila:plugins": {
       "id": "waystones:wthit",
-      "initializer": "net.blay09.mods.waystones.compat.WTHITWaystonesPlugin"
+      "initializer": "net.blay09.mods.waystones.compat.WTHITIntegration"
     }
   }
 }

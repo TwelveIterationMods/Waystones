@@ -1,6 +1,6 @@
 {
   "waystones:plugin": {
-    "initializer": "net.blay09.mods.compat.WTHITIntegration",
+    "initializer": "net.blay09.mods.waystones.compat.WTHITIntegration",
     "side": "*",
     "required": []
   }
