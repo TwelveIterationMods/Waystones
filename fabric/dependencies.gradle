@@ -1,4 +1,8 @@
 repositories {
+    // For ModMenu
+    maven {
+        url = "https://maven.terraformersmc.com"
+    }
     // For JourneyMap
     maven {
         url = "https://jm.gserv.me/repository/maven-public/"
