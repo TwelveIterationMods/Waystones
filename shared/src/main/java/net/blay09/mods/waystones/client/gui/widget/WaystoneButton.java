@@ -24,11 +24,13 @@ public class WaystoneButton extends Button {
     private static final ResourceLocation ENCHANTMENT_TABLE_GUI_TEXTURE = new ResourceLocation("textures/gui/container/enchanting_table.png");
 
     private final int xpLevelCost;
+    private final IWaystone waystone;
 
     public WaystoneButton(int x, int y, IWaystone waystone, int xpLevelCost, OnPress pressable) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         Player player = Minecraft.getInstance().player;
         this.xpLevelCost = xpLevelCost;
+        this.waystone = waystone;
         if (player == null || !PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
             active = false;
         } else if (player.experienceLevel < xpLevelCost && !player.getAbilities().instabuild) {
@@ -54,6 +56,21 @@ public class WaystoneButton extends Button {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         Minecraft mc = Minecraft.getInstance();
+
+        // render distance
+        if(waystone.getDimension() == mc.player.level().dimension()) {
+            int distance = (int) mc.player.position().distanceTo(waystone.getPos().getCenter());
+            String distanceStr;
+            if (distance < 1000) {
+                distanceStr = distance + "m";
+            } else {
+                distanceStr = String.format("%.1fkm", distance / 1000.0);
+            }
+            int xOffset = getWidth() - mc.font.width(distanceStr);
+            guiGraphics.drawString(mc.font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
+        }
+
+        // render xp cost
         if (xpLevelCost > 0) {
             boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.getAbilities().instabuild;
             guiGraphics.blit(ENCHANTMENT_TABLE_GUI_TEXTURE, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
