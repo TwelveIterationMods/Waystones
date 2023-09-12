@@ -184,8 +184,6 @@
   "config.waystones.client": "Налаштування клієнта",
   "config.waystones.client.disableTextGlow": "Вимкнути світіння тексту",
   "config.waystones.client.disableTextGlow.tooltip": "Якщо ввімкнено, накладання тексту на дороговказі більше не буде завжди показуватися в повній яскравості.",
-  "config.waystones.client.disableParticles": "Вимкнути частинки",
-  "config.waystones.client.disableParticles.tooltip": "Якщо ввімкнено, активовані дороговкази більше не випускатимуть частинки.",
   "config.waystones.compatibility": "Інтеграції модів",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Показувати дороговкази на JourneyMap",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap.tooltip": "Якщо ввімкнено, мітки JourneyMap створюватимуться для кожного активованого дороговказу.",

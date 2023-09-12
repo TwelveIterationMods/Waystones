@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Skapa i byar (tvinga)",
   "config.waystones.client": "Klientalternativ",
   "config.waystones.client.disableTextGlow": "Inaktivera glödande text",
-  "config.waystones.client.disableParticles": "Inaktivera partiklar",
   "config.waystones.compatibility": "Modintegreringar",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Visa vägstenar på JourneyMap",
   "waystones.iconCredits": "Ikoner av JoeCreates (CC-BY-SA 3.0)",

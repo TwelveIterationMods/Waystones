@@ -201,9 +201,6 @@ public class WaystonesConfigData implements BalmConfigData {
     public static class Client {
         @Comment("If enabled, the text overlay on waystones will no longer always render at full brightness.")
         public boolean disableTextGlow = false;
-
-        @Comment("If enabled, activated waystones will not emit particles.")
-        public boolean disableParticles = false;
     }
 
     public InventoryButtonMode getInventoryButtonMode() {

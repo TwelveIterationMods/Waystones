@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Усиленный спаун в деревнях",
   "config.waystones.client": "Настройки клиента",
   "config.waystones.client.disableTextGlow": "Отключить свечение текста",
-  "config.waystones.client.disableParticles": "Отключить частицы",
   "config.waystones.compatibility": "Интеграция модов",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Отображать путеводные обелиски JourneyMap",
   "waystones.iconCredits": "Иконки сделаны JoeCreates (CC-BY-SA 3.0)"

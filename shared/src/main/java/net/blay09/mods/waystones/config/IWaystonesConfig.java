@@ -62,8 +62,6 @@ public interface IWaystonesConfig {
 
     List<String> customWaystoneNames();
 
-    boolean disableParticles();
-
     double minimumXpCost();
 
     double maximumXpCost();

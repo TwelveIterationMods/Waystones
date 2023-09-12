@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Force Spawn in Villages",
   "config.waystones.client": "Client Options",
   "config.waystones.client.disableTextGlow": "Disable Text Glow",
-  "config.waystones.client.disableParticles": "Disable Particles",
   "config.waystones.compatibility": "Mod Integrations",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Display Waystones on JourneyMap",
   "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)",

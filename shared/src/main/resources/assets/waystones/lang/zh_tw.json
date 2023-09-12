@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "強制於村莊生成",
   "config.waystones.client": "用戶端選項",
   "config.waystones.client.disableTextGlow": "停用螢光字樣",
-  "config.waystones.client.disableParticles": "停用粒子效果",
   "config.waystones.compatibility": "模組整合",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "在「JourneyMap」上顯示傳送石碑",
   "waystones.iconCredits": "圖示由 JoeCreates 提供（姓名標示-相同方式分享 3.0）"

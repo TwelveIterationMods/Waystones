@@ -128,7 +128,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (!WaystonesConfig.getActive().client.disableParticles && random.nextFloat() < 0.75f) {
+        if (random.nextFloat() < 0.75f) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             Player player = Minecraft.getInstance().player;
             if (blockEntity instanceof WaystoneBlockEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player),
