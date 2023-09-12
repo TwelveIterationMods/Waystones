@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.tag.ModTags;
+import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -31,7 +31,7 @@ public class WaystonesBlockTagProvider extends FabricTagProvider<Block> {
             mineableBuilder.add(scopedSharestone);
         }
 
-        FabricTagProvider<Block>.FabricTagBuilder isTeleportTargetBuilder = getOrCreateTagBuilder(ModTags.IS_TELEPORT_TARGET);
+        FabricTagProvider<Block>.FabricTagBuilder isTeleportTargetBuilder = getOrCreateTagBuilder(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
@@ -42,12 +42,14 @@ public class WaystonesBlockTagProvider extends FabricTagProvider<Block> {
             isTeleportTargetBuilder.add(scopedSharestone);
         }
 
-        getOrCreateTagBuilder(ModTags.WAYSTONES).add(ModBlocks.waystone, ModBlocks.sandyWaystone, ModBlocks.mossyWaystone);
+        getOrCreateTagBuilder(ModBlockTags.WAYSTONES).add(ModBlocks.waystone, ModBlocks.sandyWaystone, ModBlocks.mossyWaystone);
 
-        FabricTagProvider<Block>.FabricTagBuilder sharestonesBuilder = getOrCreateTagBuilder(ModTags.SHARESTONES);
+        FabricTagProvider<Block>.FabricTagBuilder sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
+        FabricTagProvider<Block>.FabricTagBuilder dyedSharestonesTag = getOrCreateTagBuilder(ModBlockTags.DYED_SHARESTONES);
         sharestonesBuilder.add(ModBlocks.sharestone);
         for (Block scopedSharestone : ModBlocks.scopedSharestones) {
             sharestonesBuilder.add(scopedSharestone);
+            dyedSharestonesTag.add(scopedSharestone);
         }
     }
 

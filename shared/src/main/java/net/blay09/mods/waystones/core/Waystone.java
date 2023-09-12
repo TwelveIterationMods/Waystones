@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.tag.ModTags;
+import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -125,7 +125,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     @Override
     public boolean isValidInLevel(ServerLevel level) {
         BlockState state = level.getBlockState(pos);
-        return state.is(ModTags.IS_TELEPORT_TARGET);
+        return state.is(ModBlockTags.IS_TELEPORT_TARGET);
     }
 
     @Override

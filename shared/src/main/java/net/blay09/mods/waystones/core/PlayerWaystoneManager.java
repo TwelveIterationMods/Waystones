@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
-import net.blay09.mods.waystones.tag.ModTags;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
@@ -328,10 +328,10 @@ public class PlayerWaystoneManager {
 
     public static ItemStack findWarpItem(Entity entity, WarpMode warpMode) {
         return switch (warpMode) {
-            case WARP_SCROLL -> findWarpItem(entity, ModTags.WARP_SCROLLS);
-            case WARP_STONE -> findWarpItem(entity, ModTags.WARP_STONES);
-            case RETURN_SCROLL -> findWarpItem(entity, ModTags.RETURN_SCROLLS);
-            case BOUND_SCROLL -> findWarpItem(entity, ModTags.BOUND_SCROLLS);
+            case WARP_SCROLL -> findWarpItem(entity, ModItemTags.WARP_SCROLLS);
+            case WARP_STONE -> findWarpItem(entity, ModItemTags.WARP_STONES);
+            case RETURN_SCROLL -> findWarpItem(entity, ModItemTags.RETURN_SCROLLS);
+            case BOUND_SCROLL -> findWarpItem(entity, ModItemTags.BOUND_SCROLLS);
             default -> ItemStack.EMPTY;
         };
     }
@@ -486,10 +486,10 @@ public class PlayerWaystoneManager {
     private static boolean canUseWarpMode(Entity entity, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
         return switch (warpMode) {
             case INVENTORY_BUTTON -> entity instanceof Player && PlayerWaystoneManager.canUseInventoryButton(((Player) entity));
-            case WARP_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.WARP_SCROLLS);
-            case BOUND_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.BOUND_SCROLLS);
-            case RETURN_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModTags.RETURN_SCROLLS);
-            case WARP_STONE -> !heldItem.isEmpty() && heldItem.is(ModTags.WARP_STONES) && entity instanceof Player
+            case WARP_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_SCROLLS);
+            case BOUND_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.BOUND_SCROLLS);
+            case RETURN_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.RETURN_SCROLLS);
+            case WARP_STONE -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_STONES) && entity instanceof Player
                     && PlayerWaystoneManager.canUseWarpStone(((Player) entity), heldItem);
             case WAYSTONE_TO_WAYSTONE -> WaystonesConfig.getActive()
                     .restrictions.allowWaystoneToWaystoneTeleport && fromWaystone != null && fromWaystone.isValid()
