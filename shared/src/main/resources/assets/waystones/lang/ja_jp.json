@@ -192,6 +192,6 @@
   "config.waystones.compatibility.preferJourneyMapIntegration": "JourneyMap Integrationを優先する",
   "config.waystones.compatibility.preferJourneyMapIntegration.tooltip": "enabledにすると、JourneyMapの中継地点として登録されるのはJourneyMap Integrationがインストールされていない場合のみとなります",
   "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)",
-  "waystones.map.untitled_waystone": "転移ポイント(名称未設定)"
+  "waystones.map.untitled_waystone": "転移ポイント(名称未設定)",
   "config.jade.plugin_waystones.waystone": "Waystones"
 }
