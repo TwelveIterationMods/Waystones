@@ -190,8 +190,6 @@
   "config.waystones.client": "Options du client",
   "config.waystones.client.disableTextGlow": "Désactiver la lueur du texte",
   "config.waystones.client.disableTextGlow.tooltip": "Si cette option est activée, le texte superposé sur les waystones ne sera plus toujours affiché en pleine luminosité.",
-  "config.waystones.client.disableParticles": "Désactiver les particules",
-  "config.waystones.client.disableParticles.tooltip": "Si cette option est activée, les waystones activés n'émettront pas de particules.",
 
   "config.waystones.compatibility": "Intégrations de mods",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Afficher les waystones sur JourneyMap",

@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Wymuś generowanie w wioskach",
   "config.waystones.client": "Opcje klienta",
   "config.waystones.client.disableTextGlow": "Wyłącz świecenie tekstu",
-  "config.waystones.client.disableParticles": "Wyłącz cząsteczki",
   "config.waystones.compatibility": "Integracje modyfikacji",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Wyświetlaj kamienie teleportacyjne w JourneyMap",
   "waystones.iconCredits": "Ikony stworzone przez JoeCreates (CC-BY-SA 3.0)",

@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Forçar a gerar em aldeias",
   "config.waystones.client": "Opções de client",
   "config.waystones.client.disableTextGlow": "Desativar brilho de texto",
-  "config.waystones.client.disableParticles": "Desativar partículas",
   "config.waystones.compatibility": "Integrações com mods",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Mostra pedras do caminho em JourneyMap",
   "config.waystones.compatibility.preferJourneyMapIntegration": "Preferir 'JourneyMap Integration' mod",

@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "In Dörfern Spawn erzwingen",
   "config.waystones.client": "Client-Optionen",
   "config.waystones.client.disableTextGlow": "Textglühen deaktivieren",
-  "config.waystones.client.disableParticles": "Partikel deaktivieren",
   "config.waystones.compatibility": "Mod-Integrationen",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Wegsteine auf JourneyMap anzeigen",
   "waystones.iconCredits": "Symbole von JoeCreates (CC-BY-SA 3.0)"

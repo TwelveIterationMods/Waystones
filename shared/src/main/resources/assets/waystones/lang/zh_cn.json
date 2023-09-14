@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "强制在村庄中生成",
   "config.waystones.client": "客户端选项",
   "config.waystones.client.disableTextGlow": "禁用文本发光",
-  "config.waystones.client.disableParticles": "禁用粒子",
   "config.waystones.compatibility": "模组兼容",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "在旅行地图(Journey Map)上显示传送石碑",
   "config.waystones.compatibility.preferJourneyMapIntegration": "‘JourneyMap Integration’模组更好",

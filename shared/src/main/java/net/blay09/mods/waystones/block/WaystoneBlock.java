@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
-import net.blay09.mods.waystones.tag.ModTags;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -73,7 +73,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
-        if (player.getMainHandItem().is(ModTags.BOUND_SCROLLS)) {
+        if (player.getMainHandItem().is(ModItemTags.BOUND_SCROLLS)) {
             return InteractionResult.PASS;
         }
 
@@ -128,7 +128,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (!WaystonesConfig.getActive().client.disableParticles && random.nextFloat() < 0.75f) {
+        if (random.nextFloat() < 0.75f) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             Player player = Minecraft.getInstance().player;
             if (blockEntity instanceof WaystoneBlockEntity && PlayerWaystoneManager.isWaystoneActivated(Objects.requireNonNull(player),

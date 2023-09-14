@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "마을에서 강제 생성",
   "config.waystones.client": "클라이언트 설정",
   "config.waystones.client.disableTextGlow": "텍스트 발광 사용 안 함",
-  "config.waystones.client.disableParticles": "입자 사용 안 함",
   "config.waystones.compatibility": "모드 통합",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "JourneyMap에서 전송석 생성",
   "waystones.iconCredits": "아이콘: JoeCreates (CC-BY-SA 3.0)"

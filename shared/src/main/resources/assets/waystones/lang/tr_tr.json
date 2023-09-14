@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Köylerde Ortaya Çıkmaya Zorla",
   "config.waystones.client": "İstemci Seçenekleri",
   "config.waystones.client.disableTextGlow": "Metin Parıltısını Devre Dışı Bırak",
-  "config.waystones.client.disableParticles": "Parçacıkları Devre Dışı Bırak",
   "config.waystones.compatibility": "Mod Entegrasyonları",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "JourneyMap'de Yoltaşlarını Göster",
   "config.waystones.compatibility.preferJourneyMapIntegration": "'JourneyMap Integration' Modunu Tercih et",

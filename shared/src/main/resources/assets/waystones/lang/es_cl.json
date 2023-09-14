@@ -139,7 +139,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Forzar aparición en aldeas",
   "config.waystones.client": "Opciones de cliente",
   "config.waystones.client.disableTextGlow": "Deshabilitar brillo de texto",
-  "config.waystones.client.disableParticles": "Deshabilitar partículas",
   "config.waystones.compatibility": "Mod Integrations",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Mostrar Waystones en JourneyMap",
   "waystones.iconCredits": "Iconos de JoeCreates (CC-BY-SA 3.0)",

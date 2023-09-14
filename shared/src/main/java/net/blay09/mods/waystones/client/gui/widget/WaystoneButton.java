@@ -58,13 +58,14 @@ public class WaystoneButton extends Button {
         Minecraft mc = Minecraft.getInstance();
 
         // render distance
-        if(waystone.getDimension() == mc.player.level().dimension()) {
+        if (waystone.getDimension() == mc.player.level().dimension() && isActive()) {
             int distance = (int) mc.player.position().distanceTo(waystone.getPos().getCenter());
             String distanceStr;
-            if (distance < 1000) {
+            if (distance < 10000 && (mc.font.width(getMessage()) < 120 || distance < 1000)) {
                 distanceStr = distance + "m";
             } else {
-                distanceStr = String.format("%.1fkm", distance / 1000.0);
+                // sorry for ugly code, chatgpt was down and this was the only thing my dumbed down brain could come up with
+                distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
             }
             int xOffset = getWidth() - mc.font.width(distanceStr);
             guiGraphics.drawString(mc.font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);

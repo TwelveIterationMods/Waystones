@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Vnutit tvoření ve vesnicích",
   "config.waystones.client": "Nastavení klienta",
   "config.waystones.client.disableTextGlow": "Vypnout svítivost textu",
-  "config.waystones.client.disableParticles": "Vypnout částice",
   "config.waystones.compatibility": "Propojení módů",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Ukázat cestovní kameny na JourneyMap",
   "waystones.iconCredits": "Ikony vytvořeny uživatelem JoeCreates (CC-BY-SA 3.0)",

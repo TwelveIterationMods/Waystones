@@ -140,7 +140,6 @@
   "config.waystones.worldGen.forceSpawnInVillages": "Bắt buộc phải có trong làng",
   "config.waystones.client": "Tuỳ chọn người dùng",
   "config.waystones.client.disableTextGlow": "Tắt văn bản phát sáng",
-  "config.waystones.client.disableParticles": "Vô hiệu hóa các hạt",
   "config.waystones.compatibility": "Tích hợp Mod",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Hiển thị trụ dịch chuyển trên JourneyMap",
   "waystones.iconCredits": "Icons Bởi JoeCreates (CC-BY-SA 3.0)",

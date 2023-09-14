@@ -21,7 +21,7 @@ public class ForgeWaystones {
         Balm.initialize(Waystones.MOD_ID, Waystones::initialize);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, WaystonesClient::initialize));
 
-        Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeAddon");
+        Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
         if (Balm.isModLoaded("repurposed_structures")) {

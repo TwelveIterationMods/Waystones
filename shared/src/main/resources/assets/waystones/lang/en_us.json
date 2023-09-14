@@ -184,8 +184,6 @@
   "config.waystones.client": "Client Options",
   "config.waystones.client.disableTextGlow": "Disable Text Glow",
   "config.waystones.client.disableTextGlow.tooltip": "If enabled, the text overlay on waystones will no longer always render at full brightness.",
-  "config.waystones.client.disableParticles": "Disable Particles",
-  "config.waystones.client.disableParticles.tooltip": "If enabled, activated waystones will not emit particles.",
   "config.waystones.compatibility": "Mod Integrations",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap": "Display Waystones on JourneyMap",
   "config.waystones.compatibility.displayWaystonesOnJourneyMap.tooltip": "If enabled, JourneyMap waypoints will be created for each activated waystone.",
