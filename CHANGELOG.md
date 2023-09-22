@@ -1,6 +1,1 @@
-- Added display of distance between waystones in the selection screen (by iTrooz)
-- Added some more tags for Waystones items
-- Fixed TheOneProbe integration not being loaded
-- Fixed sandy and mossy waystones not retaining their name when broken with silk touch
-- Updated French Translation (by ChokoJoestar)
-- Removed disableParticles option
+- Updated to Minecraft 1.20.2

@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +92,9 @@ public class NameGenerator extends SavedData {
     public static NameGenerator get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(NameGenerator::load, NameGenerator::new, DATA_NAME);
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(NameGenerator::new,
+                    NameGenerator::load,
+                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
         }
 
         return clientStorageCopy;

@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -8,7 +7,6 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
@@ -110,8 +108,6 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
 
     @Override
     protected void containerTick() {
-        textField.tick();
-
         // Button presses focus the button after onPress, so we can't change focus inside. Defer to here instead.
         if (focusTextFieldNextTick) {
             setInitialFocus(textField);
@@ -121,7 +117,6 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.drawString(font, getTitle(), width / 2 - 100, height / 2 - 35, 0xFFFFFF);

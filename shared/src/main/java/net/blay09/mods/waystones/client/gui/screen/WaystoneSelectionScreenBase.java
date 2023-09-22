@@ -225,7 +225,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         renderTooltip(guiGraphics, mouseX, mouseY);
         for (ITooltipProvider tooltipProvider : tooltipProviders) {

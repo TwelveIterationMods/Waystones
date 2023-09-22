@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -97,7 +99,8 @@ public class WaystoneManager extends SavedData {
     public static WaystoneManager get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(WaystoneManager::read, WaystoneManager::new, DATA_NAME);
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManager::new, WaystoneManager::read,
+                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
         }
 
         return clientStorageCopy;
