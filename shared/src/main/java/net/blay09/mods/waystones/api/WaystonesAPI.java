@@ -70,8 +70,8 @@ public class WaystonesAPI {
         return __internalMethods.getBoundWaystone(itemStack);
     }
 
-    public static Optional<IWaystone> setBoundWaystone(ItemStack itemStack, IWaystone waystone) {
-        return __internalMethods.setBoundWaystone(itemStack, waystone);
+    public static void setBoundWaystone(ItemStack itemStack, IWaystone waystone) {
+        __internalMethods.setBoundWaystone(itemStack, waystone);
     }
 
     public static ItemStack createAttunedShard(IWaystone warpPlate) {
