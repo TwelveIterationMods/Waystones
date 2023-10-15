@@ -72,7 +72,8 @@ public class AttunedShardItem extends Item implements IAttunementItem {
         return null;
     }
 
-    public static void setWaystoneAttunedTo(ItemStack itemStack, @Nullable IWaystone waystone) {
+    @Override
+    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable IWaystone waystone) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();

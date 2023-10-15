@@ -100,14 +100,14 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public ItemStack createAttunedShard(IWaystone warpPlate) {
         ItemStack itemStack = new ItemStack(ModItems.attunedShard);
-        AttunedShardItem.setWaystoneAttunedTo(itemStack, warpPlate);
+        setBoundWaystone(itemStack, warpPlate);
         return itemStack;
     }
 
     @Override
     public ItemStack createBoundScroll(IWaystone waystone) {
         ItemStack itemStack = new ItemStack(ModItems.boundScroll);
-        BoundScrollItem.setBoundTo(itemStack, waystone);
+        setBoundWaystone(itemStack, waystone);
         return itemStack;
     }
 
@@ -131,5 +131,20 @@ public class InternalMethodsImpl implements InternalMethods {
     public Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos) {
         level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState(), 3);
         return getWaystoneAt(level, pos);
+    }
+
+    @Override
+    public Optional<IWaystone> getBoundWaystone(ItemStack itemStack) {
+        if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
+            return Optional.ofNullable(attunementItem.getWaystoneAttunedTo(null, itemStack));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone) {
+        if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
+            attunementItem.setWaystoneAttunedTo(itemStack, waystone);
+        }
     }
 }

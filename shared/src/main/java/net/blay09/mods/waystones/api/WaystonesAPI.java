@@ -66,6 +66,14 @@ public class WaystonesAPI {
         return __internalMethods.placeWarpPlate(level, pos);
     }
 
+    public static Optional<IWaystone> getBoundWaystone(ItemStack itemStack) {
+        return __internalMethods.getBoundWaystone(itemStack);
+    }
+
+    public static Optional<IWaystone> setBoundWaystone(ItemStack itemStack, IWaystone waystone) {
+        return __internalMethods.setBoundWaystone(itemStack, waystone);
+    }
+
     public static ItemStack createAttunedShard(IWaystone warpPlate) {
         return __internalMethods.createAttunedShard(warpPlate);
     }

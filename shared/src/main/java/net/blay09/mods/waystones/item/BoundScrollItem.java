@@ -1,9 +1,8 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IFOVOnUse;
-import net.blay09.mods.waystones.api.IResetUseOnDamage;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -16,6 +15,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse {
+public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse, IAttunementItem {
 
     public BoundScrollItem(Properties properties) {
         super(properties);
@@ -47,25 +47,43 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
         return WaystonesConfig.getActive().cooldowns.scrollUseTime;
     }
 
+    /**
+     * @deprecated Use {@link #setWaystoneAttunedTo(ItemStack, IWaystone)} instead.
+     */
+    @Deprecated
     public static void setBoundTo(ItemStack itemStack, @Nullable IWaystone entry) {
+        WaystonesAPI.setBoundWaystone(itemStack, entry);
+    }
+
+    /**
+     * @deprecated Use {@link #getWaystoneAttunedTo(MinecraftServer, ItemStack)} instead.
+     */
+    @Nullable
+    @Deprecated
+    protected IWaystone getBoundTo(Player player, ItemStack itemStack) {
+        return getWaystoneAttunedTo(player.getServer(), itemStack);
+    }
+
+    @Override
+    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable IWaystone waystone) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
             itemStack.setTag(tagCompound);
         }
 
-        if (entry != null) {
-            tagCompound.put("WaystonesBoundTo", NbtUtils.createUUID(entry.getWaystoneUid()));
+        if (waystone != null) {
+            tagCompound.put("WaystonesBoundTo", NbtUtils.createUUID(waystone.getWaystoneUid()));
         } else {
             tagCompound.remove("WaystonesBoundTo");
         }
     }
 
-    @Nullable
-    protected IWaystone getBoundTo(Player player, ItemStack itemStack) {
+    @Override
+    public @Nullable IWaystone getWaystoneAttunedTo(@Nullable MinecraftServer server, ItemStack itemStack) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound != null && tagCompound.contains("WaystonesBoundTo", Tag.TAG_INT_ARRAY)) {
-            return new WaystoneProxy(player.getServer(), NbtUtils.loadUUID(Objects.requireNonNull(tagCompound.get("WaystonesBoundTo"))));
+            return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(tagCompound.get("WaystonesBoundTo"))));
         }
 
         return null;
@@ -93,7 +111,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
             if (!world.isClientSide) {
                 ItemStack boundItem = heldItem.getCount() == 1 ? heldItem : heldItem.split(1);
-                setBoundTo(boundItem, waystone);
+                WaystonesAPI.setBoundWaystone(boundItem, waystone);
                 if (boundItem != heldItem) {
                     if (!player.addItem(boundItem)) {
                         player.drop(boundItem, false);
