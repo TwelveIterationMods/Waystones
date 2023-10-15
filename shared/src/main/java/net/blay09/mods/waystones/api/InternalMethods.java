@@ -40,4 +40,8 @@ public interface InternalMethods {
     Optional<IWaystone> placeSharestone(Level level, BlockPos pos, DyeColor color);
 
     Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos);
+
+    Optional<IWaystone> getBoundWaystone(ItemStack itemStack);
+
+    void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone);
 }

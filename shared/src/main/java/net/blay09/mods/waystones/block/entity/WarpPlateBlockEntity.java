@@ -3,10 +3,7 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.IAttunementItem;
-import net.blay09.mods.waystones.api.IMutableWaystone;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
@@ -207,7 +204,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
                 ItemStack attunedShard = new ItemStack(ModItems.attunedShard);
-                AttunedShardItem.setWaystoneAttunedTo(attunedShard, getWaystone());
+                WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setItem(0, attunedShard);
                 for (int i = 1; i <= 4; i++) {
                     setItem(i, ItemStack.EMPTY);
