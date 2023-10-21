@@ -25,7 +25,7 @@ import java.util.Objects;
 public class CrumblingAttunedShardItem extends Item implements IAttunementItem {
 
     public CrumblingAttunedShardItem(Properties properties) {
-        super(properties.stacksTo(16));
+        super(properties.stacksTo(4));
     }
 
     @Override

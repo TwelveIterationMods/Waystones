@@ -218,13 +218,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
 
-                int createCount =  getItem(0).getCount();
-                ItemStack attunedShard = new ItemStack(ModItems.crumblingAttunedShard, createCount);
+                ItemStack attunedShard = new ItemStack(ModItems.crumblingAttunedShard, 4);
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setItem(0, attunedShard);
                 for (int i = 1; i <= 4; i++) {
-                    ItemStack itemStack = getItem(i);
-                    itemStack.shrink(createCount);
+                    getItem(i).shrink(1);
                 }
                 //we don't mark firstAttunementComplete, but it should already be the case
             }
