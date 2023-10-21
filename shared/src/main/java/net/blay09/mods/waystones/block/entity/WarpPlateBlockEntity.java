@@ -224,13 +224,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 setItem(0, attunedShard);
                 for (int i = 1; i <= 4; i++) {
                     ItemStack itemStack = getItem(i);
-                    int newCount = itemStack.getCount() - createCount;
-                    if (newCount == 0) {
-                        setItem(i, ItemStack.EMPTY);
-                    }
-                    else {
-                        itemStack.setCount(newCount);
-                    }
+                    itemStack.shrink(createCount);
                 }
                 //we don't mark firstAttunementComplete, but it should already be the case
             }
@@ -262,15 +256,13 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 iterator.remove();
             } else if (ticksPassed > useTime) {
                 IWaystone targetWaystone;
-                final ItemStack stackToConsume = getTargetConsumableAttunedItem();
-                if (stackToConsume != null && stackToConsume.getItem() instanceof IAttunementItem consumableAttunedItem) {
-                    targetWaystone = consumableAttunedItem.getWaystoneAttunedTo(entity.getServer(), stackToConsume);
-                }
-                else {
-                    targetWaystone = getTargetWaystone();
-                }
-                if (targetWaystone != null && targetWaystone.isValid()) {
-                    teleportToWarpPlate(entity, targetWaystone, stackToConsume);
+                final ItemStack targetStack = getTargetStack();
+                targetWaystone = getTargetWaystone(targetStack);
+
+                if (targetStack != null && targetWaystone != null && targetWaystone.isValid()) {
+                    if (teleportToWarpPlate(entity, targetWaystone) && targetStack.getItem() == ModItems.crumblingAttunedShard) {
+                        targetStack.shrink(1);
+                    }
                 }
 
                 if (entity instanceof Player) {
@@ -311,16 +303,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 
-    private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone, @Nullable ItemStack consumableAttunedItem) {
-        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
-                .ifLeft(entities -> {
-                            entities.forEach(this::applyWarpPlateEffects);
-                            if (consumableAttunedItem != null) {
-                                int decrementedCount = consumableAttunedItem.getCount() - 1;
-                                consumableAttunedItem.setCount(decrementedCount);
-                            }
-                        }
-                );
+    private boolean teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
+        return PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
+                .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))
+                .left().isPresent();
     }
 
     private void applyWarpPlateEffects(Entity entity) {
@@ -388,47 +374,17 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     private boolean isReadyForTransientAttunement() {
-        ItemStack centerStack = getItem(0);
-        ItemStack slot1 = getItem(1);
-        ItemStack slot2 = getItem(2);
-        ItemStack slot3 = getItem(3);
-        ItemStack slot4 = getItem(4);
-
-        if (readyForAttunement && completedFirstAttunement
-                && centerStack.getItem() == Items.FLINT
-                && centerStack.getCount() <= ModItems.crumblingAttunedShard.getMaxStackSize()
-                && slot1.getItem() == Items.AMETHYST_SHARD
-                && slot2.getItem() == Items.AMETHYST_SHARD
-                && slot3.getItem() == Items.AMETHYST_SHARD
-                && slot4.getItem() == Items.AMETHYST_SHARD) {
-            //verify that there is enough shards compared to the number of flints
-            int flintCount = centerStack.getCount();
-            return slot1.getCount() >= flintCount
-                    && slot2.getCount() >= flintCount
-                    && slot3.getCount() >= flintCount
-                    && slot4.getCount() >= flintCount;
-        }
-        return false;
+        return readyForAttunement
+                && getItem(0).getItem() == Items.ENDER_PEARL
+                && getItem(1).getItem() == Items.AMETHYST_SHARD
+                && getItem(2).getItem() == Items.AMETHYST_SHARD
+                && getItem(3).getItem() == Items.AMETHYST_SHARD
+                && getItem(4).getItem() == Items.AMETHYST_SHARD;
     }
 
 
     @Nullable
-    public ItemStack getTargetConsumableAttunedItem() {
-        for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack itemStack = getItem(i);
-            if (itemStack.getItem() == ModItems.crumblingAttunedShard) {
-
-                IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
-                if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
-                    return itemStack;
-                }
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    public IWaystone getTargetWaystone() {
+    public ItemStack getTargetStack() {
         boolean useRoundRobin = false;
         List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
@@ -445,11 +401,23 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
         if (!attunedShards.isEmpty()) {
             lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
-            ItemStack itemStack = useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
-            return ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+            return useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
         }
 
         return null;
+    }
+
+    @Nullable
+    public IWaystone getTargetWaystone(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+        return ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+    }
+
+    @Nullable
+    public IWaystone getTargetWaystone() {
+        return getTargetWaystone(getTargetStack());
     }
 
     public int getMaxAttunementTicks() {
