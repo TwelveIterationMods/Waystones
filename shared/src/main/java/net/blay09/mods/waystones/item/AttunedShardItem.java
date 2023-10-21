@@ -25,7 +25,11 @@ import java.util.Objects;
 public class AttunedShardItem extends Item implements IAttunementItem {
 
     public AttunedShardItem(Properties properties) {
-        super(properties.stacksTo(1));
+        this(properties, 1);
+    }
+
+    protected AttunedShardItem(Properties properties, int stackSize) {
+        super(properties.stacksTo(stackSize));
     }
 
     @Override

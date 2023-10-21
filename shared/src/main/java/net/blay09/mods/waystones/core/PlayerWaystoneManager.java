@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PlayerWaystoneManager {
 
@@ -205,15 +206,19 @@ public class PlayerWaystoneManager {
         }
     }
 
+    public static Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
+        return error -> {
+            logger.info("Rejected teleport: " + error.getClass().getSimpleName());
+            if (error.getTranslationKey() != null) {
+                informPlayer(entityToInform, error.getTranslationKey());
+            }
+        };
+    }
+
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         return WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
                 .flatMap(PlayerWaystoneManager::tryTeleport)
-                .ifRight(error -> {
-                    logger.info("Rejected teleport: " + error.getClass().getSimpleName());
-                    if (error.getTranslationKey() != null) {
-                        informPlayer(entity, error.getTranslationKey());
-                    }
-                });
+                .ifRight(informRejectedTeleport(entity));
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {

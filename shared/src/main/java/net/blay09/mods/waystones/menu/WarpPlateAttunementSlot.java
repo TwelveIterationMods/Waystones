@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,9 @@ public class WarpPlateAttunementSlot extends Slot {
     @Override
     public int getMaxStackSize(ItemStack stack) {
         if (this.getContainerSlot() == 0) {
+            return 1;
+        }
+        if (stack.is(ModItemTags.SHARDS) && !stack.is(ModItemTags.SHARDS_CONSUMABLE)) {
             return 1;
         }
         return stack.getMaxStackSize();
