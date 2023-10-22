@@ -206,7 +206,20 @@ public class PlayerWaystoneManager {
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        return WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
+        return tryTeleportWithContext(entity, WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone));
+    }
+
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystoneWithWarpItem(Entity entity, IWaystone waystone, WarpMode warpMode, ItemStack warpItemStack, @Nullable IWaystone fromWaystone) {
+        return tryTeleportWithContext(entity,
+                WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
+                .mapLeft(ctx -> {
+                    ctx.setWarpItem(warpItemStack);
+                    return ctx;
+                }));
+    }
+
+    private static Either<List<Entity>, WaystoneTeleportError> tryTeleportWithContext(Entity entity, Either<IWaystoneTeleportContext, WaystoneTeleportError> contextOrError) {
+        return contextOrError
                 .flatMap(PlayerWaystoneManager::tryTeleport)
                 .ifRight(error -> {
                     logger.info("Rejected teleport: " + error.getClass().getSimpleName());
@@ -332,6 +345,7 @@ public class PlayerWaystoneManager {
             case WARP_STONE -> findWarpItem(entity, ModItemTags.WARP_STONES);
             case RETURN_SCROLL -> findWarpItem(entity, ModItemTags.RETURN_SCROLLS);
             case BOUND_SCROLL -> findWarpItem(entity, ModItemTags.BOUND_SCROLLS);
+            case WARP_PLATE_CONSUMES -> findWarpItem(entity, ModItemTags.SHARDS);
             default -> ItemStack.EMPTY;
         };
     }
@@ -496,6 +510,7 @@ public class PlayerWaystoneManager {
                     && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
             case SHARESTONE_TO_SHARESTONE -> fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
             case WARP_PLATE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
+            case WARP_PLATE_CONSUMES -> !heldItem.isEmpty() && heldItem.is(ModItemTags.SHARDS);
             case PORTSTONE_TO_WAYSTONE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE);
             case CUSTOM -> true;
         };

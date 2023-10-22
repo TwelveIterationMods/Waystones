@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
+import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
@@ -17,9 +18,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -253,14 +252,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                 iterator.remove();
             } else if (ticksPassed > useTime) {
-                IWaystone targetWaystone;
-                final ItemStack targetStack = getTargetStack();
-                targetWaystone = getTargetWaystone(targetStack);
+                Pair<IAttunementItem, ItemStack> targetAttunement = getTargetAttunement();
+                IWaystone targetWaystone = getTargetWaystone(targetAttunement);
 
-                if (targetStack != null && targetWaystone != null && targetWaystone.isValid()) {
-                    if (teleportToWarpPlate(entity, targetWaystone) && targetStack.getItem() == ModItems.crumblingAttunedShard) {
-                        targetStack.shrink(1);
-                    }
+                if (targetAttunement != null && targetWaystone != null && targetWaystone.isValid()) {
+                    teleportToWarpPlate(entity, targetWaystone, targetAttunement);
                 }
 
                 if (entity instanceof Player) {
@@ -301,8 +297,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 
-    private boolean teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
-        return PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
+    private boolean teleportToWarpPlate(Entity entity, IWaystone targetWaystone, Pair<IAttunementItem, ItemStack> targetAttunement) {
+        WarpMode mode = (targetAttunement.getFirst() == ModItems.crumblingAttunedShard) ? WarpMode.WARP_PLATE_CONSUMES : WarpMode.WARP_PLATE;
+        return PlayerWaystoneManager.tryTeleportToWaystoneWithWarpItem(entity, targetWaystone, mode, targetAttunement.getSecond(), getWaystone())
                 .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))
                 .left().isPresent();
     }
@@ -382,40 +379,57 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
 
     @Nullable
-    public ItemStack getTargetStack() {
+    public Pair<IAttunementItem, ItemStack> getTargetAttunement() {
         boolean useRoundRobin = false;
-        List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
-            if (itemStack.getItem() instanceof IAttunementItem) {
-                IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
-                if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
-                    attunedShards.add(itemStack);
-                }
-            } else if (itemStack.getItem() == Items.QUARTZ) {
+            if (itemStack.getItem() == Items.QUARTZ) {
                 useRoundRobin = true;
+                break;
             }
         }
-
-        if (!attunedShards.isEmpty()) {
-            lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
-            return useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
+        if (useRoundRobin) {
+            for (int i = 1; i <= getContainerSize(); i++) { //we might want to wrap around to the current slot if it is the only one
+                int slot = (lastAttunementSlot + i) % getContainerSize();
+                ItemStack itemStack = getItem(slot);
+                if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
+                    IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+                    if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
+                        lastAttunementSlot = slot;
+                        return Pair.of(attunementItem, itemStack);
+                    }
+                }
+            }
+        } else {
+            for (int randomPicks = 0; randomPicks < 100; randomPicks++) {
+                int slot = random.nextInt(getContainerSize());
+                ItemStack itemStack = getItem(slot);
+                if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
+                    lastAttunementSlot = slot;
+                    return Pair.of(attunementItem, itemStack);
+                }
+            }
+            //couldn't randomly pick an attunement item in 100 trials, fall back to lastAttunementSlot or null if that slot changed
+            ItemStack fallbackStack = getItem(lastAttunementSlot);
+            if (fallbackStack.getItem() instanceof IAttunementItem fallbackAttunementItem) {
+                return Pair.of(fallbackAttunementItem, fallbackStack);
+            }
         }
 
         return null;
     }
 
     @Nullable
-    public IWaystone getTargetWaystone(@Nullable ItemStack itemStack) {
-        if (itemStack == null) {
+    public IWaystone getTargetWaystone(@Nullable Pair<IAttunementItem, ItemStack> targetAttunement) {
+        if (targetAttunement == null) {
             return null;
         }
-        return ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+        return targetAttunement.getFirst().getWaystoneAttunedTo(level.getServer(), targetAttunement.getSecond());
     }
 
     @Nullable
     public IWaystone getTargetWaystone() {
-        return getTargetWaystone(getTargetStack());
+        return getTargetWaystone(getTargetAttunement());
     }
 
     public int getMaxAttunementTicks() {
