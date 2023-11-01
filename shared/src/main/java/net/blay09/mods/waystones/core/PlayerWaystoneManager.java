@@ -271,7 +271,9 @@ public class PlayerWaystoneManager {
         }
 
         boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
-        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> warpMode.consumesItem() && !isCreativeMode)) {
+        boolean modeConsumes = warpMode.consumesItem() && !isCreativeMode;
+        boolean warpPlateConsumes = warpMode == WarpMode.WARP_PLATE && context.getWarpItem() != null && context.getWarpItem().is(ModItemTags.SHARDS_CONSUMABLE);
+        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> modeConsumes || warpPlateConsumes)) {
             context.getWarpItem().shrink(1);
         }
 
