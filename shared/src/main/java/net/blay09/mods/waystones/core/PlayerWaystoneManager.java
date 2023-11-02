@@ -347,7 +347,6 @@ public class PlayerWaystoneManager {
             case WARP_STONE -> findWarpItem(entity, ModItemTags.WARP_STONES);
             case RETURN_SCROLL -> findWarpItem(entity, ModItemTags.RETURN_SCROLLS);
             case BOUND_SCROLL -> findWarpItem(entity, ModItemTags.BOUND_SCROLLS);
-            case WARP_PLATE_CONSUMES -> findWarpItem(entity, ModItemTags.SHARDS);
             default -> ItemStack.EMPTY;
         };
     }
@@ -512,7 +511,6 @@ public class PlayerWaystoneManager {
                     && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
             case SHARESTONE_TO_SHARESTONE -> fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
             case WARP_PLATE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
-            case WARP_PLATE_CONSUMES -> !heldItem.isEmpty() && heldItem.is(ModItemTags.SHARDS);
             case PORTSTONE_TO_WAYSTONE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE);
             case CUSTOM -> true;
         };
