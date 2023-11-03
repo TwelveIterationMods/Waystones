@@ -253,9 +253,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 iterator.remove();
             } else if (ticksPassed > useTime) {
                 ItemStack targetAttunementStack = getTargetAttunementStack();
-                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
-
-                if (targetAttunementStack != null && targetWaystone != null && targetWaystone.isValid()) {
+                IWaystone targetWaystone = null;
+                if (targetAttunementStack != null) {
+                    targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
+                }
+                if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToWarpPlate(entity, targetWaystone, targetAttunementStack);
                 }
 
@@ -420,7 +422,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     @Nullable
     public IWaystone getTargetWaystone() {
-        return WaystonesAPI.getBoundWaystone(getTargetAttunementStack()).orElse(null);
+        ItemStack targetStack = getTargetAttunementStack();
+        if (targetStack == null) {
+            return null;
+        }
+        return WaystonesAPI.getBoundWaystone(targetStack).orElse(null);
     }
 
     public int getMaxAttunementTicks() {
