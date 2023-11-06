@@ -1,15 +1,14 @@
 package net.blay09.mods.waystones.block.entity;
 
-import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
@@ -253,10 +252,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 iterator.remove();
             } else if (ticksPassed > useTime) {
                 ItemStack targetAttunementStack = getTargetAttunementStack();
-                IWaystone targetWaystone = null;
-                if (targetAttunementStack != null) {
-                    targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
-                }
+                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
                 if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToWarpPlate(entity, targetWaystone, targetAttunementStack);
                 }
@@ -379,7 +375,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
 
-    @Nullable
     public ItemStack getTargetAttunementStack() {
         boolean useRoundRobin = false;
         for (int i = 0; i < getContainerSize(); i++) {
@@ -417,7 +412,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Nullable
