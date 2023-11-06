@@ -3,12 +3,16 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.IMutableWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
@@ -377,39 +381,29 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     public ItemStack getTargetAttunementStack() {
         boolean useRoundRobin = false;
+        boolean hasPrioritizedShards = false;
+        List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
-            if (itemStack.getItem() == Items.QUARTZ) {
-                useRoundRobin = true;
-                break;
-            }
-        }
-        if (useRoundRobin) {
-            for (int i = 1; i <= getContainerSize(); i++) { //we might want to wrap around to the current slot if it is the only one
-                int slot = (lastAttunementSlot + i) % getContainerSize();
-                ItemStack itemStack = getItem(slot);
-                if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
-                    IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
-                    if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
-                        lastAttunementSlot = slot;
-                        return itemStack;
+            if (itemStack.is(ModItemTags.SHARDS)) {
+                IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(itemStack).orElse(null);
+                if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
+                    attunedShards.add(itemStack);
+                    if (itemStack.is(ModItemTags.SHARDS_CONSUMABLE)) {
+                        hasPrioritizedShards = true;
                     }
                 }
+            } else if (itemStack.getItem() == Items.QUARTZ) {
+                useRoundRobin = true;
             }
-        } else {
-            for (int randomPicks = 0; randomPicks < 100; randomPicks++) {
-                int slot = random.nextInt(getContainerSize());
-                ItemStack itemStack = getItem(slot);
-                if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
-                    lastAttunementSlot = slot;
-                    return itemStack;
-                }
-            }
-            //couldn't randomly pick an attunement item in 100 trials, fall back to lastAttunementSlot or null if that slot changed
-            ItemStack fallbackStack = getItem(lastAttunementSlot);
-            if (fallbackStack.getItem() instanceof IAttunementItem fallbackAttunementItem) {
-                return fallbackStack;
-            }
+        }
+        if (hasPrioritizedShards) {
+            attunedShards.removeIf(stack -> !stack.is(ModItemTags.SHARDS_CONSUMABLE));
+        }
+
+        if (!attunedShards.isEmpty()) {
+            lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
+            return useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
         }
 
         return ItemStack.EMPTY;
