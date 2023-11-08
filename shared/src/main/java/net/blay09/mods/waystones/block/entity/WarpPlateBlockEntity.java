@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.item.AttunedShardItem;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
@@ -32,6 +31,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -207,7 +207,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setItem(0, attunedShard);
                 for (int i = 1; i <= 4; i++) {
-                    setItem(i, ItemStack.EMPTY);
+                    getItem(i).shrink(1);
                 }
                 completedFirstAttunement = true;
             }
@@ -393,5 +393,13 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     public ContainerData getContainerData() {
         return dataAccess;
+    }
+
+    @Override
+    public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 0 && !getItem(0).isEmpty()) {
+            return false; //prevents hoppers to add items in an occupied center slot
+        }
+        return ImplementedContainer.super.canPlaceItem(index, stack);
     }
 }
