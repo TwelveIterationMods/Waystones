@@ -379,6 +379,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return 30;
     }
 
+    /**
+     * We delay attunement until the menu is opened to show the player what's happening inside the slots before converting the items to an attuned shard.
+     */
     public void markReadyForAttunement() {
         readyForAttunement = true;
     }
