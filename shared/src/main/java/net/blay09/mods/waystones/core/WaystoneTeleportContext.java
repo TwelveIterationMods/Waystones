@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -11,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private final Entity entity;
@@ -28,6 +29,8 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private int cooldown;
     private boolean playsSound = true;
     private boolean playsEffect = true;
+    private Predicate<? super ItemStack> consumeItemPredicate;
+    private BiPredicate<? super Entity, ? super IWaystone> allowTeleportPredicate;
 
     public WaystoneTeleportContext(Entity entity, IWaystone targetWaystone, TeleportDestination destination) {
         this.entity = entity;
@@ -144,5 +147,25 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Override
     public void setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
+    }
+
+    @Override
+    public Predicate<? super ItemStack> getConsumeItemPredicate() {
+        return this.consumeItemPredicate == null ? stack -> getWarpMode().consumesItem() : this.consumeItemPredicate;
+    }
+
+    @Override
+    public void setConsumeItemPredicate(Predicate<? super ItemStack> predicate) {
+        this.consumeItemPredicate = predicate;
+    }
+
+    @Override
+    public BiPredicate<? super Entity, ? super IWaystone> getAllowTeleportPredicate() {
+        return this.allowTeleportPredicate == null ? getWarpMode().getAllowTeleportPredicate() : this.allowTeleportPredicate;
+    }
+
+    @Override
+    public void setAllowTeleportPredicate(BiPredicate<? super Entity, ? super IWaystone> allowTeleportPredicate) {
+        this.allowTeleportPredicate = allowTeleportPredicate;
     }
 }

@@ -230,7 +230,7 @@ public class PlayerWaystoneManager {
             return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
-        if (!warpMode.getAllowTeleportPredicate().test(entity, waystone)) {
+        if (!context.getAllowTeleportPredicate().test(entity, waystone)) {
             return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
@@ -258,7 +258,8 @@ public class PlayerWaystoneManager {
         }
 
         boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
-        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> warpMode.consumesItem() && !isCreativeMode)) {
+        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> !isCreativeMode
+                && context.getConsumeItemPredicate().test(context.getWarpItem()))) {
             context.getWarpItem().shrink(1);
         }
 

@@ -7,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public interface IWaystoneTeleportContext {
     Entity getEntity();
@@ -52,4 +54,16 @@ public interface IWaystoneTeleportContext {
     boolean playsEffect();
 
     void setPlaysEffect(boolean playsEffect);
+
+    default Predicate<? super ItemStack> getConsumeItemPredicate() {
+        return stack -> getWarpMode().consumesItem();
+    };
+
+    default void setConsumeItemPredicate(Predicate<? super ItemStack> predicate) { }
+
+    default BiPredicate<? super Entity, ? super IWaystone> getAllowTeleportPredicate() {
+        return getWarpMode().getAllowTeleportPredicate();
+    }
+
+    default void setAllowTeleportPredicate(BiPredicate<? super Entity, ? super IWaystone> allowTeleportPredicate) { }
 }
