@@ -31,6 +31,14 @@ public class WaystonesAPI {
         return __internalMethods.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
     }
 
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
+        return __internalMethods.tryTeleport(context);
+    }
+
+    /**
+     * @deprecated Use {@link #tryTeleport(IWaystoneTeleportContext)} instead.
+     */
+    @Deprecated
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         return __internalMethods.tryTeleport(context);
     }
@@ -39,6 +47,14 @@ public class WaystonesAPI {
         return __internalMethods.forceTeleportToWaystone(entity, waystone);
     }
 
+    public static List<Entity> forceTeleport(IWaystoneTeleportContext context) {
+        return __internalMethods.forceTeleport(context);
+    }
+
+    /**
+     * @deprecated Use {@link #forceTeleport(IWaystoneTeleportContext)} instead.
+     */
+    @Deprecated
     public static List<Entity> forceTeleport(WaystoneTeleportContext context) {
         return __internalMethods.forceTeleport(context);
     }

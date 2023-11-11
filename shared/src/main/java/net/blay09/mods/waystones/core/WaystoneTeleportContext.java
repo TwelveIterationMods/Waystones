@@ -23,7 +23,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private IWaystone fromWaystone;
 
     private WarpMode warpMode = WarpMode.CUSTOM;
-    private ItemStack warpItem;
+    private ItemStack warpItem = ItemStack.EMPTY;
     private int xpCost;
     private int cooldown;
     private boolean playsSound = true;
