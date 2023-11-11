@@ -381,7 +381,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     public ItemStack getTargetAttunementStack() {
         boolean useRoundRobin = false;
-        boolean hasPrioritizedShards = false;
+        boolean useShardsPrioritization = false;
         List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
@@ -389,15 +389,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
-                    if (itemStack.is(ModItemTags.SHARDS_CONSUMABLE)) {
-                        hasPrioritizedShards = true;
-                    }
                 }
             } else if (itemStack.getItem() == Items.QUARTZ) {
                 useRoundRobin = true;
+            } else if (itemStack.getItem() == Items.SPIDER_EYE) {
+                useShardsPrioritization = true;
             }
         }
-        if (hasPrioritizedShards) {
+        if (useShardsPrioritization && attunedShards.stream().anyMatch(stack -> stack.is(ModItemTags.SHARDS_CONSUMABLE))) {
             attunedShards.removeIf(stack -> !stack.is(ModItemTags.SHARDS_CONSUMABLE));
         }
 
