@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private final Entity entity;
@@ -25,12 +23,12 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     private WarpMode warpMode = WarpMode.CUSTOM;
     private ItemStack warpItem;
+    @Nullable
+    private Boolean isWarpItemConsumed;
     private int xpCost;
     private int cooldown;
     private boolean playsSound = true;
     private boolean playsEffect = true;
-    private Predicate<? super ItemStack> consumeItemPredicate;
-    private BiPredicate<? super Entity, ? super IWaystone> allowTeleportPredicate;
 
     public WaystoneTeleportContext(Entity entity, IWaystone targetWaystone, TeleportDestination destination) {
         this.entity = entity;
@@ -150,22 +148,12 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public Predicate<? super ItemStack> getConsumeItemPredicate() {
-        return this.consumeItemPredicate == null ? stack -> getWarpMode().consumesItem() : this.consumeItemPredicate;
+    public boolean isWarpItemConsumed() {
+        return this.isWarpItemConsumed == null ? getWarpMode().consumesItem() : this.isWarpItemConsumed;
     }
 
     @Override
-    public void setConsumeItemPredicate(Predicate<? super ItemStack> predicate) {
-        this.consumeItemPredicate = predicate;
-    }
-
-    @Override
-    public BiPredicate<? super Entity, ? super IWaystone> getAllowTeleportPredicate() {
-        return this.allowTeleportPredicate == null ? getWarpMode().getAllowTeleportPredicate() : this.allowTeleportPredicate;
-    }
-
-    @Override
-    public void setAllowTeleportPredicate(BiPredicate<? super Entity, ? super IWaystone> allowTeleportPredicate) {
-        this.allowTeleportPredicate = allowTeleportPredicate;
+    public void setWarpItemConsumed(boolean isWarpItemConsumed) {
+        this.isWarpItemConsumed = isWarpItemConsumed;
     }
 }
