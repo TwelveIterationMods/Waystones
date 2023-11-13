@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +23,8 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     private WarpMode warpMode = WarpMode.CUSTOM;
     private ItemStack warpItem = ItemStack.EMPTY;
+    @Nullable
+    private Boolean consumesWarpItem; // nullable for now so we can fallback to legacy warp mode implementation
     private int xpCost;
     private int cooldown;
     private boolean playsSound = true;
@@ -144,5 +145,15 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Override
     public void setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
+    }
+
+    @Override
+    public boolean consumesWarpItem() {
+        return this.consumesWarpItem == null ? getWarpMode().consumesItem() : this.consumesWarpItem;
+    }
+
+    @Override
+    public void setConsumesWarpItem(boolean consumesWarpItem) {
+        this.consumesWarpItem = consumesWarpItem;
     }
 }

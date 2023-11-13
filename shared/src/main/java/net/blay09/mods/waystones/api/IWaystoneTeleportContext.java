@@ -52,4 +52,11 @@ public interface IWaystoneTeleportContext {
     boolean playsEffect();
 
     void setPlaysEffect(boolean playsEffect);
+
+    default boolean consumesWarpItem() {
+        return getWarpMode() != null && getWarpMode().consumesItem();
+    };
+
+    default void setConsumesWarpItem(boolean consumesWarpItem) { }
+
 }
