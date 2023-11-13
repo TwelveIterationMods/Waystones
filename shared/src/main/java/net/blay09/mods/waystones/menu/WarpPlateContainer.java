@@ -63,8 +63,18 @@ public class WarpPlateContainer extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(slotStack, 5, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(slotStack, 0, 5, false)) {
-                return ItemStack.EMPTY;
+            }
+            else {
+                if (!getSlot(0).hasItem()) {
+                    if (!this.moveItemStackTo(slotStack.split(1), 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else {
+                    if (!this.moveItemStackTo(slotStack, 1, 5, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
             }
 
             if (slotStack.isEmpty()) {
