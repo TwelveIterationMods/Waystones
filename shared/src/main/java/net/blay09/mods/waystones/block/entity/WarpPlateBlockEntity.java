@@ -41,7 +41,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -141,8 +140,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     private void initializeInventory(ServerLevelAccessor levelAccessor) {
         WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
                 .stream()
-                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
-                .map(RecipeHolder::value)
+                .filter(recipe -> recipe.getId().getNamespace().equals(Waystones.MOD_ID) && recipe.getId().getPath().equals("attuned_shard"))
                 .findFirst()
                 .orElse(null);
         if (initializingRecipe == null) {
@@ -387,8 +385,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             return null; //prevents crafting when more than 1 ingredient is present
         }
 
-        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
-                .map(RecipeHolder::value).orElse(null);
+        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level).orElse(null);
     }
 
     public ItemStack getTargetAttunementStack() {
