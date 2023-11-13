@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.network.ModNetworking;
+import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
 
@@ -27,5 +28,6 @@ public class Waystones {
         ModItems.initialize(Balm.getItems());
         ModMenus.initialize(Balm.getMenus());
         ModWorldGen.initialize(Balm.getWorldGen());
+        ModRecipes.initialize();
     }
 }

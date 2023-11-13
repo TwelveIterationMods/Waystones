@@ -6,14 +6,17 @@ import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,7 +34,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -198,19 +200,33 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     public void serverTick() {
-        if (isReadyForAttunement()) {
+        WarpPlateRecipe recipe = trySelectRecipe();
+        if (recipe != null) {
             attunementTicks++;
 
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
-                ItemStack attunedShard = new ItemStack(ModItems.attunedShard);
+                ItemStack attunedShard = recipe.assemble(this, RegistryAccess.EMPTY);
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
+                ItemStack centerStack = getItem(0);
+                if (centerStack.getCount() > 1) {
+                    //FIXME returned stack disappear on inventory update
+                    centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
+                    if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
+                        Minecraft.getInstance().player.drop(centerStack, false);
+                    }
+                }
                 setItem(0, attunedShard);
+                //FIXME crumbling shards are not stacked when moved around...
                 for (int i = 1; i <= 4; i++) {
                     getItem(i).shrink(1);
                 }
-                completedFirstAttunement = true;
             }
+
+            if (recipe.getResultItem().getItem() == ModItems.attunedShard) {
+                this.completedFirstAttunement = true;
+            }
+
         } else {
             attunementTicks = 0;
         }
@@ -341,13 +357,13 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         }
     }
 
-    private boolean isReadyForAttunement() {
-        return readyForAttunement
-                && getItem(0).getItem() == Items.FLINT
-                && getItem(1).getItem() == ModItems.warpDust
-                && getItem(2).getItem() == ModItems.warpDust
-                && getItem(3).getItem() == ModItems.warpDust
-                && getItem(4).getItem() == ModItems.warpDust;
+    @Nullable
+    private WarpPlateRecipe trySelectRecipe() {
+        if (!readyForAttunement || getLevel() == null) {
+            return null;
+        }
+
+        return WarpPlateRecipe.findAllWarpPlateRecipes(getLevel()).filter(r -> r.matches(this, this.getLevel())).findFirst().orElse(null);
     }
 
     @Nullable
