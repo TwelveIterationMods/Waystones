@@ -258,7 +258,7 @@ public class PlayerWaystoneManager {
         }
 
         boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
-        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> !isCreativeMode && context.isWarpItemConsumed())) {
+        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> !isCreativeMode && context.consumesWarpItem())) {
             context.getWarpItem().shrink(1);
         }
 

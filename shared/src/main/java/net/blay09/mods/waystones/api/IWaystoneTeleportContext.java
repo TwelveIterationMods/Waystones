@@ -53,10 +53,10 @@ public interface IWaystoneTeleportContext {
 
     void setPlaysEffect(boolean playsEffect);
 
-    default boolean isWarpItemConsumed() {
+    default boolean consumesWarpItem() {
         return getWarpMode() != null && getWarpMode().consumesItem();
     };
 
-    default void setWarpItemConsumed(boolean isWarpItemConsumed) { }
+    default void setConsumesWarpItem(boolean consumesWarpItem) { }
 
 }

@@ -24,7 +24,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private WarpMode warpMode = WarpMode.CUSTOM;
     private ItemStack warpItem = ItemStack.EMPTY;
     @Nullable
-    private Boolean isWarpItemConsumed;
+    private Boolean consumesWarpItem; // nullable for now so we can fallback to legacy warp mode implementation
     private int xpCost;
     private int cooldown;
     private boolean playsSound = true;
@@ -148,12 +148,12 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public boolean isWarpItemConsumed() {
-        return this.isWarpItemConsumed == null ? getWarpMode().consumesItem() : this.isWarpItemConsumed;
+    public boolean consumesWarpItem() {
+        return this.consumesWarpItem == null ? getWarpMode().consumesItem() : this.consumesWarpItem;
     }
 
     @Override
-    public void setWarpItemConsumed(boolean isWarpItemConsumed) {
-        this.isWarpItemConsumed = isWarpItemConsumed;
+    public void setConsumesWarpItem(boolean consumesWarpItem) {
+        this.consumesWarpItem = consumesWarpItem;
     }
 }
