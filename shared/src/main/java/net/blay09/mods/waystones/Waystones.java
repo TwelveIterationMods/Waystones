@@ -28,6 +28,6 @@ public class Waystones {
         ModItems.initialize(Balm.getItems());
         ModMenus.initialize(Balm.getMenus());
         ModWorldGen.initialize(Balm.getWorldGen());
-        ModRecipes.initialize();
+        ModRecipes.initialize(Balm.getRecipes());
     }
 }

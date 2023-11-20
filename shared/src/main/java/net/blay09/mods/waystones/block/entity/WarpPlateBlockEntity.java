@@ -210,14 +210,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 ItemStack centerStack = getItem(0);
                 if (centerStack.getCount() > 1) {
-                    //FIXME returned stack disappear on inventory update
                     centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
                     if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
                         Minecraft.getInstance().player.drop(centerStack, false);
                     }
                 }
                 setItem(0, attunedShard);
-                //FIXME crumbling shards are not stacked when moved around...
                 for (int i = 1; i <= 4; i++) {
                     getItem(i).shrink(1);
                 }
