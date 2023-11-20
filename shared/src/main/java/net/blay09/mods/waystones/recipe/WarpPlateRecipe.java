@@ -19,7 +19,7 @@ public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
     private final NonNullList<Ingredient> ingredients;
 
     public WarpPlateRecipe(Item resultItem, int resultCount, Ingredient innerIngredient, Ingredient outerIngredient) {
-        this.result = new ItemStack(resultItem, Math.min(resultCount, resultItem.getMaxStackSize()));
+        this.result = new ItemStack(resultItem, resultCount);
         this.innerIngredient = innerIngredient;
         this.outerIngredient = outerIngredient;
         this.ingredients = NonNullList.of(this.innerIngredient, this.outerIngredient, this.outerIngredient, this.outerIngredient, this.outerIngredient);
