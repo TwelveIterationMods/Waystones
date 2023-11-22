@@ -4,40 +4,80 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
 
 public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
     private final Ingredient innerIngredient;
-    private final Ingredient outerIngredient;
+    private final NonNullList<Ingredient> outerIngredients;
+    private final boolean isSameOuterIngredients;
     private final ItemStack result;
 
     private final NonNullList<Ingredient> ingredients;
+    private String str;
 
     public WarpPlateRecipe(Item resultItem, int resultCount, Ingredient innerIngredient, Ingredient outerIngredient) {
         this.result = new ItemStack(resultItem, resultCount);
         this.innerIngredient = innerIngredient;
-        this.outerIngredient = outerIngredient;
-        this.ingredients = NonNullList.of(this.innerIngredient, this.outerIngredient, this.outerIngredient, this.outerIngredient, this.outerIngredient);
+        this.outerIngredients = NonNullList.createWithCapacity(4);
+        this.outerIngredients.add(outerIngredient);
+        this.outerIngredients.add(outerIngredient);
+        this.outerIngredients.add(outerIngredient);
+        this.outerIngredients.add(outerIngredient);
+        this.ingredients = NonNullList.createWithCapacity(5);
+        this.ingredients.add(innerIngredient);
+        this.ingredients.addAll(outerIngredients);
+        this.isSameOuterIngredients = true;
     }
 
-    public static Stream<WarpPlateRecipe> findAllWarpPlateRecipes(Level level) {
-        //TODO would it benefit to add some caching ?
-        return level.getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType).stream().map(RecipeHolder::value);
+    public WarpPlateRecipe(Item resultItem, int resultCount, Ingredient innerIngredient, List<Ingredient> outerIngredients) {
+        this.result = new ItemStack(resultItem, resultCount);
+        this.innerIngredient = innerIngredient;
+        if (outerIngredients.size() != 4) {
+            throw new IllegalArgumentException("Bad WarpPlateRecipe outerIngredients count, expected 4 but got " + outerIngredients.size());
+        }
+        this.outerIngredients = NonNullList.createWithCapacity(4);
+        this.outerIngredients.addAll(outerIngredients);
+        this.ingredients = NonNullList.createWithCapacity(5);
+        this.ingredients.add(innerIngredient);
+        this.ingredients.addAll(outerIngredients);
+        this.isSameOuterIngredients = false;
+    }
+
+    public static Optional<WarpPlateRecipe> findFirstMatchingRecipe(WarpPlateBlockEntity inventory) {
+        return inventory.getLevel().getRecipeManager().getRecipeFor(
+                        ModRecipes.warpPlateRecipeType,
+                        inventory, inventory.getLevel())
+                .map(RecipeHolder::value);
     }
 
     @Override
     public boolean matches(WarpPlateBlockEntity inventory, Level level) {
-        if (inventory.getItems().size() < 5) return false;
+        if (inventory.getItems().stream().anyMatch(ItemStack::isEmpty)) return false;
         if (!innerIngredient.test(inventory.getItem(0))) return false;
-        return outerIngredient.test(inventory.getItem(1)) &&
-                outerIngredient.test(inventory.getItem(2)) &&
-                outerIngredient.test(inventory.getItem(3)) &&
-                outerIngredient.test(inventory.getItem(4));
+        //optimize the case where outerIngredients are all the same
+        if (this.isSameOuterIngredients()) {
+            Ingredient outerIngredient = this.outerIngredients.get(0);
+            return outerIngredient.test(inventory.getItem(1)) &&
+                    outerIngredient.test(inventory.getItem(2)) &&
+                    outerIngredient.test(inventory.getItem(3)) &&
+                    outerIngredient.test(inventory.getItem(4));
+        }
+        StackedContents stackedContents = new StackedContents();
+        int i = 0;
+        for (int j = 0; j < 5; j++) {
+            ItemStack itemStack = inventory.getItem(j);
+            if (itemStack.isEmpty()) continue;
+            i++;
+            stackedContents.accountStack(itemStack, 1);
+        }
+        return i == 5 && stackedContents.canCraft(this, null);
     }
 
     /**
@@ -48,10 +88,18 @@ public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
     }
 
     /**
-     * The {@link Ingredient} to accept in the 4 outer slots (1 top, 2 right, 3 bottom and 4 left).
+     * The {@link Ingredient}s to accept in the 4 outer slots, shapeless (1 top, 2 right, 3 bottom and 4 left).
      */
-    public Ingredient getOuterIngredient() {
-        return this.outerIngredient;
+    public NonNullList<Ingredient> getOuterShapelessIngredients() {
+        return this.outerIngredients;
+    }
+
+    /**
+     * Are the outer Ingredients all the same, ie was the recipe declared only with a single `outerIngredient`
+     * rather than an array of `outerIngredients`?
+     */
+    public boolean isSameOuterIngredients() {
+        return this.isSameOuterIngredients;
     }
 
     @Override
@@ -111,7 +159,24 @@ public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
 
     @Override
     public String toString() {
-        return "WarpPlateRecipe{" + getResultItem() + ", inner=" + getInnerIngredient().toJson(false) + ", outer=" + getOuterIngredient().toJson(false) + "}";
+        if (this.str == null) {
+            StringBuilder strb = new StringBuilder("WarpPlateRecipe{");
+            strb.append(getResultItem())
+                    .append(", inner=")
+                    .append(getInnerIngredient().toJson(false))
+                    .append(", outers=");
+            if (isSameOuterIngredients) {
+                strb.append("4x")
+                        .append(getOuterShapelessIngredients().get(0).toJson(false));
+            }
+            else {
+                strb.append("[");
+                getOuterShapelessIngredients().forEach(i -> strb.append(i.toJson(false)));
+                strb.append("]");
+            }
+            this.str = strb.toString();
+        }
+        return this.str;
     }
 
     @Override
