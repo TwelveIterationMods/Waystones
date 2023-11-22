@@ -235,12 +235,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 for (int i = 1; i <= 4; i++) {
                     getItem(i).shrink(1);
                 }
-            }
-
-            if (recipe.getResultItem().getItem() == ModItems.attunedShard) {
                 this.completedFirstAttunement = true;
             }
-
         } else {
             attunementTicks = 0;
         }
@@ -289,10 +285,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             } else if (ticksPassed != -1) {
                 entry.setValue(ticksPassed + 1);
             }
-        }
-
-        if (getItem(0).getItem() != Items.FLINT) {
-            completedFirstAttunement = true;
         }
     }
 
