@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
-    private static final ResourceLocation BEACON = new ResourceLocation("textures/gui/container/beacon.png");
+    private static final ResourceLocation CANCEL_SPRITE = new ResourceLocation("container/beacon/cancel");
 
     private final List<Component> tooltip;
     private final List<Component> activeTooltip;
@@ -22,7 +23,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private static boolean shiftGuard;
 
     public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IWaystone waystone, OnPress pressable) {
-        super(x, y, 13, 13, Component.empty(), pressable, Button.DEFAULT_NARRATION);
+        super(x, y, 18, 18, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;
         tooltip = Lists.newArrayList(Component.translatable("gui.waystones.waystone_selection.hold_shift_to_delete"));
@@ -59,7 +60,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
             } else {
                 guiGraphics.setColor(0.5f, 0.5f, 0.5f, 0.5f);
             }
-            guiGraphics.blit(BEACON, getX(), getY(), 114, 223, 13, 13);
+            guiGraphics.blitSprite(CANCEL_SPRITE, getX(), getY(), 13, 13);
         }
     }
 

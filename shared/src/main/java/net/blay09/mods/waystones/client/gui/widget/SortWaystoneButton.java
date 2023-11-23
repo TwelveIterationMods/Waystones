@@ -8,7 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SortWaystoneButton extends Button {
 
-    private static final ResourceLocation SERVER_SELECTION_BUTTONS = new ResourceLocation("textures/gui/server_selection.png");
+    private static final ResourceLocation MOVE_UP_HIGHLIGHTED_SPRITE = new ResourceLocation("server_list/move_up_highlighted");
+    private static final ResourceLocation MOVE_UP_SPRITE = new ResourceLocation("server_list/move_up");
+    private static final ResourceLocation MOVE_DOWN_HIGHLIGHTED_SPRITE = new ResourceLocation("server_list/move_down_highlighted");
+    private static final ResourceLocation MOVE_DOWN_SPRITE = new ResourceLocation("server_list/move_down");
+
     private final int sortDir;
     private final int visibleRegionStart;
     private final int visibleRegionHeight;
@@ -35,9 +39,9 @@ public class SortWaystoneButton extends Button {
             }
 
             if (isHovered && active) {
-                guiGraphics.blit(SERVER_SELECTION_BUTTONS, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 32, 32, 32);
+                guiGraphics.blitSprite(sortDir == 1 ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_UP_HIGHLIGHTED_SPRITE, getX() - 5, renderY, 32, 32);
             } else {
-                guiGraphics.blit(SERVER_SELECTION_BUTTONS, getX() - 5, renderY, sortDir == 1 ? 64 : 96, 0, 32, 32);
+                guiGraphics.blitSprite(sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32);
             }
 
             RenderSystem.disableBlend();

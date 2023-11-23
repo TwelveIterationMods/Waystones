@@ -21,7 +21,10 @@ import java.util.Optional;
 
 public class WaystoneButton extends Button {
 
-    private static final ResourceLocation ENCHANTMENT_TABLE_GUI_TEXTURE = new ResourceLocation("textures/gui/container/enchanting_table.png");
+    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1"), new ResourceLocation(
+            "container/enchanting_table/level_2"), new ResourceLocation("container/enchanting_table/level_3")};
+    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1_disabled"), new ResourceLocation(
+            "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
 
     private final int xpLevelCost;
     private final IWaystone waystone;
@@ -74,7 +77,8 @@ public class WaystoneButton extends Button {
         // render xp cost
         if (xpLevelCost > 0) {
             boolean canAfford = Objects.requireNonNull(mc.player).experienceLevel >= xpLevelCost || mc.player.getAbilities().instabuild;
-            guiGraphics.blit(ENCHANTMENT_TABLE_GUI_TEXTURE, getX() + 2, getY() + 2, (Math.min(xpLevelCost, 3) - 1) * 16, 223 + (!canAfford ? 16 : 0), 16, 16);
+            final var spriteIndex = Math.min(xpLevelCost, 3) - 1;
+            guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], getX() + 2, getY() + 2, 16, 16);
 
             if (xpLevelCost > 3) {
                 guiGraphics.drawString(mc.font, "+", getX() + 17, getY() + 6, 0xC8FF8F);
