@@ -22,20 +22,6 @@ public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
     private final NonNullList<Ingredient> ingredients;
     private String str;
 
-    public WarpPlateRecipe(Item resultItem, int resultCount, Ingredient innerIngredient, Ingredient outerIngredient) {
-        this.result = new ItemStack(resultItem, resultCount);
-        this.innerIngredient = innerIngredient;
-        this.outerIngredients = NonNullList.createWithCapacity(4);
-        this.outerIngredients.add(outerIngredient);
-        this.outerIngredients.add(outerIngredient);
-        this.outerIngredients.add(outerIngredient);
-        this.outerIngredients.add(outerIngredient);
-        this.ingredients = NonNullList.createWithCapacity(5);
-        this.ingredients.add(innerIngredient);
-        this.ingredients.addAll(outerIngredients);
-        this.isSameOuterIngredients = true;
-    }
-
     public WarpPlateRecipe(Item resultItem, int resultCount, Ingredient innerIngredient, List<Ingredient> outerIngredients) {
         this.result = new ItemStack(resultItem, resultCount);
         this.innerIngredient = innerIngredient;
@@ -47,7 +33,7 @@ public class WarpPlateRecipe implements Recipe<WarpPlateBlockEntity> {
         this.ingredients = NonNullList.createWithCapacity(5);
         this.ingredients.add(innerIngredient);
         this.ingredients.addAll(outerIngredients);
-        this.isSameOuterIngredients = false;
+        this.isSameOuterIngredients = outerIngredients.stream().distinct().count() == 1;
     }
 
     public static Optional<WarpPlateRecipe> findFirstMatchingRecipe(WarpPlateBlockEntity inventory) {

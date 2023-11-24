@@ -7,7 +7,18 @@
   "inner": {
     "item": "minecraft:flint"
   },
-  "outer": {
-    "item": "waystones:warp_dust"
-  }
+  "outers": [
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    }
+  ]
 }
