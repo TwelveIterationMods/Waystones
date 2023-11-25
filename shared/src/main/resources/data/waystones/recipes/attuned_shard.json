@@ -1,0 +1,24 @@
+{
+  "type": "waystones:warp_plate",
+  "result": {
+    "item": "waystones:attuned_shard",
+    "count": 1
+  },
+  "primary": {
+    "item": "minecraft:flint"
+  },
+  "secondary": [
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    },
+    {
+      "item": "waystones:warp_dust"
+    }
+  ]
+}

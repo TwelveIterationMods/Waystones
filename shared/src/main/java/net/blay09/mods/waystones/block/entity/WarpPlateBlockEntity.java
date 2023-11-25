@@ -3,17 +3,21 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.recipe.ModRecipes;
+import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -31,18 +35,23 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 
 public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer {
+
+    private static final Logger logger = LoggerFactory.getLogger(WarpPlateBlockEntity.class);
 
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
 
@@ -106,7 +115,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         completedFirstAttunement = tag != null && tag.getBoolean("CompletedFirstAttunement");
 
         if (!completedFirstAttunement) {
-            initializeInventory();
+            initializeInventory(world);
         }
     }
 
@@ -123,15 +132,28 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
         WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), waystone);
 
-        initializeInventory();
+        initializeInventory(world);
     }
 
-    private void initializeInventory() {
-        setItem(0, new ItemStack(Items.FLINT));
-        setItem(1, new ItemStack(ModItems.warpDust));
-        setItem(2, new ItemStack(ModItems.warpDust));
-        setItem(3, new ItemStack(ModItems.warpDust));
-        setItem(4, new ItemStack(ModItems.warpDust));
+    private void initializeInventory(ServerLevelAccessor levelAccessor) {
+        WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
+                .stream()
+                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
+                .map(RecipeHolder::value)
+                .findFirst()
+                .orElse(null);
+        if (initializingRecipe == null) {
+            logger.error("Failed to find Warp Plate recipe for initial attunement");
+            completedFirstAttunement = true;
+            return;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            final var ingredient = initializingRecipe.getIngredients().get(i);
+            final var ingredientItems = ingredient.getItems();
+            final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
+            setItem(i, ingredientItem);
+        }
     }
 
     @Override
@@ -198,18 +220,26 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     public void serverTick() {
-        if (isReadyForAttunement()) {
+        WarpPlateRecipe recipe = trySelectRecipe();
+        if (recipe != null) {
             attunementTicks++;
 
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
-                ItemStack attunedShard = new ItemStack(ModItems.attunedShard);
+                ItemStack attunedShard = recipe.assemble(this, RegistryAccess.EMPTY);
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
+                ItemStack centerStack = getItem(0);
+                if (centerStack.getCount() > 1) {
+                    centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
+                    if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
+                        Minecraft.getInstance().player.drop(centerStack, false);
+                    }
+                }
                 setItem(0, attunedShard);
                 for (int i = 1; i <= 4; i++) {
                     getItem(i).shrink(1);
                 }
-                completedFirstAttunement = true;
+                this.completedFirstAttunement = true;
             }
         } else {
             attunementTicks = 0;
@@ -259,10 +289,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             } else if (ticksPassed != -1) {
                 entry.setValue(ticksPassed + 1);
             }
-        }
-
-        if (getItem(0).getItem() != Items.FLINT) {
-            completedFirstAttunement = true;
         }
     }
 
@@ -341,13 +367,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         }
     }
 
-    private boolean isReadyForAttunement() {
-        return readyForAttunement
-                && getItem(0).getItem() == Items.FLINT
-                && getItem(1).getItem() == ModItems.warpDust
-                && getItem(2).getItem() == ModItems.warpDust
-                && getItem(3).getItem() == ModItems.warpDust
-                && getItem(4).getItem() == ModItems.warpDust;
+    @Nullable
+    private WarpPlateRecipe trySelectRecipe() {
+        if (!readyForAttunement || level == null) {
+            return null;
+        }
+
+        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
+                .map(RecipeHolder::value).orElse(null);
     }
 
     @Nullable
