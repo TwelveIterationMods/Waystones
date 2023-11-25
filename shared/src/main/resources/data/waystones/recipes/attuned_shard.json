@@ -4,10 +4,10 @@
     "item": "waystones:attuned_shard",
     "count": 1
   },
-  "inner": {
+  "primary": {
     "item": "minecraft:flint"
   },
-  "outers": [
+  "secondary": [
     {
       "item": "waystones:warp_dust"
     },

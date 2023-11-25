@@ -3,11 +3,11 @@ package net.blay09.mods.waystones.block.entity;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
@@ -43,11 +43,15 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 
 public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer {
+
+    private static final Logger logger = LoggerFactory.getLogger(WarpPlateBlockEntity.class);
 
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
 
@@ -134,21 +138,21 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     private void initializeInventory(ServerLevelAccessor levelAccessor) {
         WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
                 .stream()
-                .filter(rh -> rh.value().getResultItem().is(ModItems.attunedShard))
+                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
                 .map(RecipeHolder::value)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("At least one WarpPlateRecipe with 5 ingredients for Attuned Shard is needed"));
+                .orElse(null);
+        if (initializingRecipe == null) {
+            logger.error("Failed to find Warp Plate recipe for initial attunement");
+            completedFirstAttunement = true;
+            return;
+        }
 
-        int i = 0;
-        for (Ingredient ingredient : initializingRecipe.getIngredients()) {
-            List<ItemStack> possibleItems = Arrays.asList(ingredient.getItems());
-            Collections.shuffle(possibleItems);
-            ItemStack toPlace = possibleItems.stream()
-                    .findAny()
-                    .map(ItemStack::copy)
-                    .orElse(new ItemStack(Items.DIRT, 1));
-            setItem(i, toPlace);
-            i++;
+        for (int i = 0; i < 5; i++) {
+            final var ingredient = initializingRecipe.getIngredients().get(i);
+            final var ingredientItems = ingredient.getItems();
+            final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
+            setItem(i, ingredientItem);
         }
     }
 
@@ -365,11 +369,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     @Nullable
     private WarpPlateRecipe trySelectRecipe() {
-        if (!readyForAttunement || getLevel() == null) {
+        if (!readyForAttunement || level == null) {
             return null;
         }
 
-        return WarpPlateRecipe.findFirstMatchingRecipe(this).orElse(null);
+        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
+                .map(RecipeHolder::value).orElse(null);
     }
 
     @Nullable

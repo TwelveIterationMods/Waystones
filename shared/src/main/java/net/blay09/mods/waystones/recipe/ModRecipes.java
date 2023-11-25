@@ -19,6 +19,6 @@ public class ModRecipes {
                         return WARP_PLATE_RECIPE_GROUP;
                     }
                 },
-                WarpPlateRecipeSerializer::new, WARP_PLATE_RECIPE_TYPE);
+                WarpPlateRecipe.Serializer::new, WARP_PLATE_RECIPE_TYPE);
     }
 }
