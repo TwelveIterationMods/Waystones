@@ -20,6 +20,7 @@ import java.util.List;
 
 public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static DeferredObject<MenuType<WarpPlateContainer>> warpPlate;
     public static DeferredObject<MenuType<WaystoneSettingsMenu>> waystoneSettings;
@@ -54,6 +55,19 @@ public class ModMenus {
             }
 
             return null;
+        });
+
+        adminSelection = menus.registerMenu(id("waystone_op_selection"), (syncId, inventory, buf) -> {
+            if (!inventory.player.hasPermissions(2)) {
+                return null;
+            }
+            int count = buf.readInt();
+            List<IWaystone> waystones = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                waystones.add(Waystone.read(buf));
+            }
+
+            return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, syncId, waystones);
         });
 
         warpPlate = menus.registerMenu(id("warp_plate"), (windowId, inv, data) -> {
