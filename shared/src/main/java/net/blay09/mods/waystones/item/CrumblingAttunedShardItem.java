@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class CrumblingAttunedShardItem extends AttunedShardItem {
+public class CrumblingAttunedShardItem extends AbstractAttunedShardItem {
 
     public CrumblingAttunedShardItem(Properties properties) {
-        super(properties,4);
+        super(properties.stacksTo(4));
     }
 
     @Override
@@ -33,8 +33,7 @@ public class CrumblingAttunedShardItem extends AttunedShardItem {
                 if (!attunedWarpPlate.getWaystoneUid().equals(wpc.getWaystone().getWaystoneUid())) {
                     list.add(textComponent);
                 }
-            }
-            else {
+            } else {
                 list.add(textComponent);
             }
         }

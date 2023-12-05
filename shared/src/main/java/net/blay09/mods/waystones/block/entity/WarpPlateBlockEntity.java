@@ -41,7 +41,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -316,7 +315,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
                 .flatMap(ctx -> {
                     ctx.setWarpItem(targetAttunementStack);
-                    ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SHARDS_CONSUMABLE));
+                    ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
                     return PlayerWaystoneManager.tryTeleport(ctx);
                 })
                 .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity))
@@ -393,29 +392,29 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     }
 
     public ItemStack getTargetAttunementStack() {
-        boolean useRoundRobin = false;
-        boolean useShardsPrioritization = false;
+        boolean shouldRoundRobin = false;
+        boolean shouldPrioritizeSingleUseShards = false;
         List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
-            if (itemStack.is(ModItemTags.SHARDS)) {
+            if (itemStack.is(ModItemTags.WARP_SHARDS)) {
                 IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
                 }
             } else if (itemStack.getItem() == Items.QUARTZ) {
-                useRoundRobin = true;
+                shouldRoundRobin = true;
             } else if (itemStack.getItem() == Items.SPIDER_EYE) {
-                useShardsPrioritization = true;
+                shouldPrioritizeSingleUseShards = true;
             }
         }
-        if (useShardsPrioritization && attunedShards.stream().anyMatch(stack -> stack.is(ModItemTags.SHARDS_CONSUMABLE))) {
-            attunedShards.removeIf(stack -> !stack.is(ModItemTags.SHARDS_CONSUMABLE));
+        if (shouldPrioritizeSingleUseShards && attunedShards.stream().anyMatch(stack -> stack.is(ModItemTags.SINGLE_USE_WARP_SHARDS))) {
+            attunedShards.removeIf(stack -> !stack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
         }
 
         if (!attunedShards.isEmpty()) {
             lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
-            return useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
+            return shouldRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
         }
 
         return ItemStack.EMPTY;

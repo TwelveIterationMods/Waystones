@@ -24,9 +24,6 @@ public class WarpPlateAttunementSlot extends Slot {
         if (this.getContainerSlot() == 0) {
             return 1;
         }
-        if (stack.is(ModItemTags.SHARDS) && !stack.is(ModItemTags.SHARDS_CONSUMABLE)) {
-            return 1;
-        }
         return stack.getMaxStackSize();
     }
 }
