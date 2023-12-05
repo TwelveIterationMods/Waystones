@@ -23,6 +23,8 @@ public class WaystonesItemTagProvider extends FabricTagProvider<Item> {
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_STONES).add(ModItems.warpStone);
+        getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard, ModItems.crumblingAttunedShard);
+        getOrCreateTagBuilder(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard);
         getOrCreateTagBuilder(ModItemTags.WAYSTONES).add(ModBlocks.waystone.asItem(), ModBlocks.mossyWaystone.asItem(), ModBlocks.sandyWaystone.asItem());
         FabricTagProvider<Item>.FabricTagBuilder sharestonesTag = getOrCreateTagBuilder(ModItemTags.SHARESTONES);
         sharestonesTag.add(ModBlocks.sharestone.asItem());
