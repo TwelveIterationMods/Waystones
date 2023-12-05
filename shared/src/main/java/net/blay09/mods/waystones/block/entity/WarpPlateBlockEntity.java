@@ -4,13 +4,17 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.IMutableWaystone;
+import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.ChatFormatting;
@@ -37,7 +41,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -268,9 +271,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             if (!entity.isAlive() || !isEntityOnWarpPlate(entity)) {
                 iterator.remove();
             } else if (ticksPassed > useTime) {
-                IWaystone targetWaystone = getTargetWaystone();
+                ItemStack targetAttunementStack = getTargetAttunementStack();
+                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
                 if (targetWaystone != null && targetWaystone.isValid()) {
-                    teleportToWarpPlate(entity, targetWaystone);
+                    teleportToWarpPlate(entity, targetWaystone, targetAttunementStack);
                 }
 
                 if (entity instanceof Player) {
@@ -307,9 +311,16 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 
-    private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone) {
-        PlayerWaystoneManager.tryTeleportToWaystone(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
-                .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects));
+    private void teleportToWarpPlate(Entity entity, IWaystone targetWaystone, ItemStack targetAttunementStack) {
+        WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, WarpMode.WARP_PLATE, getWaystone())
+                .flatMap(ctx -> {
+                    ctx.setWarpItem(targetAttunementStack);
+                    ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
+                    return PlayerWaystoneManager.tryTeleport(ctx);
+                })
+                .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity))
+                .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))
+                .left();
     }
 
     private void applyWarpPlateEffects(Entity entity) {
@@ -372,34 +383,46 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         if (!readyForAttunement || level == null) {
             return null;
         }
+        if (getItem(0).getCount() > 1) {
+            return null; //prevents crafting when more than 1 ingredient is present
+        }
 
         return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
                 .map(RecipeHolder::value).orElse(null);
     }
 
-    @Nullable
-    public IWaystone getTargetWaystone() {
-        boolean useRoundRobin = false;
+    public ItemStack getTargetAttunementStack() {
+        boolean shouldRoundRobin = false;
+        boolean shouldPrioritizeSingleUseShards = false;
         List<ItemStack> attunedShards = new ArrayList<>();
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
-            if (itemStack.getItem() instanceof IAttunementItem) {
-                IWaystone waystoneAttunedTo = ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+            if (itemStack.is(ModItemTags.WARP_SHARDS)) {
+                IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
                 }
             } else if (itemStack.getItem() == Items.QUARTZ) {
-                useRoundRobin = true;
+                shouldRoundRobin = true;
+            } else if (itemStack.getItem() == Items.SPIDER_EYE) {
+                shouldPrioritizeSingleUseShards = true;
             }
+        }
+        if (shouldPrioritizeSingleUseShards && attunedShards.stream().anyMatch(stack -> stack.is(ModItemTags.SINGLE_USE_WARP_SHARDS))) {
+            attunedShards.removeIf(stack -> !stack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
         }
 
         if (!attunedShards.isEmpty()) {
             lastAttunementSlot = (lastAttunementSlot + 1) % attunedShards.size();
-            ItemStack itemStack = useRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
-            return ((IAttunementItem) itemStack.getItem()).getWaystoneAttunedTo(level.getServer(), itemStack);
+            return shouldRoundRobin ? attunedShards.get(lastAttunementSlot) : attunedShards.get(random.nextInt(attunedShards.size()));
         }
 
-        return null;
+        return ItemStack.EMPTY;
+    }
+
+    @Nullable
+    public IWaystone getTargetWaystone() {
+        return WaystonesAPI.getBoundWaystone(getTargetAttunementStack()).orElse(null);
     }
 
     public int getMaxAttunementTicks() {
