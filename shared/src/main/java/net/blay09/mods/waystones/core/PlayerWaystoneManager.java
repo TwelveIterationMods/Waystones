@@ -292,8 +292,8 @@ public class PlayerWaystoneManager {
             final Level level = player.level();
             switch (warpMode) {
                 case INVENTORY_BUTTON ->
-                        getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, level.getGameTime() + cooldown * 20L);
-                case WARP_STONE -> getPlayerWaystoneData(level).setWarpStoneCooldownUntil(player, level.getGameTime() + cooldown * 20L);
+                        getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 20L);
+                case WARP_STONE -> getPlayerWaystoneData(level).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown * 20L);
             }
             WaystoneSyncManager.sendWaystoneCooldowns(player);
         }
@@ -508,7 +508,7 @@ public class PlayerWaystoneManager {
 
     public static long getWarpStoneCooldownLeft(Player player) {
         long cooldownUntil = getWarpStoneCooldownUntil(player);
-        return Math.max(0, cooldownUntil - player.level().getGameTime());
+        return Math.max(0, cooldownUntil - System.currentTimeMillis());
     }
 
     public static void setWarpStoneCooldownUntil(Player player, long timeStamp) {
@@ -521,7 +521,7 @@ public class PlayerWaystoneManager {
 
     public static long getInventoryButtonCooldownLeft(Player player) {
         long cooldownUntil = getInventoryButtonCooldownUntil(player);
-        return Math.max(0, cooldownUntil - player.level().getGameTime());
+        return Math.max(0, cooldownUntil - System.currentTimeMillis());
     }
 
     public static void setInventoryButtonCooldownUntil(Player player, long timeStamp) {
