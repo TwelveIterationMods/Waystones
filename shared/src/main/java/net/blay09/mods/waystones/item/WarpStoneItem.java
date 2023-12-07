@@ -194,7 +194,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         }
 
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        int maxCooldown = WaystonesConfig.getActive().warpStoneCooldown() * 20;
+        int maxCooldown = WaystonesConfig.getActive().warpStoneCooldown() * 1000;
         if (maxCooldown == 0) {
             return MAX_BAR_WIDTH;
         }
@@ -216,7 +216,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         }
 
         long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        int secondsLeft = (int) (timeLeft / 20);
+        int secondsLeft = (int) (timeLeft / 1000);
         if (secondsLeft > 0) {
             TranslatableComponent secondsLeftText = new TranslatableComponent("tooltip.waystones.cooldown_left", secondsLeft);
             secondsLeftText.withStyle(ChatFormatting.GOLD);
