@@ -60,6 +60,10 @@ subprojects {
         maven {
             url = "https://jm.gserv.me/repository/maven-public/"
         }
+
+        maven {
+            url = "https://maven.terraformersmc.com"
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {

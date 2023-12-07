@@ -12,8 +12,8 @@ import java.util.*;
 public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
-    private static final String INVENTORY_BUTTON_COOLDOWN_UNTIL = "InventoryButtonCooldownUntilNew";
-    private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntilNew";
+    private static final String INVENTORY_BUTTON_COOLDOWN_UNTIL = "InventoryButtonCooldownUntilUnix";
+    private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntilUnix";
 
     @Override
     public void activateWaystone(Player player, IWaystone waystone) {
