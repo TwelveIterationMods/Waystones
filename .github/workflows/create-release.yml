@@ -11,19 +11,10 @@ on:
           - major
           - minor
           - patch
-      type:
-        description: 'The type for this release'
-        required: true
-        type: choice
-        default: release
-        options:
-          - release
-          - beta
-          - alpha
 
 jobs:
   create-release:
-    uses: TwelveIterationMods/Workflows/.github/workflows/create-release.yml@main
+    uses: TwelveIterationMods/Workflows/.github/workflows/create-release.yml@v2
     with:
       bump: ${{ github.event.inputs.bump }}
     secrets: inherit

@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="${forge_loader_version_range}"
+loaderVersion="${neoforge_loader_version_range}"
 license="${license}"
 issueTrackerURL="${issues}"
 [[mods]]
@@ -11,10 +11,14 @@ logoFile="${mod_id}.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
 description='''${description}'''
+[[mixins]]
+config = "${mod_id}.mixins.json"
+[[mixins]]
+config = "${mod_id}.neoforge.mixins.json"
 [[dependencies.${mod_id}]]
-modId="forge"
+modId="neoforge"
 mandatory=true
-versionRange="${forge_version_range}"
+versionRange="${neoforge_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]

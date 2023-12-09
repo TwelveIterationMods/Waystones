@@ -6,10 +6,25 @@ pluginManagement {
             url = 'https://maven.fabricmc.net/'
         }
         maven {
+            name = 'NeoForge'
+            url = 'https://maven.neoforged.net/releases/'
+        }
+        maven {
+            name = 'Forge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
             name = 'Sponge Snapshots'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
     }
 }
 
-include("shared", "fabric", "forge")
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
+}
+
+include("shared")
+include("fabric")
+include("forge")
+include("neoforge")

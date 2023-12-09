@@ -1,0 +1,139 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.41'
+    id 'net.darkhax.curseforgegradle'
+    id "com.modrinth.minotaur"
+}
+
+base {
+    archivesName = "${mod_id}-neoforge-${minecraft_version}"
+}
+
+if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+    minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+runs {
+    configureEach {
+        // Recommended logging data for a userdev environment
+        // The markers can be added/remove as needed separated by commas.
+        // "SCAN": For mods scan.
+        // "REGISTRIES": For firing of registry events.
+        // "REGISTRYDUMP": For getting the contents of all registries.
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+        // Recommended logging level for the console
+        // You can set various levels here.
+        // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
+    }
+
+    client {
+        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+
+    // This run config launches GameTestServer and runs all registered gametests, then exits.
+    // By default, the server will crash when no gametests are provided.
+    // The gametest system is also enabled by default for other run configs under the /test command.
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    data {
+        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
+        // workingDirectory project.file('run-data')
+
+        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neoforge_version}"
+
+    implementation("net.blay09.mods:balm-neoforge:${balm_version}") {
+        changing = balm_version.endsWith("SNAPSHOT")
+    }
+
+    compileOnly project(":shared")
+
+    compileOnly "org.jetbrains:annotations:22.0.0"
+}
+
+apply from: 'dependencies.gradle'
+
+// NeoGradle compiles the game, but we don't want to add our common code to the game's code
+Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+    source(project(":shared").sourceSets.main.allSource)
+}
+
+tasks.withType(Javadoc).matching(notNeoTask).configureEach {
+    source(project(":shared").sourceSets.main.allJava)
+}
+
+tasks.named("sourcesJar", Jar) {
+    from(project(":shared").sourceSets.main.allSource)
+}
+
+tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
+    from project(":shared").sourceSets.main.resources
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id + "-neoforge"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials)
+        }
+    }
+}
+
+task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    dependsOn('build')
+    description = 'Publishes the NeoForge build to CurseForge.'
+    group = 'publishing'
+
+    apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
+
+    def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+    mainFile.changelog = rootProject.file('CHANGELOG.md').text
+    project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
+    mainFile.releaseType = "release"
+}
+
+modrinth {
+    token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+    projectId = project.modrinth_project_id
+    versionType = project.modrinth_release_type
+    versionNumber = project.version + "+neoforge-" + project.minecraft_version
+    uploadFile = jar
+    changelog = rootProject.file("CHANGELOG.md").text
+    gameVersions = project.minecraft_versions.split(',').toList()
+    syncBodyFrom = rootProject.file("modpage.md").text
+    loaders = ['neoforge']
+}

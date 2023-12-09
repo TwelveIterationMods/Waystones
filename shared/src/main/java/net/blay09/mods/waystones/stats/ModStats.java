@@ -2,10 +2,7 @@ package net.blay09.mods.waystones.stats;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.stats.StatFormatter;
-import net.minecraft.stats.Stats;
 
 public class ModStats {
 

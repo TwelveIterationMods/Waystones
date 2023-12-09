@@ -1,31 +1,34 @@
-buildscript {
-    repositories {
-        maven { url = "https://repo.spongepowered.org/maven" }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'maven-publish'
     id 'idea'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
-    id "com.modrinth.minotaur" version "2.+"
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin'
+    id 'net.darkhax.curseforgegradle'
+    id "com.modrinth.minotaur"
 }
 
-apply plugin: "org.spongepowered.mixin"
+base {
+    archivesName = "${mod_id}-forge-${minecraft_version}"
+}
 
-group = mod_group
-archivesBaseName = "${mod_id}-forge-${minecraft_version}"
-version = mod_version
+mixin {
+    add(sourceSets.main, "${mod_id}.refmap.json")
+
+    config("${mod_id}.mixins.json")
+    config("${mod_id}.forge.mixins.json")
+}
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
 
     copyIdeResources = true
+
+    // Automatically enable forge AccessTransformers if the file exists
+    // This location is hardcoded in Forge and can not be changed.
+    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
+    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
 
     runs {
         client {
@@ -33,24 +36,13 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName "Client"
 
-            if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
-            }
-
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                "${mod_id}" {
+                modClientRun {
                     source sourceSets.main
                     source project(":shared").sourceSets.main
                 }
@@ -62,24 +54,13 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName "Server"
 
-            if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
-            }
-
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                "${mod_id}" {
+                modServerRun {
                     source sourceSets.main
                     source project(":shared").sourceSets.main
                 }
@@ -91,24 +72,13 @@ minecraft {
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName "GameTest"
 
-            if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
-            }
-
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                "${mod_id}" {
+                modGameTestRun {
                     source sourceSets.main
                     source project(":shared").sourceSets.main
                 }
@@ -118,26 +88,14 @@ minecraft {
         data {
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             taskName "Data"
 
-            property 'forge.logging.console.level', 'debug'
-
-            if (forge_mixins.toBoolean()) {
-                arg "-mixin.config=${mod_id}.mixins.json"
-            }
-
-            property "mixin.env.disableRefMap", "true"
-            property "mixin.debug.export", "true"
-            property "mixin.debug.export.decompile", "false"
-            property "mixin.debug.verbose", "true"
-            property "mixin.debug.dumpTargetOnFailure", "true"
-            property "mixin.checks", "true"
-            property "mixin.hotSwap", "true"
-
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
-                "${mod_id}" {
+                modDataRun {
                     source sourceSets.main
                     source project(":shared").sourceSets.main
                 }
@@ -146,64 +104,35 @@ minecraft {
     }
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs 'src/generated/resources'
-        }
-        ext.refMap = "${mod_id}.refmap.json"
-    }
-}
+sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    compileOnly project(":shared")
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 
     implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
         changing = balm_version.endsWith("SNAPSHOT")
     }
 
+    compileOnly project(":shared")
+
     compileOnly "org.jetbrains:annotations:22.0.0"
-
-    compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
-    if (jei_minecraft_version == minecraft_version) {
-        runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
-    }
-
-    compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
-    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
 }
 
 apply from: 'dependencies.gradle'
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(":shared").sourceSets.main.allSource)
 }
-
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-        forge_version: forge_version, forge_version_range: forge_version_range,
-        forge_loader_version_range: forge_loader_version_range,
-        mod_id: mod_id, mod_version: mod_version, balm_version_range: balm_version_range,
-]
-processResources {
-    from project(":shared").sourceSets.main.resources
-
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(resourceTargets) {
-        expand replaceProperties
-    }
+tasks.withType(Javadoc).configureEach {
+    source(project(":shared").sourceSets.main.allJava)
+}
+tasks.named("sourcesJar", Jar) {
+    from(project(":shared").sourceSets.main.allSource)
 }
 
-jar {
-    from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_id}" }
-    }
+processResources {
+    from project(":shared").sourceSets.main.resources
 }
 
 jar.finalizedBy('reobfJar')
@@ -214,7 +143,8 @@ publishing {
             artifactId = mod_id + "-forge"
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
-            artifact jar
+            from components.java
+            fg.component(it)
         }
     }
 
@@ -238,21 +168,20 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
-    mainFile.changelogType = "markdown"
     mainFile.addRequirement("balm")
     project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
-    mainFile.releaseType = release_type
+    mainFile.releaseType = "release"
 }
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_forge_project_id
-    versionType = project.release_type
+    projectId = project.modrinth_project_id
+    versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("modrinth.md").text
+    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['forge']
     dependencies {
         required.project "balm"

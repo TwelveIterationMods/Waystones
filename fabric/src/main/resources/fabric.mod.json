@@ -1,66 +1,53 @@
 {
   "schemaVersion": 1,
-  "id": "waystones",
+  "id": "${mod_id}",
   "version": "${version}",
-  "name": "Waystones",
-  "description": "Teleport back to activated waystones. For Survival, Adventure or Servers.",
+
+  "name": "${mod_name}",
+  "description": "${description}",
   "authors": [
     "BlayTheNinth"
   ],
   "contact": {
-    "homepage": "https://blay09.net/",
-    "sources": "https://github.com/TwelveIterationMods/Waystones",
-    "issues": "https://github.com/TwelveIterationMods/Waystones/issues"
+    "homepage": "${homepage}",
+    "sources": "${sources}",
+    "issues": "${issues}"
   },
-  "license": "All Rights Reserved",
-  "icon": "waystones-icon.png",
+
+  "license": "${license}",
+  "icon": "${mod_id}.png",
+
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.blay09.mods.waystones.FabricWaystones"
+      "net.blay09.mods.${mod_id}.fabric.Fabric${mod_main}"
     ],
     "client": [
-      "net.blay09.mods.waystones.client.FabricWaystonesClient"
-    ],
-    "fabric-datagen": [
-      "net.blay09.mods.waystones.datagen.WaystonesDataGenerator"
+      "net.blay09.mods.${mod_id}.fabric.client.Fabric${mod_main}Client"
     ],
     "modmenu": [
-      "net.blay09.mods.waystones.compat.ModMenuIntegration"
-    ],
-    "rei_client": [
-      "net.blay09.mods.waystones.compat.rei.RoughlyEnoughItemsIntegration"
-    ],
-    "journeymap": [
-      "net.blay09.mods.waystones.compat.JourneyMapIntegration"
-    ],
-    "jade": [
-      "net.blay09.mods.waystones.compat.JadeIntegration"
+      "net.blay09.mods.${mod_id}.fabric.compat.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "waystones.mixins.json"
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
   ],
+
   "depends": {
-    "balm-fabric": ">=8.0.0",
-    "fabricloader": ">=0.14.22",
+    "fabricloader": ">=0.14",
     "fabric-api": "*",
+    "balm-fabric": "*",
     "minecraft": ">=1.20.2",
     "java": ">=17"
   },
   "suggests": {
-    "modmenu": "*"
   },
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j",
-        "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
+        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j"
       }
-    },
-    "waila:plugins": {
-      "id": "waystones:wthit",
-      "initializer": "net.blay09.mods.waystones.compat.WTHITIntegration"
     }
   }
 }

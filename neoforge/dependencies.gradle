@@ -1,0 +1,14 @@
+repositories {
+    // For JourneyMap
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
+}
+
+dependencies {
+    compileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true
+    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
+    compileOnly "curse.maven:jade-324717:$jade_forge_version"
+    compileOnly "mcp.mobius.waila:wthit-api:forge-$wthit_version"
+    compileOnly "curse.maven:the-one-probe-245211:$theoneprobe_version"
+}

@@ -6,5 +6,5 @@ on:
 
 jobs:
   build:
-    uses: TwelveIterationMods/Workflows/.github/workflows/build.yml@main
+    uses: TwelveIterationMods/Workflows/.github/workflows/build.yml@v2
     secrets: inherit

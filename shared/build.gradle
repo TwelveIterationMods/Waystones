@@ -1,15 +1,19 @@
 plugins {
-    id('java')
-    id('org.spongepowered.gradle.vanilla') version '0.2.1-SNAPSHOT'
+    id 'idea'
+    id 'java'
     id 'maven-publish'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
-group = mod_group
-version = mod_version
-archivesBaseName = "${mod_id}-common-${minecraft_version}"
+base {
+    archivesName = "${mod_id}-common-${minecraft_version}"
+}
 
 minecraft {
     version(minecraft_version)
+    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
+        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
+    }
 }
 
 dependencies {
@@ -19,37 +23,9 @@ dependencies {
         exclude(group: "net.blay09.mods", module: "shared-bridge")
         changing = balm_version.endsWith("SNAPSHOT")
     }
-
-    compileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
-        transitive = false
-    }
-
-    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
-
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
 apply from: 'dependencies.gradle'
-
-sourceSets {
-    main {
-        resources {
-            srcDirs 'src/main/generated'
-        }
-    }
-}
-
-jar {
-    from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_id}" }
-    }
-}
-
-sourcesJar {
-    from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_id}" }
-    }
-}
 
 publishing {
     publications {
