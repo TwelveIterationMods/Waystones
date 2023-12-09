@@ -12,3 +12,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:wthit-api:forge-$wthit_version"
     compileOnly "curse.maven:the-one-probe-245211:$theoneprobe_version"
 }
+
+configurations {
+    testCompileOnly.extendsFrom compileOnly // for some reason needed for EMI
+}

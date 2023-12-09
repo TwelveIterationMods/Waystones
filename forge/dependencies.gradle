@@ -13,3 +13,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
     //runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
 }
+
+configurations {
+    testCompileOnly.extendsFrom compileOnly // for some reason needed for EMI
+}
