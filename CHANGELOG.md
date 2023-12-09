@@ -1,3 +1,3 @@
-- Fixed desync when teleporting while riding a horse. For now, teleporting will teleport both, but always dismount you.
-- Fixed the book icon not showing up in the correct place when hovering over the waystone name in the selection screen
-- Fixed leashed entities no longer being teleported with the player
+- Fixed warp stone cooldown getting corrupted into millions of seconds
+- Fixed crash when setting scroll charge time to 0
+- Fixed buckets not having any effect on waterlogged waystones
