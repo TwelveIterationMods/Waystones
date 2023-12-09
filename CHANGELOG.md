@@ -1,3 +1,3 @@
-- Fixed massive performance issues in world generation, particularly in the Nether
-- Improved forceSpawnInVillages option and one-per-village limitation to be more reliable
-- Fixed incorrect WTHIT plugin definition
+- Fixed warp stone cooldown getting corrupted into millions of seconds
+- Fixed crash when setting scroll charge time to 0
+- Fixed buckets not having any effect on waterlogged waystones
