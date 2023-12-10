@@ -88,7 +88,7 @@ public class WarpPlateRecipe implements Recipe<Container> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return new Serializer();
+        return ModRecipes.warpPlateRecipeSerializer;
     }
 
     @Override
