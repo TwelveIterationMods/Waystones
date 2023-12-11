@@ -1,3 +1,4 @@
+- Fixed being unable to join multiplayer server
 - Fixed crash on world load when using Forge
 
 - Added Crumbling Attuned Shard, an attuned shard that is used up when teleporting (by edralzar)
