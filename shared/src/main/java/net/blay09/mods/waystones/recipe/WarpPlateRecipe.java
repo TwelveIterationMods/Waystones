@@ -124,8 +124,9 @@ public class WarpPlateRecipe implements Recipe<Container> {
         public WarpPlateRecipe fromNetwork(FriendlyByteBuf buf) {
             final var resultItem = buf.readItem();
             final var primaryIngredient = Ingredient.fromNetwork(buf);
-            final NonNullList<Ingredient> secondaryIngredients = NonNullList.createWithCapacity(4);
-            for (int i = 0; i < secondaryIngredients.size(); i++) {
+            final var secondaryCount = buf.readVarInt();
+            final NonNullList<Ingredient> secondaryIngredients = NonNullList.createWithCapacity(secondaryCount);
+            for (int i = 0; i < secondaryCount; i++) {
                 secondaryIngredients.add(Ingredient.fromNetwork(buf));
             }
             return new WarpPlateRecipe(resultItem, primaryIngredient, secondaryIngredients);
@@ -135,6 +136,7 @@ public class WarpPlateRecipe implements Recipe<Container> {
         public void toNetwork(FriendlyByteBuf buf, WarpPlateRecipe recipe) {
             buf.writeItem(recipe.resultItem);
             recipe.primaryIngredient.toNetwork(buf);
+            buf.writeVarInt(recipe.secondaryIngredients.size());
             for (Ingredient ingredient : recipe.secondaryIngredients) {
                 ingredient.toNetwork(buf);
             }
