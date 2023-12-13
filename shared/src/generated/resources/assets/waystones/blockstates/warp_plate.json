@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "waystones:block/warp_plate"
+    }
+  }
+}
