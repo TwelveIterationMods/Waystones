@@ -7,7 +7,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-@Deprecated
+/**
+ * @deprecated Use {@link net.blay09.mods.waystones.tag.ModItemTags} and {@link net.blay09.mods.waystones.tag.ModBlockTags} instead.
+ * TODO remove in 1.20.4
+ */
+@Deprecated(forRemoval = true)
 public class ModTags {
 
     public static final TagKey<Item> BOUND_SCROLLS = TagKey.create(Registries.ITEM, new ResourceLocation(Waystones.MOD_ID, "bound_scrolls"));

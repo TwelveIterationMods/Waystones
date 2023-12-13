@@ -20,18 +20,21 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.blay09.mods.${mod_id}.fabric.Fabric${mod_main}"
+      "net.blay09.mods.waystones.fabric.FabricWaystones"
     ],
     "client": [
-      "net.blay09.mods.${mod_id}.fabric.client.Fabric${mod_main}Client"
+      "net.blay09.mods.waystones.fabric.client.FabricWaystonesClient"
     ],
     "modmenu": [
-      "net.blay09.mods.${mod_id}.fabric.compat.ModMenuIntegration"
+      "net.blay09.mods.waystones.compat.ModMenuIntegration"
+    ],
+    "fabric-datagen": [
+      "net.blay09.mods.waystones.datagen.ModDataGenerator"
     ]
   },
   "mixins": [
-    "${mod_id}.mixins.json",
-    "${mod_id}.fabric.mixins.json"
+    "waystones.mixins.json",
+    "waystones.fabric.mixins.json"
   ],
 
   "depends": {

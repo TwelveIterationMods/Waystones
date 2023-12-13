@@ -58,7 +58,7 @@ loom {
 			runDir("build/datagen")
 
 			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/main/generated")}"
+			vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/generated/resources")}"
 			vmArg "-Dfabric-api.datagen.modid=${mod_id}"
 		}
 	}

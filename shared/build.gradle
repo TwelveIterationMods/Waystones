@@ -27,6 +27,8 @@ dependencies {
 
 apply from: 'dependencies.gradle'
 
+sourceSets.main.resources.srcDir('src/generated/resources')
+
 publishing {
     publications {
         mavenJava(MavenPublication) {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "W": {
+      "item": "waystones:warp_dust"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "WFW",
+    "SWS"
+  ],
+  "result": {
+    "item": "waystones:warp_plate"
+  },
+  "show_notification": true
+}

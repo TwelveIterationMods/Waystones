@@ -11,6 +11,9 @@ repositories {
 
 dependencies {
     modCompileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
+    if (jei_minecraft_version == minecraft_version) {
+        modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
+    }
     modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
 //	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
 
