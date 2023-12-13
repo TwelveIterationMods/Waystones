@@ -12,14 +12,13 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ListWaystonesCommand implements Command<CommandSourceStack> {
@@ -35,9 +34,9 @@ public class ListWaystonesCommand implements Command<CommandSourceStack> {
         ServerPlayer player = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
         ServerPlayer op = ctx.getSource().getPlayerOrException();
 
-        Map<Boolean, List<IWaystone>> all = ownedOrActivatedByDistance(player, op);
-        List<IWaystone> owned = all.get(true);
-        List<IWaystone> others = all.get(false);
+        Map<WaystoneOwnership, List<IWaystone>> all = ownedOrActivatedByDistance(player, op);
+        List<IWaystone> owned = all.get(WaystoneOwnership.OWNED);
+        List<IWaystone> others = all.get(WaystoneOwnership.ACTIVATED);
 
         String headerPart;
         String footerPart;
@@ -65,16 +64,20 @@ public class ListWaystonesCommand implements Command<CommandSourceStack> {
         return total;
     }
 
-    public static Map<Boolean, List<IWaystone>> ownedOrActivatedByDistance(Player target, Player commandOp) {
+    public static Map<WaystoneOwnership, List<IWaystone>> ownedOrActivatedByDistance(Player target, Player commandOp) {
         Comparator<IWaystone> distanceComparator = createDistanceComparator(commandOp);
 
-        Map<Boolean, List<IWaystone>> ownedAndActivated = PlayerWaystoneManager.getWaystones(target)
+        EnumMap<WaystoneOwnership, List<IWaystone>> ownedAndActivated = PlayerWaystoneManager.getWaystones(target)
                 .stream()
                 //we only mark as owned the waystones that are truly bound to the target player's uuid
-                .collect(Collectors.groupingBy(w -> target.getGameProfile().getId().equals(w.getOwnerUid())));
+                .collect(Collectors.groupingBy(
+                        w -> target.getGameProfile().getId().equals(w.getOwnerUid()) ? WaystoneOwnership.OWNED : WaystoneOwnership.ACTIVATED,
+                        () -> new EnumMap<>(WaystoneOwnership.class),
+                        Collectors.toList())
+                );
 
-        List<IWaystone> owned = ownedAndActivated.computeIfAbsent(true, k -> Collections.emptyList());
-        List<IWaystone> activated = ownedAndActivated.computeIfAbsent(false, k -> Collections.emptyList());
+        List<IWaystone> owned = ownedAndActivated.computeIfAbsent(WaystoneOwnership.OWNED, k -> Collections.emptyList());
+        List<IWaystone> activated = ownedAndActivated.computeIfAbsent(WaystoneOwnership.ACTIVATED, k -> Collections.emptyList());
         owned.sort(distanceComparator);
         activated.sort(distanceComparator);
         return ownedAndActivated;
@@ -82,9 +85,9 @@ public class ListWaystonesCommand implements Command<CommandSourceStack> {
 
     public static Comparator<IWaystone> createDistanceComparator(final Player player) {
         return Comparator.comparingDouble(w -> {
-            ServerLevel targetLevel = player.getServer().getLevel(w.getDimension());
-            if (targetLevel == null || !w.isValidInLevel(targetLevel)) return Double.MAX_VALUE;
-            if (!targetLevel.equals(player.level())) return Double.MAX_VALUE - 1;
+            ResourceKey<Level> targetDimension = w.getDimension();
+            if (targetDimension == null) return Double.MAX_VALUE;
+            if (!targetDimension.equals(player.level().dimension())) return Double.MAX_VALUE - 1;
 
             return player.position().distanceTo(w.getPos().getCenter());
         });

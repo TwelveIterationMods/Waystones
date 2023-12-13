@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.command.ListWaystonesCommand;
+import net.blay09.mods.waystones.command.WaystoneOwnership;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneManager;
@@ -76,10 +77,10 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     }
 
     public static WaystoneSelectionMenu createAdminSelection(int windowId, Player op, Player target) {
-        Map<Boolean, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(target, op);
+        Map<WaystoneOwnership, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(target, op);
         List<IWaystone> waystones = new ArrayList<>();
-        waystones.addAll(all.get(true)); //owned
-        waystones.addAll(all.get(false)); //activated
+        waystones.addAll(all.get(WaystoneOwnership.OWNED));
+        waystones.addAll(all.get(WaystoneOwnership.ACTIVATED));
         return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, windowId, waystones);
     }
 }

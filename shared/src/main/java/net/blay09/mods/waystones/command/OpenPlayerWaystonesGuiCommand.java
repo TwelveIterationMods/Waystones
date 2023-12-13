@@ -29,7 +29,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
         BalmMenuProvider menuProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.literal("Select which waystone of player " + target.getScoreboardName() + " you would like to visit");
+                return Component.translatable( "container.waystones.waystone_admin_selection", target.getScoreboardName());
             }
 
             @Override
@@ -39,10 +39,10 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                Map<Boolean, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(player, op);
+                Map<WaystoneOwnership, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(player, op);
                 List<IWaystone> waystones = new ArrayList<>();
-                waystones.addAll(all.get(true)); //owned
-                waystones.addAll(all.get(false)); //activated
+                waystones.addAll(all.get(WaystoneOwnership.OWNED));
+                waystones.addAll(all.get(WaystoneOwnership.ACTIVATED));
                 buf.writeInt(waystones.size());
                 waystones.forEach(w -> Waystone.write(buf, w));
             }

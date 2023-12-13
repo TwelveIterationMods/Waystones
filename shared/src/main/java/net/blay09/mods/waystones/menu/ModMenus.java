@@ -58,9 +58,6 @@ public class ModMenus {
         });
 
         adminSelection = menus.registerMenu(id("waystone_op_selection"), (syncId, inventory, buf) -> {
-            if (!inventory.player.hasPermissions(2)) {
-                return null;
-            }
             int count = buf.readInt();
             List<IWaystone> waystones = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
