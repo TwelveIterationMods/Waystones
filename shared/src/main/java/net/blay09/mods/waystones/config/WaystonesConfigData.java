@@ -20,6 +20,10 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class XpCost {
         @Synced
+        @Comment("Set to true if experience cost should cost full levels rather than experience points. Make sure to also adjust blocksPerXpLevel, maximumBaseXpCost and dimensionalWarpXpCost appropriately.")
+        public boolean xpCostsFullLevels = true; // TODO default to false in 1.20.4
+
+        @Synced
         @Comment("Set to true if experience cost should be inverted, meaning the shorter the distance, the more expensive. Can be used to encourage other methods for short-distance travel.")
         public boolean inverseXpCost = false;
 

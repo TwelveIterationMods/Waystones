@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
+import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -99,11 +100,16 @@ public class InventoryButtonGuiHandler {
 
                 long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
                 IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
-                int xpLevelCost = waystone != null ? PlayerWaystoneManager.predictExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, (IWaystone) null) : 0;
+                final ExperienceCost xpCost = waystone != null ? PlayerWaystoneManager.predictExperienceLevelCost(player,
+                        waystone,
+                        WarpMode.INVENTORY_BUTTON,
+                        null) : ExperienceCost.NoExperienceCost.INSTANCE;
                 int secondsLeft = (int) (timeLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
-                    tooltip.add(formatTranslation(ChatFormatting.GRAY, "tooltip.waystones.bound_to", ChatFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
+                    tooltip.add(formatTranslation(ChatFormatting.GRAY,
+                            "tooltip.waystones.bound_to",
+                            ChatFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
                     if (secondsLeft > 0) {
                         tooltip.add(Component.empty());
                     }
@@ -125,8 +131,8 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                if (xpLevelCost > 0 && player.experienceLevel < xpLevelCost) {
-                    tooltip.add(formatTranslation(ChatFormatting.RED, "tooltip.waystones.not_enough_xp", xpLevelCost));
+                if (!xpCost.canAfford(player)) {
+                    tooltip.add(formatTranslation(ChatFormatting.RED, "tooltip.waystones.not_enough_xp", xpCost));
                 }
 
                 if (secondsLeft > 0) {

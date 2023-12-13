@@ -3,8 +3,10 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +26,10 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private WarpMode warpMode = WarpMode.CUSTOM;
     private ItemStack warpItem = ItemStack.EMPTY;
     @Nullable
-    private Boolean consumesWarpItem; // nullable for now so we can fallback to legacy warp mode implementation
-    private int xpCost;
+    private Boolean consumesWarpItem; // nullable for now so we can fall back to legacy warp mode implementation
+
+    private ExperienceCost xpCost = ExperienceCost.NoExperienceCost.INSTANCE;
+
     private int cooldown;
     private boolean playsSound = true;
     private boolean playsEffect = true;
@@ -99,12 +103,25 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     @Override
     public int getXpCost() {
-        return xpCost;
+        if (entity instanceof Player player) {
+            return xpCost.getCostAsLevels(player);
+        }
+        return 0;
     }
 
     @Override
     public void setXpCost(int xpCost) {
-        this.xpCost = xpCost;
+        this.xpCost = ExperienceCost.fromLevels(xpCost);
+    }
+
+    @Override
+    public ExperienceCost getExperienceCost() {
+        return xpCost;
+    }
+
+    @Override
+    public void setExperienceCost(ExperienceCost experienceCost) {
+        this.xpCost = experienceCost;
     }
 
     @Override

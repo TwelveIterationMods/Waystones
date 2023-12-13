@@ -12,6 +12,7 @@ import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
+import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -126,13 +127,24 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static int predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+    public static ExperienceCost predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
         context.getLeashedEntities().addAll(findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
-        return getExperienceLevelCost(player, waystone, warpMode, context);
+        context.setWarpMode(warpMode);
+        return getExperienceLevelCost(context);
     }
 
+    public static ExperienceCost getExperienceLevelCost(IWaystoneTeleportContext context) {
+        final var xpCost = getExperienceLevelCost(context.getEntity(), context.getTargetWaystone(), context.getWarpMode(), context);
+        if (WaystonesConfig.getActive().xpCost.xpCostsFullLevels) {
+            return ExperienceCost.fromLevels(xpCost);
+        } else {
+            return ExperienceCost.fromExperience(xpCost);
+        }
+    }
+
+    @Deprecated
     public static int getExperienceLevelCost(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystoneTeleportContext context) {
         if (!(entity instanceof Player player)) {
             return 0;
@@ -186,8 +198,11 @@ public class PlayerWaystoneManager {
 
     public static boolean canUseInventoryButton(Player player) {
         IWaystone waystone = getInventoryButtonWaystone(player);
-        int xpLevelCost = waystone != null ? predictExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, null) : 0;
-        return getInventoryButtonCooldownLeft(player) <= 0 && (xpLevelCost <= 0 || player.experienceLevel >= xpLevelCost);
+        final ExperienceCost xpCost = waystone != null ? predictExperienceLevelCost(player,
+                waystone,
+                WarpMode.INVENTORY_BUTTON,
+                null) : ExperienceCost.NoExperienceCost.INSTANCE;
+        return getInventoryButtonCooldownLeft(player) <= 0 && xpCost.canAfford(player);
     }
 
     public static boolean canUseWarpStone(Player player, ItemStack heldItem) {
@@ -258,7 +273,7 @@ public class PlayerWaystoneManager {
             }
         }
 
-        if (entity instanceof Player && ((Player) entity).experienceLevel < context.getXpCost()) {
+        if (entity instanceof Player player && !context.getExperienceCost().canAfford(player)) {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
@@ -269,7 +284,7 @@ public class PlayerWaystoneManager {
 
         if (entity instanceof Player player) {
             applyCooldown(warpMode, player, context.getCooldown());
-            applyXpCost(player, context.getXpCost());
+            context.getExperienceCost().consume(player);
         }
 
         final var teleportedEntities = doTeleport(context);
@@ -286,18 +301,11 @@ public class PlayerWaystoneManager {
         }
     }
 
-    private static void applyXpCost(Player player, int xpLevelCost) {
-        if (xpLevelCost > 0) {
-            player.giveExperienceLevels(-xpLevelCost);
-        }
-    }
-
     private static void applyCooldown(WarpMode warpMode, Player player, int cooldown) {
         if (cooldown > 0) {
             final Level level = player.level();
             switch (warpMode) {
-                case INVENTORY_BUTTON ->
-                        getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
+                case INVENTORY_BUTTON -> getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
                 case WARP_STONE -> getPlayerWaystoneData(level).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
             }
             WaystoneSyncManager.sendWaystoneCooldowns(player);

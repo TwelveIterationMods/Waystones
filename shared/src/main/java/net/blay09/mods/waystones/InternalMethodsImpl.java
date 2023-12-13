@@ -40,7 +40,7 @@ public class InternalMethodsImpl implements InternalMethods {
             context.setCooldown(PlayerWaystoneManager.getCooldownPeriod(warpMode, waystone));
 
             // Use the context so far to determine the xp cost
-            context.setXpCost(PlayerWaystoneManager.getExperienceLevelCost(entity, waystone, warpMode, context));
+            context.setExperienceCost(PlayerWaystoneManager.getExperienceLevelCost(context));
         });
     }
 

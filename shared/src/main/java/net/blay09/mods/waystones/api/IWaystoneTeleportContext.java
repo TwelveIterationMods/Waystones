@@ -33,9 +33,15 @@ public interface IWaystoneTeleportContext {
 
     boolean isDimensionalTeleport();
 
+    @Deprecated(forRemoval = true)
     int getXpCost();
 
+    @Deprecated(forRemoval = true)
     void setXpCost(int xpCost);
+
+    ExperienceCost getExperienceCost();
+
+    void setExperienceCost(ExperienceCost experienceCost);
 
     void setCooldown(int cooldown);
 
