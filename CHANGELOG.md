@@ -1,6 +1,7 @@
 - Fixed warp plate recipes breaking after a single shard was crafted
 - Fixed warp plate showing dust instead of warp particles even if the target is valid
 - Fixed being unable to join multiplayer server
+- Changed newly activated waystones to be added to the end of the list rather than the start
 
 - Added Crumbling Attuned Shard, an attuned shard that is used up when teleporting (by edralzar)
 - Added waystones:warp_plate recipe type, allowing to define new recipes for the Warp Plate (by edralzar)
