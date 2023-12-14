@@ -18,6 +18,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -76,6 +77,18 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected boolean canSilkTouch() {
         return true;
+    }
+
+    @Override
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+        if (stack.hasCustomHoverName()) {
+            BlockEntity tileEntity = world.getBlockEntity(pos);
+            if (tileEntity instanceof WarpPlateBlockEntity warpPlate) {
+                warpPlate.setCustomName(stack.getHoverName());
+            }
+        }
     }
 
     @Override

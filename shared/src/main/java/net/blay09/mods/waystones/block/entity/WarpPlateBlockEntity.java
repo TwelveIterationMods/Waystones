@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -53,7 +54,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer {
+public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer, Nameable {
 
     private static final Logger logger = LoggerFactory.getLogger(WarpPlateBlockEntity.class);
 
@@ -68,6 +69,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     private boolean readyForAttunement;
     private boolean completedFirstAttunement;
     private int lastAttunementSlot;
+
+    private Component customName;
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
@@ -169,6 +172,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
+        if (customName != null) {
+            tag.putString("CustomName", Component.Serializer.toJson(customName));
+        }
+
         ContainerHelper.saveAllItems(tag, items);
         tag.putBoolean("ReadyForAttunement", readyForAttunement);
         tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
@@ -178,6 +185,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
+
+        if (compound.contains("CustomName")) {
+            customName = Component.Serializer.fromJson(compound.getString("CustomName"));
+        }
 
         ContainerHelper.loadAllItems(compound, items);
         readyForAttunement = compound.getBoolean("ReadyForAttunement");
@@ -190,7 +201,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.translatable("container.waystones.warp_plate");
+                return WarpPlateBlockEntity.this.getDisplayName();
             }
 
             @Override
@@ -461,5 +472,25 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             return false; //prevents hoppers to add items in an occupied center slot
         }
         return ImplementedContainer.super.canPlaceItem(index, stack);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return hasCustomName() ? getCustomName() : getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName() {
+        return customName;
+    }
+
+    public void setCustomName(@Nullable Component customName) {
+        this.customName = customName;
+    }
+
+    @Override
+    public Component getName() {
+        return Component.translatable("container.waystones.warp_plate");
     }
 }
