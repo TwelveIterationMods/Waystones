@@ -1,7 +1,9 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
+import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelAccessor;
 
 import java.util.*;
 
@@ -16,7 +18,7 @@ public class CustomNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String randomName(RandomSource rand) {
+    public String generateName(LevelAccessor level, IWaystone waystone, RandomSource rand) {
         List<String> customNames = WaystonesConfig.getActive().worldGen.customWaystoneNames;
         Collections.shuffle(customNames);
         for (String customName : customNames) {

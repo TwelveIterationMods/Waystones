@@ -194,6 +194,8 @@
   "config.waystones.worldGen.dimensionDenyList.tooltip": "List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.",
   "config.waystones.worldGen.nameGenerationMode": "Name Generation Mode",
   "config.waystones.worldGen.nameGenerationMode.tooltip": "Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.",
+  "config.waystones.worldGen.nameGenerationTemplate": "Name Generation Template",
+  "config.waystones.worldGen.nameGenerationTemplate.tooltip": "The template to use when generating new names. Supported placeholders are {Biome} (english biome name) and {MrPork} (the default name generator).",
   "config.waystones.worldGen.customWaystoneNames": "Custom Waystone Names",
   "config.waystones.worldGen.customWaystoneNames.tooltip": "These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.",
   "config.waystones.worldGen.spawnInVillages": "Spawn in Villages",

@@ -194,6 +194,9 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
 
+        @Comment("The template to use when generating new names. Supported placeholders are {Biome} (english biome name) and {MrPork} (the default name generator).")
+        public String nameGenerationTemplate = "{MrPork}";
+
         @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
         @ExpectedType(String.class)
         public List<String> customWaystoneNames = new ArrayList<>();

@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -14,6 +15,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,25 +32,28 @@ public class NameGenerator extends SavedData {
     private final Set<String> usedNames = Sets.newHashSet();
 
     private INameGenerator getNameGenerator(NameGenerationMode nameGenerationMode) {
+        final var randomGenerator = new TemplateNameGenerator(WaystonesConfig.getActive().worldGen.nameGenerationTemplate)
+                .with("MrPork", new MrPorkNameGenerator())
+                .with("Biome", new BiomeNameGenerator());
         switch (nameGenerationMode) {
             case MIXED:
-                return new MixedNameGenerator(new MrPorkNameGenerator(), new CustomNameGenerator(false, usedNames));
+                return new MixedNameGenerator(randomGenerator, new CustomNameGenerator(false, usedNames));
             case RANDOM_ONLY:
-                return new MrPorkNameGenerator();
+                return randomGenerator;
             case PRESET_ONLY:
                 return new CustomNameGenerator(true, usedNames);
             case PRESET_FIRST:
             default:
-                return new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), new MrPorkNameGenerator());
+                return new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), randomGenerator);
         }
     }
 
-    public synchronized String getName(IWaystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
+    public synchronized String getName(LevelAccessor level, IWaystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
         INameGenerator nameGenerator = getNameGenerator(nameGenerationMode);
-        String originalName = nameGenerator.randomName(rand);
+        String originalName = nameGenerator.generateName(level, waystone, rand);
         if (originalName == null) {
             // This should never happen, but just in case generate a fallback if something did go wrong
-            originalName = Objects.requireNonNull(new MrPorkNameGenerator().randomName(rand));
+            originalName = Objects.requireNonNull(new MrPorkNameGenerator().generateName(level, waystone, rand));
         }
         String name = resolveDuplicate(originalName);
 

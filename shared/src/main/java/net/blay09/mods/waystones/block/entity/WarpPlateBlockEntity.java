@@ -133,7 +133,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         // Warp Plates generate a name on placement always
         IWaystone waystone = getWaystone();
         if (waystone instanceof IMutableWaystone) {
-            String name = NameGenerator.get(world.getServer()).getName(waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
+            String name = NameGenerator.get(world.getServer()).getName(world, waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((IMutableWaystone) waystone).setName(name);
         }
 
