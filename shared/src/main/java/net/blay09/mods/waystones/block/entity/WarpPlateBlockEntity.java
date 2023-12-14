@@ -156,7 +156,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             final var ingredient = initializingRecipe.getIngredients().get(i);
             final var ingredientItems = ingredient.getItems();
             final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
-            setItem(i, ingredientItem);
+            setItem(i, ingredientItem.copy());
         }
     }
 
