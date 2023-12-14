@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,9 +39,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Locale;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
+
+    public enum WarpPlateStatus implements StringRepresentable {
+        IDLE,
+        ACTIVE,
+        INVALID;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+    }
 
     private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(new ResourceLocation("minecraft", "alt"));
 
@@ -48,11 +61,16 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
     ).optimize();
 
+    @Deprecated
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final EnumProperty<WarpPlateStatus> STATUS = EnumProperty.create("status", WarpPlateStatus.class);
 
     public WarpPlateBlock(Properties properties) {
         super(properties);
-        registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(ACTIVE, false));
+        registerDefaultState(this.stateDefinition.any()
+                .setValue(WATERLOGGED, false)
+                .setValue(ACTIVE, false)
+                .setValue(STATUS, WarpPlateStatus.IDLE));
     }
 
     @Override
@@ -95,6 +113,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
+        builder.add(STATUS);
     }
 
     @Override
@@ -112,20 +131,26 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (state.getValue(ACTIVE)) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof WarpPlateBlockEntity) {
-                IWaystone targetWaystone = ((WarpPlateBlockEntity) blockEntity).getTargetWaystone();
-                if (targetWaystone != null && targetWaystone.isValid()) {
-                    for (int i = 0; i < 50; i++) {
-                        world.addParticle(ParticleTypes.CRIMSON_SPORE, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 0f, 0f);
-                        world.addParticle(ParticleTypes.PORTAL, pos.getX() + Math.random(), pos.getY() + Math.random() * 2, pos.getZ() + Math.random(), 0f, 0f, 0f);
-                    }
-                } else {
-                    for (int i = 0; i < 10; i++) {
-                        world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
-                    }
-                }
+        if (state.getValue(STATUS) == WarpPlateStatus.ACTIVE) {
+            for (int i = 0; i < 50; i++) {
+                world.addParticle(ParticleTypes.CRIMSON_SPORE,
+                        pos.getX() + Math.random(),
+                        pos.getY() + Math.random() * 2,
+                        pos.getZ() + Math.random(),
+                        0f,
+                        0f,
+                        0f);
+                world.addParticle(ParticleTypes.PORTAL,
+                        pos.getX() + Math.random(),
+                        pos.getY() + Math.random() * 2,
+                        pos.getZ() + Math.random(),
+                        0f,
+                        0f,
+                        0f);
+            }
+        } else if (state.getValue(STATUS) == WarpPlateStatus.INVALID) {
+            for (int i = 0; i < 10; i++) {
+                world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
             }
         }
     }
@@ -175,6 +200,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return world.isClientSide ? null : createTickerHelper(type, ModBlockEntities.warpPlate.get(), (level, pos, state2, blockEntity) -> blockEntity.serverTick());
+        return world.isClientSide ? null : createTickerHelper(type,
+                ModBlockEntities.warpPlate.get(),
+                (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }
 }

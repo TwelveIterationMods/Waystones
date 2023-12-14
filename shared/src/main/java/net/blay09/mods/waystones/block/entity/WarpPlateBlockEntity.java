@@ -210,7 +210,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     public void onEntityCollision(Entity entity) {
         Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
         if (ticksPassed == null || ticksPassed != -1) {
-            level.setBlock(worldPosition, getBlockState().setValue(WarpPlateBlock.ACTIVE, true), 3);
+            final var status = getTargetWaystone().isValid() ? WarpPlateBlock.WarpPlateStatus.ACTIVE : WarpPlateBlock.WarpPlateStatus.INVALID;
+            level.setBlock(worldPosition, getBlockState()
+                    .setValue(WarpPlateBlock.ACTIVE, true)
+                    .setValue(WarpPlateBlock.STATUS, status), 3);
         }
     }
 
@@ -246,7 +249,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             attunementTicks = 0;
         }
 
-        if (getBlockState().getValue(WarpPlateBlock.ACTIVE)) {
+        if (getBlockState().getValue(WarpPlateBlock.STATUS) != WarpPlateBlock.WarpPlateStatus.IDLE) {
             AABB boundsAbove = new AABB(worldPosition.getX(),
                     worldPosition.getY(),
                     worldPosition.getZ(),
@@ -255,7 +258,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                     worldPosition.getZ() + 1);
             List<Entity> entities = level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
             if (entities.isEmpty()) {
-                level.setBlock(worldPosition, getBlockState().setValue(WarpPlateBlock.ACTIVE, false), 3);
+                level.setBlock(worldPosition, getBlockState()
+                        .setValue(WarpPlateBlock.ACTIVE, false)
+                        .setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.IDLE), 3);
                 ticksPassedPerEntity.clear();
             }
         }
