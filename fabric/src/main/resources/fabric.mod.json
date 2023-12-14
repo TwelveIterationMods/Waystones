@@ -30,6 +30,15 @@
     ],
     "fabric-datagen": [
       "net.blay09.mods.waystones.datagen.ModDataGenerator"
+    ],
+    "rei_client": [
+      "net.blay09.mods.waystones.compat.rei.RoughlyEnoughItemsIntegration"
+    ],
+    "journeymap": [
+      "net.blay09.mods.waystones.compat.JourneyMapIntegration"
+    ],
+    "jade": [
+      "net.blay09.mods.waystones.compat.JadeIntegration"
     ]
   },
   "mixins": [
