@@ -14,7 +14,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void activateWaystone(Player player, IWaystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
-        sortedWaystones.add(0, waystone);
+        sortedWaystones.add(waystone);
     }
 
     @Override
