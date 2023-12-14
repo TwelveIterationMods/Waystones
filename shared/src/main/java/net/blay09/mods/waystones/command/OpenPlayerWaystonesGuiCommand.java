@@ -5,7 +5,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.comparator.WaystoneComparators;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.commands.CommandSourceStack;
@@ -17,10 +18,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -29,7 +26,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
         BalmMenuProvider menuProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.translatable( "container.waystones.waystone_admin_selection", target.getScoreboardName());
+                return Component.translatable("container.waystones.waystone_admin_selection", target.getScoreboardName());
             }
 
             @Override
@@ -39,10 +36,8 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                Map<WaystoneOwnership, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(player, op);
-                List<IWaystone> waystones = new ArrayList<>();
-                waystones.addAll(all.get(WaystoneOwnership.OWNED));
-                waystones.addAll(all.get(WaystoneOwnership.ACTIVATED));
+                final var waystones = PlayerWaystoneManager.getWaystones(target);
+                waystones.sort(WaystoneComparators.forAdminInspection(player, target));
                 buf.writeInt(waystones.size());
                 waystones.forEach(w -> Waystone.write(buf, w));
             }
