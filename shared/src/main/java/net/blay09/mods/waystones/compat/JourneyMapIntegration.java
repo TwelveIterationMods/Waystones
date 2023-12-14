@@ -8,10 +8,7 @@ import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.event.ClientEvent;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.WaystoneUpdateReceivedEvent;
-import net.blay09.mods.waystones.api.WaystonesListReceivedEvent;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.client.resources.language.I18n;
@@ -36,6 +33,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         instance = this;
         Balm.getEvents().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
         Balm.getEvents().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
+        Balm.getEvents().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
     }
 
     @Override
@@ -96,6 +94,12 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
+    public void onWaystoneRemoveReceived(WaystoneRemoveReceivedEvent event) {
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
+            runWhenJourneyMapIsReady(() -> removeWaypoint(event.getWaystoneType(), event.getWaystoneId()));
+        }
+    }
+
     private void runWhenJourneyMapIsReady(Runnable runnable) {
         if (journeyMapReady) {
             runnable.run();
@@ -117,6 +121,14 @@ public class JourneyMapIntegration implements IClientPlugin {
             if (waypoint.getId().startsWith(idPrefix) && !stillExistingIds.contains(waypoint.getId())) {
                 api.remove(waypoint);
             }
+        }
+    }
+
+    private void removeWaypoint(ResourceLocation waystoneType, UUID waystoneId) {
+        final var prefixedId = getPrefixedWaystoneId(waystoneType, waystoneId);
+        final var waypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
+        if (waypoint != null) {
+            api.remove(waypoint);
         }
     }
 
@@ -153,7 +165,10 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private String getPrefixedWaystoneId(IWaystone waystone) {
-        return waystone.getWaystoneType().getPath() + ":" + waystone.getWaystoneUid().toString();
+        return getPrefixedWaystoneId(waystone.getWaystoneType(), waystone.getWaystoneUid());
     }
 
+    private String getPrefixedWaystoneId(ResourceLocation waystoneType, UUID waystoneId) {
+        return waystoneType.getPath() + ":" + waystoneId.toString();
+    }
 }

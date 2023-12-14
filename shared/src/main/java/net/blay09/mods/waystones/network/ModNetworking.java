@@ -19,6 +19,7 @@ public class ModNetworking {
         networking.registerServerboundPacket(id("request_edit_waystone"), RequestEditWaystoneMessage.class, RequestEditWaystoneMessage::encode, RequestEditWaystoneMessage::decode, RequestEditWaystoneMessage::handle);
 
         networking.registerClientboundPacket(id("waystone_update"), UpdateWaystoneMessage.class, UpdateWaystoneMessage::encode, UpdateWaystoneMessage::decode, UpdateWaystoneMessage::handle);
+        networking.registerClientboundPacket(id("waystone_removed"), WaystoneRemovedMessage.class, WaystoneRemovedMessage::encode, WaystoneRemovedMessage::decode, WaystoneRemovedMessage::handle);
         networking.registerClientboundPacket(id("known_waystones"), KnownWaystonesMessage.class, KnownWaystonesMessage::encode, KnownWaystonesMessage::decode, KnownWaystonesMessage::handle);
         networking.registerClientboundPacket(id("teleport_effect"), TeleportEffectMessage.class, TeleportEffectMessage::encode, TeleportEffectMessage::decode, TeleportEffectMessage::handle);
         networking.registerClientboundPacket(id("waystone_cooldown"), PlayerWaystoneCooldownsMessage.class, PlayerWaystoneCooldownsMessage::encode, PlayerWaystoneCooldownsMessage::decode, PlayerWaystoneCooldownsMessage::handle);
