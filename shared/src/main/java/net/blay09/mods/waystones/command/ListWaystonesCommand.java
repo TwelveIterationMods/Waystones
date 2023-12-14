@@ -10,10 +10,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -24,6 +22,7 @@ import java.util.stream.Collectors;
 public class ListWaystonesCommand implements Command<CommandSourceStack> {
 
     private final boolean listNotOwned;
+
     public ListWaystonesCommand(boolean listNotOwned) {
         this.listNotOwned = listNotOwned;
     }
@@ -34,34 +33,31 @@ public class ListWaystonesCommand implements Command<CommandSourceStack> {
         ServerPlayer player = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
         ServerPlayer op = ctx.getSource().getPlayerOrException();
 
-        Map<WaystoneOwnership, List<IWaystone>> all = ownedOrActivatedByDistance(player, op);
-        List<IWaystone> owned = all.get(WaystoneOwnership.OWNED);
-        List<IWaystone> others = all.get(WaystoneOwnership.ACTIVATED);
+        final var sortedWaystones = ownedOrActivatedByDistance(player, op);
 
-        String headerPart;
-        String footerPart;
-        if (this.listNotOwned) {
-            headerPart = " (including not owned):";
-            footerPart = "total, " + owned.size() + " owned";
+        final var headerKey = listNotOwned ? "commands.waystones.list.activated.header" : "commands.waystones.list.owned.header";
+        ctx.getSource().sendSystemMessage(Component.translatable(headerKey, player.getScoreboardName()));
+
+        CommandSourceStack commandSourceStack = ctx.getSource();
+        for (IWaystone waystone : sortedWaystones.get(WaystoneOwnership.OWNED)) {
+            commandSourceStack.sendSystemMessage(componentForWaystone(ctx.getSource(), WaystoneOwnership.OWNED, waystone));
+        }
+        if (listNotOwned) {
+            for (IWaystone waystone : sortedWaystones.get(WaystoneOwnership.ACTIVATED)) {
+                commandSourceStack.sendSystemMessage(componentForWaystone(ctx.getSource(), WaystoneOwnership.ACTIVATED, waystone));
+            }
+        }
+
+        int totalCount = sortedWaystones.size();
+        int ownedCount = sortedWaystones.get(WaystoneOwnership.OWNED).size();
+
+        if (listNotOwned) {
+            ctx.getSource().sendSuccess(() -> Component.translatable("commands.waystones.list.activated.footer", totalCount, ownedCount), false);
+            return totalCount;
         } else {
-            others = Collections.emptyList();
-            headerPart = ":";
-            footerPart = "owned";
+            ctx.getSource().sendSuccess(() -> Component.translatable("commands.waystones.list.owned.footer", ownedCount), false);
+            return ownedCount;
         }
-
-        ctx.getSource().sendSystemMessage(Component.literal("----"));
-        ctx.getSource().sendSystemMessage(Component.literal("Player ").append(player.getScoreboardName())
-                .append(" waystones (x y z) coordinates").append(headerPart));
-        sendWaystoneList(ctx.getSource(), op, owned, true);
-        if (this.listNotOwned) {
-            sendWaystoneList(ctx.getSource(), op, others, false);
-        }
-
-        int total = (owned.size() + others.size());
-        ctx.getSource().sendSuccess(() -> Component.literal(total + " waystones " + footerPart), false);
-        ctx.getSource().sendSystemMessage(Component.literal("----"));
-
-        return total;
     }
 
     public static Map<WaystoneOwnership, List<IWaystone>> ownedOrActivatedByDistance(Player target, Player commandOp) {
@@ -93,37 +89,33 @@ public class ListWaystonesCommand implements Command<CommandSourceStack> {
         });
     }
 
-    private void sendWaystoneList(CommandSourceStack source, ServerPlayer op, List<IWaystone> waystones, boolean owned) {
-        final String ownedHeader;
-        if (!owned) ownedHeader = "activated";
-        else if (this.listNotOwned) ownedHeader = "    owned";
-        else ownedHeader = "         ";
-        waystones.forEach(w -> {
-            MutableComponent c = Component.literal(" - ")
-                    .append(ownedHeader);
+    private Component componentForWaystone(CommandSourceStack source, WaystoneOwnership ownership, IWaystone waystone) throws CommandSyntaxException {
+        final var op = source.getPlayerOrException();
 
-            MutableComponent coordinates = Component.literal(w.getPos().toShortString()).withStyle(ChatFormatting.YELLOW);
-            MutableComponent distance;
+        final var waystoneDimensionId = waystone.getDimension().location();
+        final var waystonePos = waystone.getPos();
+        Component location;
+        if(waystone.getDimension() != op.level().dimension()) {
+            location = Component.translatable("commands.waystones.list.in_dimension", waystoneDimensionId);
+        } else {
+            final var distance = (int) op.position().distanceTo(waystonePos.getCenter());
+            location = Component.translatable("commands.waystones.list.at_distance", distance);
+        }
 
-            if (w.getDimension() != op.level().dimension()) {
-                distance = Component.literal(w.getDimension().location().getPath())
-                        .withStyle(ChatFormatting.ITALIC, ChatFormatting.YELLOW);
-                c.append(" in ").append(distance).append(" at (").append(coordinates);
-            } else {
-                distance = Component.literal(String.valueOf((int) op.position().distanceTo(w.getPos().getCenter())))
-                        .withStyle(ChatFormatting.BOLD);
-                c.append(" at ").append(distance).append(" blocks away (").append(coordinates);
-            }
+        final var suggestedCommand = String.format("/execute in %s run teleport %d %d %d", waystoneDimensionId, waystonePos.getX(), waystonePos.getY(), waystonePos.getZ());
 
-            String suggestedCommand = "/execute in " + w.getDimension().location() + " run teleport " +
-                    w.getPos().toShortString().replaceAll(",", "");
-            c.append("): \"")
-                    .append(Component.literal(w.getName())
-                            .withStyle(ChatFormatting.GREEN, ChatFormatting.UNDERLINE)
-                            .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand))))
-                    .append("\"");
+        final var coordinates = Component.translatable("commands.waystones.list.coordinates", waystonePos.getX(), waystonePos.getY(), waystonePos.getZ())
+                .withStyle(ChatFormatting.YELLOW)
+                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
 
-            source.sendSystemMessage(c);
-        });
+        final var waystoneName = Component.literal(waystone.getName())
+                .withStyle(ChatFormatting.GREEN)
+                .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
+
+        final var entryKey = switch (ownership) {
+            case OWNED -> "commands.waystones.list.owned.entry";
+            case ACTIVATED -> "commands.waystones.list.activated.entry";
+        };
+        return Component.translatable(entryKey, location, coordinates, waystoneName);
     }
 }

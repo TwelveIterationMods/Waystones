@@ -19,7 +19,7 @@ public class CountWaystonesCommand implements Command<CommandSourceStack> {
         List<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
         int total = waystones.size();
         long owned = waystones.stream().filter(w -> w.isOwner(player)).count();
-        ctx.getSource().sendSuccess(() -> Component.literal("Player " + player.getScoreboardName() + " has " + total + " waystones activated and owns " + owned + " of these"), false);
+        ctx.getSource().sendSuccess(() -> Component.translatable("commands.waystones.count", player.getScoreboardName(), total, owned), false);
         return waystones.size();
     }
 }
