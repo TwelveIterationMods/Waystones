@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * This event is fired on the client side when the client has received a list of waystones of the player.
  * <p>
+ * This event will be fired for waystones, warp plates and sharestones.
  * Note that for WaystoneTypes.WAYSTONE, the list will only contain the waystones that the player has discovered.
  */
 public class WaystonesListReceivedEvent extends BalmEvent {

@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
 import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
 import net.blay09.mods.waystones.network.message.UpdateWaystoneMessage;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -33,9 +34,9 @@ public class WaystoneSyncManager {
         Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
     }
 
-    public static void sendWarpPlates(ServerPlayer player) {
-        List<IWaystone> warpPlates = WaystoneManager.get(player.server).getWaystonesByType(WaystoneTypes.WARP_PLATE).collect(Collectors.toList());
-        Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WARP_PLATE, warpPlates));
+    public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
+        List<IWaystone> warpPlates = WaystoneManager.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+        Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystoneType, warpPlates));
     }
 
     public static void sendWaystoneUpdate(Player player, IWaystone waystone) {
