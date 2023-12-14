@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.recipe.ModRecipes;

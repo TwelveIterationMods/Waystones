@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.blay09.mods.waystones.api.IMutableWaystone;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tag.ModBlockTags;

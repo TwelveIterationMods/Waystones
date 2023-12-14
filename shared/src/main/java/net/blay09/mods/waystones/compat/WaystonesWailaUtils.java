@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

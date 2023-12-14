@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;

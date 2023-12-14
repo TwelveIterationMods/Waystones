@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
 import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

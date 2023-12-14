@@ -1,14 +1,10 @@
-package net.blay09.mods.waystones.core;
+package net.blay09.mods.waystones.api;
 
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
 
-/*
- * @deprecated Use {@link net.blay09.mods.waystones.api.WaystoneTypes} instead.
- */
-@Deprecated
 public class WaystoneTypes {
     public static final ResourceLocation WAYSTONE = new ResourceLocation(Waystones.MOD_ID, "waystone");
     public static final ResourceLocation WARP_PLATE = new ResourceLocation(Waystones.MOD_ID, "warp_plate");

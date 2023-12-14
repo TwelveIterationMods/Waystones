@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

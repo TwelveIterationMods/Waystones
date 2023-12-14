@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
 import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
 import net.blay09.mods.waystones.network.message.UpdateWaystoneMessage;
@@ -10,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

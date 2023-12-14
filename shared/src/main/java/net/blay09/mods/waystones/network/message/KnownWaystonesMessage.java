@@ -4,6 +4,8 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.KnownWaystonesEvent;
+import net.blay09.mods.waystones.api.WaystonesListReceivedEvent;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +49,8 @@ public class KnownWaystonesMessage {
 
             Balm.getEvents().fireEvent(new KnownWaystonesEvent(message.waystones));
         }
+
+        Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, message.waystones));
 
         for (IWaystone waystone : message.waystones) {
             WaystoneManager.get(player.getServer()).updateWaystone(waystone);
