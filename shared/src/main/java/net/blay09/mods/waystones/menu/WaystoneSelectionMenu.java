@@ -2,20 +2,25 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
-import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.command.ListWaystonesCommand;
+import net.blay09.mods.waystones.command.WaystoneOwnership;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneManager;
+import net.blay09.mods.waystones.core.WaystoneTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
@@ -71,4 +76,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 
+    public static WaystoneSelectionMenu createAdminSelection(int windowId, Player op, Player target) {
+        Map<WaystoneOwnership, List<IWaystone>> all = ListWaystonesCommand.ownedOrActivatedByDistance(target, op);
+        List<IWaystone> waystones = new ArrayList<>();
+        waystones.addAll(all.get(WaystoneOwnership.OWNED));
+        waystones.addAll(all.get(WaystoneOwnership.ACTIVATED));
+        return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, windowId, waystones);
+    }
 }

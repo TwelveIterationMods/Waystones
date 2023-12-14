@@ -31,6 +31,7 @@
   "item.waystones.attuned_shard": "Attuned Shard",
   "item.waystones.crumbling_attuned_shard": "Crumbling Attuned Shard",
   "container.waystones.waystone_selection": "Select your destination:",
+  "container.waystones.waystone_admin_selection": "Select which waystone of player <%s> you would like to visit:",
   "container.waystones.waystone_settings": "Enter waystone name:",
   "container.waystones.warp_plate": "Warp Plate",
   "gui.waystones.waystone_selection.next_page": "Next",
