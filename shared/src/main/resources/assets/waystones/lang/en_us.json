@@ -141,6 +141,8 @@
   "config.waystones.restrictions.restrictRenameToOwner.tooltip": "If enabled, only the owner of a waystone (the one who placed it) can rename it.",
   "config.waystones.restrictions.generatedWaystonesUnbreakable": "Generated Waystones Unbreakable",
   "config.waystones.restrictions.generatedWaystonesUnbreakable.tooltip": "If enabled, waystones generated in worldgen are unbreakable.",
+  "config.waystones.restrictions.transportPets": "Transport Pets",
+  "config.waystones.restrictions.transportPets.tooltip": "Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.",
   "config.waystones.restrictions.transportLeashed": "Transport Leashed",
   "config.waystones.restrictions.transportLeashed.tooltip": "If enabled, leashed mobs will be teleported with you.",
   "config.waystones.restrictions.transportLeashedDimensional": "Transport Leashed Dimensional",

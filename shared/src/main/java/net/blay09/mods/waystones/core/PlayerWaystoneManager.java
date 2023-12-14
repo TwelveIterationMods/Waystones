@@ -29,10 +29,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -602,4 +599,9 @@ public class PlayerWaystoneManager {
         }
     }
 
+    public static Collection<? extends Entity> findPets(Entity entity) {
+        return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
+                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit()
+        );
+    }
 }

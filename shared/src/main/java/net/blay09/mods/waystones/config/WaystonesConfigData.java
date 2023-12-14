@@ -10,6 +10,13 @@ import java.util.List;
 
 @Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData {
+
+    public enum TransportPets {
+        ENABLED,
+        SAME_DIMENSION,
+        DISABLED
+    }
+
     public XpCost xpCost = new XpCost();
     public Restrictions restrictions = new Restrictions();
     public Cooldowns cooldowns = new Cooldowns();
@@ -88,6 +95,10 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("If enabled, waystones generated in worldgen are unbreakable.")
         public boolean generatedWaystonesUnbreakable = false;
+
+        @Synced
+        @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
+        public TransportPets transportPets = TransportPets.SAME_DIMENSION;
 
         @Synced
         @Comment("If enabled, leashed mobs will be teleported with you")
