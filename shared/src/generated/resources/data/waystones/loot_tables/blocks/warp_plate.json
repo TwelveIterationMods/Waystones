@@ -40,6 +40,25 @@
             }
           ],
           "source": "block_entity"
+        },
+        {
+          "conditions": [
+            {
+              "condition": "minecraft:match_tool",
+              "predicate": {
+                "enchantments": [
+                  {
+                    "enchantment": "minecraft:silk_touch",
+                    "levels": {
+                      "min": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "function": "minecraft:copy_name",
+          "source": "block_entity"
         }
       ],
       "rolls": 1.0
