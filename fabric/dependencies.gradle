@@ -14,8 +14,8 @@ dependencies {
     if (jei_minecraft_version == minecraft_version) {
         modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
     }
-    modCompileOnly group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true
-//	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
+    modImplementation group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_fabric_version, changing: true, transitive: false
+	modRuntimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_fabric_file_id}"
 
     modCompileOnly "com.terraformersmc:modmenu:$modmenu_version"
     modCompileOnly "curse.maven:jade-324717:$jade_forge_version"

@@ -91,7 +91,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (shouldManageWaypoints()) {
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystone().getWaystoneType())) {
             runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
         }
     }
