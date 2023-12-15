@@ -59,7 +59,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
             float green = 1f;
             float blue = 1f;
             if(state.getBlock() == ModBlocks.endStoneWaystone) {
-                red = 0.5f;
+                red = 0.45f;
                 green = 0f;
                 blue = 1f;
             } else if(state.getBlock() == ModBlocks.blackstoneWaystone) {
