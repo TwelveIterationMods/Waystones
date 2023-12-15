@@ -13,7 +13,10 @@ public class ExperiencePointsCost implements ExperienceCost {
 
     @Override
     public boolean canAfford(Player player) {
-        return player.totalExperience >= points;
+        final var xpForLevel = getCumulativeXpNeededForLevel(player.experienceLevel);
+        final var xpForProgress = Math.floor(player.experienceProgress * getXpNeededForNextLevel(player.experienceLevel));
+        final var totalXp = xpForLevel + xpForProgress;
+        return totalXp >= points;
     }
 
     @Override

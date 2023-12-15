@@ -92,5 +92,8 @@ public class WaystoneTeleportError {
     }
 
     public static class NotEnoughXp extends WaystoneTeleportError {
+        public NotEnoughXp() {
+            super("chat.waystones.not_enough_xp");
+        }
     }
 }

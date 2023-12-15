@@ -219,7 +219,7 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
+    private static Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
         return error -> {
             logger.info("Rejected teleport: " + error.getClass().getSimpleName());
             if (error.getTranslationKey() != null) {

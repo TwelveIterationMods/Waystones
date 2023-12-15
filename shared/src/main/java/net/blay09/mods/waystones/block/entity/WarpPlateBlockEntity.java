@@ -4,13 +4,10 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IMutableWaystone;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
-import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateContainer;
 import net.blay09.mods.waystones.recipe.ModRecipes;
@@ -52,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 
 public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer, Nameable {
@@ -224,12 +222,16 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
     public void onEntityCollision(Entity entity) {
         Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
         if (ticksPassed == null || ticksPassed != -1) {
-            final var status = getTargetWaystone().filter(IWaystone::isValid)
+            final var targetWaystone = getTargetWaystone();
+            final var status = targetWaystone.filter(IWaystone::isValid)
                     .map(it -> WarpPlateBlock.WarpPlateStatus.ACTIVE)
                     .orElse(WarpPlateBlock.WarpPlateStatus.INVALID);
+            final var canAfford = targetWaystone.map(it -> PlayerWaystoneManager.predictExperienceLevelCost(entity, it, WarpMode.WARP_PLATE, getWaystone()))
+                    .map(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
+                    .orElse(true);
             level.setBlock(worldPosition, getBlockState()
                     .setValue(WarpPlateBlock.ACTIVE, true)
-                    .setValue(WarpPlateBlock.STATUS, status), 3);
+                    .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.INVALID), 3);
         }
     }
 
@@ -337,9 +339,19 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                     ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
                     return PlayerWaystoneManager.tryTeleport(ctx);
                 })
-                .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity))
+                .ifRight(informRejectedTeleport(entity))
                 .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))
                 .left();
+    }
+
+    private Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
+        return error -> {
+            if (error.getTranslationKey() != null && entityToInform instanceof Player player) {
+                var chatComponent = Component.translatable(error.getTranslationKey());
+                chatComponent.withStyle(ChatFormatting.DARK_RED);
+                player.displayClientMessage(chatComponent, true);
+            }
+        };
     }
 
     private void applyWarpPlateEffects(Entity entity) {
