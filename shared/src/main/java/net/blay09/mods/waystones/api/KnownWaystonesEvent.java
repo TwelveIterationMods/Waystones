@@ -6,7 +6,10 @@ import java.util.List;
 
 /**
  * This event is fired on the client side when the client has received the known waystones of the player.
+ *
+ * @deprecated Use {@link WaystonesListReceivedEvent} instead.
  */
+@Deprecated
 public class KnownWaystonesEvent extends BalmEvent {
 
     private final List<IWaystone> waystones;

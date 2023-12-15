@@ -30,6 +30,15 @@
     ],
     "fabric-datagen": [
       "net.blay09.mods.waystones.datagen.ModDataGenerator"
+    ],
+    "rei_client": [
+      "net.blay09.mods.waystones.compat.rei.RoughlyEnoughItemsIntegration"
+    ],
+    "journeymap": [
+      "net.blay09.mods.waystones.compat.JourneyMapIntegration"
+    ],
+    "jade": [
+      "net.blay09.mods.waystones.compat.JadeIntegration"
     ]
   },
   "mixins": [
@@ -49,8 +58,13 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j"
+        "modmenu.discord": "https://discord.gg/VAfZ2Nau6j",
+        "waystones.iconCredits": "https://opengameart.org/content/roguelikerpg-items"
       }
+    },
+    "waila:plugins": {
+      "id": "waystones:wthit",
+      "initializer": "net.blay09.mods.waystones.compat.WTHITIntegration"
     }
   }
 }

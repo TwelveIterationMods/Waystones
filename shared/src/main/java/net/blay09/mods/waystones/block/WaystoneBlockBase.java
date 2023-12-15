@@ -246,12 +246,14 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof WaystoneBlockEntityBase && (!canSilkTouch() || !((WaystoneBlockEntityBase) blockEntity).isSilkTouched())) {
-                IWaystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
+            final var blockEntity = world.getBlockEntity(pos);
+            final var waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
+            final var wasNotSilkTouched = blockEntity instanceof WaystoneBlockEntityBase && (!canSilkTouch() || !((WaystoneBlockEntityBase) blockEntity).isSilkTouched());
+            if (wasNotSilkTouched) {
                 WaystoneManager.get(world.getServer()).removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
             }
+            WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
         }
 
         super.onRemove(state, world, pos, newState, isMoving);

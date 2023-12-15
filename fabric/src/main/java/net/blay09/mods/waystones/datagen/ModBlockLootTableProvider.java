@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
@@ -40,7 +41,9 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
                         .add(LootItem.lootTableItem(block))
                         .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
                                 .copy("UUID", "UUID", CopyNbtFunction.MergeStrategy.REPLACE)
-                                .when(HAS_SILK_TOUCH))));
+                                .when(HAS_SILK_TOUCH)))
+                        .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)
+                                .when(HAS_SILK_TOUCH)));
     }
 
     private LootTable.Builder createDoubleBlockWaystoneLoot(Block block) {

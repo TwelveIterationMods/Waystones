@@ -2,10 +2,12 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -15,10 +17,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +37,13 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
     @Override
     protected ResourceLocation getWaystoneType() {
         return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor());
+    }
+
+    @Override
+    public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
+        super.initializeWaystone(world, player, origin);
+
+        WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), getWaystone());
     }
 
     @Override

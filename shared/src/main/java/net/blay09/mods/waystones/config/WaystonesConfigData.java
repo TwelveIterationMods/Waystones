@@ -10,6 +10,13 @@ import java.util.List;
 
 @Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData {
+
+    public enum TransportPets {
+        ENABLED,
+        SAME_DIMENSION,
+        DISABLED
+    }
+
     public XpCost xpCost = new XpCost();
     public Restrictions restrictions = new Restrictions();
     public Cooldowns cooldowns = new Cooldowns();
@@ -88,6 +95,10 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("If enabled, waystones generated in worldgen are unbreakable.")
         public boolean generatedWaystonesUnbreakable = false;
+
+        @Synced
+        @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
+        public TransportPets transportPets = TransportPets.SAME_DIMENSION;
 
         @Synced
         @Comment("If enabled, leashed mobs will be teleported with you")
@@ -182,6 +193,9 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
+
+        @Comment("The template to use when generating new names. Supported placeholders are {Biome} (english biome name) and {MrPork} (the default name generator).")
+        public String nameGenerationTemplate = "{MrPork}";
 
         @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
         @ExpectedType(String.class)

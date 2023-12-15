@@ -5,6 +5,8 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneManager;
@@ -34,6 +36,10 @@ public class InternalMethodsImpl implements InternalMethods {
     public Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             context.setWarpMode(warpMode);
+            final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
+            if (shouldTransportPets == WaystonesConfigData.TransportPets.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportPets.SAME_DIMENSION && !context.isDimensionalTeleport())) {
+                context.getAdditionalEntities().addAll(PlayerWaystoneManager.findPets(entity));
+            }
             context.getLeashedEntities().addAll(PlayerWaystoneManager.findLeashedAnimals(entity));
             context.setFromWaystone(fromWaystone);
             context.setWarpItem(PlayerWaystoneManager.findWarpItem(entity, warpMode));

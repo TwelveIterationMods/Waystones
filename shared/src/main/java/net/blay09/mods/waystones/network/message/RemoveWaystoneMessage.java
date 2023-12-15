@@ -2,10 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WaystoneBlock;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -50,6 +47,7 @@ public class RemoveWaystoneMessage {
                 if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
                     WaystoneManager.get(player.server).removeWaystone(backingWaystone);
                     PlayerWaystoneManager.removeKnownWaystone(player.server, backingWaystone);
+                    WaystoneSyncManager.sendWaystoneRemovalToAll(player.server, backingWaystone, true);
                 }
             }
         }

@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelAccessor;
 
 public class MrPorkNameGenerator implements INameGenerator {
 
@@ -26,7 +28,7 @@ public class MrPorkNameGenerator implements INameGenerator {
     };
 
     @Override
-    public String randomName(RandomSource rand) {
+    public String generateName(LevelAccessor level, IWaystone waystone, RandomSource rand) {
         return random1[rand.nextInt(random1.length)] + random2[rand.nextInt(random2.length)] + random3[rand.nextInt(random3.length)];
     }
 

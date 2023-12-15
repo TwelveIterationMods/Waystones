@@ -77,7 +77,7 @@ public class WaystoneButton extends Button {
         if (!xpCost.isEmpty()) {
             boolean canAfford = xpCost.canAfford(mc.player);
             final var xpCostAsLevels = xpCost.getCostAsLevels(mc.player);
-            final var spriteIndex = Math.min(xpCostAsLevels, 3) - 1;
+            final var spriteIndex = Math.max(0, Math.min(xpCostAsLevels, 3) - 1);
             guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], getX() + 2, getY() + 2, 16, 16);
 
             if (xpCostAsLevels > 3) {

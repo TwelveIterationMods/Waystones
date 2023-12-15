@@ -146,6 +146,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         if (waystone.isValid()) {
             WaystoneManager.get(level.getServer()).removeWaystone(waystone);
             PlayerWaystoneManager.removeKnownWaystone(level.getServer(), waystone);
+            WaystoneSyncManager.sendWaystoneRemovalToAll(level.getServer(), waystone, true);
         }
 
         waystone = InvalidWaystone.INSTANCE;

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
@@ -28,10 +29,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -108,7 +106,7 @@ public class PlayerWaystoneManager {
     public static void activateWaystone(Player player, IWaystone waystone) {
         if (!waystone.hasName() && waystone instanceof IMutableWaystone && waystone.wasGenerated()) {
             NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
-            String name = NameGenerator.get(player.getServer()).getName(waystone, player.level().random, nameGenerationMode);
+            String name = NameGenerator.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
             ((IMutableWaystone) waystone).setName(name);
         }
 
@@ -601,4 +599,9 @@ public class PlayerWaystoneManager {
         }
     }
 
+    public static Collection<? extends Entity> findPets(Entity entity) {
+        return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
+                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit()
+        );
+    }
 }

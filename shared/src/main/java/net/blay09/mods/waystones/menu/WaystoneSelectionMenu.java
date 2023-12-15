@@ -2,15 +2,17 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.SharestoneBlock;
-import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.comparator.WaystoneComparators;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneManager;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -71,4 +73,9 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
     }
 
+    public static WaystoneSelectionMenu createAdminSelection(int windowId, Player player, Player target) {
+        final var waystones = PlayerWaystoneManager.getWaystones(target);
+        waystones.sort(WaystoneComparators.forAdminInspection(player, target));
+        return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, windowId, waystones);
+    }
 }

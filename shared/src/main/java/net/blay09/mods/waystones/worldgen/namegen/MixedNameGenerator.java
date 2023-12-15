@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
+import net.blay09.mods.waystones.api.IWaystone;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelAccessor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,10 +17,10 @@ public class MixedNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String randomName(RandomSource rand) {
+    public String generateName(LevelAccessor level, IWaystone waystone, RandomSource rand) {
         Collections.shuffle(nameGenerators);
         for (INameGenerator nameGenerator : nameGenerators) {
-            String name = nameGenerator.randomName(rand);
+            String name = nameGenerator.generateName(level, waystone, rand);
             if (name != null) {
                 return name;
             }

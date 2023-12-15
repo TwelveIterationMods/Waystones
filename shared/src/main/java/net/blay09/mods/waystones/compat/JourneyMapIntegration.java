@@ -8,12 +8,11 @@ import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.event.ClientEvent;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.KnownWaystonesEvent;
-import net.blay09.mods.waystones.api.WaystoneUpdateReceivedEvent;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -22,6 +21,7 @@ import java.util.*;
 public class JourneyMapIntegration implements IClientPlugin {
 
     private static final UUID WAYSTONE_GROUP_ID = UUID.fromString("005bdf11-2dbb-4a27-8aa4-0184e86fa33c");
+    private static final UUID SHARESTONE_GROUP_ID = UUID.fromString("199e2989-df63-4ab4-bd5d-2fa24e72b4fc");
 
     private IClientAPI api;
     private boolean journeyMapReady;
@@ -31,8 +31,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     public JourneyMapIntegration() {
         instance = this;
-        Balm.getEvents().onEvent(KnownWaystonesEvent.class, this::onKnownWaystones);
+        Balm.getEvents().onEvent(WaystonesListReceivedEvent.class, this::onWaystonesListReceived);
         Balm.getEvents().onEvent(WaystoneUpdateReceivedEvent.class, this::onWaystoneUpdateReceived);
+        Balm.getEvents().onEvent(WaystoneRemoveReceivedEvent.class, this::onWaystoneRemoveReceived);
     }
 
     @Override
@@ -68,10 +69,14 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    public void onKnownWaystones(KnownWaystonesEvent event) {
-        if (shouldManageWaypoints()) {
-            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystones()));
+    public void onWaystonesListReceived(WaystonesListReceivedEvent event) {
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
+            runWhenJourneyMapIsReady(() -> updateAllWaypoints(event.getWaystoneType(), event.getWaystones()));
         }
+    }
+
+    private boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
+        return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
     }
 
     private static boolean shouldManageWaypoints() {
@@ -84,8 +89,14 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     public void onWaystoneUpdateReceived(WaystoneUpdateReceivedEvent event) {
-        if (shouldManageWaypoints()) {
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystone().getWaystoneType())) {
             runWhenJourneyMapIsReady(() -> updateWaypoint(event.getWaystone()));
+        }
+    }
+
+    public void onWaystoneRemoveReceived(WaystoneRemoveReceivedEvent event) {
+        if (shouldManageWaypoints() && isSupportedWaystoneType(event.getWaystoneType())) {
+            runWhenJourneyMapIsReady(() -> removeWaypoint(event.getWaystoneType(), event.getWaystoneId()));
         }
     }
 
@@ -97,28 +108,38 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private void updateAllWaypoints(List<IWaystone> waystones) {
-        Set<String> stillExistingIds = new HashSet<>();
-        for (IWaystone waystone : waystones) {
-            stillExistingIds.add(waystone.getWaystoneUid().toString());
+    private void updateAllWaypoints(ResourceLocation waystoneType, List<IWaystone> waystones) {
+        final var idPrefix = waystoneType.getPath() + ":";
+        final var stillExistingIds = new HashSet<String>();
+        for (final var waystone : waystones) {
+            stillExistingIds.add(getPrefixedWaystoneId(waystone));
             updateWaypoint(waystone);
         }
 
-        List<Waypoint> waypoints = api.getWaypoints(Waystones.MOD_ID);
-        for (Waypoint waypoint : waypoints) {
-            if (!stillExistingIds.contains(waypoint.getId())) {
+        final var waypoints = api.getWaypoints(Waystones.MOD_ID);
+        for (final var waypoint : waypoints) {
+            if (waypoint.getId().startsWith(idPrefix) && !stillExistingIds.contains(waypoint.getId())) {
                 api.remove(waypoint);
             }
         }
     }
 
+    private void removeWaypoint(ResourceLocation waystoneType, UUID waystoneId) {
+        final var prefixedId = getPrefixedWaystoneId(waystoneType, waystoneId);
+        final var waypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
+        if (waypoint != null) {
+            api.remove(waypoint);
+        }
+    }
+
     private void updateWaypoint(IWaystone waystone) {
         try {
-            String waystoneName = waystone.hasName() ? waystone.getName() : I18n.get("waystones.map.untitled_waystone");
-            Waypoint oldWaypoint = api.getWaypoint(Waystones.MOD_ID, waystone.getWaystoneUid().toString());
-            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, waystone.getWaystoneUid().toString(), waystoneName, waystone.getDimension(), waystone.getPos());
+            final var prefixedId = getPrefixedWaystoneId(waystone);
+            final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
+            final var waystoneName = waystone.hasName() ? waystone.getName() : I18n.get("waystones.map.untitled_waystone");
+            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, prefixedId, waystoneName, waystone.getDimension(), waystone.getPos());
             waypoint.setName(waystoneName);
-            waypoint.setGroup(new WaypointGroup(Waystones.MOD_ID, WAYSTONE_GROUP_ID.toString(), "Waystones"));
+            waypoint.setGroup(getWaystoneGroup(waystone));
             if (oldWaypoint != null) {
                 waypoint.setEnabled(oldWaypoint.isEnabled());
                 if (oldWaypoint.hasColor()) {
@@ -135,4 +156,19 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
+    private static WaypointGroup getWaystoneGroup(IWaystone waystone) {
+        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            return new WaypointGroup(Waystones.MOD_ID, SHARESTONE_GROUP_ID.toString(), "Sharestones");
+        } else {
+            return new WaypointGroup(Waystones.MOD_ID, WAYSTONE_GROUP_ID.toString(), "Waystones");
+        }
+    }
+
+    private String getPrefixedWaystoneId(IWaystone waystone) {
+        return getPrefixedWaystoneId(waystone.getWaystoneType(), waystone.getWaystoneUid());
+    }
+
+    private String getPrefixedWaystoneId(ResourceLocation waystoneType, UUID waystoneId) {
+        return waystoneType.getPath() + ":" + waystoneId.toString();
+    }
 }
