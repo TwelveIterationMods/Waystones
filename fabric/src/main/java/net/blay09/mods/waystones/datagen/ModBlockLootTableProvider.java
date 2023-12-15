@@ -26,6 +26,9 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
         add(ModBlocks.waystone, createDoubleBlockWaystoneLoot(ModBlocks.waystone));
         add(ModBlocks.sandyWaystone, createDoubleBlockWaystoneLoot(ModBlocks.sandyWaystone));
         add(ModBlocks.mossyWaystone, createDoubleBlockWaystoneLoot(ModBlocks.mossyWaystone));
+        add(ModBlocks.deepslateWaystone, createDoubleBlockWaystoneLoot(ModBlocks.deepslateWaystone));
+        add(ModBlocks.blackstoneWaystone, createDoubleBlockWaystoneLoot(ModBlocks.blackstoneWaystone));
+        add(ModBlocks.endStoneWaystone, createDoubleBlockWaystoneLoot(ModBlocks.endStoneWaystone));
         add(ModBlocks.sharestone, createDoubleBlockWaystoneLoot(ModBlocks.sharestone));
         add(ModBlocks.portstone, createDoubleBlockWaystoneLoot(ModBlocks.portstone));
         add(ModBlocks.warpPlate, createWaystoneLoot(ModBlocks.warpPlate));

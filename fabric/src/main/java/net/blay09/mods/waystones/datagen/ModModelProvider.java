@@ -33,6 +33,9 @@ public class ModModelProvider extends FabricModelProvider {
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.deepslateWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.blackstoneWaystone);
+        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.endStoneWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.portstone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sharestone);
         for (Block scopedSharestone : ModBlocks.scopedSharestones) {

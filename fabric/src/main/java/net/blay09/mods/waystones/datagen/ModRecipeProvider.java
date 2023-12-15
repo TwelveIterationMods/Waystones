@@ -55,6 +55,36 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                 .save(exporter);
 
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.deepslateWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.DEEPSLATE)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.blackstoneWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.BLACKSTONE)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.endStoneWaystone)
+                .pattern(" S ")
+                .pattern("SWS")
+                .pattern("OOO")
+                .define('S', Blocks.END_STONE_BRICKS)
+                .define('W', ModItems.warpStone)
+                .define('O', Blocks.OBSIDIAN)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+
         shapeless(RecipeCategory.DECORATIONS, ModBlocks.mossyWaystone)
                 .requires(ModBlocks.waystone)
                 .requires(Blocks.VINE, 3)

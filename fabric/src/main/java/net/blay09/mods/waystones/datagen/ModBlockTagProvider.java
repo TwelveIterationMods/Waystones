@@ -24,6 +24,9 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
         mineableBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
                 ModBlocks.sharestone);
@@ -35,6 +38,9 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
         isTeleportTargetBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
                 ModBlocks.sharestone);
@@ -42,7 +48,12 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
             isTeleportTargetBuilder.add(scopedSharestone);
         }
 
-        getOrCreateTagBuilder(ModBlockTags.WAYSTONES).add(ModBlocks.waystone, ModBlocks.sandyWaystone, ModBlocks.mossyWaystone);
+        getOrCreateTagBuilder(ModBlockTags.WAYSTONES).add(ModBlocks.waystone,
+                ModBlocks.sandyWaystone,
+                ModBlocks.mossyWaystone,
+                ModBlocks.deepslateWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone);
 
         FabricTagProvider<Block>.FabricTagBuilder sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
         FabricTagProvider<Block>.FabricTagBuilder dyedSharestonesTag = getOrCreateTagBuilder(ModBlockTags.DYED_SHARESTONES);
