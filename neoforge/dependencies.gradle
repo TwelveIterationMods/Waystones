@@ -12,6 +12,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:wthit-api:forge-$wthit_version"
     compileOnly "curse.maven:the-one-probe-245211:$theoneprobe_version"
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
+    compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
 }
 
 configurations {

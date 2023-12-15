@@ -1,6 +1,6 @@
 repositories {
     maven {
-        url "https://www.cursemaven.com"
+        url = "https://www.cursemaven.com"
         content {
             includeGroup 'curse.maven'
         }
@@ -42,9 +42,16 @@ repositories {
     }
 
     maven {
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
         content {
             includeGroup "com.github.BlueMap-Minecraft"
+        }
+    }
+
+    maven {
+        url = "https://repo.mikeprimm.com/"
+        content {
+            includeGroup "us.dynmap"
         }
     }
 }

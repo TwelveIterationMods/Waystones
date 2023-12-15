@@ -35,5 +35,9 @@ public class Waystones {
         if (WaystonesConfig.getActive().compatibility.blueMapIntegration) {
             Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         }
+
+        if (WaystonesConfig.getActive().compatibility.dynmapIntegration) {
+            Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
+        }
     }
 }

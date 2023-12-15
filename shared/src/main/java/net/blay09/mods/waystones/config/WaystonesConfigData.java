@@ -217,6 +217,9 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to BlueMap.")
         public boolean blueMapIntegration = true;
+
+        @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
+        public boolean dynmapIntegration = true;
     }
 
     public static class Client {

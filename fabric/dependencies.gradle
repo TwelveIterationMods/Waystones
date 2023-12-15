@@ -14,4 +14,5 @@ dependencies {
         transitive = false
     }
     modCompileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
+    modCompileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
 }

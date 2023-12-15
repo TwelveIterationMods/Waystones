@@ -212,6 +212,8 @@
   "config.waystones.compatibility.preferJourneyMapIntegration.tooltip": "If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed.",
   "config.waystones.compatibility.blueMapIntegration": "BlueMap Integration",
   "config.waystones.compatibility.blueMapIntegration.tooltip": "If enabled, Waystones will add markers for waystones and sharestones to BlueMap.",
+  "config.waystones.compatibility.dynmapIntegration": "Dynmap Integration",
+  "config.waystones.compatibility.dynmapIntegration.tooltip": "If enabled, Waystones will add markers for waystones and sharestones to Dynmap.",
   "waystones.iconCredits": "Icons by JoeCreates (CC-BY-SA 3.0)",
   "waystones.map.untitled_waystone": "Untitled Waystone",
   "config.jade.plugin_waystones.waystone": "Waystones"
