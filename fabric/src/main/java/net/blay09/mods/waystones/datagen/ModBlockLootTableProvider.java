@@ -32,6 +32,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
         add(ModBlocks.sharestone, createDoubleBlockWaystoneLoot(ModBlocks.sharestone));
         add(ModBlocks.portstone, createDoubleBlockWaystoneLoot(ModBlocks.portstone));
         add(ModBlocks.warpPlate, createWaystoneLoot(ModBlocks.warpPlate));
+        add(ModBlocks.landingStone, createWaystoneLoot(ModBlocks.landingStone));
         for (Block scopedSharestone : ModBlocks.scopedSharestones) {
             add(scopedSharestone, createDoubleBlockWaystoneLoot(scopedSharestone));
         }

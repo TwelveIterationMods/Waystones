@@ -30,6 +30,7 @@ public class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         blockStateModelGenerator.createNonTemplateModelBlock(ModBlocks.warpPlate);
+        blockStateModelGenerator.createNonTemplateModelBlock(ModBlocks.landingStone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone);

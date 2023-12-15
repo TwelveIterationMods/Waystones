@@ -29,6 +29,7 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
+                ModBlocks.landingStone,
                 ModBlocks.sharestone);
         for (Block scopedSharestone : ModBlocks.scopedSharestones) {
             mineableBuilder.add(scopedSharestone);
@@ -43,6 +44,7 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
+                ModBlocks.landingStone,
                 ModBlocks.sharestone);
         for (Block scopedSharestone : ModBlocks.scopedSharestones) {
             isTeleportTargetBuilder.add(scopedSharestone);

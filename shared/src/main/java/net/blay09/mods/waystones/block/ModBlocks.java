@@ -21,6 +21,7 @@ public class ModBlocks {
     public static Block sharestone;
     public static Block warpPlate;
     public static Block portstone;
+    public static Block landingStone;
     public static Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
 
     public static void initialize(BalmBlocks blocks) {
@@ -33,6 +34,7 @@ public class ModBlocks {
         blocks.register(() -> sharestone = new SharestoneBlock(defaultProperties(), null), () -> itemBlock(sharestone), id("sharestone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
         blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
+        blocks.register(() -> landingStone = new LandingStoneBlock(defaultProperties()), () -> itemBlock(landingStone), id("landing_stone"));
 
         DyeColor[] colors = DyeColor.values();
         for (DyeColor color : colors) {
