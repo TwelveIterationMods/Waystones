@@ -1,0 +1,149 @@
+package net.blay09.mods.waystones.compat;
+
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import de.bluecolored.bluemap.api.markers.MarkerSet;
+import de.bluecolored.bluemap.api.markers.POIMarker;
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.api.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class BlueMapIntegration {
+
+    private final Map<ResourceKey<Level>, LevelMarkers> levelMarkersByDimension = new HashMap<>();
+    private BlueMapAPI api;
+
+    private static class LevelMarkers {
+        private final MarkerSet waystoneMarkers = MarkerSet.builder()
+                .label("Waystones")
+                .build();
+
+        private final MarkerSet sharestoneMarkers = MarkerSet.builder()
+                .label("Sharestones")
+                .build();
+
+        private final ResourceKey<Level> level;
+
+        private LevelMarkers(ResourceKey<Level> level) {
+            this.level = level;
+        }
+
+        public void update(BlueMapAPI api) {
+            api.getWorld(level).ifPresent(world -> {
+                for (var map : world.getMaps()) {
+                    map.getMarkerSets().put("waystones:waystones", waystoneMarkers);
+                    map.getMarkerSets().put("waystones:sharestones", sharestoneMarkers);
+                }
+            });
+        }
+
+        public void createFromWaystones(List<IWaystone> waystones) {
+            waystoneMarkers.getMarkers().clear();
+            sharestoneMarkers.getMarkers().clear();
+
+            for (final var waystone : waystones) {
+                addWaystoneMarker(waystone);
+            }
+        }
+
+        public void addWaystoneMarker(IWaystone waystone) {
+            final var marker = createWaystoneMarker(waystone);
+            final var markerId = getMarkerId(waystone);
+            if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+                sharestoneMarkers.put(markerId, marker);
+            } else {
+                waystoneMarkers.put(markerId, marker);
+            }
+        }
+
+        public void removeWaystoneMarker(IWaystone waystone) {
+            final var markerId = getMarkerId(waystone);
+            if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+                sharestoneMarkers.remove(markerId);
+            } else {
+                waystoneMarkers.remove(markerId);
+            }
+        }
+    }
+
+    public BlueMapIntegration() {
+        BlueMapAPI.onEnable(api -> {
+            this.api = api;
+            for (final var levelMarkers : levelMarkersByDimension.values()) {
+                levelMarkers.update(api);
+            }
+        });
+        BlueMapAPI.onDisable(api -> this.api = null);
+
+        Balm.getEvents().onEvent(WaystonesLoadedEvent.class, this::onWaystonesLoaded);
+        Balm.getEvents().onEvent(WaystoneInitializedEvent.class, this::onWaystoneInitialized);
+        Balm.getEvents().onEvent(WaystoneUpdatedEvent.class, this::onWaystoneUpdated);
+        Balm.getEvents().onEvent(WaystoneRemovedEvent.class, this::onWaystoneRemoved);
+    }
+
+    private void onWaystoneInitialized(WaystoneInitializedEvent event) {
+        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
+        levelMarkers.addWaystoneMarker(event.getWaystone());
+        if (api != null) {
+            levelMarkers.update(api);
+        }
+    }
+
+    private void onWaystoneUpdated(WaystoneUpdatedEvent event) {
+        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
+        levelMarkers.addWaystoneMarker(event.getWaystone());
+        if (api != null) {
+            levelMarkers.update(api);
+        }
+    }
+
+    private void onWaystoneRemoved(WaystoneRemovedEvent event) {
+        ResourceKey<Level> dimensionId = event.getWaystone().getDimension();
+        final var levelMarkers = levelMarkersByDimension.computeIfAbsent(dimensionId, LevelMarkers::new);
+        levelMarkers.removeWaystoneMarker(event.getWaystone());
+        if (api != null) {
+            levelMarkers.update(api);
+        }
+    }
+
+    private void onWaystonesLoaded(WaystonesLoadedEvent event) {
+        final var waystonesByDimension = event.getWaystoneManager().getWaystones()
+                .filter(BlueMapIntegration::isSupportedWaystoneType)
+                .collect(Collectors.groupingBy(IWaystone::getDimension));
+        for (final var entry : waystonesByDimension.entrySet()) {
+            final var levelMarkers = levelMarkersByDimension.computeIfAbsent(entry.getKey(), LevelMarkers::new);
+            levelMarkers.createFromWaystones(entry.getValue());
+            if (api != null) {
+                levelMarkers.update(api);
+            }
+        }
+    }
+
+    public static String getMarkerId(IWaystone waystone) {
+        return waystone.getWaystoneUid().toString();
+    }
+
+    public static POIMarker createWaystoneMarker(IWaystone waystone) {
+        return POIMarker.builder()
+                .label(waystone.getName())
+                .position((double) waystone.getPos().getX(), waystone.getPos().getY(), waystone.getPos().getZ())
+                .maxDistance(1000)
+                .build();
+    }
+
+    private static boolean isSupportedWaystoneType(IWaystone waystone) {
+        return isSupportedWaystoneType(waystone.getWaystoneType());
+    }
+
+    private static boolean isSupportedWaystoneType(ResourceLocation waystoneType) {
+        return waystoneType.equals(WaystoneTypes.WAYSTONE) || WaystoneTypes.isSharestone(waystoneType);
+    }
+}

@@ -3,18 +3,11 @@ repositories {
     maven {
         url = "https://jm.gserv.me/repository/maven-public/"
     }
-
-    maven {
-        url 'https://jitpack.io'
-        content {
-            includeGroup "com.github.BlueMap-Minecraft"
-        }
-    }
 }
 
 dependencies {
     compileOnly "info.journeymap:journeymap-api:${journeymap_api_common_version}"
     compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
-    compileOnly 'com.github.BlueMap-Minecraft:BlueMapAPI:v2.5.1'
+    compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
 }

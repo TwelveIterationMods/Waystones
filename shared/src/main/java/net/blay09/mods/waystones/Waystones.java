@@ -31,5 +31,9 @@ public class Waystones {
         ModWorldGen.initialize(Balm.getWorldGen());
         ModRecipes.initialize(Balm.getRecipes());
         ModCommands.initialize(Balm.getCommands());
+
+        if (WaystonesConfig.getActive().compatibility.blueMapIntegration) {
+            Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
+        }
     }
 }

@@ -1,9 +1,9 @@
 package net.blay09.mods.waystones.core;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class WaystoneManager extends SavedData {
+public class WaystoneManager extends SavedData implements IWaystoneManager {
 
     private static final String DATA_NAME = Waystones.MOD_ID;
     private static final String TAG_WAYSTONES = "Waystones";
@@ -33,6 +33,7 @@ public class WaystoneManager extends SavedData {
     public void addWaystone(IWaystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
         setDirty();
+        Balm.getEvents().fireEvent(new WaystoneInitializedEvent(waystone));
     }
 
     public void updateWaystone(IWaystone waystone) {
@@ -41,13 +42,16 @@ public class WaystoneManager extends SavedData {
         mutableWaystone.setGlobal(waystone.isGlobal());
         waystones.put(waystone.getWaystoneUid(), mutableWaystone);
         setDirty();
+        Balm.getEvents().fireEvent(new WaystoneUpdatedEvent(waystone));
     }
 
     public void removeWaystone(IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
         setDirty();
+        Balm.getEvents().fireEvent(new WaystoneRemovedEvent(waystone));
     }
 
+    @Override
     public Optional<IWaystone> getWaystoneAt(BlockGetter world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase) {
@@ -57,20 +61,29 @@ public class WaystoneManager extends SavedData {
         return Optional.empty();
     }
 
+    @Override
     public Optional<IWaystone> getWaystoneById(UUID waystoneUid) {
         return Optional.ofNullable(waystones.get(waystoneUid));
     }
 
+    @Override
     public Optional<IWaystone> findWaystoneByName(String name) {
         return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
     }
 
+    @Override
+    public Stream<IWaystone> getWaystones() {
+        return waystones.values().stream();
+    }
+
+    @Override
     public Stream<IWaystone> getWaystonesByType(ResourceLocation type) {
         return waystones.values().stream()
                 .filter(it -> it.getWaystoneType().equals(type))
-                .sorted(Comparator.comparing(IWaystone::getName));
+                .sorted(Comparator.comparing(IWaystone::getName)); // TODO this shouldn't sort here
     }
 
+    @Override
     public List<IWaystone> getGlobalWaystones() {
         return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
     }
@@ -83,6 +96,7 @@ public class WaystoneManager extends SavedData {
             IWaystone waystone = Waystone.read(compound);
             waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
         }
+        Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
         return waystoneManager;
     }
 

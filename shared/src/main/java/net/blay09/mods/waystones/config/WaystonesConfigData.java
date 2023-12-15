@@ -214,6 +214,9 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed")
         public boolean preferJourneyMapIntegration = true;
+
+        @Comment("If enabled, Waystones will add markers for waystones and sharestones to BlueMap.")
+        public boolean blueMapIntegration = true;
     }
 
     public static class Client {

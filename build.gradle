@@ -61,6 +61,13 @@ subprojects {
 
         // For ModMenu
         maven { url "https://maven.terraformersmc.com/releases/" }
+
+        maven {
+            url 'https://jitpack.io'
+            content {
+                includeGroup "com.github.BlueMap-Minecraft"
+            }
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {

@@ -24,4 +24,5 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
         transitive = false
     }
+    modCompileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
 }
