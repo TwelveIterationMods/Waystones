@@ -1,0 +1,50 @@
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+
+    maven {
+        url = "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+        }
+    }
+
+    maven {
+        url = "https://maven.blamejared.com"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+
+    maven {
+        url = "https://maven.bai.lol"
+        content {
+            includeGroup "mcp.mobius.waila"
+        }
+    }
+
+    maven {
+        url = "https://maven.terraformersmc.com/releases"
+        content {
+            includeGroup "com.terraformersmc"
+        }
+    }
+
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+        content {
+            includeGroup "info.journeymap"
+        }
+    }
+
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.BlueMap-Minecraft"
+        }
+    }
+}

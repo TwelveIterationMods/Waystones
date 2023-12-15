@@ -39,36 +39,10 @@ subprojects {
     repositories {
         mavenCentral()
 
-        maven {
-            url "https://www.cursemaven.com"
-
-            content {
-                includeGroup 'curse.maven'
-            }
-        }
-
         maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
-
-        // For Cloth Config and REI
-        maven { url "https://maven.shedaniel.me/" }
-
-        // For JEI
-        maven { url "https://maven.blamejared.com" }
-        maven { url "https://modmaven.dev" }
-
-        // For WTHIT
-        maven { url "https://maven.bai.lol" }
-
-        // For ModMenu
-        maven { url "https://maven.terraformersmc.com/releases/" }
-
-        maven {
-            url 'https://jitpack.io'
-            content {
-                includeGroup "com.github.BlueMap-Minecraft"
-            }
-        }
     }
+
+    apply from: rootProject.file('repositories.gradle')
 
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = 'UTF-8'
