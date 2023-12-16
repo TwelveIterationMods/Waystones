@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -142,7 +143,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
                     return stack;
                 }
 
-                PlayerWaystoneManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null);
+                WaystoneTeleportManager.tryTeleportToWaystone(player, boundTo, getWarpMode(), null);
             }
         }
 

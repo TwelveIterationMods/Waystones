@@ -130,7 +130,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
-        if (!PlayerWaystoneManager.mayBreakWaystone(player, world, pos)) {
+        if (!WaystonePermissionManager.mayBreakWaystone(player, world, pos)) {
             return -1f;
         }
 
@@ -154,7 +154,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        if (!PlayerWaystoneManager.mayPlaceWaystone(context.getPlayer())) {
+        if (!WaystonePermissionManager.mayPlaceWaystone(context.getPlayer())) {
             return null;
         }
 
@@ -194,7 +194,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
         if (player.isShiftKeyDown()) {
-            WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystone);
+            WaystoneEditPermissions result = WaystonePermissionManager.mayEditWaystone(player, world, waystone);
             if (result != WaystoneEditPermissions.ALLOW) {
                 if (result.getLangKey() != null) {
                     var chatComponent = Component.translatable(result.getLangKey());
@@ -360,7 +360,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             if (!world.isClientSide && placer instanceof ServerPlayer) {
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
-                WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
+                WaystoneEditPermissions result = WaystonePermissionManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
                 if (result == WaystoneEditPermissions.ALLOW) {
                     MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
                     if (settingsContainerProvider != null && shouldOpenMenuWhenPlaced()) {

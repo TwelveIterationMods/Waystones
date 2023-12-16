@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -33,7 +34,7 @@ public class SelectWaystoneMessage {
 
         WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);
         WaystoneSelectionMenu container = (WaystoneSelectionMenu) player.containerMenu;
-        PlayerWaystoneManager.tryTeleportToWaystone(player, waystone, container.getWarpMode(), container.getWaystoneFrom());
+        WaystoneTeleportManager.tryTeleportToWaystone(player, waystone, container.getWarpMode(), container.getWaystoneFrom());
         player.closeContainer();
     }
 

@@ -11,6 +11,7 @@ import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.ChatFormatting;
@@ -99,8 +100,8 @@ public class InventoryButtonGuiHandler {
                 }
 
                 long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
-                IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
-                final ExperienceCost xpCost = waystone != null ? PlayerWaystoneManager.predictExperienceLevelCost(player,
+                IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
+                final ExperienceCost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
                         waystone,
                         WarpMode.INVENTORY_BUTTON,
                         null) : ExperienceCost.NoExperienceCost.INSTANCE;

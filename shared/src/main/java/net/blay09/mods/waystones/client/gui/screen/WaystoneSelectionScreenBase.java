@@ -9,6 +9,8 @@ import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
+import net.blay09.mods.waystones.core.WaystonePermissionManager;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneEditPermissions;
@@ -178,7 +180,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
         IWaystone waystoneFrom = menu.getWaystoneFrom();
         Player player = Minecraft.getInstance().player;
-        final var xpCost = PlayerWaystoneManager.predictExperienceLevelCost(Objects.requireNonNull(player),
+        final var xpCost = WaystoneTeleportManager.predictExperienceLevelCost(Objects.requireNonNull(player),
                 waystone,
                 menu.getWarpMode(),
                 waystoneFrom);
@@ -278,7 +280,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 && mouseY >= startY && mouseY < startY + font.lineHeight;
 
         Player player = Minecraft.getInstance().player;
-        WaystoneEditPermissions waystoneEditPermissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
+        WaystoneEditPermissions waystoneEditPermissions = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
 
         String fullText = locationPrefix + ChatFormatting.WHITE;
         if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {

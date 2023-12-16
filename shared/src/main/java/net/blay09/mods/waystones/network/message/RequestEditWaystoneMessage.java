@@ -3,12 +3,9 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneEditPermissions;
-import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -45,7 +42,7 @@ public class RequestEditWaystoneMessage {
         final var blockEntity = player.level().getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
             final var waystone = waystoneBlockEntity.getWaystone();
-            final var permissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
+            final var permissions = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
             if (permissions != WaystoneEditPermissions.ALLOW) {
                 return;
             }

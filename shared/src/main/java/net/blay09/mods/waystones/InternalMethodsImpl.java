@@ -7,12 +7,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTeleportContext;
-import net.blay09.mods.waystones.item.AttunedShardItem;
-import net.blay09.mods.waystones.item.BoundScrollItem;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -38,15 +32,15 @@ public class InternalMethodsImpl implements InternalMethods {
             context.setWarpMode(warpMode);
             final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportPets.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportPets.SAME_DIMENSION && !context.isDimensionalTeleport())) {
-                context.getAdditionalEntities().addAll(PlayerWaystoneManager.findPets(entity));
+                context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(entity));
             }
-            context.getLeashedEntities().addAll(PlayerWaystoneManager.findLeashedAnimals(entity));
+            context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
             context.setFromWaystone(fromWaystone);
             context.setWarpItem(PlayerWaystoneManager.findWarpItem(entity, warpMode));
             context.setCooldown(PlayerWaystoneManager.getCooldownPeriod(warpMode, waystone));
 
             // Use the context so far to determine the xp cost
-            context.setExperienceCost(PlayerWaystoneManager.getExperienceLevelCost(context));
+            context.setExperienceCost(WaystoneTeleportManager.getExperienceLevelCost(context));
         });
     }
 
@@ -75,12 +69,12 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystone fromWaystone) {
-        return PlayerWaystoneManager.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
+        return WaystoneTeleportManager.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
     }
 
     @Override
     public Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
-        return PlayerWaystoneManager.tryTeleport(context);
+        return WaystoneTeleportManager.tryTeleport(context);
     }
 
     @Override
@@ -90,7 +84,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public List<Entity> forceTeleport(IWaystoneTeleportContext context) {
-        return PlayerWaystoneManager.doTeleport(context);
+        return WaystoneTeleportManager.doTeleport(context);
     }
 
     @Override

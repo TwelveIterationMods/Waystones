@@ -194,7 +194,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             final var status = targetWaystone.filter(IWaystone::isValid)
                     .map(it -> WarpPlateBlock.WarpPlateStatus.ACTIVE)
                     .orElse(WarpPlateBlock.WarpPlateStatus.INVALID);
-            final var canAfford = targetWaystone.map(it -> PlayerWaystoneManager.predictExperienceLevelCost(entity, it, WarpMode.WARP_PLATE, getWaystone()))
+            final var canAfford = targetWaystone.map(it -> WaystoneTeleportManager.predictExperienceLevelCost(entity, it, WarpMode.WARP_PLATE, getWaystone()))
                     .map(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
                     .orElse(true);
             level.setBlock(worldPosition, getBlockState()
@@ -289,7 +289,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
                 .flatMap(ctx -> {
                     ctx.setWarpItem(targetAttunementStack);
                     ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
-                    return PlayerWaystoneManager.tryTeleport(ctx);
+                    return WaystoneTeleportManager.tryTeleport(ctx);
                 })
                 .ifRight(informRejectedTeleport(entity))
                 .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))

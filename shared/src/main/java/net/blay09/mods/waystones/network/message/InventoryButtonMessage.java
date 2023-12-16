@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
@@ -45,9 +46,9 @@ public class InventoryButtonMessage {
             return;
         }
 
-        IWaystone waystone = PlayerWaystoneManager.getInventoryButtonWaystone(player);
+        IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone != null) {
-            PlayerWaystoneManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
+            WaystoneTeleportManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
             final BalmMenuProvider containerProvider = new BalmMenuProvider() {
