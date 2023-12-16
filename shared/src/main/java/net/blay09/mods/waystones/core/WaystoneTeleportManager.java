@@ -76,7 +76,7 @@ public class WaystoneTeleportManager {
         int xpForLeashed = WaystonesConfig.getActive().xpCost.xpCostPerLeashed * context.getLeashedEntities().size();
 
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
-        if (waystone.isGlobal()) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
             xpCostMultiplier *= WaystonesConfig.getActive().xpCost.globalWaystoneXpCostMultiplier;
         }
 

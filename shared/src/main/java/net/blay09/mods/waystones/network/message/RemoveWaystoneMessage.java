@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
@@ -34,10 +35,10 @@ public class RemoveWaystoneMessage {
         PlayerWaystoneManager.deactivateWaystone(player, waystone);
 
         // If the waystone is global and the player is in creative mode, remove the global-ness
-        if (waystone.isGlobal() && player.getAbilities().instabuild) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && player.getAbilities().instabuild) {
             IWaystone backingWaystone = waystone.getBackingWaystone();
             if (backingWaystone instanceof Waystone) {
-                ((Waystone) backingWaystone).setGlobal(false);
+                ((Waystone) backingWaystone).setVisibility(WaystoneVisibility.ACTIVATION);
 
                 // Check if the waystone block still exists - if not, completely remove the waystone from existence to remove it from all players
                 // This way we can't have orphan global waystones left over. And just in case the waystone *was* just being silk-touch moved, it's easy to reactivate a global waystone for everyone (since it does that automatically).

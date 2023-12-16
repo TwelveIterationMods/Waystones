@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,6 +11,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class WaystoneSettingsMenu extends AbstractContainerMenu {
 
@@ -88,5 +92,17 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
 
     public IWaystone getWaystone() {
         return waystone;
+    }
+
+    public List<WaystoneVisibility> getVisibilityOptions() {
+        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            return List.of(WaystoneVisibility.GLOBAL);
+        } else if(waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
+            return List.of(WaystoneVisibility.SHARD_ONLY);
+        } else if(waystone.getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) {
+            return List.of(WaystoneVisibility.SHARD_ONLY);
+        } else {
+            return List.of(WaystoneVisibility.ACTIVATION, WaystoneVisibility.GLOBAL);
+        }
     }
 }

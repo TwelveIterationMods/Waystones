@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.ChatFormatting;
@@ -46,7 +47,7 @@ public class WaystoneButton extends Button {
             effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");
         }
         final var textComponent = Component.literal(effectiveName);
-        if (waystone.isGlobal()) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
             textComponent.withStyle(ChatFormatting.YELLOW);
         }
         return textComponent;

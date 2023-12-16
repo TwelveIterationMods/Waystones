@@ -170,14 +170,14 @@ public class Waystone implements IWaystone, IMutableWaystone {
         UUID waystoneUid = buf.readUUID();
         ResourceLocation waystoneType = buf.readResourceLocation();
         String name = buf.readUtf();
-        boolean isGlobal = buf.readBoolean();
+        final var visibility = buf.readEnum(WaystoneVisibility.class);
         ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
         BlockPos pos = buf.readBlockPos();
         WaystoneOrigin origin = buf.readEnum(WaystoneOrigin.class);
 
         Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, origin, null);
         waystone.setName(name);
-        waystone.setGlobal(isGlobal);
+        waystone.setVisibility(visibility);
         return waystone;
     }
 
@@ -198,7 +198,11 @@ public class Waystone implements IWaystone, IMutableWaystone {
         ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
         Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
-        waystone.setGlobal(compound.getBoolean("IsGlobal"));
+        if (compound.contains("Visibility")) {
+            waystone.setVisibility(WaystoneVisibility.valueOf(compound.getString("Visibility")));
+        } else {
+            waystone.setVisibility(compound.getBoolean("IsGlobal") ? WaystoneVisibility.GLOBAL : WaystoneVisibility.ACTIVATION);
+        }
         return waystone;
     }
 
@@ -213,7 +217,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         buf.writeUUID(waystone.getWaystoneUid());
         buf.writeResourceLocation(waystone.getWaystoneType());
         buf.writeUtf(waystone.getName());
-        buf.writeBoolean(waystone.isGlobal());
+        buf.writeEnum(waystone.getVisibility());
         buf.writeResourceLocation(waystone.getDimension().location());
         buf.writeBlockPos(waystone.getPos());
         buf.writeEnum(waystone.getOrigin());
@@ -229,7 +233,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         if (waystone.getOwnerUid() != null) {
             compound.put("OwnerUid", NbtUtils.createUUID(waystone.getOwnerUid()));
         }
-        compound.putBoolean("IsGlobal", waystone.isGlobal());
+        compound.putString("Visibility", waystone.getVisibility().name());
         return compound;
     }
 }

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
@@ -166,7 +168,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                     addRenderableWidget(sortDownButton);
                 }
 
-                if (allowDeletion()) {
+                if (allowDeletion(waystone)) {
                     RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
@@ -174,10 +176,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                         Balm.getNetworking().sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
                         updateList();
                     });
-                    // Only show the remove button for non-global waystones, or if the player is in creative mode
-                    if (!waystone.isGlobal() || Minecraft.getInstance().player.getAbilities().instabuild) {
-                        addRenderableWidget(removeButton);
-                    }
+                    addRenderableWidget(removeButton);
                 }
 
                 y += 22;
@@ -186,6 +185,18 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
         btnPrevPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
         btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
+    }
+
+    private boolean allowDeletion(IWaystone waystone) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !Minecraft.getInstance().player.getAbilities().instabuild) {
+            return false;
+        }
+
+        if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
+            return false;
+        }
+
+        return allowDeletion();
     }
 
     private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {

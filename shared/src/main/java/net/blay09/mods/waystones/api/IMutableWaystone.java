@@ -12,7 +12,7 @@ public interface IMutableWaystone {
     /**
      * @deprecated Use {@link #setVisibility(WaystoneVisibility)} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     void setGlobal(boolean global);
 
     void setVisibility(WaystoneVisibility visibility);

@@ -28,7 +28,7 @@ public interface IWaystone {
     /**
      * @deprecated Use {@link #getVisibility()} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     boolean isGlobal();
 
     boolean isOwner(Player player);

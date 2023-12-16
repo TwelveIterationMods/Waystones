@@ -1,8 +1,11 @@
 package net.blay09.mods.waystones.network.message;
 
+import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -43,6 +46,22 @@ public class EditWaystoneMessage {
             return;
         }
 
+        if (!(player.containerMenu instanceof WaystoneSettingsMenu settingsMenu)) {
+            return;
+        }
+
+        var visibility = message.visibility;
+        if (!settingsMenu.getVisibilityOptions().contains(message.visibility)) {
+            Waystones.logger.warn("{} tried to edit a waystone with an invalid visibility {}", player.getName().getString(), message.visibility);
+            visibility = settingsMenu.getVisibilityOptions().get(0);
+        }
+
+        if (visibility == WaystoneVisibility.GLOBAL && waystone.getWaystoneType()
+                .equals(WaystoneTypes.WAYSTONE) && !PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
+            Waystones.logger.warn("{} tried to edit a global waystone without permission", player.getName().getString());
+            return;
+        }
+
         BlockPos pos = waystone.getPos();
         if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
             return;
@@ -53,11 +72,11 @@ public class EditWaystoneMessage {
         backingWaystone.setName(legalName);
 
         if (PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
-            if (!backingWaystone.isGlobal() && message.visibility == WaystoneVisibility.GLOBAL) {
+            if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL && visibility == WaystoneVisibility.GLOBAL) {
                 PlayerWaystoneManager.activeWaystoneForEveryone(player.server, backingWaystone);
             }
-            backingWaystone.setGlobal(message.visibility == WaystoneVisibility.GLOBAL);
         }
+        backingWaystone.setVisibility(visibility);
 
         WaystoneManager.get(player.server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);

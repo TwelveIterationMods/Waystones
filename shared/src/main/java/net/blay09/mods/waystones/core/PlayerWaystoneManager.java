@@ -92,7 +92,7 @@ public class PlayerWaystoneManager {
     }
 
     public static double getCooldownMultiplier(IWaystone waystone) {
-        return waystone.isGlobal() ? WaystonesConfig.getActive().cooldowns.globalWaystoneCooldownMultiplier : 1f;
+        return waystone.getVisibility() == WaystoneVisibility.GLOBAL ? WaystonesConfig.getActive().cooldowns.globalWaystoneCooldownMultiplier : 1f;
     }
 
     private static void informPlayer(Entity entity, String translationKey) {
@@ -147,7 +147,7 @@ public class PlayerWaystoneManager {
         }
 
         DimensionalWarp dimensionalWarpMode = WaystonesConfig.getActive().restrictions.dimensionalWarp;
-        return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.isGlobal();
+        return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.getVisibility() == WaystoneVisibility.GLOBAL;
     }
 
     public static ItemStack findWarpItem(Entity entity, WarpMode warpMode) {

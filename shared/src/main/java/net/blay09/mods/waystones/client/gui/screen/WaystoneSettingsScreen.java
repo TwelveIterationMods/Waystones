@@ -71,7 +71,7 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         addRenderableWidget(textField);
         setInitialFocus(textField);
 
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 20, oldVisibility);
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 20, oldVisibility, menu.getVisibilityOptions());
         addRenderableWidget(visibilityButton);
     }
 
@@ -133,12 +133,12 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
 
     @Override
     public void onClose() {
-        super.onClose();
-
         if (textField != null && visibilityButton != null) {
             Balm.getNetworking()
                     .sendToServer(new EditWaystoneMessage(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
         }
+
+        super.onClose();
     }
 
     @Override

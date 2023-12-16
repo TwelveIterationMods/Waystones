@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,7 @@ public class WaystonePermissionManager {
                     return false;
                 }
 
-                boolean isGlobal = waystone.isGlobal();
+                boolean isGlobal = waystone.getVisibility() == WaystoneVisibility.GLOBAL;
                 boolean mayBreakGlobalWaystones = !WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode;
                 return !isGlobal || mayBreakGlobalWaystones;
             }
@@ -46,7 +47,7 @@ public class WaystonePermissionManager {
             return WaystoneEditPermissions.NOT_THE_OWNER;
         }
 
-        if (waystone.isGlobal() && !player.getAbilities().instabuild && WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode) {
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !player.getAbilities().instabuild && WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode) {
             return WaystoneEditPermissions.GET_CREATIVE;
         }
 

@@ -39,7 +39,7 @@ public class WaystoneManager extends SavedData implements IWaystoneManager {
     public void updateWaystone(IWaystone waystone) {
         Waystone mutableWaystone = (Waystone) waystones.getOrDefault(waystone.getWaystoneUid(), waystone);
         mutableWaystone.setName(waystone.getName());
-        mutableWaystone.setGlobal(waystone.isGlobal());
+        mutableWaystone.setVisibility(waystone.getVisibility());
         waystones.put(waystone.getWaystoneUid(), mutableWaystone);
         setDirty();
         Balm.getEvents().fireEvent(new WaystoneUpdatedEvent(waystone));
@@ -85,7 +85,7 @@ public class WaystoneManager extends SavedData implements IWaystoneManager {
 
     @Override
     public List<IWaystone> getGlobalWaystones() {
-        return waystones.values().stream().filter(IWaystone::isGlobal).collect(Collectors.toList());
+        return waystones.values().stream().filter(it -> it.getVisibility() == WaystoneVisibility.GLOBAL).collect(Collectors.toList());
     }
 
     public static WaystoneManager read(CompoundTag tagCompound) {

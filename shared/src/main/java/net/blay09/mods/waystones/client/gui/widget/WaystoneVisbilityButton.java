@@ -16,11 +16,13 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
 
     private static final ResourceLocation WAYSTONE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
 
+    private final List<WaystoneVisibility> options;
     private WaystoneVisibility visibility;
 
-    public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility) {
+    public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options) {
         super(x, y, 18, 18, Component.empty(), button -> {
         }, Button.DEFAULT_NARRATION);
+        this.options = options;
         this.visibility = visibility;
     }
 
@@ -48,6 +50,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
 
     @Override
     public void onPress() {
-        visibility = WaystoneVisibility.values()[(visibility.ordinal() + 1) % WaystoneVisibility.values().length];
+        final var index = options.indexOf(visibility);
+        visibility = options.get((index + 1) % options.size());
     }
 }
