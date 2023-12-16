@@ -40,6 +40,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
+                PlayerWaystoneManager.ensureSortingIndex(player, waystones);
                 return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.WAYSTONE_TO_WAYSTONE, getWaystone(), windowId, waystones);
             }
 

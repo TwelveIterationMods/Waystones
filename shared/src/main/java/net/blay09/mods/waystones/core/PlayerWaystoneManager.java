@@ -250,6 +250,10 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getSortingIndex(player);
     }
 
+    public static List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+        return getPlayerWaystoneData(player.level()).ensureSortingIndex(player, waystones);
+    }
+
     public static void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         getPlayerWaystoneData(player.level()).sortWaystoneAsFirst(player, waystoneUid);
     }

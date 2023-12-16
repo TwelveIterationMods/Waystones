@@ -16,6 +16,7 @@ public interface IPlayerWaystoneData {
     long getInventoryButtonCooldownUntil(Player player);
     void setInventoryButtonCooldownUntil(Player player, long timeStamp);
     List<UUID> getSortingIndex(Player player);
+    List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones);
     void setSortingIndex(Player player, List<UUID> sortingIndex);
     Collection<IWaystone> getWaystones(Player player);
     void sortWaystoneAsFirst(Player player, UUID waystoneUid);

@@ -63,6 +63,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     public WaystoneSelectionScreenBase(WaystoneSelectionMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         waystones = container.getWaystones();
+        PlayerWaystoneManager.ensureSortingIndex(Minecraft.getInstance().player, waystones);
         filteredWaystones = new ArrayList<>(waystones);
         final var sorting = getSorting();
         if (sorting != null) {

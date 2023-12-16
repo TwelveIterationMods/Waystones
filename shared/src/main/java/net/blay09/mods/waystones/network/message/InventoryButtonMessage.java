@@ -51,6 +51,7 @@ public class InventoryButtonMessage {
             WaystoneTeleportManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
+            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             final BalmMenuProvider containerProvider = new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {

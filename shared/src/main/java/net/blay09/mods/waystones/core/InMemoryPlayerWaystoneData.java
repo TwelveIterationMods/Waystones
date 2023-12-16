@@ -80,6 +80,20 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+        final var existing = new HashSet<>(sortingIndex);
+
+        for (final var waystone : waystones) {
+            final var waystoneUid = waystone.getWaystoneUid();
+            if (!existing.contains(waystoneUid)) {
+                sortingIndex.add(waystoneUid);
+            }
+        }
+
+        return sortingIndex;
+    }
+
+    @Override
     public void setSortingIndex(Player player, List<UUID> sortingIndex) {
         this.sortingIndex.clear();
         this.sortingIndex.addAll(sortingIndex);

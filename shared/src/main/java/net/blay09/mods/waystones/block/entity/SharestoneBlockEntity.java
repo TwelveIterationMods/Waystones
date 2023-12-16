@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.core.*;
@@ -22,9 +21,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
@@ -56,6 +52,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var fromWaystone = getWaystone();
                 final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone);
+                PlayerWaystoneManager.ensureSortingIndex(player, waystones);
                 return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
             }
 

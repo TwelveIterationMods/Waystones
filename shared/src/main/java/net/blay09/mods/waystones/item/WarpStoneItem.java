@@ -133,6 +133,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
             final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
+            PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.getNetworking().openGui(player, new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {

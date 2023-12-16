@@ -12,7 +12,7 @@ public class SharestoneSelectionScreen extends WaystoneSelectionScreenBase {
 
     @Override
     protected boolean allowSorting() {
-        return false;
+        return true;
     }
 
     @Override

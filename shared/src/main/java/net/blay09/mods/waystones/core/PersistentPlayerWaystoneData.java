@@ -68,6 +68,29 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
+    public List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+        final var sortingIndexData = getSortingIndexData(getWaystonesData(player));
+        final var sortingIndex = new ArrayList<UUID>();
+        final var existing = new HashSet<UUID>();
+        for (final var sortingIndexEntry : sortingIndexData) {
+            final var waystoneUid = UUID.fromString(sortingIndexEntry.getAsString());
+            if (existing.add(waystoneUid)) {
+                sortingIndex.add(waystoneUid);
+            }
+        }
+
+        for (final var waystone : waystones) {
+            final var waystoneUid = waystone.getWaystoneUid();
+            if (!existing.contains(waystoneUid)) {
+                sortingIndex.add(waystoneUid);
+                sortingIndexData.add(StringTag.valueOf(waystoneUid.toString()));
+            }
+        }
+
+        return sortingIndex;
+    }
+
+    @Override
     public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
         final var sortingIndex = getSortingIndexData(getWaystonesData(player));
         for (int i = 0; i < sortingIndex.size(); i++) {
@@ -107,11 +130,9 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
             }
         }
 
-        System.out.println(sortingIndex);
         if (waystoneIndex != -1 && otherWaystoneIndex != -1) {
             Collections.swap(sortingIndex, waystoneIndex, otherWaystoneIndex);
         }
-        System.out.println(sortingIndex);
     }
 
     @Override
