@@ -10,7 +10,6 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -26,7 +25,7 @@ public class ModCommands {
                         .then(argument("player", EntityArgument.player()).executes(ctx -> {
                                     final var caller = ctx.getSource().getPlayerOrException();
                                     final var target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
-                                    final var waystones = PlayerWaystoneManager.getWaystones(target)
+                                    final var waystones = PlayerWaystoneManager.getActivatedWaystones(target)
                                             .stream()
                                             .filter(it -> it.isOwner(target))
                                             .sorted(WaystoneComparators.forAdminInspection(caller, target))
@@ -42,7 +41,7 @@ public class ModCommands {
                                 .then(Commands.literal("all").executes(ctx -> {
                                     final var caller = ctx.getSource().getPlayerOrException();
                                     final var target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
-                                    final var waystones = PlayerWaystoneManager.getWaystones(target)
+                                    final var waystones = PlayerWaystoneManager.getActivatedWaystones(target)
                                             .stream()
                                             .sorted(WaystoneComparators.forAdminInspection(caller, target))
                                             .toList();

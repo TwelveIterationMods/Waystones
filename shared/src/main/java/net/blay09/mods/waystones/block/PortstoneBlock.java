@@ -2,16 +2,12 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.balm.api.network.BalmNetworking;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
-import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,8 +25,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -42,7 +36,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.UUID;
 
 public class PortstoneBlock extends WaystoneBlockBase {
     private static final VoxelShape[] LOWER_SHAPES = new VoxelShape[]{
@@ -127,6 +120,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (!world.isClientSide) {
+            final var waystones = PlayerWaystoneManager.getTargetsForPlayer(player);
             Balm.getNetworking().openGui(player, new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
@@ -134,15 +128,13 @@ public class PortstoneBlock extends WaystoneBlockBase {
                 }
 
                 @Override
-                public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    final IWaystone portstone = new Waystone(WaystoneTypes.PORTSTONE, UUID.randomUUID(), world.dimension(), pos, WaystoneOrigin.UNKNOWN, null);
-                    return WaystoneSelectionMenu.createWaystoneSelection(i, player, WarpMode.PORTSTONE_TO_WAYSTONE, portstone);
+                public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), WarpMode.PORTSTONE_TO_WAYSTONE, null, windowId, waystones);
                 }
 
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    buf.writeByte(WarpMode.PORTSTONE_TO_WAYSTONE.ordinal());
-                    buf.writeBlockPos(pos);
+                    Waystone.writeList(buf, waystones);
                 }
             });
         }

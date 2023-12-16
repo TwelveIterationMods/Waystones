@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -153,9 +154,19 @@ public class Waystone implements IWaystone, IMutableWaystone {
             break;
         }
 
-        BlockPos targetPos = (getWaystoneType().equals(WaystoneTypes.WARP_PLATE) || getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) ? getPos() : getPos().relative(direction);
+        BlockPos targetPos = (getWaystoneType().equals(WaystoneTypes.WARP_PLATE) || getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) ? getPos() : getPos().relative(
+                direction);
         Vec3 location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
         return new TeleportDestination(level, location, direction);
+    }
+
+    public static List<IWaystone> readList(FriendlyByteBuf buf) {
+        int size = buf.readShort();
+        List<IWaystone> waystones = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            waystones.add(read(buf));
+        }
+        return waystones;
     }
 
     public static IWaystone read(FriendlyByteBuf buf) {
@@ -192,6 +203,13 @@ public class Waystone implements IWaystone, IMutableWaystone {
         waystone.setName(name);
         waystone.setGlobal(compound.getBoolean("IsGlobal"));
         return waystone;
+    }
+
+    public static void writeList(FriendlyByteBuf buf, List<IWaystone> waystones) {
+        buf.writeShort(waystones.size());
+        for (IWaystone waystone : waystones) {
+            write(buf, waystone);
+        }
     }
 
     public static void write(FriendlyByteBuf buf, IWaystone waystone) {

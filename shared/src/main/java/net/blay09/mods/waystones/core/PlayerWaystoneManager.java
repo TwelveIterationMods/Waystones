@@ -382,8 +382,8 @@ public class PlayerWaystoneManager {
         }
 
         if (context.playsSound()) {
-            sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
-            targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
+            sourceWorld.playSound(context.getEntity(), sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
+            targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.05f, 1f);
         }
 
         if (context.playsEffect()) {
@@ -550,7 +550,7 @@ public class PlayerWaystoneManager {
                 }).orElse(null);
     }
 
-    public static List<IWaystone> getWaystones(Player player) {
+    public static List<IWaystone> getActivatedWaystones(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
@@ -603,5 +603,25 @@ public class PlayerWaystoneManager {
         return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
                 pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit()
         );
+    }
+
+    public static List<IWaystone> getTargetsForPlayer(Player player) {
+        return PlayerWaystoneManager.getActivatedWaystones(player);
+    }
+
+    public static List<IWaystone> getTargetsForItem(Player player, ItemStack itemStack) {
+        return PlayerWaystoneManager.getActivatedWaystones(player);
+    }
+
+    public static List<IWaystone> getTargetsForWaystone(Player player, IWaystone waystone) {
+        final var waystoneType = waystone.getWaystoneType();
+        if (WaystoneTypes.isSharestone(waystoneType)) {
+            return WaystoneManager.get(player.getServer()).getWaystonesByType(waystoneType).toList();
+        }
+        return PlayerWaystoneManager.getActivatedWaystones(player);
+    }
+
+    public static List<IWaystone> getTargetsForInventoryButton(ServerPlayer player) {
+        return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 }

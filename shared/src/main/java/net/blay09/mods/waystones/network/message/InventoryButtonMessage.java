@@ -5,6 +5,8 @@ import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
@@ -47,6 +49,7 @@ public class InventoryButtonMessage {
         if (waystone != null) {
             PlayerWaystoneManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
         } else if (inventoryButtonMode.isReturnToAny()) {
+            final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
             final BalmMenuProvider containerProvider = new BalmMenuProvider() {
                 @Override
                 public Component getDisplayName() {
@@ -54,13 +57,13 @@ public class InventoryButtonMessage {
                 }
 
                 @Override
-                public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                    return WaystoneSelectionMenu.createWaystoneSelection(i, playerEntity, WarpMode.INVENTORY_BUTTON, null);
+                public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), WarpMode.INVENTORY_BUTTON, null, windowId, waystones);
                 }
 
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    buf.writeByte(WarpMode.INVENTORY_BUTTON.ordinal());
+                    Waystone.writeList(buf, waystones);
                 }
             };
             Balm.getNetworking().openGui(player, containerProvider);

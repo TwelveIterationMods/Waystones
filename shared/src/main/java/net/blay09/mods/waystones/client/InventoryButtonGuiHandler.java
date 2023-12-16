@@ -126,7 +126,7 @@ public class InventoryButtonGuiHandler {
                     }
                 } else if (inventoryButtonMode.isReturnToAny()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
-                    if (PlayerWaystoneManager.getWaystones(player).isEmpty()) {
+                    if (PlayerWaystoneManager.getActivatedWaystones(player).isEmpty()) {
                         tooltip.add(formatTranslation(ChatFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
                     }
                 }

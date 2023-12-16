@@ -7,6 +7,8 @@ import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -40,23 +42,6 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     private final Random random = new Random();
 
-    private static final BalmMenuProvider containerProvider = new BalmMenuProvider() {
-        @Override
-        public Component getDisplayName() {
-            return Component.translatable("container.waystones.waystone_selection");
-        }
-
-        @Override
-        public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-            return WaystoneSelectionMenu.createWaystoneSelection(i, playerEntity, WarpMode.WARP_STONE, null);
-        }
-
-        @Override
-        public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-            buf.writeByte(WarpMode.WARP_STONE.ordinal());
-        }
-    };
-
     public WarpStoneItem(Properties properties) {
         super(properties.durability(100));
     }
@@ -82,8 +67,8 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             float progress = (duration - remainingTicks) / (float) duration;
             boolean shouldMirror = entity.getUsedItemHand() == InteractionHand.MAIN_HAND ^ entity.getMainArm() == HumanoidArm.RIGHT;
             Vec3 handOffset = new Vec3(shouldMirror ? 0.30f : -0.30f, 1f, 0.52f);
-            handOffset = handOffset.yRot( -entity.getYRot() * Mth.DEG_TO_RAD);
-            handOffset = handOffset.zRot( entity.getXRot() * Mth.DEG_TO_RAD);
+            handOffset = handOffset.yRot(-entity.getYRot() * Mth.DEG_TO_RAD);
+            handOffset = handOffset.zRot(entity.getXRot() * Mth.DEG_TO_RAD);
             int maxParticles = Math.max(4, (int) (progress * 48));
             if (remainingTicks % 5 == 0) {
                 for (int i = 0; i < Math.min(4, maxParticles); i++) {
@@ -145,12 +130,28 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
-        if (!world.isClientSide && entity instanceof ServerPlayer) {
-            Balm.getNetworking().openGui(((ServerPlayer) entity), containerProvider);
+    public ItemStack finishUsingItem(ItemStack itemStack, Level world, LivingEntity entity) {
+        if (!world.isClientSide && entity instanceof ServerPlayer player) {
+            final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
+            Balm.getNetworking().openGui(player, new BalmMenuProvider() {
+                @Override
+                public Component getDisplayName() {
+                    return Component.translatable("container.waystones.waystone_selection");
+                }
+
+                @Override
+                public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), WarpMode.WARP_STONE, null, windowId, waystones);
+                }
+
+                @Override
+                public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                    Waystone.writeList(buf, waystones);
+                }
+            });
         }
 
-        return stack;
+        return itemStack;
     }
 
     @Override

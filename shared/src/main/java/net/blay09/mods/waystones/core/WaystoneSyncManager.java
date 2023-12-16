@@ -42,7 +42,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendActivatedWaystones(Player player) {
-        List<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
+        List<IWaystone> waystones = PlayerWaystoneManager.getActivatedWaystones(player);
         Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
     }
 

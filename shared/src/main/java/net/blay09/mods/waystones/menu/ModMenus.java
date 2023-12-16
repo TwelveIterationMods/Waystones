@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
@@ -16,55 +15,67 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> warpScrollSelection;
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> warpStoneSelection;
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> portstoneSelection;
+    public static DeferredObject<MenuType<WaystoneSelectionMenu>> inventorySelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static DeferredObject<MenuType<WarpPlateMenu>> warpPlate;
     public static DeferredObject<MenuType<WaystoneSettingsMenu>> waystoneSettings;
 
     public static void initialize(BalmMenus menus) {
-        waystoneSelection = menus.registerMenu(id("waystone_selection"), (syncId, inventory, buf) -> {
-            WarpMode warpMode = WarpMode.values[buf.readByte()];
-            IWaystone fromWaystone = null;
-            if (warpMode == WarpMode.WAYSTONE_TO_WAYSTONE) {
-                BlockPos pos = buf.readBlockPos();
-                BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-                if (blockEntity instanceof WaystoneBlockEntity) {
-                    fromWaystone = ((WaystoneBlockEntity) blockEntity).getWaystone();
-                }
-            }
-
-            return WaystoneSelectionMenu.createWaystoneSelection(syncId, inventory.player, warpMode, fromWaystone);
-        });
-
-        sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
-            BlockPos pos = buf.readBlockPos();
-            int count = buf.readShort();
-            List<IWaystone> waystones = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                waystones.add(Waystone.read(buf));
-            }
-
-            BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-            if (blockEntity instanceof SharestoneBlockEntity) {
-                IWaystone fromWaystone = ((SharestoneBlockEntity) blockEntity).getWaystone();
-                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, syncId, waystones);
+        waystoneSelection = menus.registerMenu(id("waystone_selection"), (windowId, inventory, buf) -> {
+            final var pos = buf.readBlockPos();
+            final var waystones = Waystone.readList(buf);
+            final var blockEntity = inventory.player.level().getBlockEntity(pos);
+            if (blockEntity instanceof WaystoneBlockEntity waystone) {
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.WAYSTONE_TO_WAYSTONE, waystone.getWaystone(), windowId, waystones);
             }
 
             return null;
         });
 
-        adminSelection = menus.registerMenu(id("waystone_op_selection"), (syncId, inventory, buf) -> {
-            int count = buf.readInt();
-            List<IWaystone> waystones = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                waystones.add(Waystone.read(buf));
+        warpScrollSelection = menus.registerMenu(id("warp_scroll_selection"), (windowId, inventory, buf) -> {
+            final var waystones = Waystone.readList(buf);
+            return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), WarpMode.WARP_SCROLL, null, windowId, waystones);
+        });
+
+        warpStoneSelection = menus.registerMenu(id("warp_stone_selection"), (windowId, inventory, buf) -> {
+            final var waystones = Waystone.readList(buf);
+            return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), WarpMode.WARP_STONE, null, windowId, waystones);
+        });
+
+        portstoneSelection = menus.registerMenu(id("portstone_selection"), (windowId, inventory, buf) -> {
+            final var waystones = Waystone.readList(buf);
+            return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.PORTSTONE_TO_WAYSTONE, null, windowId, waystones);
+        });
+
+        sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
+            final var pos = buf.readBlockPos();
+            final var waystones = Waystone.readList(buf);
+
+            final var blockEntity = inventory.player.level().getBlockEntity(pos);
+            if (blockEntity instanceof SharestoneBlockEntity sharestone) {
+                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(),
+                        WarpMode.SHARESTONE_TO_SHARESTONE,
+                        sharestone.getWaystone(),
+                        syncId,
+                        waystones);
             }
 
+            return null;
+        });
+
+        inventorySelection = menus.registerMenu(id("inventory_selection"), (syncId, inventory, buf) -> {
+            final var waystones = Waystone.readList(buf);
+            return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), WarpMode.INVENTORY_BUTTON, null, syncId, waystones);
+        });
+
+        adminSelection = menus.registerMenu(id("admin_selection"), (syncId, inventory, buf) -> {
+            final var waystones = Waystone.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, syncId, waystones);
         });
 

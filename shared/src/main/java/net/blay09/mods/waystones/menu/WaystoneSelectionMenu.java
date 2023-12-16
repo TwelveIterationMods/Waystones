@@ -61,21 +61,10 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return waystones;
     }
 
-    public static WaystoneSelectionMenu createWaystoneSelection(int windowId, Player player, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        List<IWaystone> waystones = PlayerWaystoneManager.getWaystones(player);
-        return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), warpMode, fromWaystone, windowId, waystones);
-    }
-
     public static WaystoneSelectionMenu createSharestoneSelection(MinecraftServer server, int windowId, IWaystone fromWaystone, BlockState state) {
         SharestoneBlock block = (SharestoneBlock) state.getBlock();
         ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
         List<IWaystone> waystones = WaystoneManager.get(server).getWaystonesByType(waystoneType).collect(Collectors.toList());
         return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
-    }
-
-    public static WaystoneSelectionMenu createAdminSelection(int windowId, Player player, Player target) {
-        final var waystones = PlayerWaystoneManager.getWaystones(target);
-        waystones.sort(WaystoneComparators.forAdminInspection(player, target));
-        return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, windowId, waystones);
     }
 }

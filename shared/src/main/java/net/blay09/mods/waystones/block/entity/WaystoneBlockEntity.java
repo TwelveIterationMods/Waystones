@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -37,14 +38,16 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             }
 
             @Override
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                return WaystoneSelectionMenu.createWaystoneSelection(i, playerEntity, WarpMode.WAYSTONE_TO_WAYSTONE, getWaystone());
+            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.WAYSTONE_TO_WAYSTONE, getWaystone(), windowId, waystones);
             }
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                buf.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
                 buf.writeBlockPos(worldPosition);
+                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
+                Waystone.writeList(buf, waystones);
             }
         };
     }

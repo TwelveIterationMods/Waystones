@@ -7,7 +7,9 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
+import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
@@ -23,6 +25,8 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
     public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
         ServerPlayer op = ctx.getSource().getPlayerOrException();
+        final var waystones = PlayerWaystoneManager.getActivatedWaystones(target);
+        waystones.sort(WaystoneComparators.forAdminInspection(op, target));
         BalmMenuProvider menuProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
@@ -30,16 +34,13 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
             }
 
             @Override
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                return WaystoneSelectionMenu.createAdminSelection(i, op, target);
+            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
+                return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, windowId, waystones);
             }
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                final var waystones = PlayerWaystoneManager.getWaystones(target);
-                waystones.sort(WaystoneComparators.forAdminInspection(player, target));
-                buf.writeInt(waystones.size());
-                waystones.forEach(w -> Waystone.write(buf, w));
+                Waystone.writeList(buf, waystones);
             }
         };
         Balm.getNetworking().openGui(op, menuProvider);

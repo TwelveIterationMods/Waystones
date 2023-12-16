@@ -4,10 +4,8 @@ import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.SharestoneBlock;
-import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystoneManager;
+import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -55,21 +53,16 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             }
 
             @Override
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                return WaystoneSelectionMenu.createSharestoneSelection(playerEntity.getServer(), i, getWaystone(), getBlockState());
+            public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+                final var fromWaystone = getWaystone();
+                final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone);
+                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
             }
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                SharestoneBlock block = ((SharestoneBlock) getBlockState().getBlock());
-                ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
-                List<IWaystone> waystones = WaystoneManager.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
-
                 buf.writeBlockPos(worldPosition);
-                buf.writeShort(waystones.size());
-                for (IWaystone waystone : waystones) {
-                    Waystone.write(buf, waystone);
-                }
+                Waystone.writeList(buf, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
             }
         };
     }

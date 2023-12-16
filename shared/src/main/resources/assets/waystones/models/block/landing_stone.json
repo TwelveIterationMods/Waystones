@@ -7,20 +7,6 @@
 	},
 	"elements": [
 		{
-			"name": "diag",
-			"from": [2.5, 0, 2.5],
-			"to": [13.5, 0.5, 13.5],
-			"rotation": {"angle": -45, "axis": "y", "origin": [8, 0, 8]},
-			"faces": {
-				"north": {"uv": [0, 0, 10, 0.5], "texture": "#texture"},
-				"east": {"uv": [0, 0, 10, 1], "texture": "#texture"},
-				"south": {"uv": [0, 0, 10, 0.5], "texture": "#texture"},
-				"west": {"uv": [0, 0, 10, 0.5], "texture": "#texture"},
-				"up": {"uv": [0, 0, 10, 10], "rotation": 270, "texture": "#texture"},
-				"down": {"uv": [0, 0, 10, 10], "rotation": 90, "texture": "#texture"}
-			}
-		},
-		{
 			"name": "bordersouth",
 			"from": [3, 0, 3],
 			"to": [13, 1, 13],
