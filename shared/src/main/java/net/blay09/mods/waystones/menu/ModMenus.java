@@ -80,11 +80,12 @@ public class ModMenus {
         });
 
         waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
-            BlockPos pos = data.readBlockPos();
+            final var pos = data.readBlockPos();
+            final var waystone = Waystone.read(data);
 
             BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                return new WaystoneSettingsMenu(windowId, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv);
+                return new WaystoneSettingsMenu(windowId, waystone, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv);
             }
 
             return null;

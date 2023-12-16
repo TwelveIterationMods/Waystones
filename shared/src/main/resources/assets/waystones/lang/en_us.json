@@ -102,6 +102,7 @@
   "tooltip.waystones.visibility.activation": "On Activation",
   "tooltip.waystones.visibility.global": "Global",
   "stat.waystones.waystone_activated": "Waystones Activated",
+  "waystones.untitled_waystone": "Untitled Waystone",
   "waystones:warp_plate": "Warp Plate",
   "commands.waystones.count": "%s has %d waystones activated and owns %d of those",
   "commands.waystones.list.header": "Waystones (x, y, z) by %s (owned only):",

@@ -153,7 +153,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
             break;
         }
 
-        BlockPos targetPos = getWaystoneType().equals(WaystoneTypes.WARP_PLATE) ? getPos() : getPos().relative(direction);
+        BlockPos targetPos = (getWaystoneType().equals(WaystoneTypes.WARP_PLATE) || getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) ? getPos() : getPos().relative(direction);
         Vec3 location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
         return new TeleportDestination(level, location, direction);
     }

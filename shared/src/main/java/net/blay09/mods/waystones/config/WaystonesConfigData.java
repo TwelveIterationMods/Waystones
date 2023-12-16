@@ -147,7 +147,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.")
-        public int warpPlateUseTime = 20;
+        public int warpPlateUseTime = 15;
 
         @Synced
         @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")

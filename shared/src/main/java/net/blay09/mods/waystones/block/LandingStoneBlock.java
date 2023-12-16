@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LandingStoneBlock extends WaystoneBlockBase {
     private static final VoxelShape SHAPE = Shapes.or(
-            box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0),
+            box(0.0, 0.0, 0.0, 12.0, 1.0, 12.0),
             box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
     ).optimize();
 
@@ -39,6 +39,9 @@ public class LandingStoneBlock extends WaystoneBlockBase {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        final VoxelShape SHAPE = Shapes.or(
+                box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
+        ).optimize();
         return SHAPE;
     }
 

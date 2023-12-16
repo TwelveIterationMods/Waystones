@@ -1,11 +1,9 @@
 {
-	"parent": "block/block",
 	"credit": "Made with Blockbench",
+	"parent": "block/block",
 	"textures": {
-		"texture": "waystones:block/warp_plate",
 		"particle": "waystones:block/warp_plate",
-		"inner": "waystones:block/warp_plate_inner",
-		"base": "waystones:block/warp_plate_base"
+		"texture": "waystones:block/warp_plate"
 	},
 	"elements": [
 		{
@@ -34,32 +32,6 @@
 				"west": {"uv": [0, 0, 10, 1], "texture": "#texture"},
 				"up": {"uv": [0, 0, 10, 10], "texture": "#texture"},
 				"down": {"uv": [0, 0, 10, 10], "texture": "#texture"}
-			}
-		},
-		{
-			"name": "inner",
-			"from": [5, 2, 5],
-			"to": [11, 2.01, 11],
-			"faces": {
-				"north": {"uv": [0, 0, 6, 0.01], "texture": "#inner"},
-				"east": {"uv": [0, 0, 6, 0.01], "texture": "#inner"},
-				"south": {"uv": [0, 0, 6, 0.01], "texture": "#inner"},
-				"west": {"uv": [0, 0, 6, 0.01], "texture": "#inner"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#inner"},
-				"down": {"uv": [0, 0, 6, 6], "texture": "#inner"}
-			}
-		},
-		{
-			"name": "base",
-			"from": [0, 0, 0],
-			"to": [16, 1, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 0.25], "texture": "#base"},
-				"east": {"uv": [0, 0, 16, 0.25], "texture": "#base"},
-				"south": {"uv": [0, 0, 16, 0.25], "texture": "#base"},
-				"west": {"uv": [0, 0, 16, 0.25], "texture": "#base"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#base"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#base"}
 			}
 		}
 	]

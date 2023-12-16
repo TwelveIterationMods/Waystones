@@ -84,12 +84,13 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                return new WaystoneSettingsMenu(windowId, SharestoneBlockEntity.this, dataAccess, playerInventory);
+                return new WaystoneSettingsMenu(windowId, getWaystone(), SharestoneBlockEntity.this, dataAccess, playerInventory);
             }
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
+                Waystone.write(buf, getWaystone());
             }
         };
     }

@@ -382,8 +382,8 @@ public class PlayerWaystoneManager {
         }
 
         if (context.playsSound()) {
-            sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
-            targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.1f, 1f);
+            sourceWorld.playSound(null, sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
+            targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
         }
 
         if (context.playsEffect()) {

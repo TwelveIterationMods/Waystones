@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -65,6 +66,9 @@ public class EditWaystoneMessage {
     }
 
     private static String makeNameLegal(MinecraftServer server, String name) {
+        if (name.trim().isEmpty()) {
+            name = Component.translatable("waystones.untitled_waystone").getString();
+        }
         String inventoryButtonMode = WaystonesConfig.getActive().inventoryButton.inventoryButton;
         if (inventoryButtonMode.equals(name) && WaystoneManager.get(server).findWaystoneByName(name).isPresent()) {
             return name + "*";

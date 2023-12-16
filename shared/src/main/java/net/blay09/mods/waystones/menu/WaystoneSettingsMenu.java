@@ -12,11 +12,13 @@ import net.minecraft.world.item.ItemStack;
 
 public class WaystoneSettingsMenu extends AbstractContainerMenu {
 
+    private final IWaystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final ContainerData containerData;
 
-    public WaystoneSettingsMenu(int windowId, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory) {
+    public WaystoneSettingsMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory) {
         super(ModMenus.waystoneSettings.get(), windowId);
+        this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.containerData = containerData;
 
@@ -56,14 +58,12 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(slotStack, 5, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            }
-            else {
+            } else {
                 if (!getSlot(0).hasItem()) {
                     if (!this.moveItemStackTo(slotStack.split(1), 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                }
-                else {
+                } else {
                     if (!this.moveItemStackTo(slotStack, 1, 5, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -87,6 +87,6 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
     }
 
     public IWaystone getWaystone() {
-        return blockEntity.getWaystone();
+        return waystone;
     }
 }
