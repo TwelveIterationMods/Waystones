@@ -12,6 +12,7 @@ import java.util.*;
 public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
+    private static final String SORTING_INDEX = "SortingIndex";
     private static final String INVENTORY_BUTTON_COOLDOWN_UNTIL = "InventoryButtonCooldownUntilUnix";
     private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntilUnix";
 
@@ -35,12 +36,12 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<IWaystone> getWaystones(Player player) {
-        ListTag activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
-        List<IWaystone> waystones = new ArrayList<>();
-        for (Iterator<Tag> iterator = activatedWaystones.iterator(); iterator.hasNext(); ) {
-            Tag activatedWaystone = iterator.next();
-            WaystoneProxy proxy = new WaystoneProxy(player.getServer(), UUID.fromString(activatedWaystone.getAsString()));
+    public Collection<IWaystone> getWaystones(Player player) {
+        final var activatedWaystonesTag = getActivatedWaystonesData(getWaystonesData(player));
+        final var waystones = new ArrayList<IWaystone>();
+        for (final var iterator = activatedWaystonesTag.iterator(); iterator.hasNext(); ) {
+            final var activatedWaystoneTag = iterator.next();
+            final var proxy = new WaystoneProxy(player.getServer(), UUID.fromString(activatedWaystoneTag.getAsString()));
             if (proxy.isValid()) {
                 waystones.add(proxy);
             } else {
@@ -52,17 +53,65 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void swapWaystoneSorting(Player player, int index, int otherIndex) {
-        ListTag activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
-        if (otherIndex == -1) {
-            Tag waystone = activatedWaystones.remove(index);
-            activatedWaystones.add(0, waystone);
-        } else if (otherIndex == activatedWaystones.size()) {
-            Tag waystone = activatedWaystones.remove(index);
-            activatedWaystones.add(waystone);
-        } else {
-            Collections.swap(activatedWaystones, index, otherIndex);
+    public List<UUID> getSortingIndex(Player player) {
+        final var sortingIndex = getSortingIndexData(getWaystonesData(player));
+        return sortingIndex.stream().map(entry -> UUID.fromString(entry.getAsString())).toList();
+    }
+
+    @Override
+    public void setSortingIndex(Player player, List<UUID> sortingIndex) {
+        final var sortingIndexData = getSortingIndexData(getWaystonesData(player));
+        sortingIndexData.clear();
+        for (final var waystoneUid : sortingIndex) {
+            sortingIndexData.add(StringTag.valueOf(waystoneUid.toString()));
         }
+    }
+
+    @Override
+    public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
+        final var sortingIndex = getSortingIndexData(getWaystonesData(player));
+        for (int i = 0; i < sortingIndex.size(); i++) {
+            final var sortingIndexEntry = sortingIndex.get(i);
+            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+                sortingIndex.remove(i);
+                sortingIndex.add(0, sortingIndexEntry);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void sortWaystoneAsLast(Player player, UUID waystoneUid) {
+        final var sortingIndex = getSortingIndexData(getWaystonesData(player));
+        for (int i = 0; i < sortingIndex.size(); i++) {
+            final var sortingIndexEntry = sortingIndex.get(i);
+            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+                sortingIndex.remove(i);
+                sortingIndex.add(sortingIndexEntry);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid) {
+        final var sortingIndex = getSortingIndexData(getWaystonesData(player));
+        int waystoneIndex = -1;
+        int otherWaystoneIndex = -1;
+        for (int i = 0; i < sortingIndex.size(); i++) {
+            final var sortingIndexEntry = sortingIndex.get(i);
+            if (waystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+                waystoneIndex = i;
+            } else if (otherWaystoneUid.toString().equals(sortingIndexEntry.getAsString())) {
+                otherWaystoneIndex = i;
+            }
+        }
+
+        System.out.println(sortingIndex);
+        if (waystoneIndex != -1 && otherWaystoneIndex != -1) {
+            Collections.swap(sortingIndex, waystoneIndex, otherWaystoneIndex);
+        }
+        System.out.println(sortingIndex);
     }
 
     @Override
@@ -105,10 +154,28 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         return list;
     }
 
+    private static ListTag getSortingIndexData(CompoundTag data) {
+        ListTag list = data.contains(SORTING_INDEX) ? data.getList(SORTING_INDEX, Tag.TAG_STRING) : createSortingIndexFromLegacy(data);
+        data.put(SORTING_INDEX, list);
+        return list;
+    }
+
     private static CompoundTag getWaystonesData(Player player) {
         CompoundTag persistedData = Balm.getHooks().getPersistentData(player);
         CompoundTag compound = persistedData.getCompound(TAG_NAME);
         persistedData.put(TAG_NAME, compound);
         return compound;
     }
+
+    private static ListTag createSortingIndexFromLegacy(CompoundTag data) {
+        final var activatedWaystones = getActivatedWaystonesData(data);
+        if (activatedWaystones.isEmpty()) {
+            return new ListTag();
+        }
+
+        final var sortingIndex = new ListTag();
+        sortingIndex.addAll(activatedWaystones);
+        return sortingIndex;
+    }
+
 }

@@ -12,14 +12,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class KnownWaystonesMessage {
 
     private final ResourceLocation type;
-    private final List<IWaystone> waystones;
+    private final Collection<IWaystone> waystones;
 
-    public KnownWaystonesMessage(ResourceLocation type, List<IWaystone> waystones) {
+    public KnownWaystonesMessage(ResourceLocation type, Collection<IWaystone> waystones) {
         this.type = type;
         this.waystones = waystones;
     }
@@ -43,14 +44,15 @@ public class KnownWaystonesMessage {
     }
 
     public static void handle(Player player, KnownWaystonesMessage message) {
+        final var waystones = message.waystones.stream().toList(); // backwards compat for event expecting a List
         if (message.type.equals(WaystoneTypes.WAYSTONE)) {
             InMemoryPlayerWaystoneData playerWaystoneData = (InMemoryPlayerWaystoneData) PlayerWaystoneManager.getPlayerWaystoneData(BalmEnvironment.CLIENT);
             playerWaystoneData.setWaystones(message.waystones);
 
-            Balm.getEvents().fireEvent(new KnownWaystonesEvent(message.waystones));
+            Balm.getEvents().fireEvent(new KnownWaystonesEvent(waystones));
         }
 
-        Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, message.waystones));
+        Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, waystones));
 
         for (IWaystone waystone : message.waystones) {
             WaystoneManager.get(player.getServer()).updateWaystone(waystone);

@@ -20,10 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class Waystone implements IWaystone, IMutableWaystone {
 
@@ -205,7 +202,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         return waystone;
     }
 
-    public static void writeList(FriendlyByteBuf buf, List<IWaystone> waystones) {
+    public static void writeList(FriendlyByteBuf buf, Collection<IWaystone> waystones) {
         buf.writeShort(waystones.size());
         for (IWaystone waystone : waystones) {
             write(buf, waystone);

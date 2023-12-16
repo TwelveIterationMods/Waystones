@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.*;
 
 public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
-    private final List<IWaystone> sortedWaystones = new ArrayList<>();
+    private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, IWaystone> waystones = new HashMap<>();
     private long warpStoneCooldownUntil;
     private long inventoryButtonCooldownUntil;
@@ -14,7 +14,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void activateWaystone(Player player, IWaystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
-        sortedWaystones.add(waystone);
+        sortingIndex.add(waystone.getWaystoneUid());
     }
 
     @Override
@@ -25,7 +25,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     @Override
     public void deactivateWaystone(Player player, IWaystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
-        sortedWaystones.remove(waystone);
+        sortingIndex.remove(waystone.getWaystoneUid());
     }
 
     @Override
@@ -49,28 +49,45 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<IWaystone> getWaystones(Player player) {
-        return sortedWaystones;
+    public Collection<IWaystone> getWaystones(Player player) {
+        return waystones.values();
     }
 
     @Override
-    public void swapWaystoneSorting(Player player, int index, int otherIndex) {
-        if (otherIndex == -1) {
-            IWaystone waystone = sortedWaystones.remove(index);
-            sortedWaystones.add(0, waystone);
-        } else if (otherIndex == sortedWaystones.size()) {
-            IWaystone waystone = sortedWaystones.remove(index);
-            sortedWaystones.add(waystone);
-        } else {
-            Collections.swap(sortedWaystones, index, otherIndex);
+    public void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
+        sortingIndex.remove(waystoneUid);
+        sortingIndex.add(0, waystoneUid);
+    }
+
+    @Override
+    public void sortWaystoneAsLast(Player player, UUID waystoneUid) {
+        sortingIndex.remove(waystoneUid);
+        sortingIndex.add(waystoneUid);
+    }
+
+    @Override
+    public void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid) {
+        final var waystoneIndex = sortingIndex.indexOf(waystoneUid);
+        final var otherWaystoneIndex = sortingIndex.indexOf(otherWaystoneUid);
+        if (waystoneIndex != -1 && otherWaystoneIndex != -1) {
+            Collections.swap(sortingIndex, waystoneIndex, otherWaystoneIndex);
         }
     }
 
-    public void setWaystones(List<IWaystone> waystones) {
-        this.sortedWaystones.clear();
+    @Override
+    public List<UUID> getSortingIndex(Player player) {
+        return sortingIndex;
+    }
+
+    @Override
+    public void setSortingIndex(Player player, List<UUID> sortingIndex) {
+        this.sortingIndex.clear();
+        this.sortingIndex.addAll(sortingIndex);
+    }
+
+    public void setWaystones(Collection<IWaystone> waystones) {
         this.waystones.clear();
-        this.sortedWaystones.addAll(waystones);
-        for (IWaystone waystone : waystones) {
+        for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);
         }
     }

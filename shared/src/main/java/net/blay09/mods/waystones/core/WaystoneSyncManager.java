@@ -3,10 +3,7 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.network.message.KnownWaystonesMessage;
-import net.blay09.mods.waystones.network.message.PlayerWaystoneCooldownsMessage;
-import net.blay09.mods.waystones.network.message.UpdateWaystoneMessage;
-import net.blay09.mods.waystones.network.message.WaystoneRemovedMessage;
+import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,8 +38,13 @@ public class WaystoneSyncManager {
         }
     }
 
+    public static void sendSortingIndex(Player player) {
+        final var sortingIndex = PlayerWaystoneManager.getSortingIndex(player);
+        Balm.getNetworking().sendTo(player, new SortingIndexMessage(sortingIndex));
+    }
+
     public static void sendActivatedWaystones(Player player) {
-        List<IWaystone> waystones = PlayerWaystoneManager.getActivatedWaystones(player);
+        final var waystones = PlayerWaystoneManager.getActivatedWaystones(player);
         Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(WaystoneTypes.WAYSTONE, waystones));
     }
 

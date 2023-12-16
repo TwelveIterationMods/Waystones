@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -9,6 +8,7 @@ import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
+import net.blay09.mods.waystones.comparator.UserSortingComparator;
 import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -21,7 +21,6 @@ import net.blay09.mods.waystones.network.message.SortWaystoneMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -30,7 +29,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,11 +39,10 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
-    private final List<IWaystone> waystones;
+    private final Collection<IWaystone> waystones;
     private List<IWaystone> filteredWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
@@ -67,6 +64,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         super(container, playerInventory, title);
         waystones = container.getWaystones();
         filteredWaystones = new ArrayList<>(waystones);
+        final var sorting = getSorting();
+        if (sorting != null) {
+            filteredWaystones.sort(getSorting());
+        }
         imageWidth = 270;
         imageHeight = 200;
     }
@@ -118,9 +119,17 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void updateList() {
-        filteredWaystones = waystones.stream()
-                .filter((waystone) -> waystone.getName().toLowerCase().contains(searchText.toLowerCase()))
-                .collect(Collectors.toList());
+        List<IWaystone> list = new ArrayList<>();
+        for (IWaystone iWaystone : waystones) {
+            if (iWaystone.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                list.add(iWaystone);
+            }
+        }
+        final var sorting = getSorting();
+        if (sorting != null) {
+            list.sort(sorting);
+        }
+        filteredWaystones = list;
 
         headerY = 0;
 
@@ -143,13 +152,13 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                 addRenderableWidget(createWaystoneButton(y, waystone));
 
                 if (allowSorting()) {
-                    SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(entryIndex, -1));
+                    SortWaystoneButton sortUpButton = new SortWaystoneButton(width / 2 + 108, y + 2, -1, y, 20, it -> sortWaystone(waystone, -1));
                     if (entryIndex == 0) {
                         sortUpButton.active = false;
                     }
                     addRenderableWidget(sortUpButton);
 
-                    SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(entryIndex, 1));
+                    SortWaystoneButton sortDownButton = new SortWaystoneButton(width / 2 + 108, y + 13, 1, y, 20, it -> sortWaystone(waystone, 1));
                     if (entryIndex == filteredWaystones.size() - 1) {
                         sortDownButton.active = false;
                     }
@@ -160,6 +169,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
                     RemoveWaystoneButton removeButton = new RemoveWaystoneButton(width / 2 + 122, y + 4, y, 20, waystone, button -> {
                         Player player = Minecraft.getInstance().player;
                         PlayerWaystoneManager.deactivateWaystone(Objects.requireNonNull(player), waystone);
+                        waystones.remove(waystone);
                         Balm.getNetworking().sendToServer(new RemoveWaystoneMessage(waystone.getWaystoneUid()));
                         updateList();
                     });
@@ -195,23 +205,29 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
     }
 
-    private void sortWaystone(int index, int sortDir) {
-        if (index < 0 || index >= waystones.size()) {
-            return;
-        }
-
-        int otherIndex;
+    private void sortWaystone(IWaystone waystone, int sortDir) {
+        final var waystoneUid = waystone.getWaystoneUid();
         if (Screen.hasShiftDown()) {
-            otherIndex = sortDir == -1 ? -1 : waystones.size();
+            if (sortDir == -1) {
+                PlayerWaystoneManager.sortWaystoneAsFirst(Minecraft.getInstance().player, waystoneUid);
+                Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, SortWaystoneMessage.SORT_FIRST));
+            } else if (sortDir == 1) {
+                PlayerWaystoneManager.sortWaystoneAsLast(Minecraft.getInstance().player, waystoneUid);
+                Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, SortWaystoneMessage.SORT_LAST));
+            }
         } else {
-            otherIndex = index + sortDir;
-            if (otherIndex < 0 || otherIndex >= waystones.size()) {
+            final var index = filteredWaystones.indexOf(waystone);
+            final var otherIndex = index + sortDir;
+            if (index == -1 || otherIndex < 0 || otherIndex >= waystones.size()) {
                 return;
             }
+            final var otherWaystone = filteredWaystones.get(otherIndex);
+            final var otherWaystoneUid = otherWaystone.getWaystoneUid();
+
+            PlayerWaystoneManager.sortWaystoneSwap(Minecraft.getInstance().player, waystoneUid, otherWaystoneUid);
+            Balm.getNetworking().sendToServer(new SortWaystoneMessage(waystoneUid, otherWaystoneUid));
         }
 
-        PlayerWaystoneManager.swapWaystoneSorting(Minecraft.getInstance().player, index, otherIndex);
-        Balm.getNetworking().sendToServer(new SortWaystoneMessage(index, otherIndex));
         updateList();
     }
 
@@ -316,5 +332,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
 
         return this.searchBox.keyPressed(key, scanCode, modifiers);
+    }
+
+    public Comparator<IWaystone> getSorting() {
+        final var player = Minecraft.getInstance().player;
+        final var sortingIndex = PlayerWaystoneManager.getSortingIndex(player);
+        return new UserSortingComparator(sortingIndex);
     }
 }

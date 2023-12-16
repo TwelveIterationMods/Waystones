@@ -1,32 +1,23 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.block.SharestoneBlock;
-import net.blay09.mods.waystones.comparator.WaystoneComparators;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.WaystoneManager;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     private final WarpMode warpMode;
     private final IWaystone fromWaystone;
-    private final List<IWaystone> waystones;
+    private final Collection<IWaystone> waystones;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, WarpMode warpMode, @Nullable IWaystone fromWaystone, int windowId, List<IWaystone> waystones) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, WarpMode warpMode, @Nullable IWaystone fromWaystone, int windowId, Collection<IWaystone> waystones) {
         super(type, windowId);
         this.warpMode = warpMode;
         this.fromWaystone = fromWaystone;
@@ -57,14 +48,8 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return warpMode;
     }
 
-    public List<IWaystone> getWaystones() {
+    public Collection<IWaystone> getWaystones() {
         return waystones;
     }
 
-    public static WaystoneSelectionMenu createSharestoneSelection(MinecraftServer server, int windowId, IWaystone fromWaystone, BlockState state) {
-        SharestoneBlock block = (SharestoneBlock) state.getBlock();
-        ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
-        List<IWaystone> waystones = WaystoneManager.get(server).getWaystonesByType(waystoneType).collect(Collectors.toList());
-        return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
-    }
 }

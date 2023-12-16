@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class PlayerWaystoneManager {
@@ -229,7 +230,7 @@ public class PlayerWaystoneManager {
                 }).orElse(null);
     }
 
-    public static List<IWaystone> getActivatedWaystones(Player player) {
+    public static Collection<IWaystone> getActivatedWaystones(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
@@ -245,8 +246,20 @@ public class PlayerWaystoneManager {
         return true;
     }
 
-    public static void swapWaystoneSorting(Player player, int index, int otherIndex) {
-        getPlayerWaystoneData(player.level()).swapWaystoneSorting(player, index, otherIndex);
+    public static List<UUID> getSortingIndex(Player player) {
+        return getPlayerWaystoneData(player.level()).getSortingIndex(player);
+    }
+
+    public static void sortWaystoneAsFirst(Player player, UUID waystoneUid) {
+        getPlayerWaystoneData(player.level()).sortWaystoneAsFirst(player, waystoneUid);
+    }
+
+    public static void sortWaystoneAsLast(Player player, UUID waystoneUid) {
+        getPlayerWaystoneData(player.level()).sortWaystoneAsLast(player, waystoneUid);
+    }
+
+    public static void sortWaystoneSwap(Player player, UUID waystoneUid, UUID otherWaystoneUid) {
+        getPlayerWaystoneData(player.level()).sortWaystoneSwap(player, waystoneUid, otherWaystoneUid);
     }
 
     public static boolean mayEditGlobalWaystones(Player player) {
@@ -278,26 +291,15 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static WaystoneUserSettings getUserSettingsForWaystone(Player player, IWaystone waystone) {
-        // TODO intermediate implementation,
-        //      should be replaced by a separate storage that can be used for all kinds of waystones instead of relying on the list order
-        final var activatedWaystones = PlayerWaystoneManager.getActivatedWaystones(player);
-        final var sortIndex = activatedWaystones.indexOf(waystone);
-        return new WaystoneUserSettings(sortIndex, WaystoneUserVisibility.DEFAULT);
-    }
-
-    public static void updateUserSettingsForWaystone(Player player, IWaystone waystone, WaystoneUserSettings settings) {
-    }
-
-    public static List<IWaystone> getTargetsForPlayer(Player player) {
+    public static Collection<IWaystone> getTargetsForPlayer(Player player) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
-    public static List<IWaystone> getTargetsForItem(Player player, ItemStack itemStack) {
+    public static Collection<IWaystone> getTargetsForItem(Player player, ItemStack itemStack) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
-    public static List<IWaystone> getTargetsForWaystone(Player player, IWaystone waystone) {
+    public static Collection<IWaystone> getTargetsForWaystone(Player player, IWaystone waystone) {
         final var waystoneType = waystone.getWaystoneType();
         if (WaystoneTypes.isSharestone(waystoneType)) {
             return WaystoneManager.get(player.getServer()).getWaystonesByType(waystoneType).toList();
@@ -305,7 +307,7 @@ public class PlayerWaystoneManager {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
-    public static List<IWaystone> getTargetsForInventoryButton(ServerPlayer player) {
+    public static Collection<IWaystone> getTargetsForInventoryButton(ServerPlayer player) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 }

@@ -25,8 +25,7 @@ public class OpenPlayerWaystonesGuiCommand implements Command<CommandSourceStack
     public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer target = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
         ServerPlayer op = ctx.getSource().getPlayerOrException();
-        final var waystones = PlayerWaystoneManager.getActivatedWaystones(target);
-        waystones.sort(WaystoneComparators.forAdminInspection(op, target));
+        final var waystones = PlayerWaystoneManager.getActivatedWaystones(target).stream().sorted(WaystoneComparators.forAdminInspection(op, target)).toList();
         BalmMenuProvider menuProvider = new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {

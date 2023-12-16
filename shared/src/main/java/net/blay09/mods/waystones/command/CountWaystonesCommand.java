@@ -16,7 +16,7 @@ public class CountWaystonesCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getArgument("player", EntitySelector.class).findSinglePlayer(ctx.getSource());
-        List<IWaystone> waystones = PlayerWaystoneManager.getActivatedWaystones(player);
+        final var waystones = PlayerWaystoneManager.getActivatedWaystones(player);
         int total = waystones.size();
         long owned = waystones.stream().filter(w -> w.isOwner(player)).count();
         ctx.getSource().sendSuccess(() -> Component.translatable("commands.waystones.count", player.getScoreboardName(), total, owned), false);

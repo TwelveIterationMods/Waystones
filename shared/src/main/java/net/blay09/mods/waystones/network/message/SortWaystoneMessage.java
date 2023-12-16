@@ -4,25 +4,30 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.UUID;
+
 public class SortWaystoneMessage {
 
-    private final int index;
-    private final int otherIndex;
+    public static final UUID SORT_FIRST = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final UUID SORT_LAST = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
-    public SortWaystoneMessage(int index, int otherIndex) {
-        this.index = index;
-        this.otherIndex = otherIndex;
+    private final UUID waystoneUid;
+    private final UUID otherWaystoneUid;
+
+    public SortWaystoneMessage(UUID waystoneUid, UUID otherWaystoneUid) {
+        this.waystoneUid = waystoneUid;
+        this.otherWaystoneUid = otherWaystoneUid;
     }
 
     public static void encode(SortWaystoneMessage message, FriendlyByteBuf buf) {
-        buf.writeByte(message.index);
-        buf.writeByte(message.otherIndex);
+        buf.writeUUID(message.waystoneUid);
+        buf.writeUUID(message.otherWaystoneUid);
     }
 
     public static SortWaystoneMessage decode(FriendlyByteBuf buf) {
-        int index = buf.readByte();
-        int otherIndex = buf.readByte();
-        return new SortWaystoneMessage(index, otherIndex);
+        final var waystoneUid = buf.readUUID();
+        final var otherWaystoneUid = buf.readUUID();
+        return new SortWaystoneMessage(waystoneUid, otherWaystoneUid);
     }
 
     public static void handle(ServerPlayer player, SortWaystoneMessage message) {
@@ -30,7 +35,13 @@ public class SortWaystoneMessage {
             return;
         }
 
-        PlayerWaystoneManager.swapWaystoneSorting(player, message.index, message.otherIndex);
+        if (message.waystoneUid.equals(SORT_FIRST)) {
+            PlayerWaystoneManager.sortWaystoneAsFirst(player, message.otherWaystoneUid);
+        } else if (message.waystoneUid.equals(SORT_LAST)) {
+            PlayerWaystoneManager.sortWaystoneAsLast(player, message.otherWaystoneUid);
+        } else {
+            PlayerWaystoneManager.sortWaystoneSwap(player, message.waystoneUid, message.otherWaystoneUid);
+        }
     }
 
 }
