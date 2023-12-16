@@ -9,7 +9,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
 import net.blay09.mods.waystones.tag.ModItemTags;
@@ -52,18 +52,14 @@ import java.util.*;
 import java.util.function.Consumer;
 
 
-public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements ImplementedContainer, Nameable {
+public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nameable {
 
     private static final Logger logger = LoggerFactory.getLogger(WarpPlateBlockEntity.class);
 
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
 
     private final Random random = new Random();
-    private final ContainerData dataAccess;
 
-    private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
-
-    private int attunementTicks;
     private boolean readyForAttunement;
     private boolean completedFirstAttunement;
     private int lastAttunementSlot;
@@ -72,35 +68,15 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
-        dataAccess = new ContainerData() {
-            @Override
-            public int get(int i) {
-                return attunementTicks;
-            }
-
-            @Override
-            public void set(int i, int j) {
-                attunementTicks = j;
-            }
-
-            @Override
-            public int getCount() {
-                return 1;
-            }
-        };
     }
 
-    @Override
-    public NonNullList<ItemStack> getItems() {
-        return items;
-    }
 
     @Override
     public ItemStack removeItem(int slot, int count) {
         if (!completedFirstAttunement) {
             return ItemStack.EMPTY;
         }
-        return ImplementedContainer.super.removeItem(slot, count);
+        return WarpPlateBlockEntity.super.removeItem(slot, count);
     }
 
     @Override
@@ -109,7 +85,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             return ItemStack.EMPTY;
         }
 
-        return ImplementedContainer.super.removeItemNoUpdate(slot);
+        return WarpPlateBlockEntity.super.removeItemNoUpdate(slot);
     }
 
     @Override
@@ -174,7 +150,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             tag.putString("CustomName", Component.Serializer.toJson(customName));
         }
 
-        ContainerHelper.saveAllItems(tag, items);
         tag.putBoolean("ReadyForAttunement", readyForAttunement);
         tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
         tag.putInt("LastAttunementSlot", lastAttunementSlot);
@@ -188,14 +163,18 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             customName = Component.Serializer.fromJson(compound.getString("CustomName"));
         }
 
-        ContainerHelper.loadAllItems(compound, items);
         readyForAttunement = compound.getBoolean("ReadyForAttunement");
         completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
         lastAttunementSlot = compound.getInt("LastAttunementSlot");
     }
 
     @Override
-    public BalmMenuProvider getMenuProvider() {
+    public MenuProvider getMenuProvider() {
+        return getSettingsMenuProvider();
+    }
+
+    @Override
+    public MenuProvider getSettingsMenuProvider() {
         return new BalmMenuProvider() {
             @Override
             public Component getDisplayName() {
@@ -204,7 +183,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new WarpPlateContainer(i, WarpPlateBlockEntity.this, dataAccess, playerInventory);
+                return new WarpPlateMenu(i, WarpPlateBlockEntity.this, dataAccess, playerInventory);
             }
 
             @Override
@@ -212,11 +191,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
                 buf.writeBlockPos(worldPosition);
             }
         };
-    }
-
-    @Override
-    public MenuProvider getSettingsMenuProvider() {
-        return null;
     }
 
     public void onEntityCollision(Entity entity) {
@@ -455,9 +429,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return WaystonesAPI.getBoundWaystone(getTargetAttunementStack());
     }
 
-    public int getMaxAttunementTicks() {
-        return 30;
-    }
+
 
     /**
      * We delay attunement until the menu is opened to show the player what's happening inside the slots before converting the items to an attuned shard.
@@ -474,16 +446,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         return completedFirstAttunement;
     }
 
-    public ContainerData getContainerData() {
-        return dataAccess;
-    }
-
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
         if (index == 0 && !getItem(0).isEmpty()) {
             return false; //prevents hoppers to add items in an occupied center slot
         }
-        return ImplementedContainer.super.canPlaceItem(index, stack);
+        return WarpPlateBlockEntity.super.canPlaceItem(index, stack);
     }
 
     @Override

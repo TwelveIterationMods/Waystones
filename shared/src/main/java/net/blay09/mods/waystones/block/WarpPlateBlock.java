@@ -217,4 +217,9 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                 ModBlockEntities.warpPlate.get(),
                 (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }
+
+    @Override
+    protected boolean shouldOpenMenuWhenPlaced() {
+        return false;
+    }
 }

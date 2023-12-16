@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -12,11 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 
-public class WarpPlateScreen extends AbstractContainerScreen<WarpPlateContainer> {
+public class WarpPlateScreen extends AbstractContainerScreen<WarpPlateMenu> {
 
     private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/warp_plate.png");
 
-    public WarpPlateScreen(WarpPlateContainer menu, Inventory playerInventory, Component title) {
+    public WarpPlateScreen(WarpPlateMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         imageHeight = 196;
         inventoryLabelY = 93;

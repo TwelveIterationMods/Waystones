@@ -7,6 +7,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
-    public static DeferredObject<MenuType<WarpPlateContainer>> warpPlate;
+    public static DeferredObject<MenuType<WarpPlateMenu>> warpPlate;
     public static DeferredObject<MenuType<WaystoneSettingsMenu>> waystoneSettings;
 
     public static void initialize(BalmMenus menus) {
@@ -72,15 +73,22 @@ public class ModMenus {
 
             BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
-                return new WarpPlateContainer(windowId, warpPlate, warpPlate.getContainerData(), inv);
+                return new WarpPlateMenu(windowId, warpPlate, warpPlate.getContainerData(), inv);
             }
 
             return null;
         });
 
         waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
-            IWaystone waystone = Waystone.read(data);
-            return new WaystoneSettingsMenu(waystoneSettings.get(), waystone, windowId);
+            BlockPos pos = data.readBlockPos();
+
+            BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
+            if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+                return new WaystoneSettingsMenu(windowId, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv);
+            }
+
+            return null;
+
         });
     }
 

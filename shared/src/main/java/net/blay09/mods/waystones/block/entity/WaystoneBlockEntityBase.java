@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
+import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
@@ -9,12 +10,15 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,8 +31,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox {
+public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, ImplementedContainer {
 
+    protected final ContainerData dataAccess = new ContainerData() {
+        @Override
+        public int get(int i) {
+            return attunementTicks;
+        }
+
+        @Override
+        public void set(int i, int j) {
+            attunementTicks = j;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    };
+
+    private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
+
+    protected int attunementTicks;
     private IWaystone waystone = InvalidWaystone.INSTANCE;
     private UUID waystoneUid;
     private boolean shouldNotInitialize;
@@ -42,6 +66,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
+        ContainerHelper.saveAllItems(tag, items);
+
         if (waystone.isValid()) {
             tag.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
         } else if (waystoneUid != null) {
@@ -52,6 +78,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
+
+        ContainerHelper.loadAllItems(compound, items);
 
         if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
             waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
@@ -84,7 +112,12 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 2, worldPosition.getZ() + 1);
+        return new AABB(worldPosition.getX(),
+                worldPosition.getY(),
+                worldPosition.getZ(),
+                worldPosition.getX() + 1,
+                worldPosition.getY() + 2,
+                worldPosition.getZ() + 1);
     }
 
     public IWaystone getWaystone() {
@@ -121,7 +154,12 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     protected abstract ResourceLocation getWaystoneType();
 
     public void initializeWaystone(ServerLevelAccessor world, @Nullable LivingEntity player, WaystoneOrigin origin) {
-        Waystone waystone = new Waystone(getWaystoneType(), UUID.randomUUID(), world.getLevel().dimension(), worldPosition, origin, player != null ? player.getUUID() : null);
+        Waystone waystone = new Waystone(getWaystoneType(),
+                UUID.randomUUID(),
+                world.getLevel().dimension(),
+                worldPosition,
+                origin,
+                player != null ? player.getUUID() : null);
         WaystoneManager.get(world.getServer()).addWaystone(waystone);
         this.waystone = waystone;
         setChanged();
@@ -177,4 +215,17 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Nullable
     public abstract MenuProvider getSettingsMenuProvider();
+
+    public int getMaxAttunementTicks() {
+        return 30;
+    }
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return items;
+    }
+
+    public ContainerData getContainerData() {
+        return dataAccess;
+    }
 }

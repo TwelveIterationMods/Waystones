@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -49,8 +49,8 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
         list.add(WarpPlateBlock.getGalacticName(attunedWarpPlate));
 
         Player player = Balm.getProxy().getClientPlayer();
-        if (player != null && player.containerMenu instanceof WarpPlateContainer) {
-            IWaystone currentWarpPlate = ((WarpPlateContainer) player.containerMenu).getWaystone();
+        if (player != null && player.containerMenu instanceof WarpPlateMenu) {
+            IWaystone currentWarpPlate = ((WarpPlateMenu) player.containerMenu).getWaystone();
             if (attunedWarpPlate.getWaystoneUid().equals(currentWarpPlate.getWaystoneUid())) {
                 list.add(Component.translatable("tooltip.waystones.attuned_shard.move_to_other_warp_plate"));
             } else {

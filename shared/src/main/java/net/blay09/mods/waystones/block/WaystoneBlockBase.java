@@ -202,7 +202,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 return InteractionResult.SUCCESS;
             }
 
-            if (!world.isClientSide) {
+            if (!world.isClientSide && shouldOpenMenuWhenPlaced()) {
                 MenuProvider settingsContainerProvider = tileEntity.getSettingsMenuProvider();
                 if (settingsContainerProvider != null) {
                     Balm.getNetworking().openGui(player, settingsContainerProvider);
@@ -212,6 +212,10 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         }
 
         return null;
+    }
+
+    protected boolean shouldOpenMenuWhenPlaced() {
+        return true;
     }
 
     @Nullable

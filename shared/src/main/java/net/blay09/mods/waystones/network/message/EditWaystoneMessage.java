@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.core.BlockPos;
@@ -13,25 +14,25 @@ public class EditWaystoneMessage {
 
     private final UUID waystoneUid;
     private final String name;
-    private final boolean isGlobal;
+    private final WaystoneVisibility visibility;
 
-    public EditWaystoneMessage(UUID waystoneUid, String name, boolean isGlobal) {
+    public EditWaystoneMessage(UUID waystoneUid, String name, WaystoneVisibility visibility) {
         this.waystoneUid = waystoneUid;
         this.name = name;
-        this.isGlobal = isGlobal;
+        this.visibility = visibility;
     }
 
     public static void encode(EditWaystoneMessage message, FriendlyByteBuf buf) {
         buf.writeUUID(message.waystoneUid);
         buf.writeUtf(message.name);
-        buf.writeBoolean(message.isGlobal);
+        buf.writeEnum(message.visibility);
     }
 
     public static EditWaystoneMessage decode(FriendlyByteBuf buf) {
         UUID waystoneUid = buf.readUUID();
         String name = buf.readUtf(255);
-        boolean isGlobal = buf.readBoolean();
-        return new EditWaystoneMessage(waystoneUid, name, isGlobal);
+        final var visibility = buf.readEnum(WaystoneVisibility.class);
+        return new EditWaystoneMessage(waystoneUid, name, visibility);
     }
 
     public static void handle(ServerPlayer player, EditWaystoneMessage message) {
@@ -51,10 +52,10 @@ public class EditWaystoneMessage {
         backingWaystone.setName(legalName);
 
         if (PlayerWaystoneManager.mayEditGlobalWaystones(player)) {
-            if (!backingWaystone.isGlobal() && message.isGlobal) {
+            if (!backingWaystone.isGlobal() && message.visibility == WaystoneVisibility.GLOBAL) {
                 PlayerWaystoneManager.activeWaystoneForEveryone(player.server, backingWaystone);
             }
-            backingWaystone.setGlobal(message.isGlobal);
+            backingWaystone.setGlobal(message.visibility == WaystoneVisibility.GLOBAL);
         }
 
         WaystoneManager.get(player.server).setDirty();

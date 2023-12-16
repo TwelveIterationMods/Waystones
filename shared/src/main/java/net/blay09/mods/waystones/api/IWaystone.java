@@ -25,6 +25,10 @@ public interface IWaystone {
 
     WaystoneOrigin getOrigin();
 
+    /**
+     * @deprecated Use {@link #getVisibility()} instead.
+     */
+    @Deprecated
     boolean isGlobal();
 
     boolean isOwner(Player player);
@@ -54,4 +58,5 @@ public interface IWaystone {
         return new TeleportDestination(level, getPos().getCenter(), Direction.NORTH);
     }
 
+    WaystoneVisibility getVisibility();
 }

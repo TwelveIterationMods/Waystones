@@ -10,12 +10,12 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class WarpPlateContainer extends AbstractContainerMenu {
+public class WarpPlateMenu extends AbstractContainerMenu {
 
     private final WarpPlateBlockEntity blockEntity;
     private final ContainerData containerData;
 
-    public WarpPlateContainer(int windowId, WarpPlateBlockEntity warpPlate, ContainerData containerData, Inventory playerInventory) {
+    public WarpPlateMenu(int windowId, WarpPlateBlockEntity warpPlate, ContainerData containerData, Inventory playerInventory) {
         super(ModMenus.warpPlate.get(), windowId);
         this.blockEntity = warpPlate;
         this.containerData = containerData;

@@ -1,9 +1,6 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.api.IMutableWaystone;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.TeleportDestination;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -136,6 +133,19 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
         IWaystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof IMutableWaystone) {
             ((IMutableWaystone) backingWaystone).setOwnerUid(ownerUid);
+        }
+    }
+
+    @Override
+    public WaystoneVisibility getVisibility() {
+        return getBackingWaystone().getVisibility();
+    }
+
+    @Override
+    public void setVisibility(WaystoneVisibility visibility) {
+        IWaystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof IMutableWaystone) {
+            ((IMutableWaystone) backingWaystone).setVisibility(visibility);
         }
     }
 }

@@ -1,11 +1,8 @@
 package net.blay09.mods.waystones.core;
 
 import com.google.common.collect.Lists;
-import net.blay09.mods.waystones.api.IMutableWaystone;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.TeleportDestination;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.minecraft.core.BlockPos;
@@ -37,7 +34,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     private BlockPos pos;
 
     private String name = "";
-    private boolean isGlobal;
+    private WaystoneVisibility visibility;
 
     private UUID ownerUid;
 
@@ -77,12 +74,22 @@ public class Waystone implements IWaystone, IMutableWaystone {
 
     @Override
     public boolean isGlobal() {
-        return isGlobal;
+        return visibility == WaystoneVisibility.GLOBAL;
     }
 
     @Override
     public void setGlobal(boolean global) {
-        isGlobal = global;
+        visibility = global ? WaystoneVisibility.GLOBAL : WaystoneVisibility.ACTIVATION;
+    }
+
+    @Override
+    public WaystoneVisibility getVisibility() {
+        return visibility;
+    }
+
+    @Override
+    public void setVisibility(WaystoneVisibility visibility) {
+        this.visibility = visibility;
     }
 
     @Override

@@ -216,7 +216,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (isLocationHeaderHovered && menu.getWaystoneFrom() != null) {
-            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getWaystoneUid()));
+            Balm.getNetworking().sendToServer(new RequestEditWaystoneMessage(menu.getWaystoneFrom().getPos()));
             return true;
         }
 

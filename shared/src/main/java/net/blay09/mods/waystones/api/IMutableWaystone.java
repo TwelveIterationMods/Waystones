@@ -9,7 +9,13 @@ import java.util.UUID;
 public interface IMutableWaystone {
     void setName(String name);
 
+    /**
+     * @deprecated Use {@link #setVisibility(WaystoneVisibility)} instead.
+     */
+    @Deprecated
     void setGlobal(boolean global);
+
+    void setVisibility(WaystoneVisibility visibility);
 
     void setDimension(ResourceKey<Level> dimension);
 

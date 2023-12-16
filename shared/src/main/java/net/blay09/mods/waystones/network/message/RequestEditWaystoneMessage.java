@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
@@ -20,50 +21,40 @@ import java.util.UUID;
 
 public class RequestEditWaystoneMessage {
 
-    private final UUID waystoneUid;
+    private final BlockPos pos;
 
-    public RequestEditWaystoneMessage(UUID waystoneUid) {
-        this.waystoneUid = waystoneUid;
+    public RequestEditWaystoneMessage(BlockPos pos) {
+        this.pos = pos;
     }
 
     public static void encode(RequestEditWaystoneMessage message, FriendlyByteBuf buf) {
-        buf.writeUUID(message.waystoneUid);
+        buf.writeBlockPos(message.pos);
     }
 
     public static RequestEditWaystoneMessage decode(FriendlyByteBuf buf) {
-        UUID waystoneUid = buf.readUUID();
-        return new RequestEditWaystoneMessage(waystoneUid);
+        final var pos = buf.readBlockPos();
+        return new RequestEditWaystoneMessage(pos);
     }
 
     public static void handle(ServerPlayer player, RequestEditWaystoneMessage message) {
-        WaystoneProxy waystone = new WaystoneProxy(player.server, message.waystoneUid);
-        WaystoneEditPermissions permissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
-        if (permissions != WaystoneEditPermissions.ALLOW) {
-            return;
-        }
-
-        BlockPos pos = waystone.getPos();
+        final var pos = message.pos;
         if (player.distanceToSqr(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) > 64) {
             return;
         }
 
-        final BalmMenuProvider containerProvider = new BalmMenuProvider() {
-            @Override
-            public Component getDisplayName() {
-                return Component.translatable("container.waystones.waystone_settings");
+        final var blockEntity = player.level().getBlockEntity(pos);
+        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+            final var waystone = waystoneBlockEntity.getWaystone();
+            final var permissions = PlayerWaystoneManager.mayEditWaystone(player, player.level(), waystone);
+            if (permissions != WaystoneEditPermissions.ALLOW) {
+                return;
             }
 
-            @Override
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
-                return new WaystoneSettingsMenu(ModMenus.waystoneSettings.get(), waystone, i);
+            final var menuProvider = waystoneBlockEntity.getSettingsMenuProvider();
+            if (menuProvider != null) {
+                Balm.getNetworking().openGui(player, menuProvider);
             }
-
-            @Override
-            public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                Waystone.write(buf, waystone);
-            }
-        };
-        Balm.getNetworking().openGui(player, containerProvider);
+        }
     }
 }
 

@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.menu.WarpPlateContainer;
+import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +29,7 @@ public class CrumblingAttunedShardItem extends AbstractAttunedShardItem {
             textComponent.withStyle(ChatFormatting.WHITE).withStyle(ChatFormatting.ITALIC);
 
             Player player = Balm.getProxy().getClientPlayer();
-            if (player != null && player.containerMenu instanceof WarpPlateContainer wpc) {
+            if (player != null && player.containerMenu instanceof WarpPlateMenu wpc) {
                 if (!attunedWarpPlate.getWaystoneUid().equals(wpc.getWaystone().getWaystoneUid())) {
                     list.add(textComponent);
                 }
