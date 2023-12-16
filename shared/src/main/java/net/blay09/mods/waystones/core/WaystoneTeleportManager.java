@@ -255,10 +255,6 @@ public class WaystoneTeleportManager {
             return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
-        if (!warpMode.getAllowTeleportPredicate().test(entity, waystone)) {
-            return Either.right(new WaystoneTeleportError.WarpModeRejected());
-        }
-
         if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult().withDefault(() -> PlayerWaystoneManager.canDimensionalWarpBetween(entity, waystone))) {
             return Either.right(new WaystoneTeleportError.DimensionalWarpDenied());
         }

@@ -13,8 +13,13 @@ import net.blay09.mods.waystones.network.ModNetworking;
 import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.stats.ModStats;
 import net.blay09.mods.waystones.worldgen.ModWorldGen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Waystones {
+
+    public static final Logger logger = LoggerFactory.getLogger(Waystones.class);
+
     public static final String MOD_ID = "waystones";
 
     public static void initialize() {

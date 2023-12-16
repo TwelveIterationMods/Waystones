@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.world.entity.Entity;
@@ -9,16 +10,20 @@ import net.minecraft.world.entity.player.Player;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated Use {@link IWaystoneTeleportContext#consumesWarpItem()} instead. XP cost multipliers will be refactored out soon. WarpMode will be removed in 1.20.4.
+ */
+@Deprecated(forRemoval = true)
 public enum WarpMode {
-    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().xpCost.inventoryButtonXpCostMultiplier, WarpMode::waystoneIsActivatedOrNamed, false),
-    WARP_SCROLL(() -> 0.0, WarpMode::waystoneIsActivated, true),
-    RETURN_SCROLL(() -> 0.0, WarpMode::waystoneIsActivated, true),
+    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().xpCost.inventoryButtonXpCostMultiplier, WarpMode::always, false),
+    WARP_SCROLL(() -> 0.0, WarpMode::always, true),
+    RETURN_SCROLL(() -> 0.0, WarpMode::always, true),
     BOUND_SCROLL(() -> 0.0, WarpMode::always, true),
-    WARP_STONE(() -> WaystonesConfig.getActive().xpCost.warpStoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
-    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.waystoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
-    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().xpCost.sharestoneXpCostMultiplier, WarpMode::sharestonesOnly, false),
+    WARP_STONE(() -> WaystonesConfig.getActive().xpCost.warpStoneXpCostMultiplier, WarpMode::always, false),
+    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.waystoneXpCostMultiplier, WarpMode::always, false),
+    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().xpCost.sharestoneXpCostMultiplier, WarpMode::always, false),
     WARP_PLATE(() -> WaystonesConfig.getActive().xpCost.warpPlateXpCostMultiplier, WarpMode::always, false),
-    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.portstoneXpCostMultiplier, WarpMode::waystoneIsActivated, false),
+    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.portstoneXpCostMultiplier, WarpMode::always, false),
     CUSTOM(() -> 0.0, WarpMode::always, false);
 
     public static WarpMode[] values = values();
@@ -37,6 +42,10 @@ public enum WarpMode {
         return xpCostMultiplierSupplier.get();
     }
 
+    /**
+     * @deprecated Item consumption is now controlled through the {@link IWaystoneTeleportContext}.
+     */
+    @Deprecated(forRemoval = true)
     public boolean consumesItem() {
         return consumesItem;
     }
@@ -63,6 +72,10 @@ public enum WarpMode {
         return waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
     }
 
+    /**
+     * @deprecated Validation now happens earlier during packet handling. This will always resolve to true.
+     */
+    @Deprecated(forRemoval = true)
     public BiPredicate<Entity, IWaystone> getAllowTeleportPredicate() {
         return allowTeleportPredicate;
     }

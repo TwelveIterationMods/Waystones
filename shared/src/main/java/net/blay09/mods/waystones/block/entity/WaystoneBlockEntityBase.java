@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WaystoneBlock;
@@ -34,6 +35,8 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -276,5 +279,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         for (int i = 1; i <= 4; i++) {
             getItem(i).shrink(1);
         }
+    }
+
+    public Collection<? extends IWaystone> getAuxiliaryTargets() {
+        final var result = new ArrayList<IWaystone>();
+        for (final var item : getItems()) {
+            WaystonesAPI.getBoundWaystone(item).ifPresent(result::add);
+        }
+        return result;
     }
 }

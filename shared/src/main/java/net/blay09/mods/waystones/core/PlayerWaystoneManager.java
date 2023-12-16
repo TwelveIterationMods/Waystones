@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -305,10 +307,19 @@ public class PlayerWaystoneManager {
 
     public static Collection<IWaystone> getTargetsForWaystone(Player player, IWaystone waystone) {
         final var waystoneType = waystone.getWaystoneType();
+        final var result = new ArrayList<IWaystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
-            return WaystoneManager.get(player.getServer()).getWaystonesByType(waystoneType).toList();
+            result.addAll(WaystoneManager.get(player.getServer()).getWaystonesByType(waystoneType).toList());
+        } else {
+            result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
         }
-        return PlayerWaystoneManager.getActivatedWaystones(player);
+
+        final var blockEntity = player.level().getBlockEntity(waystone.getPos());
+        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+            result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
+        }
+
+        return result;
     }
 
     public static Collection<IWaystone> getTargetsForInventoryButton(ServerPlayer player) {
