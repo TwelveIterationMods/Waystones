@@ -32,7 +32,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     private BlockPos pos;
 
     private String name = "";
-    private WaystoneVisibility visibility = WaystoneVisibility.ACTIVATION;
+    private WaystoneVisibility visibility;
 
     private UUID ownerUid;
 
@@ -43,6 +43,16 @@ public class Waystone implements IWaystone, IMutableWaystone {
         this.pos = pos;
         this.origin = origin;
         this.ownerUid = ownerUid;
+
+        if (WaystoneTypes.isSharestone(waystoneType)) {
+            this.visibility = WaystoneVisibility.GLOBAL;
+        } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
+            this.visibility = WaystoneVisibility.SHARD_ONLY;
+        } else if (waystoneType.equals(WaystoneTypes.LANDING_STONE)) {
+            this.visibility = WaystoneVisibility.SHARD_ONLY;
+        } else {
+            this.visibility = WaystoneVisibility.ACTIVATION;
+        }
     }
 
     @Override
