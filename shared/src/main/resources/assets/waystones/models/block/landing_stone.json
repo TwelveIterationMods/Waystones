@@ -2,14 +2,14 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"particle": "waystones:block/warp_plate",
-		"texture": "waystones:block/warp_plate"
+		"particle": "waystones:block/landing_stone",
+		"texture": "waystones:block/landing_stone"
 	},
 	"elements": [
 		{
 			"name": "diag",
-			"from": [2.5, 1, 2.5],
-			"to": [13.5, 1.5, 13.5],
+			"from": [2.5, 0, 2.5],
+			"to": [13.5, 0.5, 13.5],
 			"rotation": {"angle": -45, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 10, 0.5], "texture": "#texture"},
@@ -22,8 +22,8 @@
 		},
 		{
 			"name": "bordersouth",
-			"from": [3, 1, 3],
-			"to": [13, 2, 13],
+			"from": [3, 0, 3],
+			"to": [13, 1, 13],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 10, 1], "texture": "#texture"},

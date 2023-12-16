@@ -4,7 +4,6 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.LandingStoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -15,15 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class LandingStoneBlock extends WaystoneBlockBase {
-    private static final VoxelShape SHAPE = Shapes.or(
-            box(0.0, 0.0, 0.0, 12.0, 1.0, 12.0),
-            box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
-    ).optimize();
+    private static final VoxelShape SHAPE = box(3.0, 0.0, 3.0, 13.0, 1.0, 13.0);
 
     public LandingStoneBlock(Properties properties) {
         super(properties);
@@ -39,9 +34,6 @@ public class LandingStoneBlock extends WaystoneBlockBase {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        final VoxelShape SHAPE = Shapes.or(
-                box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
-        ).optimize();
         return SHAPE;
     }
 
