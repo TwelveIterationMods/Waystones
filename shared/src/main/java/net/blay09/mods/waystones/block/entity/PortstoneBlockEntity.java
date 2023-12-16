@@ -16,5 +16,5 @@ public class PortstoneBlockEntity extends BalmBlockEntity implements CustomRende
     public AABB getRenderBoundingBox() {
         return new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), worldPosition.getX() + 1, worldPosition.getY() + 2, worldPosition.getZ() + 1);
     }
-
+    
 }

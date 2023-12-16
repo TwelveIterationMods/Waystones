@@ -124,6 +124,11 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         guiGraphics.setColor(1f, 1f, 1f, 1f);
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 54, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 54, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 72, topPos + 68 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 100, topPos + 68 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
     }
 
     @Override

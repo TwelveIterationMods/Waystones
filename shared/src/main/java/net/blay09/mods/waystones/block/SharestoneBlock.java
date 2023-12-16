@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.ChatFormatting;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -92,4 +94,8 @@ public class SharestoneBlock extends WaystoneBlockBase {
         return color;
     }
 
+    @Override
+    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
+        return ModBlockEntities.sharestone.get();
+    }
 }

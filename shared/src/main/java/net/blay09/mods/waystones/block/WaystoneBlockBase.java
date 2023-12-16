@@ -27,6 +27,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -202,7 +204,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 return InteractionResult.SUCCESS;
             }
 
-            if (!world.isClientSide && shouldOpenMenuWhenPlaced()) {
+            if (!world.isClientSide) {
                 MenuProvider settingsContainerProvider = tileEntity.getSettingsMenuProvider();
                 if (settingsContainerProvider != null) {
                     Balm.getNetworking().openGui(player, settingsContainerProvider);
@@ -361,7 +363,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 WaystoneEditPermissions result = PlayerWaystoneManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
                 if (result == WaystoneEditPermissions.ALLOW) {
                     MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
-                    if (settingsContainerProvider != null) {
+                    if (settingsContainerProvider != null && shouldOpenMenuWhenPlaced()) {
                         Balm.getNetworking().openGui(player, settingsContainerProvider);
                     }
                 }
@@ -384,4 +386,19 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
+    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        final var tickingBlockEntityType = getTickingBlockEntityType();
+        if (tickingBlockEntityType == null) {
+            return null;
+        }
+        return world.isClientSide ? null : createTickerHelper(type,
+                tickingBlockEntityType,
+                (level, pos, state2, blockEntity) -> blockEntity.serverTick());
+    }
 }

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -162,4 +164,8 @@ public class WaystoneBlock extends WaystoneBlockBase {
         return false;
     }
 
+    @Override
+    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
+        return ModBlockEntities.waystone.get();
+    }
 }

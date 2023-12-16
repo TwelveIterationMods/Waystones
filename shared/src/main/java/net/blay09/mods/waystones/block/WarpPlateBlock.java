@@ -210,16 +210,13 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         return galacticName;
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return world.isClientSide ? null : createTickerHelper(type,
-                ModBlockEntities.warpPlate.get(),
-                (level, pos, state2, blockEntity) -> blockEntity.serverTick());
-    }
-
     @Override
     protected boolean shouldOpenMenuWhenPlaced() {
         return false;
+    }
+
+    @Override
+    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
+        return ModBlockEntities.warpPlate.get();
     }
 }

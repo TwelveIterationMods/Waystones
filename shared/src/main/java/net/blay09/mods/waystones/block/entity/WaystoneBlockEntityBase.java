@@ -6,11 +6,16 @@ import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.recipe.ModRecipes;
+import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -20,6 +25,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -227,5 +233,48 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     public ContainerData getContainerData() {
         return dataAccess;
+    }
+
+    @Nullable
+    protected WarpPlateRecipe trySelectRecipe() {
+        if (level == null) {
+            return null;
+        }
+        if (getItem(0).getCount() > 1) {
+            return null; //prevents crafting when more than 1 ingredient is present
+        }
+
+        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
+                .map(RecipeHolder::value).orElse(null);
+    }
+
+    public void serverTick() {
+        WarpPlateRecipe recipe = trySelectRecipe();
+        if (recipe != null) {
+            attunementTicks++;
+
+            if (attunementTicks >= getMaxAttunementTicks()) {
+                attunementTicks = 0;
+                craft(recipe);
+            }
+        } else {
+            attunementTicks = 0;
+        }
+    }
+
+    protected void craft(WarpPlateRecipe recipe) {
+        ItemStack attunedShard = recipe.assemble(this, RegistryAccess.EMPTY);
+        WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
+        ItemStack centerStack = getItem(0);
+        if (centerStack.getCount() > 1) {
+            centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
+            if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
+                Minecraft.getInstance().player.drop(centerStack, false);
+            }
+        }
+        setItem(0, attunedShard);
+        for (int i = 1; i <= 4; i++) {
+            getItem(i).shrink(1);
+        }
     }
 }

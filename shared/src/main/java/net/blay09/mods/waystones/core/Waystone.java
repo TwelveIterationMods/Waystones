@@ -34,7 +34,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
     private BlockPos pos;
 
     private String name = "";
-    private WaystoneVisibility visibility;
+    private WaystoneVisibility visibility = WaystoneVisibility.ACTIVATION;
 
     private UUID ownerUid;
 

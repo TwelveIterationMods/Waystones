@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.block;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.LandingStoneBlockEntity;
+import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -57,4 +59,8 @@ public class LandingStoneBlock extends WaystoneBlockBase {
         return InteractionResult.SUCCESS;
     }
 
+    @Override
+    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
+        return ModBlockEntities.landingStone.get();
+    }
 }
