@@ -1,3 +1,21 @@
+- Added Blackstone, Deepslate and Endstone Waystones
+- Added Landing Stone, a warp plate you can teleport to but not from
+- Added a new settings screen for all types of waystones that allows attuned shards to be created for every type
+- Added the ability to sort Sharestones the same way that waystones can be sorted
+- Added the ability to insert an attuned shard into a waystone to have it available for teleportation
+- Added display of Sharestones as waypoints in JourneyMap
+- Added transportPets option to teleport nearby pets with player
+- Added ability to name a warp plate in an anvil (mostly just useful for Jade/TOP/WTHIT)
+- Added nameGenerationTemplate option for slightly more control over waystone name generation
+- Added display of Waystones and Sharestones in BlueMap and Dynmap
+- Fixed warp plates refusing teleports with missing xp without any user feedback
+- Fixed xpCostsFullLevels=false not working reliably depending on where xp was gained from
+- Fixed crash on teleport when xp cost was unexpectedly empty
+- Fixed JEI, Jade, REI, JourneyMap and WTHIT compatibility no longer working on Fabric
+- Fixed JourneyMap compatibility creating waypoints for waystone types it shouldn't
+- Fixed JourneyMap waypoints not immediately being removed when breaking a waystone
+- Fixed regression that caused warp plates to no longer work on dedicated servers
+
 - Added commands to investigate waystones of any player as OP (by edralzar)
 - Added xpCostsFullLevels option to charge xp points instead of levels
 - Fixed warp plate recipes breaking after a single shard was crafted
