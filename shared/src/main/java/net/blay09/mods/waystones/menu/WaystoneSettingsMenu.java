@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -12,16 +13,19 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WaystoneSettingsMenu extends AbstractContainerMenu {
 
+    private final Player player;
     private final IWaystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final ContainerData containerData;
 
     public WaystoneSettingsMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory) {
         super(ModMenus.waystoneSettings.get(), windowId);
+        this.player = playerInventory.player;
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.containerData = containerData;
@@ -98,12 +102,17 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
     public List<WaystoneVisibility> getVisibilityOptions() {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
             return List.of(WaystoneVisibility.GLOBAL);
-        } else if(waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
+        } else if (waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
             return List.of(WaystoneVisibility.SHARD_ONLY);
-        } else if(waystone.getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) {
+        } else if (waystone.getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) {
             return List.of(WaystoneVisibility.SHARD_ONLY);
         } else {
-            return List.of(WaystoneVisibility.ACTIVATION, WaystoneVisibility.GLOBAL);
+            final var result = new ArrayList<WaystoneVisibility>();
+            result.add(WaystoneVisibility.ACTIVATION);
+            if (!WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode || player.getAbilities().instabuild) {
+                result.add(WaystoneVisibility.GLOBAL);
+            }
+            return result;
         }
     }
 }
