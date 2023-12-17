@@ -111,6 +111,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_warp_dust", has(ModItems.warpDust))
                 .save(exporter);
 
+        shaped(RecipeCategory.DECORATIONS, ModBlocks.landingStone)
+                .pattern(" S ")
+                .pattern("WFW")
+                .pattern(" S ")
+                .define('F', Items.FLINT)
+                .define('W', ModItems.warpDust)
+                .define('S', Blocks.STONE_BRICKS)
+                .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                .save(exporter);
+
         shaped(RecipeCategory.DECORATIONS, ModBlocks.sharestone)
                 .pattern("SSS")
                 .pattern(" W ")
