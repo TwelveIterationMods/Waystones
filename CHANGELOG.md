@@ -1,3 +1,5 @@
+- Fixed warp plates claiming to have lost attunement on dedicated servers 
+
 - Fixed warp plate recipes breaking after a single shard was crafted
 - Fixed warp plate showing dust instead of warp particles even if the target is valid
 - Fixed being unable to join multiplayer server
