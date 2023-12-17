@@ -61,6 +61,10 @@ public class WarpPlateRecipe implements Recipe<Container> {
         return this.resultItem;
     }
 
+    public ItemStack getOutputItem() {
+        return this.resultItem;
+    }
+
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return true;

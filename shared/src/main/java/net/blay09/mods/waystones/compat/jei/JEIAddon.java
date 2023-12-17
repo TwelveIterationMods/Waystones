@@ -5,9 +5,10 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.recipe.ModRecipes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.List;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @JeiPlugin
 public class JEIAddon implements IModPlugin {
@@ -18,7 +19,10 @@ public class JEIAddon implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(WarpPlateJeiRecipeCategory.TYPE, List.of(new AttunedShardJeiRecipe()));
+        final var level = Minecraft.getInstance().level;
+        final var recipeManager = level.getRecipeManager();
+        registry.addRecipes(WarpPlateJeiRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(ModRecipes.warpPlateRecipeType).stream().map(RecipeHolder::value).toList());
     }
 
     @Override

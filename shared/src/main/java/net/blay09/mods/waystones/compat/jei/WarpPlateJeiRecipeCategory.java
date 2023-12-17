@@ -10,13 +10,14 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class WarpPlateJeiRecipeCategory implements IRecipeCategory<AttunedShardJeiRecipe> {
+public class WarpPlateJeiRecipeCategory implements IRecipeCategory<WarpPlateRecipe> {
 
-    public static final RecipeType<AttunedShardJeiRecipe> TYPE = RecipeType.create(Waystones.MOD_ID, "warp_plate", AttunedShardJeiRecipe.class);
+    public static final RecipeType<WarpPlateRecipe> TYPE = RecipeType.create(Waystones.MOD_ID, "warp_plate", WarpPlateRecipe.class);
     public static final ResourceLocation UID = new ResourceLocation(Waystones.MOD_ID, "warp_plate");
     private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/gui/jei/warp_plate.png");
 
@@ -25,11 +26,11 @@ public class WarpPlateJeiRecipeCategory implements IRecipeCategory<AttunedShardJ
 
     public WarpPlateJeiRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createDrawable(texture, 0, 0, 128, 74);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.warpPlate));
+        this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.warpPlate));
     }
 
     @Override
-    public RecipeType<AttunedShardJeiRecipe> getRecipeType() {
+    public RecipeType<WarpPlateRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -49,24 +50,25 @@ public class WarpPlateJeiRecipeCategory implements IRecipeCategory<AttunedShardJ
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, AttunedShardJeiRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, WarpPlateRecipe recipe, IFocusGroup focuses) {
+        final var inputs = recipe.getIngredients();
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 29)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getInputs().get(0));
+                .addIngredients(inputs.get(0));
 
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 1)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getInputs().get(1));
+                .addIngredients(inputs.get(1));
 
         builder.addSlot(RecipeIngredientRole.INPUT, 57, 29)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getInputs().get(2));
+                .addIngredients(inputs.get(2));
 
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 57)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getInputs().get(3));
+                .addIngredients(inputs.get(3));
 
         builder.addSlot(RecipeIngredientRole.INPUT, 1, 29)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getInputs().get(4));
+                .addIngredients(inputs.get(4));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 29)
-                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutput());
+                .addIngredient(VanillaTypes.ITEM_STACK, recipe.getOutputItem());
     }
 
 }
