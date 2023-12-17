@@ -25,6 +25,7 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.containerData = containerData;
+        blockEntity.markReadyForAttunement();
 
         checkContainerDataCount(containerData, 1);
 

@@ -54,4 +54,8 @@ public class LandingStoneBlockEntity extends WaystoneBlockEntityBase {
         return getMenuProvider();
     }
 
+    @Override
+    public boolean shouldPerformInitialAttunement() {
+        return true;
+    }
 }

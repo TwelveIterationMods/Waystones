@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
@@ -61,6 +62,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
 
+    private boolean readyForAttunement;
+    private boolean completedFirstAttunement;
+
     protected int attunementTicks;
     private IWaystone waystone = InvalidWaystone.INSTANCE;
     private UUID waystoneUid;
@@ -82,6 +86,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         } else if (waystoneUid != null) {
             tag.put("UUID", NbtUtils.createUUID(waystoneUid));
         }
+
+        tag.putBoolean("ReadyForAttunement", readyForAttunement);
+        tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
     }
 
     @Override
@@ -99,6 +106,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             WaystoneManager.get(null).updateWaystone(syncedWaystone);
             waystone = new WaystoneProxy(null, syncedWaystone.getWaystoneUid());
         }
+
+        readyForAttunement = compound.getBoolean("ReadyForAttunement");
+        completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
     }
 
     @Override
@@ -173,6 +183,27 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         this.waystone = waystone;
         setChanged();
         sync();
+
+        if (!isCompletedFirstAttunement()) {
+            initializeInventory(world);
+        }
+    }
+
+    @Override
+    public ItemStack removeItem(int slot, int count) {
+        if (!isCompletedFirstAttunement()) {
+            return ItemStack.EMPTY;
+        }
+        return ImplementedContainer.super.removeItem(slot, count);
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        if (!isCompletedFirstAttunement()) {
+            return ItemStack.EMPTY;
+        }
+
+        return ImplementedContainer.super.removeItemNoUpdate(slot);
     }
 
     public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
@@ -181,6 +212,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         existingWaystone.setPos(worldPosition);
         setChanged();
         sync();
+
+        CompoundTag tag = itemStack.getTag();
+        completedFirstAttunement = tag != null && tag.getBoolean("CompletedFirstAttunement");
+
+        if (!isCompletedFirstAttunement()) {
+            initializeInventory(world);
+        }
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
@@ -240,6 +278,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Nullable
     protected WarpPlateRecipe trySelectRecipe() {
+        if (!readyForAttunement) {
+            return null;
+        }
         if (level == null) {
             return null;
         }
@@ -279,6 +320,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         for (int i = 1; i <= 4; i++) {
             getItem(i).shrink(1);
         }
+
+        this.completedFirstAttunement = true;
     }
 
     public Collection<? extends IWaystone> getAuxiliaryTargets() {
@@ -287,5 +330,41 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             WaystonesAPI.getBoundWaystone(item).ifPresent(result::add);
         }
         return result;
+    }
+
+    public boolean shouldPerformInitialAttunement() {
+        return false;
+    }
+
+    public boolean isCompletedFirstAttunement() {
+        return !shouldPerformInitialAttunement() || completedFirstAttunement;
+    }
+
+    /**
+     * We delay attunement until the menu is opened to show the player what's happening inside the slots before converting the items to an attuned shard.
+     */
+    public void markReadyForAttunement() {
+        readyForAttunement = true;
+    }
+
+    private void initializeInventory(ServerLevelAccessor levelAccessor) {
+        WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
+                .stream()
+                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
+                .map(RecipeHolder::value)
+                .findFirst()
+                .orElse(null);
+        if (initializingRecipe == null) {
+            Waystones.logger.error("Failed to find Attunement recipe for initial attunement");
+            completedFirstAttunement = true;
+            return;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            final var ingredient = initializingRecipe.getIngredients().get(i);
+            final var ingredientItems = ingredient.getItems();
+            final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
+            setItem(i, ingredientItem.copy());
+        }
     }
 }

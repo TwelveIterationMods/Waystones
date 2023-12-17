@@ -2,15 +2,12 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateMenu;
-import net.blay09.mods.waystones.recipe.ModRecipes;
-import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
@@ -34,13 +31,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -48,50 +42,16 @@ import java.util.function.Consumer;
 
 public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nameable {
 
-    private static final Logger logger = LoggerFactory.getLogger(WarpPlateBlockEntity.class);
-
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
 
     private final Random random = new Random();
 
-    private boolean readyForAttunement;
-    private boolean completedFirstAttunement;
     private int lastAttunementSlot;
 
     private Component customName;
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
-    }
-
-
-    @Override
-    public ItemStack removeItem(int slot, int count) {
-        if (!completedFirstAttunement) {
-            return ItemStack.EMPTY;
-        }
-        return WarpPlateBlockEntity.super.removeItem(slot, count);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int slot) {
-        if (!completedFirstAttunement) {
-            return ItemStack.EMPTY;
-        }
-
-        return WarpPlateBlockEntity.super.removeItemNoUpdate(slot);
-    }
-
-    @Override
-    public void initializeFromExisting(ServerLevelAccessor world, Waystone existingWaystone, ItemStack itemStack) {
-        super.initializeFromExisting(world, existingWaystone, itemStack);
-
-        CompoundTag tag = itemStack.getTag();
-        completedFirstAttunement = tag != null && tag.getBoolean("CompletedFirstAttunement");
-
-        if (!completedFirstAttunement) {
-            initializeInventory(world);
-        }
     }
 
     @Override
@@ -106,29 +66,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         }
 
         WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), waystone);
-
-        initializeInventory(world);
-    }
-
-    private void initializeInventory(ServerLevelAccessor levelAccessor) {
-        WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
-                .stream()
-                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
-                .map(RecipeHolder::value)
-                .findFirst()
-                .orElse(null);
-        if (initializingRecipe == null) {
-            logger.error("Failed to find Warp Plate recipe for initial attunement");
-            completedFirstAttunement = true;
-            return;
-        }
-
-        for (int i = 0; i < 5; i++) {
-            final var ingredient = initializingRecipe.getIngredients().get(i);
-            final var ingredientItems = ingredient.getItems();
-            final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
-            setItem(i, ingredientItem.copy());
-        }
     }
 
     @Override
@@ -144,8 +81,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             tag.putString("CustomName", Component.Serializer.toJson(customName));
         }
 
-        tag.putBoolean("ReadyForAttunement", readyForAttunement);
-        tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
         tag.putInt("LastAttunementSlot", lastAttunementSlot);
     }
 
@@ -157,8 +92,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             customName = Component.Serializer.fromJson(compound.getString("CustomName"));
         }
 
-        readyForAttunement = compound.getBoolean("ReadyForAttunement");
-        completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
         lastAttunementSlot = compound.getInt("LastAttunementSlot");
     }
 
@@ -207,12 +140,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         return entity.getX() >= worldPosition.getX() && entity.getX() < worldPosition.getX() + 1
                 && entity.getY() >= worldPosition.getY() && entity.getY() < worldPosition.getY() + 1
                 && entity.getZ() >= worldPosition.getZ() && entity.getZ() < worldPosition.getZ() + 1;
-    }
-
-    @Override
-    protected void craft(WarpPlateRecipe recipe) {
-        super.craft(recipe);
-        this.completedFirstAttunement = true;
     }
 
     @Override
@@ -394,35 +321,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         return WaystonesAPI.getBoundWaystone(getTargetAttunementStack());
     }
 
-    @Nullable
-    protected WarpPlateRecipe trySelectRecipe() {
-        if (!readyForAttunement) {
-            return null;
-        }
-        return super.trySelectRecipe();
-    }
-
-    /**
-     * We delay attunement until the menu is opened to show the player what's happening inside the slots before converting the items to an attuned shard.
-     */
-    public void markReadyForAttunement() {
-        readyForAttunement = true;
-    }
-
     public void markEntityForCooldown(Entity entity) {
         ticksPassedPerEntity.put(entity, -1);
-    }
-
-    public boolean isCompletedFirstAttunement() {
-        return completedFirstAttunement;
-    }
-
-    @Override
-    public boolean canPlaceItem(int index, ItemStack stack) {
-        if (index == 0 && !getItem(0).isEmpty()) {
-            return false; //prevents hoppers to add items in an occupied center slot
-        }
-        return WarpPlateBlockEntity.super.canPlaceItem(index, stack);
     }
 
     @Override
@@ -443,5 +343,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     @Override
     public Component getName() {
         return Component.translatable("container.waystones.warp_plate");
+    }
+
+    @Override
+    public boolean shouldPerformInitialAttunement() {
+        return true;
     }
 }

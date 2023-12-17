@@ -92,32 +92,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof WarpPlateBlockEntity && !player.getAbilities().instabuild) {
-            boolean isSilkTouch = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
-            WarpPlateBlockEntity warpPlate = (WarpPlateBlockEntity) blockEntity;
-            if (warpPlate.isCompletedFirstAttunement()) {
-                for (int i = 0; i < warpPlate.getContainerSize(); i++) {
-                    ItemStack itemStack = warpPlate.getItem(i);
-
-                    // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
-                    if (!isSilkTouch && itemStack.getItem() == ModItems.attunedShard) {
-                        IWaystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), itemStack);
-                        if (waystoneAttunedTo != null && waystoneAttunedTo.getWaystoneUid().equals(warpPlate.getWaystone().getWaystoneUid())) {
-                            continue;
-                        }
-                    }
-
-                    popResource(world, pos, itemStack);
-                }
-            }
-        }
-
-        super.playerWillDestroy(world, pos, state, player);
-    }
-
-    @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return SHAPE;
     }

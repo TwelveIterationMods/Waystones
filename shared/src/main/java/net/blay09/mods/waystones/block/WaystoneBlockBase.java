@@ -1,10 +1,12 @@
 package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -116,6 +118,24 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 if (!world.isClientSide && !player.getAbilities().instabuild) {
                     dropResources(state, world, pos, blockEntity, player, player.getMainHandItem());
                     dropResources(offsetState, world, offset, offsetTileEntity, player, player.getMainHandItem());
+                }
+            }
+        }
+
+        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity && !player.getAbilities().instabuild) {
+            if (waystoneBlockEntity.isCompletedFirstAttunement()) {
+                for (int i = 0; i < waystoneBlockEntity.getContainerSize(); i++) {
+                    ItemStack itemStack = waystoneBlockEntity.getItem(i);
+
+                    // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
+                    if (!hasSilkTouch && itemStack.getItem() == ModItems.attunedShard) {
+                        IWaystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), itemStack);
+                        if (waystoneAttunedTo != null && waystoneAttunedTo.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())) {
+                            continue;
+                        }
+                    }
+
+                    popResource(world, pos, itemStack);
                 }
             }
         }
