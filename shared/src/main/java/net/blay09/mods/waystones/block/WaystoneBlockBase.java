@@ -150,15 +150,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Override
-    public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
-        if (!WaystonePermissionManager.mayBreakWaystone(player, world, pos)) {
-            return -1f;
-        }
-
-        return super.getDestroyProgress(state, player, world, pos);
-    }
-
-    @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         if (!isDoubleBlock(state)) {
             return true;
@@ -175,10 +166,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        if (!WaystonePermissionManager.mayPlaceWaystone(context.getPlayer())) {
-            return null;
-        }
-
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         FluidState fluidState = world.getFluidState(pos);

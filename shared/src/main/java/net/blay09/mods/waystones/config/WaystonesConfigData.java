@@ -85,16 +85,8 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Restrictions {
         @Synced
-        @Comment("If enabled, only creative players can place, edit or break waystones. This does NOT disable the crafting recipe.")
-        public boolean restrictToCreative = false;
-
-        @Synced
         @Comment("If enabled, only the owner of a waystone (the one who placed it) can rename it.")
         public boolean restrictRenameToOwner = false;
-
-        @Synced
-        @Comment("If enabled, waystones generated in worldgen are unbreakable.")
-        public boolean generatedWaystonesUnbreakable = false;
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
