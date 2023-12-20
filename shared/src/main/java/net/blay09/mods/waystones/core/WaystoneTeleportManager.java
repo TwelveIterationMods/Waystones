@@ -71,8 +71,6 @@ public class WaystoneTeleportManager {
             return 0;
         }
 
-        boolean enableXPCost = !player.getAbilities().instabuild;
-
         int xpForLeashed = WaystonesConfig.getActive().xpCost.xpCostPerLeashed * context.getLeashedEntities().size();
 
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
@@ -98,7 +96,7 @@ public class WaystoneTeleportManager {
             xpLevelCost = minimumXpCost;
         }
 
-        return enableXPCost ? (int) Math.round((xpLevelCost + xpForLeashed) * xpCostMultiplier) : 0;
+        return (int) Math.round((xpLevelCost + xpForLeashed) * xpCostMultiplier);
     }
 
 
@@ -274,7 +272,7 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && !context.getExperienceCost().canAfford(player)) {
+        if (entity instanceof Player player && !context.getExperienceCost().canAfford(player) && !player.getAbilities().instabuild) {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
