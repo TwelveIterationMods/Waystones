@@ -28,7 +28,7 @@ public class WaystonesConfigData implements BalmConfigData {
     public static class XpCost {
         @Synced
         @Comment("Set to true if experience cost should cost full levels rather than experience points. Make sure to also adjust blocksPerXpLevel, maximumBaseXpCost and dimensionalWarpXpCost appropriately.")
-        public boolean xpCostsFullLevels = true; // TODO default to false in 1.20.4
+        public boolean xpCostsFullLevels = false;
 
         @Synced
         @Comment("Set to true if experience cost should be inverted, meaning the shorter the distance, the more expensive. Can be used to encourage other methods for short-distance travel.")
@@ -36,7 +36,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("The amount of blocks per xp level requirement. If set to 500, the base xp cost for travelling 1000 blocks will be 2 levels.")
-        public int blocksPerXpLevel = 1000;
+        public int blocksPerXpLevel = 100;
 
         @Synced
         @Comment("The minimum base xp cost (may be subceeded by multipliers defined below)")
@@ -44,7 +44,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all distance-based XP costs")
-        public double maximumBaseXpCost = 3f;
+        public double maximumBaseXpCost = 27f;
 
         @Synced
         @Comment("How much xp is needed per leashed animal to travel with you")
@@ -52,7 +52,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("The base xp level cost when travelling between dimensions. Ignores block distance.")
-        public int dimensionalWarpXpCost = 3;
+        public int dimensionalWarpXpCost = 27;
 
         @Synced
         @Comment("The multiplier applied to the base xp cost when teleporting to a global waystone through any method.")
