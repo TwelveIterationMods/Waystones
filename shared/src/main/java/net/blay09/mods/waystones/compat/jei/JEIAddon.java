@@ -21,12 +21,12 @@ public class JEIAddon implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registry) {
         final var level = Minecraft.getInstance().level;
         final var recipeManager = level.getRecipeManager();
-        registry.addRecipes(WarpPlateJeiRecipeCategory.TYPE,
-                recipeManager.getAllRecipesFor(ModRecipes.warpPlateRecipeType).stream().map(RecipeHolder::value).toList());
+        registry.addRecipes(WaystoneJeiRecipeCategory.TYPE,
+                recipeManager.getAllRecipesFor(ModRecipes.waystoneRecipeType).stream().map(RecipeHolder::value).toList());
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
-        registry.addRecipeCategories(new WarpPlateJeiRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+        registry.addRecipeCategories(new WaystoneJeiRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
     }
 }

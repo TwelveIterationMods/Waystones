@@ -13,14 +13,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-public class WarpPlateRecipe implements Recipe<Container> {
+public class WaystoneRecipe implements Recipe<Container> {
 
     private final ItemStack resultItem;
     private final Ingredient primaryIngredient;
     private final NonNullList<Ingredient> secondaryIngredients;
     private final NonNullList<Ingredient> combinedIngredients;
 
-    public WarpPlateRecipe(ItemStack resultItem, Ingredient primaryIngredient, NonNullList<Ingredient> secondaryIngredients) {
+    public WaystoneRecipe(ItemStack resultItem, Ingredient primaryIngredient, NonNullList<Ingredient> secondaryIngredients) {
         this.resultItem = resultItem;
 
         this.primaryIngredient = primaryIngredient;
@@ -82,7 +82,7 @@ public class WarpPlateRecipe implements Recipe<Container> {
 
     @Override
     public String getGroup() {
-        return ModRecipes.WARP_PLATE_RECIPE_GROUP;
+        return ModRecipes.WAYSTONE_RECIPE_GROUP;
     }
 
     @Override
@@ -92,17 +92,17 @@ public class WarpPlateRecipe implements Recipe<Container> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipes.warpPlateRecipeSerializer;
+        return ModRecipes.waystoneRecipeSerializer;
     }
 
     @Override
     public RecipeType<?> getType() {
-        return ModRecipes.warpPlateRecipeType;
+        return ModRecipes.waystoneRecipeType;
     }
 
-    static class Serializer implements RecipeSerializer<WarpPlateRecipe> {
+    static class Serializer implements RecipeSerializer<WaystoneRecipe> {
 
-        private static final Codec<WarpPlateRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        private static final Codec<WaystoneRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(recipe -> recipe.resultItem),
                         Ingredient.CODEC.fieldOf("primary").forGetter(recipe -> recipe.primaryIngredient),
                         Ingredient.CODEC.listOf().fieldOf("secondary")
@@ -117,15 +117,15 @@ public class WarpPlateRecipe implements Recipe<Container> {
                                 }, DataResult::success)
                                 .forGetter(recipe -> recipe.secondaryIngredients)
                 )
-                .apply(instance, WarpPlateRecipe::new));
+                .apply(instance, WaystoneRecipe::new));
 
         @Override
-        public Codec<WarpPlateRecipe> codec() {
+        public Codec<WaystoneRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public WarpPlateRecipe fromNetwork(FriendlyByteBuf buf) {
+        public WaystoneRecipe fromNetwork(FriendlyByteBuf buf) {
             final var resultItem = buf.readItem();
             final var primaryIngredient = Ingredient.fromNetwork(buf);
             final var secondaryCount = buf.readVarInt();
@@ -133,11 +133,11 @@ public class WarpPlateRecipe implements Recipe<Container> {
             for (int i = 0; i < secondaryCount; i++) {
                 secondaryIngredients.add(Ingredient.fromNetwork(buf));
             }
-            return new WarpPlateRecipe(resultItem, primaryIngredient, secondaryIngredients);
+            return new WaystoneRecipe(resultItem, primaryIngredient, secondaryIngredients);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buf, WarpPlateRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, WaystoneRecipe recipe) {
             buf.writeItem(recipe.resultItem);
             recipe.primaryIngredient.toNetwork(buf);
             buf.writeVarInt(recipe.secondaryIngredients.size());

@@ -1,5 +1,5 @@
 {
-  "type": "waystones:warp_plate",
+  "type": "waystones:waystone",
   "result": {
     "item": "waystones:attuned_shard",
     "count": 1

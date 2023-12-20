@@ -6,14 +6,13 @@ import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.recipe.ModRecipes;
-import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
+import net.blay09.mods.waystones.recipe.WaystoneRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -277,7 +276,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     @Nullable
-    protected WarpPlateRecipe trySelectRecipe() {
+    protected WaystoneRecipe trySelectRecipe() {
         if (!readyForAttunement) {
             return null;
         }
@@ -288,12 +287,12 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             return null; //prevents crafting when more than 1 ingredient is present
         }
 
-        return level.getRecipeManager().getRecipeFor(ModRecipes.warpPlateRecipeType, this, level)
+        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, this, level)
                 .map(RecipeHolder::value).orElse(null);
     }
 
     public void serverTick() {
-        WarpPlateRecipe recipe = trySelectRecipe();
+        WaystoneRecipe recipe = trySelectRecipe();
         if (recipe != null) {
             attunementTicks++;
 
@@ -306,7 +305,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         }
     }
 
-    protected void craft(WarpPlateRecipe recipe) {
+    protected void craft(WaystoneRecipe recipe) {
         ItemStack attunedShard = recipe.assemble(this, RegistryAccess.EMPTY);
         WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
         ItemStack centerStack = getItem(0);
@@ -348,7 +347,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     private void initializeInventory(ServerLevelAccessor levelAccessor) {
-        WarpPlateRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.warpPlateRecipeType)
+        WaystoneRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.waystoneRecipeType)
                 .stream()
                 .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
                 .map(RecipeHolder::value)

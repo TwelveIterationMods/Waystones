@@ -10,27 +10,27 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.recipe.WarpPlateRecipe;
+import net.blay09.mods.waystones.recipe.WaystoneRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class WarpPlateJeiRecipeCategory implements IRecipeCategory<WarpPlateRecipe> {
+public class WaystoneJeiRecipeCategory implements IRecipeCategory<WaystoneRecipe> {
 
-    public static final RecipeType<WarpPlateRecipe> TYPE = RecipeType.create(Waystones.MOD_ID, "warp_plate", WarpPlateRecipe.class);
-    public static final ResourceLocation UID = new ResourceLocation(Waystones.MOD_ID, "warp_plate");
+    public static final RecipeType<WaystoneRecipe> TYPE = RecipeType.create(Waystones.MOD_ID, "waystone", WaystoneRecipe.class);
+    public static final ResourceLocation UID = new ResourceLocation(Waystones.MOD_ID, "waystone");
     private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/gui/jei/warp_plate.png");
 
     private final IDrawable background;
     private final IDrawable icon;
 
-    public WarpPlateJeiRecipeCategory(IGuiHelper guiHelper) {
+    public WaystoneJeiRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createDrawable(texture, 0, 0, 128, 74);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.warpPlate));
     }
 
     @Override
-    public RecipeType<WarpPlateRecipe> getRecipeType() {
+    public RecipeType<WaystoneRecipe> getRecipeType() {
         return TYPE;
     }
 
@@ -50,7 +50,7 @@ public class WarpPlateJeiRecipeCategory implements IRecipeCategory<WarpPlateReci
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, WarpPlateRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, WaystoneRecipe recipe, IFocusGroup focuses) {
         final var inputs = recipe.getIngredients();
         builder.addSlot(RecipeIngredientRole.INPUT, 29, 29)
                 .addIngredients(inputs.get(0));
