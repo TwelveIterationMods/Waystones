@@ -103,7 +103,7 @@ public class WarpPlateRecipe implements Recipe<Container> {
     static class Serializer implements RecipeSerializer<WarpPlateRecipe> {
 
         private static final Codec<WarpPlateRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(recipe -> recipe.resultItem),
+                        ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(recipe -> recipe.resultItem),
                         Ingredient.CODEC.fieldOf("primary").forGetter(recipe -> recipe.primaryIngredient),
                         Ingredient.CODEC.listOf().fieldOf("secondary")
                                 .flatXmap(secondary -> {

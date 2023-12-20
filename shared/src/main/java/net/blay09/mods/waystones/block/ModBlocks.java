@@ -31,14 +31,16 @@ public class ModBlocks {
         blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(deepslateWaystone), id("deepslate_waystone"));
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
-        blocks.register(() -> sharestone = new SharestoneBlock(defaultProperties(), null), () -> itemBlock(sharestone), id("sharestone"));
+        blocks.register(() -> sharestone = new SharestoneBlock(null, defaultProperties()), () -> itemBlock(sharestone), id("sharestone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
         blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
         blocks.register(() -> landingStone = new LandingStoneBlock(defaultProperties()), () -> itemBlock(landingStone), id("landing_stone"));
 
         DyeColor[] colors = DyeColor.values();
         for (DyeColor color : colors) {
-            blocks.register(() -> scopedSharestones[color.ordinal()] = new SharestoneBlock(defaultProperties(), color), () -> itemBlock(scopedSharestones[color.ordinal()]), id(color.getSerializedName() + "_sharestone"));
+            blocks.register(() -> scopedSharestones[color.ordinal()] = new SharestoneBlock(color, defaultProperties()),
+                    () -> itemBlock(scopedSharestones[color.ordinal()]),
+                    id(color.getSerializedName() + "_sharestone"));
         }
     }
 

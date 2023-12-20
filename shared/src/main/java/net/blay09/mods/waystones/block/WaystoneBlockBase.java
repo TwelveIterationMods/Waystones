@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class WaystoneBlockBase extends BaseEntityBlock implements SimpleWaterloggedBlock {
+
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -93,7 +94,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
         boolean isDoubleBlock = isDoubleBlock(state);
@@ -140,7 +141,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             }
         }
 
-        super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
@@ -421,4 +422,5 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 tickingBlockEntityType,
                 (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }
+
 }

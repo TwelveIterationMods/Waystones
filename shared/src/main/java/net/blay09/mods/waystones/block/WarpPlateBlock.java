@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.block;
 
+import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IAttunementItem;
 import net.blay09.mods.waystones.api.IWaystone;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -43,6 +45,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class WarpPlateBlock extends WaystoneBlockBase {
+
+    public static final MapCodec<WarpPlateBlock> CODEC = simpleCodec(WarpPlateBlock::new);
 
     public enum WarpPlateStatus implements StringRepresentable {
         IDLE,
@@ -192,5 +196,10 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
         return ModBlockEntities.warpPlate.get();
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 }

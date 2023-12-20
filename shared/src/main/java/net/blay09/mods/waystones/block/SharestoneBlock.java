@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
@@ -15,7 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +33,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SharestoneBlock extends WaystoneBlockBase {
+
+    public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color")
+            .forGetter(SharestoneBlock::getColor), propertiesCodec())
+            .apply(instance, SharestoneBlock::new));
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 3.0, 16.0),
@@ -47,7 +55,7 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Nullable
     private final DyeColor color;
 
-    public SharestoneBlock(Properties properties, @Nullable DyeColor color) {
+    public SharestoneBlock(@Nullable DyeColor color, Properties properties) {
         super(properties);
         this.color = color;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
@@ -97,5 +105,10 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Override
     public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
         return ModBlockEntities.sharestone.get();
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 }

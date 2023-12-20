@@ -41,13 +41,8 @@ public class WaystoneInventoryButton extends Button {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        visible = visiblePredicate.get();
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        visible = visiblePredicate.get();
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
