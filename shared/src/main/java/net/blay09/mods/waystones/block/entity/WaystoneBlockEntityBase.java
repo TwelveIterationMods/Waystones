@@ -305,7 +305,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             if (attunementTicks >= getMaxAttunementTicks()) {
                 attunementTicks = 0;
-                //craft(recipe);
+                craft(recipe);
             }
         } else {
             attunementTicks = 0;

@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
 
     public WaystoneScreen(WaystoneMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
-        imageHeight = 222;
+        imageHeight = 210;
         inventoryLabelY = imageHeight - 94;
     }
 
@@ -54,7 +55,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
 
         tooltipProviders.clear();
 
-        textField = new EditBox(Minecraft.getInstance().font, leftPos + 33, topPos + 21, 110, 16, textField, Component.empty());
+        textField = new EditBox(Minecraft.getInstance().font, leftPos + 33, topPos + 9, 110, 16, textField, Component.empty());
         textField.setMaxLength(128);
         textField.setValue(oldText);
         textField.setEditable(menu.canEdit());
@@ -63,7 +64,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
             setInitialFocus(textField);
         }
 
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 20, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
         addRenderableWidget(visibilityButton);
     }
 
@@ -116,10 +117,15 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
         guiGraphics.setColor(1f, 1f, 1f, 1f);
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 65, 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 82, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 103 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 82, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 53, 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 70, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 91 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 70, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
     }
 
     @Override
