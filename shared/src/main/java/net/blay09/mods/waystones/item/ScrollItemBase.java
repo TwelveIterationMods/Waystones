@@ -2,7 +2,13 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.compat.Compat;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
@@ -25,6 +31,20 @@ public class ScrollItemBase extends Item {
         }
 
         return UseAnim.BOW;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (!player.isUsingItem() && !world.isClientSide) {
+            world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
+        }
+        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
+            finishUsingItem(itemStack, world, player);
+        } else {
+            player.startUsingItem(hand);
+        }
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
     }
 
     @Override

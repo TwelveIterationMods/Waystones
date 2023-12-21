@@ -289,11 +289,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             return null;
         }
 
-        // Prevent crafting if center slot is already attuned
-        if (WaystonesAPI.getBoundWaystone(null, getItem(0)).isPresent()) {
-            return null;
-        }
-
         return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, this, level)
                 .map(RecipeHolder::value).orElse(null);
     }

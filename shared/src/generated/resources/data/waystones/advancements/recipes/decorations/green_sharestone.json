@@ -28,6 +28,5 @@
     "recipes": [
       "waystones:green_sharestone"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

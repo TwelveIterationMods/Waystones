@@ -21,6 +21,7 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
     protected void addTags(HolderLookup.Provider lookup) {
         getOrCreateTagBuilder(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll);
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
+        getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_STONES).add(ModItems.warpStone);
         getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard, ModItems.crumblingAttunedShard);
         getOrCreateTagBuilder(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard);

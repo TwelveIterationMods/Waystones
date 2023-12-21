@@ -30,6 +30,5 @@
     "recipes": [
       "waystones:sandy_waystone"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

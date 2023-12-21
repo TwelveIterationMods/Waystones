@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class ReturnScrollItem extends WarpScrollItem {
+public class ReturnScrollItem extends BoundScrollItem {
 
     public ReturnScrollItem(Properties properties) {
         super(properties);

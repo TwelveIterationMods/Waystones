@@ -30,6 +30,5 @@
     "recipes": [
       "waystones:return_scroll"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

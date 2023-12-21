@@ -30,6 +30,5 @@
     "recipes": [
       "waystones:deepslate_waystone"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

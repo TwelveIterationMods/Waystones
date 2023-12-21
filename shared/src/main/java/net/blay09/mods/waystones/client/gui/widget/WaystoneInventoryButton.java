@@ -36,7 +36,7 @@ public class WaystoneInventoryButton extends Button {
         this.visiblePredicate = visiblePredicate;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        this.iconItem = new ItemStack(ModItems.returnScroll);
+        this.iconItem = new ItemStack(ModItems.boundScroll);
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
     }
 

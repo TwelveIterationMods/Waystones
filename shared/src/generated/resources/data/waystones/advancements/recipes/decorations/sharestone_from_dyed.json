@@ -28,6 +28,5 @@
     "recipes": [
       "waystones:sharestone_from_dyed"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
