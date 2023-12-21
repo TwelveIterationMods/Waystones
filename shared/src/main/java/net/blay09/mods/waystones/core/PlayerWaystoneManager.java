@@ -155,7 +155,6 @@ public class PlayerWaystoneManager {
             case WARP_SCROLL -> findWarpItem(entity, ModItemTags.WARP_SCROLLS);
             case WARP_STONE -> findWarpItem(entity, ModItemTags.WARP_STONES);
             case RETURN_SCROLL -> findWarpItem(entity, ModItemTags.RETURN_SCROLLS);
-            case BOUND_SCROLL -> findWarpItem(entity, ModItemTags.BOUND_SCROLLS);
             default -> ItemStack.EMPTY;
         };
     }
@@ -180,7 +179,6 @@ public class PlayerWaystoneManager {
         return switch (warpMode) {
             case INVENTORY_BUTTON -> entity instanceof Player && PlayerWaystoneManager.canUseInventoryButton(((Player) entity));
             case WARP_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_SCROLLS);
-            case BOUND_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.BOUND_SCROLLS);
             case RETURN_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.RETURN_SCROLLS);
             case WARP_STONE -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_STONES) && entity instanceof Player
                     && PlayerWaystoneManager.canUseWarpStone(((Player) entity), heldItem);

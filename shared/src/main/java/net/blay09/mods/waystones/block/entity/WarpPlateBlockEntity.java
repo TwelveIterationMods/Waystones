@@ -172,7 +172,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
                 iterator.remove();
             } else if (ticksPassed > useTime) {
                 ItemStack targetAttunementStack = getTargetAttunementStack();
-                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(targetAttunementStack).orElse(null);
+                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
                 if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToTarget(entity, targetWaystone, targetAttunementStack);
                 }
@@ -295,7 +295,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
             if (itemStack.is(ModItemTags.WARP_SHARDS)) {
-                IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(itemStack).orElse(null);
+                IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(null, itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
                 }
@@ -318,7 +318,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     }
 
     public Optional<IWaystone> getTargetWaystone() {
-        return WaystonesAPI.getBoundWaystone(getTargetAttunementStack());
+        return WaystonesAPI.getBoundWaystone(null, getTargetAttunementStack());
     }
 
     public void markEntityForCooldown(Entity entity) {

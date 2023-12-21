@@ -25,7 +25,7 @@ It can be used in Survival Mode, for Adventure Maps or on Multiplayer Servers as
 
 - Craftable Waystones for Survival Mode
 - Teleporting between Waystones or using a Warp Scroll or rechargeable Warp Stone
-- Sharing of activated Waystones through Bound Scrolls
+- Sharing of activated Waystones through Bound Warp Scrolls
 - Optional Inventory Button for warping without any items
 - Global Waystones for Multiplayer Servers and Adventure Maps
 - Generation of Random Waystones in the World

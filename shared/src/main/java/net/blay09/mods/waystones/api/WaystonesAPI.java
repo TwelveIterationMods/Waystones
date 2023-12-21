@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -82,8 +83,8 @@ public class WaystonesAPI {
         return __internalMethods.placeWarpPlate(level, pos);
     }
 
-    public static Optional<IWaystone> getBoundWaystone(ItemStack itemStack) {
-        return __internalMethods.getBoundWaystone(itemStack);
+    public static Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack) {
+        return __internalMethods.getBoundWaystone(player, itemStack);
     }
 
     public static void setBoundWaystone(ItemStack itemStack, IWaystone waystone) {

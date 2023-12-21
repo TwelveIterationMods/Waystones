@@ -31,7 +31,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        IWaystone waystoneAttunedTo = getWaystoneAttunedTo(null, itemStack);
+        IWaystone waystoneAttunedTo = getWaystoneAttunedTo(null, null, itemStack);
         return waystoneAttunedTo != null && waystoneAttunedTo.isValid();
     }
 
@@ -39,7 +39,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
 
-        IWaystone attunedWaystone = getWaystoneAttunedTo(null, stack);
+        IWaystone attunedWaystone = getWaystoneAttunedTo(null, null, stack);
         if (attunedWaystone == null || !attunedWaystone.isValid()) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_lost");
             textComponent.withStyle(ChatFormatting.GRAY);
@@ -68,7 +68,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
     @Nullable
     @Override
-    public IWaystone getWaystoneAttunedTo(MinecraftServer server, ItemStack itemStack) {
+    public IWaystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         CompoundTag compound = itemStack.getTag();
         if (compound != null && compound.contains("AttunedToWaystone", Tag.TAG_INT_ARRAY)) {
             return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone"))));

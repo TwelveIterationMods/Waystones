@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -106,7 +107,7 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public ItemStack createBoundScroll(IWaystone waystone) {
-        ItemStack itemStack = new ItemStack(ModItems.boundScroll);
+        ItemStack itemStack = new ItemStack(ModItems.warpScroll);
         setBoundWaystone(itemStack, waystone);
         return itemStack;
     }
@@ -134,9 +135,9 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<IWaystone> getBoundWaystone(ItemStack itemStack) {
+    public Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
-            return Optional.ofNullable(attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), itemStack));
+            return Optional.ofNullable(attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), player, itemStack));
         }
         return Optional.empty();
     }

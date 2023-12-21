@@ -1,0 +1,11 @@
+{
+  "type": "waystones:waystone",
+  "result": {
+    "item": "waystones:warp_scroll",
+    "count": 1
+  },
+  "primary": {
+    "item": "waystones:warp_scroll"
+  },
+  "secondary": []
+}

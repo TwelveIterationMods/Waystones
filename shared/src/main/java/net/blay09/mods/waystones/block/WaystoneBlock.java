@@ -80,10 +80,6 @@ public class WaystoneBlock extends WaystoneBlockBase {
 
     @Override
     protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
-        if (player.getMainHandItem().is(ModItemTags.BOUND_SCROLLS)) {
-            return InteractionResult.PASS;
-        }
-
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {

@@ -4,10 +4,8 @@
   "block.waystones.mossy_waystone": "Obelisco de Pedra Musgosa",
   "block.waystones.sandy_waystone": "Obelisco de Arenito",
   "item.waystones.warp_scroll": "Pergaminho de Teletransporte",
-  "item.waystones.warp_scroll_bound": "Pergaminho de Teletransporte (Vinculado)",
   "item.waystones.return_scroll": "Pergaminho do Retorno",
   "item.waystones.warp_stone": "Pedra de Teleporte",
-  "item.waystones.bound_scroll": "Pergaminho de Vinculação",
   "container.waystones.waystone_selection": "Selecione seu destino:",
   "container.waystones.waystone_settings": "Insira o nome do Obelisco:",
   "gui.waystones.waystone_selection.next_page": "Próximo",
@@ -24,8 +22,6 @@
   "gui.waystones.inventory.return_to_waystone": "Voltar para Obelisco ... ...",
   "gui.waystones.inventory.return_to_nearest_waystone": "Retornar para o Obelisco mais próximo",
   "chat.waystones.waystone_activated": "Obelisco ativado: %s",
-  "chat.waystones.scroll_bound": "Pergaminho vinculado: %s",
-  "chat.waystones.scroll_not_yet_bound": "Este pergaminho não está vinculado a um Obelisco.",
   "chat.waystones.cannot_dimension_warp": "Você não pode se teletransportar entre mundos.",
   "chat.waystones.waystone_missing": "O Obelisco para a qual você tentou se teletransportar não foi encontrado.",
   "chat.waystones.cannot_transport_leashed": "Você não pode levar mobs laçados com você",
@@ -36,6 +32,5 @@
   "chat.waystones.only_creative_can_edit": "Você tem que estar no modo criativo para editar um Obelisco Global..",
   "tooltip.waystones.cooldown_left": "Tempo de Recarga: %d segundos",
   "tooltip.waystones.bound_to": "Vinculado a: %s",
-  "tooltip.waystones.bound_to_none": "Nenhum",
   "stat.waystones.waystone_activated": "Obelisco Ativado"
 }

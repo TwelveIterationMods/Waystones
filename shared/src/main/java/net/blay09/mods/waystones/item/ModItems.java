@@ -14,7 +14,6 @@ public class ModItems {
     public static DeferredObject<CreativeModeTab> creativeModeTab;
 
     public static Item returnScroll;
-    public static Item boundScroll;
     public static Item warpScroll;
     public static Item warpStone;
     public static Item warpDust;
@@ -23,7 +22,6 @@ public class ModItems {
 
     public static void initialize(BalmItems items) {
         items.registerItem(() -> returnScroll = new ReturnScrollItem(items.itemProperties()), id("return_scroll"));
-        items.registerItem(() -> boundScroll = new BoundScrollItem(items.itemProperties()), id("bound_scroll"));
         items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
         items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
         items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));

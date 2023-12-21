@@ -283,8 +283,15 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         if (level == null) {
             return null;
         }
+
+        // Prevent crafting when more than one item is present in center slot
         if (getItem(0).getCount() > 1) {
-            return null; //prevents crafting when more than 1 ingredient is present
+            return null;
+        }
+
+        // Prevent crafting if center slot is already attuned
+        if (WaystonesAPI.getBoundWaystone(null, getItem(0)).isPresent()) {
+            return null;
         }
 
         return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, this, level)
@@ -326,7 +333,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     public Collection<? extends IWaystone> getAuxiliaryTargets() {
         final var result = new ArrayList<IWaystone>();
         for (final var item : getItems()) {
-            WaystonesAPI.getBoundWaystone(item).ifPresent(result::add);
+            WaystonesAPI.getBoundWaystone(null, item).ifPresent(result::add);
         }
         return result;
     }

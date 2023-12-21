@@ -108,12 +108,8 @@ public class WaystoneRecipe implements Recipe<Container> {
                         Ingredient.CODEC.listOf().fieldOf("secondary")
                                 .flatXmap(secondary -> {
                                     Ingredient[] ingredients = secondary.stream().filter((ingredient) -> !ingredient.isEmpty()).toArray(Ingredient[]::new);
-                                    if (ingredients.length == 0) {
-                                        return DataResult.error(() -> "No secondary ingredients for warp plate recipe");
-                                    } else {
-                                        return ingredients.length > 4 ? DataResult.error(() -> "Too many secondary ingredients for warp plate recipe") : DataResult.success(
-                                                NonNullList.of(Ingredient.EMPTY, ingredients));
-                                    }
+                                    return ingredients.length > 4 ? DataResult.error(() -> "Too many secondary ingredients for warp plate recipe") : DataResult.success(
+                                            NonNullList.of(Ingredient.EMPTY, ingredients));
                                 }, DataResult::success)
                                 .forGetter(recipe -> recipe.secondaryIngredients)
                 )

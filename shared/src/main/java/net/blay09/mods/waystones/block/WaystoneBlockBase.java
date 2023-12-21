@@ -130,7 +130,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
                     // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
                     if (!hasSilkTouch && itemStack.getItem() == ModItems.attunedShard) {
-                        IWaystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), itemStack);
+                        IWaystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), player, itemStack);
                         if (waystoneAttunedTo != null && waystoneAttunedTo.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())) {
                             continue;
                         }

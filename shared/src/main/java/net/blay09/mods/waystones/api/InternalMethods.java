@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,7 +42,7 @@ public interface InternalMethods {
 
     Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos);
 
-    Optional<IWaystone> getBoundWaystone(ItemStack itemStack);
+    Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack);
 
     void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone);
 }

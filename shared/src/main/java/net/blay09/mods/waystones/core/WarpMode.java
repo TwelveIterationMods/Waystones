@@ -18,7 +18,6 @@ public enum WarpMode {
     INVENTORY_BUTTON(() -> WaystonesConfig.getActive().xpCost.inventoryButtonXpCostMultiplier, WarpMode::always, false),
     WARP_SCROLL(() -> 0.0, WarpMode::always, true),
     RETURN_SCROLL(() -> 0.0, WarpMode::always, true),
-    BOUND_SCROLL(() -> 0.0, WarpMode::always, true),
     WARP_STONE(() -> WaystonesConfig.getActive().xpCost.warpStoneXpCostMultiplier, WarpMode::always, false),
     WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.waystoneXpCostMultiplier, WarpMode::always, false),
     SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().xpCost.sharestoneXpCostMultiplier, WarpMode::always, false),

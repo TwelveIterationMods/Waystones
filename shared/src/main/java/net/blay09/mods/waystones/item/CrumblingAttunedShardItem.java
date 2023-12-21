@@ -23,7 +23,7 @@ public class CrumblingAttunedShardItem extends AbstractAttunedShardItem {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
 
-        IWaystone attunedWarpPlate = getWaystoneAttunedTo(null, stack);
+        IWaystone attunedWarpPlate = getWaystoneAttunedTo(null, null, stack);
         if (attunedWarpPlate != null && attunedWarpPlate.isValid()) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_crumbling");
             textComponent.withStyle(ChatFormatting.WHITE).withStyle(ChatFormatting.ITALIC);
