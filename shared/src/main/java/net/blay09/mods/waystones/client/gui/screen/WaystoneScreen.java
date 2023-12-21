@@ -35,8 +35,8 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
 
     public WaystoneScreen(WaystoneMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
-        imageHeight = 196;
-        inventoryLabelY = 93;
+        imageHeight = 222;
+        inventoryLabelY = imageHeight - 94;
     }
 
     @Override
@@ -116,28 +116,10 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
         guiGraphics.setColor(1f, 1f, 1f, 1f);
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES,
-                leftPos + 107 - (int) (10 * menu.getAttunementProgress()),
-                topPos + 54,
-                176,
-                0,
-                (int) (10 * menu.getAttunementProgress()),
-                4);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 54, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES,
-                leftPos + 72,
-                topPos + 68 - (int) (10 * menu.getAttunementProgress()),
-                176,
-                4,
-                4,
-                (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES,
-                leftPos + 100,
-                topPos + 68 - (int) (10 * menu.getAttunementProgress()),
-                176,
-                4,
-                4,
-                (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 65, 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 82, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 103 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 82, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
     }
 
     @Override

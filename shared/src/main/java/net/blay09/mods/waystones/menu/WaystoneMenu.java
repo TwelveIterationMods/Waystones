@@ -36,20 +36,20 @@ public class WaystoneMenu extends AbstractContainerMenu {
 
         checkContainerDataCount(containerData, 1);
 
-        addSlot(new Slot(blockEntity, 0, 80, 48));
-        addSlot(new Slot(blockEntity, 1, 52, 48));
-        addSlot(new Slot(blockEntity, 2, 66, 69));
-        addSlot(new Slot(blockEntity, 3, 94, 69));
-        addSlot(new Slot(blockEntity, 4, 108, 48));
+        addSlot(new WarpPlateAttunementSlot(blockEntity, 0, 80, 76));
+        addSlot(new WarpPlateAttunementSlot(blockEntity, 1, 80, 48));
+        addSlot(new WarpPlateAttunementSlot(blockEntity, 2, 108, 76));
+        addSlot(new WarpPlateAttunementSlot(blockEntity, 3, 80, 104));
+        addSlot(new WarpPlateAttunementSlot(blockEntity, 4, 52, 76));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 104 + i * 18));
+                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 140 + i * 18));
             }
         }
 
         for (int j = 0; j < 9; ++j) {
-            addSlot(new Slot(playerInventory, j, 8 + j * 18, 162));
+            addSlot(new Slot(playerInventory, j, 8 + j * 18, 198));
         }
 
         addDataSlots(containerData);
