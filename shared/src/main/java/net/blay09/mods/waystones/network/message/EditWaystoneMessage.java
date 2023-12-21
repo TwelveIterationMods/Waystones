@@ -5,7 +5,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
+import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -45,7 +45,7 @@ public class EditWaystoneMessage {
             return;
         }
 
-        if (!(player.containerMenu instanceof WaystoneSettingsMenu settingsMenu)) {
+        if (!(player.containerMenu instanceof WaystoneMenu settingsMenu)) {
             return;
         }
 

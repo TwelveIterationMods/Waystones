@@ -4,8 +4,7 @@ import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystonePermissionManager;
-import net.blay09.mods.waystones.menu.ModMenus;
-import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
+import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -40,7 +39,7 @@ public class LandingStoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneSettingsMenu(windowId, getWaystone(), LandingStoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
+                return new WaystoneMenu(windowId, getWaystone(), LandingStoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
             }
 
             @Override

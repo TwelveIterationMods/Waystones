@@ -9,7 +9,6 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -25,7 +24,7 @@ public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
     public static DeferredObject<MenuType<WarpPlateMenu>> warpPlate;
-    public static DeferredObject<MenuType<WaystoneSettingsMenu>> waystoneSettings;
+    public static DeferredObject<MenuType<WaystoneMenu>> waystoneSettings;
 
     public static void initialize(BalmMenus menus) {
         waystoneSelection = menus.registerMenu(id("waystone_selection"), (windowId, inventory, buf) -> {
@@ -91,14 +90,14 @@ public class ModMenus {
             return null;
         });
 
-        waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
+        waystoneSettings = menus.registerMenu(id("waystone"), (windowId, inv, data) -> {
             final var pos = data.readBlockPos();
             final var waystone = Waystone.read(data);
             final var canEdit = data.readBoolean();
 
             BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                return new WaystoneSettingsMenu(windowId, waystone, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv, canEdit);
+                return new WaystoneMenu(windowId, waystone, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv, canEdit);
             }
 
             return null;

@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
+import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
@@ -65,7 +65,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneSettingsMenu(windowId, getWaystone(), WaystoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
+                return new WaystoneMenu(windowId, getWaystone(), WaystoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
             }
 
             @Override

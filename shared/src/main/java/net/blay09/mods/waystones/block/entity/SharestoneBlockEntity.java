@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
+import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -75,7 +75,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneSettingsMenu(windowId, getWaystone(), SharestoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
+                return new WaystoneMenu(windowId, getWaystone(), SharestoneBlockEntity.this, dataAccess, inventory, error.isEmpty());
             }
 
             @Override

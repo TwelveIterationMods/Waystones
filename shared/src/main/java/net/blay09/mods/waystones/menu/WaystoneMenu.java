@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WaystoneSettingsMenu extends AbstractContainerMenu {
+public class WaystoneMenu extends AbstractContainerMenu {
 
     private final Player player;
     private final IWaystone waystone;
@@ -24,7 +24,7 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
     private final ContainerData containerData;
     private final boolean canEdit;
 
-    public WaystoneSettingsMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
+    public WaystoneMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.player = playerInventory.player;
         this.waystone = waystone;

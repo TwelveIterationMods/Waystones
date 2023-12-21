@@ -5,7 +5,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
-import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
+import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSettingsMenu> {
+public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
 
     private static final ResourceLocation WAYSTONE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
 
@@ -33,7 +33,7 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     private EditBox textField;
     private WaystoneVisbilityButton visibilityButton;
 
-    public WaystoneSettingsScreen(WaystoneSettingsMenu container, Inventory playerInventory, Component title) {
+    public WaystoneScreen(WaystoneMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         imageHeight = 196;
         inventoryLabelY = 93;

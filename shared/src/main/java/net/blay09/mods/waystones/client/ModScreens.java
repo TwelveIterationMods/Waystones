@@ -13,7 +13,7 @@ public class ModScreens {
         screens.registerScreen(ModMenus.inventorySelection::get, WaystoneSelectionScreen::new);
         screens.registerScreen(ModMenus.sharestoneSelection::get, SharestoneSelectionScreen::new);
         screens.registerScreen(ModMenus.warpPlate::get, WarpPlateScreen::new);
-        screens.registerScreen(ModMenus.waystoneSettings::get, WaystoneSettingsScreen::new);
+        screens.registerScreen(ModMenus.waystoneSettings::get, WaystoneScreen::new);
         screens.registerScreen(ModMenus.adminSelection::get, AdminSelectionScreen::new);
     }
 }
