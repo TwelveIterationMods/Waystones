@@ -202,18 +202,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Nullable
     protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
         if (player.isShiftKeyDown()) {
-            WaystoneEditPermissions result = WaystonePermissionManager.mayEditWaystone(player, world, waystone);
-            if (result != WaystoneEditPermissions.ALLOW) {
-                if (result.getLangKey() != null) {
-                    var chatComponent = Component.translatable(result.getLangKey());
-                    chatComponent.withStyle(ChatFormatting.RED);
-                    player.displayClientMessage(chatComponent, true);
-                }
-                return InteractionResult.SUCCESS;
-            }
-
             if (!world.isClientSide) {
-                MenuProvider settingsContainerProvider = tileEntity.getSettingsMenuProvider();
+                final var settingsContainerProvider = tileEntity.getSettingsMenuProvider();
                 if (settingsContainerProvider != null) {
                     Balm.getNetworking().openGui(player, settingsContainerProvider);
                 }
@@ -368,12 +358,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             if (!world.isClientSide && placer instanceof ServerPlayer) {
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
-                WaystoneEditPermissions result = WaystonePermissionManager.mayEditWaystone(player, world, waystoneTileEntity.getWaystone());
-                if (result == WaystoneEditPermissions.ALLOW) {
-                    MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
-                    if (settingsContainerProvider != null && shouldOpenMenuWhenPlaced()) {
-                        Balm.getNetworking().openGui(player, settingsContainerProvider);
-                    }
+                MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
+                if (settingsContainerProvider != null && shouldOpenMenuWhenPlaced()) {
+                    Balm.getNetworking().openGui(player, settingsContainerProvider);
                 }
             }
         }

@@ -268,10 +268,6 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).sortWaystoneSwap(player, waystoneUid, otherWaystoneUid);
     }
 
-    public static boolean mayEditGlobalWaystones(Player player) {
-        return player.getAbilities().instabuild || !WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode;
-    }
-
     public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, IWaystone waystone) {
         if (server == null) {
             return;

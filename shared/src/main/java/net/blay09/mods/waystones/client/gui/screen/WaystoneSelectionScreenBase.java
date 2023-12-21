@@ -11,11 +11,9 @@ import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
-import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneEditPermissions;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
 import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
 import net.blay09.mods.waystones.network.message.SelectWaystoneMessage;
@@ -307,18 +305,15 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
                 && mouseY >= startY && mouseY < startY + font.lineHeight;
 
-        Player player = Minecraft.getInstance().player;
-        WaystoneEditPermissions waystoneEditPermissions = WaystonePermissionManager.mayEditWaystone(player, player.level(), waystone);
-
         String fullText = locationPrefix + ChatFormatting.WHITE;
-        if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
+        if (isLocationHeaderHovered) {
             fullText += ChatFormatting.UNDERLINE;
         }
         fullText += effectiveName;
 
         guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
-        if (isLocationHeaderHovered && waystoneEditPermissions == WaystoneEditPermissions.ALLOW) {
+        if (isLocationHeaderHovered) {
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             float scale = 0.5f;

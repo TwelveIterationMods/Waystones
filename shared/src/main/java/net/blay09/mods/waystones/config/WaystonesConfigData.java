@@ -86,7 +86,7 @@ public class WaystonesConfigData implements BalmConfigData {
     public static class Restrictions {
         @Synced
         @Comment("If enabled, only the owner of a waystone (the one who placed it) can rename it.")
-        public boolean restrictRenameToOwner = false;
+        public boolean restrictEditToOwner = false;
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
