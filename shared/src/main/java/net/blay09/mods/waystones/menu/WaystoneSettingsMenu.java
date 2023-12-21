@@ -22,13 +22,16 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
     private final IWaystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final ContainerData containerData;
+    private final boolean canEdit;
 
-    public WaystoneSettingsMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory) {
+    public WaystoneSettingsMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.player = playerInventory.player;
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.containerData = containerData;
+        this.canEdit = canEdit;
+
         blockEntity.markReadyForAttunement();
 
         checkContainerDataCount(containerData, 1);
@@ -114,5 +117,9 @@ public class WaystoneSettingsMenu extends AbstractContainerMenu {
             }
             return result;
         }
+    }
+
+    public boolean canEdit() {
+        return canEdit;
     }
 }

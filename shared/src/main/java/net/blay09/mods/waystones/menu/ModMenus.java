@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -93,10 +94,11 @@ public class ModMenus {
         waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
             final var pos = data.readBlockPos();
             final var waystone = Waystone.read(data);
+            final var canEdit = data.readBoolean();
 
             BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                return new WaystoneSettingsMenu(windowId, waystone, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv);
+                return new WaystoneSettingsMenu(windowId, waystone, waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inv, canEdit);
             }
 
             return null;

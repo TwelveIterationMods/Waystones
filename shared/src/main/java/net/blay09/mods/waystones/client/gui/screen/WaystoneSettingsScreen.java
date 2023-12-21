@@ -3,34 +3,25 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.menu.WaystoneSettingsMenu;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSettingsMenu> {
@@ -42,8 +33,6 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     private EditBox textField;
     private WaystoneVisbilityButton visibilityButton;
 
-    private boolean focusTextFieldNextTick;
-
     public WaystoneSettingsScreen(WaystoneSettingsMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         imageHeight = 196;
@@ -53,8 +42,8 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     @Override
     public void init() {
         super.init();
-        IWaystone waystone = menu.getWaystone();
-        String oldText = waystone.getName();
+        final var waystone = menu.getWaystone();
+        var oldText = waystone.getName();
         if (textField != null) {
             oldText = textField.getValue();
         }
@@ -68,16 +57,19 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         textField = new EditBox(Minecraft.getInstance().font, leftPos + 33, topPos + 21, 110, 16, textField, Component.empty());
         textField.setMaxLength(128);
         textField.setValue(oldText);
+        textField.setEditable(menu.canEdit());
         addRenderableWidget(textField);
-        setInitialFocus(textField);
+        if (menu.canEdit()) {
+            setInitialFocus(textField);
+        }
 
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 20, oldVisibility, menu.getVisibilityOptions());
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 20, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
         addRenderableWidget(visibilityButton);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (textField.isMouseOver(mouseX, mouseY) && button == 1) {
+        if (menu.canEdit() && textField.isMouseOver(mouseX, mouseY) && button == 1) {
             textField.setValue("");
             return true;
         }
@@ -99,15 +91,6 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
     }
 
     @Override
-    protected void containerTick() {
-        // Button presses focus the button after onPress, so we can't change focus inside. Defer to here instead.
-        if (focusTextFieldNextTick) {
-            setInitialFocus(textField);
-            focusTextFieldNextTick = false;
-        }
-    }
-
-    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
@@ -119,7 +102,11 @@ public class WaystoneSettingsScreen extends AbstractContainerScreen<WaystoneSett
         }
 
         if (textField != null && textField.getValue().isEmpty()) {
-            guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("waystones.untitled_waystone"), textField.getX() + 4, textField.getY() + 4, 0x808080);
+            guiGraphics.drawString(Minecraft.getInstance().font,
+                    Component.translatable("waystones.untitled_waystone"),
+                    textField.getX() + 4,
+                    textField.getY() + 4,
+                    0x808080);
         }
     }
 

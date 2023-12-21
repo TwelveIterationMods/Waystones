@@ -102,6 +102,7 @@
   "tooltip.waystones.visibility.activation": "On Activation",
   "tooltip.waystones.visibility.global": "Global",
   "tooltip.waystones.visibility.shard_only": "Shards only",
+  "tooltip.waystones.edit_restricted": "This waystone cannot be edited.",
   "stat.waystones.waystone_activated": "Waystones Activated",
   "waystones.untitled_waystone": "Untitled Waystone",
   "waystones:warp_plate": "Warp Plate",
