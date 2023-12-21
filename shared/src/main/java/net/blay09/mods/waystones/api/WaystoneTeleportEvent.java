@@ -31,16 +31,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             context.setExperienceCost(experienceCost);
         }
 
-        @Deprecated
-        public int getXpCost() {
-            return context.getXpCost();
-        }
-
-        @Deprecated
-        public void setXpCost(int xpCost) {
-            context.setXpCost(xpCost);
-        }
-
         public int getCooldown() {
             return context.getCooldown();
         }

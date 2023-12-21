@@ -131,7 +131,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
                     .map(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
                     .orElse(true);
             level.setBlock(worldPosition, getBlockState()
-                    .setValue(WarpPlateBlock.ACTIVE, true)
                     .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.INVALID), 3);
         }
     }
@@ -156,7 +155,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             List<Entity> entities = level.getEntities((Entity) null, boundsAbove, EntitySelector.ENTITY_STILL_ALIVE);
             if (entities.isEmpty()) {
                 level.setBlock(worldPosition, getBlockState()
-                        .setValue(WarpPlateBlock.ACTIVE, false)
                         .setValue(WarpPlateBlock.STATUS, WarpPlateBlock.WarpPlateStatus.IDLE), 3);
                 ticksPassedPerEntity.clear();
             }

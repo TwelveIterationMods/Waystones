@@ -77,11 +77,6 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
     }
 
     @Override
-    public boolean isGlobal() {
-        return getBackingWaystone().isGlobal();
-    }
-
-    @Override
     public boolean isOwner(Player player) {
         return getBackingWaystone().isOwner(player);
     }
@@ -101,14 +96,6 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
         IWaystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof IMutableWaystone) {
             ((IMutableWaystone) backingWaystone).setName(name);
-        }
-    }
-
-    @Override
-    public void setGlobal(boolean global) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setGlobal(global);
         }
     }
 

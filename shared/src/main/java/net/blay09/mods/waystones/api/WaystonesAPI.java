@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
-import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -36,27 +35,11 @@ public class WaystonesAPI {
         return __internalMethods.tryTeleport(context);
     }
 
-    /**
-     * @deprecated Use {@link #tryTeleport(IWaystoneTeleportContext)} instead.
-     */
-    @Deprecated
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
-        return __internalMethods.tryTeleport(context);
-    }
-
     public static Either<List<Entity>, WaystoneTeleportError> forceTeleportToWaystone(Entity entity, IWaystone waystone) {
         return __internalMethods.forceTeleportToWaystone(entity, waystone);
     }
 
     public static List<Entity> forceTeleport(IWaystoneTeleportContext context) {
-        return __internalMethods.forceTeleport(context);
-    }
-
-    /**
-     * @deprecated Use {@link #forceTeleport(IWaystoneTeleportContext)} instead.
-     */
-    @Deprecated
-    public static List<Entity> forceTeleport(WaystoneTeleportContext context) {
         return __internalMethods.forceTeleport(context);
     }
 

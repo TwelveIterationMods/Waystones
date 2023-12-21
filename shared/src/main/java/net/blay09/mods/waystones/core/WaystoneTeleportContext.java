@@ -102,19 +102,6 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public int getXpCost() {
-        if (entity instanceof Player player) {
-            return xpCost.getCostAsLevels(player);
-        }
-        return 0;
-    }
-
-    @Override
-    public void setXpCost(int xpCost) {
-        this.xpCost = ExperienceCost.fromLevels(xpCost);
-    }
-
-    @Override
     public ExperienceCost getExperienceCost() {
         return xpCost;
     }

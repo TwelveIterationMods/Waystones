@@ -66,15 +66,12 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             box(3.0, 1.0, 3.0, 13.0, 2.0, 13.0)
     ).optimize();
 
-    @Deprecated
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final EnumProperty<WarpPlateStatus> STATUS = EnumProperty.create("status", WarpPlateStatus.class);
 
     public WarpPlateBlock(Properties properties) {
         super(properties);
         registerDefaultState(this.stateDefinition.any()
                 .setValue(WATERLOGGED, false)
-                .setValue(ACTIVE, false)
                 .setValue(STATUS, WarpPlateStatus.IDLE));
     }
 
@@ -103,7 +100,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE);
         builder.add(STATUS);
     }
 

@@ -81,16 +81,6 @@ public class Waystone implements IWaystone, IMutableWaystone {
     }
 
     @Override
-    public boolean isGlobal() {
-        return visibility == WaystoneVisibility.GLOBAL;
-    }
-
-    @Override
-    public void setGlobal(boolean global) {
-        visibility = global ? WaystoneVisibility.GLOBAL : WaystoneVisibility.ACTIVATION;
-    }
-
-    @Override
     public WaystoneVisibility getVisibility() {
         return visibility;
     }

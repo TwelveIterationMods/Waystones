@@ -49,11 +49,6 @@ public class InvalidWaystone implements IWaystone {
     }
 
     @Override
-    public boolean isGlobal() {
-        return false;
-    }
-
-    @Override
     public WaystoneVisibility getVisibility() {
         return WaystoneVisibility.ACTIVATION;
     }
