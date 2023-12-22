@@ -17,7 +17,7 @@ public class WaystonesConfigData implements BalmConfigData {
         DISABLED
     }
 
-    public XpCost xpCost = new XpCost();
+    public Costs costs = new Costs();
     public Restrictions restrictions = new Restrictions();
     public Cooldowns cooldowns = new Cooldowns();
     public InventoryButton inventoryButton = new InventoryButton();
@@ -25,7 +25,21 @@ public class WaystonesConfigData implements BalmConfigData {
     public Client client = new Client();
     public Compatibility compatibility = new Compatibility();
 
-    public static class XpCost {
+    public static class Costs {
+        @Synced
+        @Comment("Set to false to simply disable all xp costs.")
+        public boolean enableCosts = true;
+
+        @Synced
+        @Comment("Set to false to simply disable all xp costs.")
+        public List<String> costModifiers = List.of(
+                "waystones:distance_add_xp(0.01)",
+                "waystones:source_multiply_xp(waystone:warp_plate, 0)",
+                "waystones:target_multiply_xp(waystone:global_waystone, 0)",
+                "waystones:dimensional_add_xp(27)",
+                "waystones:min_xp(0)",
+                "waystones:max_xp(27)");
+
         @Synced
         @Comment("Set to true if experience cost should cost full levels rather than experience points. Make sure to also adjust blocksPerXpLevel, maximumBaseXpCost and dimensionalWarpXpCost appropriately.")
         public boolean xpCostsFullLevels = false;

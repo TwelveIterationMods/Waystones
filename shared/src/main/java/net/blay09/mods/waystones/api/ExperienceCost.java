@@ -2,8 +2,11 @@ package net.blay09.mods.waystones.api;
 
 import net.blay09.mods.waystones.xp.ExperienceLevelCost;
 import net.blay09.mods.waystones.xp.ExperiencePointsCost;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
 
 public interface ExperienceCost {
     boolean canAfford(Player player);
@@ -12,7 +15,7 @@ public interface ExperienceCost {
 
     int getCostAsLevels(Player player);
 
-    Component getCostAsTooltip(Player player);
+    void appendHoverText(Player player, List<Component> tooltip);
 
     boolean isEmpty();
 
@@ -42,8 +45,8 @@ public interface ExperienceCost {
         }
 
         @Override
-        public Component getCostAsTooltip(Player player) {
-            return Component.translatable("gui.waystones.waystone_selection.no_xp_requirement");
+        public void appendHoverText(Player player, List<Component> tooltip) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.no_xp_requirement"));
         }
 
         @Override

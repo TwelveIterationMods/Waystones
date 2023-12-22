@@ -10,14 +10,14 @@ import java.util.function.Supplier;
  */
 @Deprecated(forRemoval = true)
 public enum WarpMode {
-    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().xpCost.inventoryButtonXpCostMultiplier,  false),
+    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().costs.inventoryButtonXpCostMultiplier,  false),
     WARP_SCROLL(() -> 0.0, true),
     RETURN_SCROLL(() -> 0.0,  true),
-    WARP_STONE(() -> WaystonesConfig.getActive().xpCost.warpStoneXpCostMultiplier,  false),
-    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.waystoneXpCostMultiplier,  false),
-    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().xpCost.sharestoneXpCostMultiplier,  false),
-    WARP_PLATE(() -> WaystonesConfig.getActive().xpCost.warpPlateXpCostMultiplier, false),
-    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().xpCost.portstoneXpCostMultiplier,  false),
+    WARP_STONE(() -> WaystonesConfig.getActive().costs.warpStoneXpCostMultiplier,  false),
+    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().costs.waystoneXpCostMultiplier,  false),
+    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().costs.sharestoneXpCostMultiplier,  false),
+    WARP_PLATE(() -> WaystonesConfig.getActive().costs.warpPlateXpCostMultiplier, false),
+    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().costs.portstoneXpCostMultiplier,  false),
     CUSTOM(() -> 0.0, false);
 
     public static WarpMode[] values = values();

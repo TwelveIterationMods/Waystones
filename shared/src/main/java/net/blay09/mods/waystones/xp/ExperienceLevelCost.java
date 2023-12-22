@@ -4,8 +4,10 @@ import net.blay09.mods.waystones.api.ExperienceCost;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.List;
+
 public class ExperienceLevelCost implements ExperienceCost {
-    private final int levels;
+    private int levels;
 
     public ExperienceLevelCost(int levels) {
         this.levels = Math.max(0, levels);
@@ -32,7 +34,15 @@ public class ExperienceLevelCost implements ExperienceCost {
     }
 
     @Override
-    public Component getCostAsTooltip(Player player) {
-        return Component.translatable("gui.waystones.waystone_selection.level_requirement", getCostAsLevels(player));
+    public void appendHoverText(Player player, List<Component> tooltip) {
+        tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", getCostAsLevels(player)));
+    }
+
+    public void setLevels(int levels) {
+        this.levels = levels;
+    }
+
+    public int getLevels() {
+        return levels;
     }
 }

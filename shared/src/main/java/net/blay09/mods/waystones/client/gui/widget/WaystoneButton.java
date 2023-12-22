@@ -88,11 +88,7 @@ public class WaystoneButton extends Button {
 
             if (isHovered && mouseX <= getX() + 16) {
                 final List<Component> tooltip = new ArrayList<>();
-                final var xpCostText = xpCost.getCostAsTooltip(mc.player);
-                if (xpCostText instanceof MutableComponent mutableComponent) {
-                    mutableComponent.withStyle(canAfford ? ChatFormatting.GREEN : ChatFormatting.RED);
-                }
-                tooltip.add(xpCostText);
+                xpCost.appendHoverText(mc.player, tooltip);
                 guiGraphics.renderTooltip(mc.font, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
             }
         }

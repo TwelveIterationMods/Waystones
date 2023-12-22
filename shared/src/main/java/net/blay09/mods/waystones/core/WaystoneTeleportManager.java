@@ -54,7 +54,7 @@ public class WaystoneTeleportManager {
 
     public static ExperienceCost getExperienceLevelCost(IWaystoneTeleportContext context) {
         final var xpCost = getExperienceLevelCost(context.getEntity(), context.getTargetWaystone(), context.getWarpMode(), context);
-        if (WaystonesConfig.getActive().xpCost.xpCostsFullLevels) {
+        if (WaystonesConfig.getActive().costs.xpCostsFullLevels) {
             return ExperienceCost.fromLevels(xpCost);
         } else {
             return ExperienceCost.fromExperience(xpCost);
@@ -71,25 +71,25 @@ public class WaystoneTeleportManager {
             return 0;
         }
 
-        int xpForLeashed = WaystonesConfig.getActive().xpCost.xpCostPerLeashed * context.getLeashedEntities().size();
+        int xpForLeashed = WaystonesConfig.getActive().costs.xpCostPerLeashed * context.getLeashedEntities().size();
 
         double xpCostMultiplier = warpMode.getXpCostMultiplier();
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
-            xpCostMultiplier *= WaystonesConfig.getActive().xpCost.globalWaystoneXpCostMultiplier;
+            xpCostMultiplier *= WaystonesConfig.getActive().costs.globalWaystoneXpCostMultiplier;
         }
 
         BlockPos pos = waystone.getPos();
         double dist = Math.sqrt(player.distanceToSqr(pos.getX(), player.getY(), pos.getZ())); // ignore y distance
-        final double minimumXpCost = WaystonesConfig.getActive().xpCost.minimumBaseXpCost;
-        final double maximumXpCost = WaystonesConfig.getActive().xpCost.maximumBaseXpCost;
+        final double minimumXpCost = WaystonesConfig.getActive().costs.minimumBaseXpCost;
+        final double maximumXpCost = WaystonesConfig.getActive().costs.maximumBaseXpCost;
         double xpLevelCost;
         if (waystone.getDimension() != player.level().dimension()) {
-            int dimensionalWarpXpCost = WaystonesConfig.getActive().xpCost.dimensionalWarpXpCost;
+            int dimensionalWarpXpCost = WaystonesConfig.getActive().costs.dimensionalWarpXpCost;
             xpLevelCost = Mth.clamp(dimensionalWarpXpCost, minimumXpCost, dimensionalWarpXpCost);
-        } else if (WaystonesConfig.getActive().xpCost.blocksPerXpLevel > 0) {
-            xpLevelCost = Mth.clamp(Math.floor(dist / (float) WaystonesConfig.getActive().xpCost.blocksPerXpLevel), minimumXpCost, maximumXpCost);
+        } else if (WaystonesConfig.getActive().costs.blocksPerXpLevel > 0) {
+            xpLevelCost = Mth.clamp(Math.floor(dist / (float) WaystonesConfig.getActive().costs.blocksPerXpLevel), minimumXpCost, maximumXpCost);
 
-            if (WaystonesConfig.getActive().xpCost.inverseXpCost) {
+            if (WaystonesConfig.getActive().costs.inverseXpCost) {
                 xpLevelCost = maximumXpCost - xpLevelCost;
             }
         } else {
