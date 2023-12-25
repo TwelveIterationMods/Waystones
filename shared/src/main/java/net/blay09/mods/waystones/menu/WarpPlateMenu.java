@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -87,7 +87,7 @@ public class WarpPlateMenu extends AbstractContainerMenu {
         return itemStack;
     }
 
-    public IWaystone getWaystone() {
+    public Waystone getWaystone() {
         return blockEntity.getWaystone();
     }
 }

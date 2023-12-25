@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.worldgen.namegen;
 import com.google.common.collect.Sets;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.GenerateWaystoneNameEvent;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +47,7 @@ public class NameGenerator extends SavedData {
         }
     }
 
-    public synchronized String getName(LevelAccessor level, IWaystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
+    public synchronized String getName(LevelAccessor level, Waystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
         INameGenerator nameGenerator = getNameGenerator(nameGenerationMode);
         String originalName = nameGenerator.generateName(level, waystone, rand);
         if (originalName == null) {

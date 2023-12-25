@@ -1,29 +1,29 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
 public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final List<UUID> sortingIndex = new ArrayList<>();
-    private final Map<UUID, IWaystone> waystones = new HashMap<>();
+    private final Map<UUID, Waystone> waystones = new HashMap<>();
     private long warpStoneCooldownUntil;
     private long inventoryButtonCooldownUntil;
 
     @Override
-    public void activateWaystone(Player player, IWaystone waystone) {
+    public void activateWaystone(Player player, Waystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
         sortingIndex.add(waystone.getWaystoneUid());
     }
 
     @Override
-    public boolean isWaystoneActivated(Player player, IWaystone waystone) {
+    public boolean isWaystoneActivated(Player player, Waystone waystone) {
         return waystones.containsKey(waystone.getWaystoneUid());
     }
 
     @Override
-    public void deactivateWaystone(Player player, IWaystone waystone) {
+    public void deactivateWaystone(Player player, Waystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
         sortingIndex.remove(waystone.getWaystoneUid());
     }
@@ -49,7 +49,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public Collection<IWaystone> getWaystones(Player player) {
+    public Collection<Waystone> getWaystones(Player player) {
         return waystones.values();
     }
 
@@ -80,7 +80,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
         final var existing = new HashSet<>(sortingIndex);
 
         for (final var waystone : waystones) {
@@ -99,7 +99,7 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
         this.sortingIndex.addAll(sortingIndex);
     }
 
-    public void setWaystones(Collection<IWaystone> waystones) {
+    public void setWaystones(Collection<Waystone> waystones) {
         this.waystones.clear();
         for (final var waystone : waystones) {
             this.waystones.put(waystone.getWaystoneUid(), waystone);

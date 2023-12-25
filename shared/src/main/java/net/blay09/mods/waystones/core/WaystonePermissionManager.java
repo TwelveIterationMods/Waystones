@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystoneEditError;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class WaystonePermissionManager {
 
-    public static Optional<WaystoneEditError> mayEditWaystone(Player player, Level world, IWaystone waystone) {
+    public static Optional<WaystoneEditError> mayEditWaystone(Player player, Level world, Waystone waystone) {
         if (WaystonesConfig.getActive().restrictions.restrictEditToOwner && !waystone.isOwner(player)) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }

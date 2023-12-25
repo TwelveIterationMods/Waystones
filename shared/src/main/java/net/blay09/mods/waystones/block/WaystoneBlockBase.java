@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IAttunementItem;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.trait.IAttunementItem;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.*;
@@ -130,7 +130,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
                     // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
                     if (!hasSilkTouch && itemStack.getItem() == ModItems.attunedShard) {
-                        IWaystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), player, itemStack);
+                        Waystone waystoneAttunedTo = ((IAttunementItem) ModItems.attunedShard).getWaystoneAttunedTo(world.getServer(), player, itemStack);
                         if (waystoneAttunedTo != null && waystoneAttunedTo.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())) {
                             continue;
                         }
@@ -200,7 +200,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Nullable
-    protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
+    protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
                 final var settingsContainerProvider = tileEntity.getSettingsMenuProvider();
@@ -243,7 +243,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Nullable
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
+    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
         return null;
     }
 
@@ -254,7 +254,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             final var waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
             final var wasNotSilkTouched = blockEntity instanceof WaystoneBlockEntityBase && (!canSilkTouch() || !((WaystoneBlockEntityBase) blockEntity).isSilkTouched());
             if (wasNotSilkTouched) {
-                WaystoneManager.get(world.getServer()).removeWaystone(waystone);
+                WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
                 PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
             }
             WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
@@ -292,7 +292,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 return result;
             }
 
-            IWaystone waystone = waystoneTileEntity.getWaystone();
+            Waystone waystone = waystoneTileEntity.getWaystone();
             result = handleEditActions(world, player, waystoneTileEntity, waystone);
             if (result != null) {
                 return result;
@@ -329,9 +329,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                     existingWaystone = new WaystoneProxy(world.getServer(), NbtUtils.loadUUID(Objects.requireNonNull(tag.get("UUID"))));
                 }
 
-                if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof Waystone) {
+                if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof WaystoneImpl) {
                     ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world,
-                            ((Waystone) existingWaystone.getBackingWaystone()),
+                            ((WaystoneImpl) existingWaystone.getBackingWaystone()),
                             stack);
                 } else {
                     ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) world, placer, WaystoneOrigin.PLAYER);
@@ -346,7 +346,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             }
 
             if (placer instanceof Player) {
-                IWaystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
+                Waystone waystone = ((WaystoneBlockEntityBase) blockEntity).getWaystone();
                 PlayerWaystoneManager.activateWaystone(((Player) placer), waystone);
 
                 if (!world.isClientSide) {

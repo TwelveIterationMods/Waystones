@@ -2,6 +2,10 @@ package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
+import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.minecraft.resources.ResourceLocation;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
@@ -20,7 +24,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     private MarkerSet waystoneMarkers;
     private MarkerSet sharestoneMarkers;
 
-    public void createFromWaystones(List<IWaystone> waystones) {
+    public void createFromWaystones(List<Waystone> waystones) {
         if (waystoneMarkers != null) {
             waystoneMarkers.deleteMarkerSet();
         }
@@ -35,12 +39,12 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         }
     }
 
-    public void addWaystoneMarker(IWaystone waystone) {
+    public void addWaystoneMarker(Waystone waystone) {
         final var markerSet = WaystoneTypes.isSharestone(waystone.getWaystoneType()) ? sharestoneMarkers : waystoneMarkers;
         createWaystoneMarker(markerSet, waystone);
     }
 
-    public void removeWaystoneMarker(IWaystone waystone) {
+    public void removeWaystoneMarker(Waystone waystone) {
         final var markerId = getMarkerId(waystone);
         final var marker = waystoneMarkers.findMarker(markerId);
         if (marker != null) {
@@ -91,11 +95,11 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         runWhenDynmapIsReady(() -> createFromWaystones(waystones));
     }
 
-    public static String getMarkerId(IWaystone waystone) {
+    public static String getMarkerId(Waystone waystone) {
         return waystone.getWaystoneUid().toString();
     }
 
-    public static Marker createWaystoneMarker(MarkerSet markerSet, IWaystone waystone) {
+    public static Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
         return markerSet.createMarker(getMarkerId(waystone),
                 waystone.getName(),
                 true,
@@ -107,7 +111,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
                 false);
     }
 
-    private static boolean isSupportedWaystoneType(IWaystone waystone) {
+    private static boolean isSupportedWaystoneType(Waystone waystone) {
         return isSupportedWaystoneType(waystone.getWaystoneType());
     }
 

@@ -1,6 +1,8 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
+import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -12,15 +14,15 @@ import java.util.List;
 public abstract class WaystoneTeleportEvent extends BalmEvent {
 
     public static class Pre extends WaystoneTeleportEvent {
-        private final IWaystoneTeleportContext context;
+        private final WaystoneTeleportContext context;
         private EventResult dimensionalTeleportResult = EventResult.DEFAULT;
         private EventResult consumeItemResult = EventResult.DEFAULT;
 
-        public Pre(IWaystoneTeleportContext context) {
+        public Pre(WaystoneTeleportContext context) {
             this.context = context;
         }
 
-        public IWaystoneTeleportContext getContext() {
+        public WaystoneTeleportContext getContext() {
             return context;
         }
 
@@ -70,10 +72,10 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
     }
 
     public static class Post extends WaystoneTeleportEvent {
-        private final IWaystoneTeleportContext context;
+        private final WaystoneTeleportContext context;
         private final List<Entity> teleportedEntities;
 
-        public Post(IWaystoneTeleportContext context, List<Entity> teleportedEntities) {
+        public Post(WaystoneTeleportContext context, List<Entity> teleportedEntities) {
             this.context = context;
             this.teleportedEntities = teleportedEntities;
         }
@@ -81,7 +83,7 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
         /**
          * The context that was used for this teleport. Changes made at this point are ignored.
          */
-        public IWaystoneTeleportContext getContext() {
+        public WaystoneTeleportContext getContext() {
             return context;
         }
 

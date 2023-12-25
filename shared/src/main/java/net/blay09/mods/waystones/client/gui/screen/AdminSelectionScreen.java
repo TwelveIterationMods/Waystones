@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +24,7 @@ public class AdminSelectionScreen extends WaystoneSelectionScreenBase {
     }
 
     @Override
-    public Comparator<IWaystone> getSorting() {
+    public Comparator<Waystone> getSorting() {
         return null;
     }
 }

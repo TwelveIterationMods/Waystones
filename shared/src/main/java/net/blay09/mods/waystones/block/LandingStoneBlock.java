@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.LandingStoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -50,7 +50,7 @@ public class LandingStoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
+    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
         if (!world.isClientSide) {
             Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
             return InteractionResult.SUCCESS;

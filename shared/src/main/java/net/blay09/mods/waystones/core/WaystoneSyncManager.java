@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class WaystoneSyncManager {
 
-    public static void sendWaystoneUpdateToAll(@Nullable MinecraftServer server, IWaystone waystone) {
+    public static void sendWaystoneUpdateToAll(@Nullable MinecraftServer server, Waystone waystone) {
         if (server == null) {
             return;
         }
@@ -27,7 +27,7 @@ public class WaystoneSyncManager {
         }
     }
 
-    public static void sendWaystoneRemovalToAll(@Nullable MinecraftServer server, IWaystone waystone, boolean wasDestroyed) {
+    public static void sendWaystoneRemovalToAll(@Nullable MinecraftServer server, Waystone waystone, boolean wasDestroyed) {
         if (server == null) {
             return;
         }
@@ -49,18 +49,18 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystonesOfType(ResourceLocation waystoneType, ServerPlayer player) {
-        List<IWaystone> warpPlates = WaystoneManager.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
+        List<Waystone> warpPlates = WaystoneManagerImpl.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
         Balm.getNetworking().sendTo(player, new KnownWaystonesMessage(waystoneType, warpPlates));
     }
 
-    public static void sendWaystoneUpdate(Player player, IWaystone waystone) {
+    public static void sendWaystoneUpdate(Player player, Waystone waystone) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
             Balm.getNetworking().sendTo(player, new UpdateWaystoneMessage(waystone));
         }
     }
 
-    public static void sendWaystoneRemoval(Player player, IWaystone waystone, boolean wasDestroyed) {
+    public static void sendWaystoneRemoval(Player player, Waystone waystone, boolean wasDestroyed) {
         // If this is a waystone, only send an update if the player has activated it already
         if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone)) {
             Balm.getNetworking().sendTo(player, new WaystoneRemovedMessage(waystone.getWaystoneType(), waystone.getWaystoneUid(), wasDestroyed));

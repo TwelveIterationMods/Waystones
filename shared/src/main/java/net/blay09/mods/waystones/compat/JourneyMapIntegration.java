@@ -9,6 +9,9 @@ import journeymap.client.api.event.ClientEvent;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneUpdateReceivedEvent;
+import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.client.resources.language.I18n;
@@ -108,7 +111,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private void updateAllWaypoints(ResourceLocation waystoneType, List<IWaystone> waystones) {
+    private void updateAllWaypoints(ResourceLocation waystoneType, List<Waystone> waystones) {
         final var idPrefix = waystoneType.getPath() + ":";
         final var stillExistingIds = new HashSet<String>();
         for (final var waystone : waystones) {
@@ -132,7 +135,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private void updateWaypoint(IWaystone waystone) {
+    private void updateWaypoint(Waystone waystone) {
         try {
             final var prefixedId = getPrefixedWaystoneId(waystone);
             final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
@@ -156,7 +159,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private static WaypointGroup getWaystoneGroup(IWaystone waystone) {
+    private static WaypointGroup getWaystoneGroup(Waystone waystone) {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
             return new WaypointGroup(Waystones.MOD_ID, SHARESTONE_GROUP_ID.toString(), "Sharestones");
         } else {
@@ -164,7 +167,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         }
     }
 
-    private String getPrefixedWaystoneId(IWaystone waystone) {
+    private String getPrefixedWaystoneId(Waystone waystone) {
         return getPrefixedWaystoneId(waystone.getWaystoneType(), waystone.getWaystoneUid());
     }
 

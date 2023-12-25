@@ -1,8 +1,7 @@
 package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
-import net.blay09.mods.waystones.api.IFOVOnUse;
-import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.api.trait.IFOVOnUse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;

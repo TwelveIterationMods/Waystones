@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
@@ -59,10 +60,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         super.initializeWaystone(world, player, origin);
 
         // Warp Plates generate a name on placement always
-        IWaystone waystone = getWaystone();
-        if (waystone instanceof IMutableWaystone) {
+        Waystone waystone = getWaystone();
+        if (waystone instanceof MutableWaystone) {
             String name = NameGenerator.get(world.getServer()).getName(world, waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
-            ((IMutableWaystone) waystone).setName(name);
+            ((MutableWaystone) waystone).setName(name);
         }
 
         WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), waystone);
@@ -124,7 +125,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
         if (ticksPassed == null || ticksPassed != -1) {
             final var targetWaystone = getTargetWaystone();
-            final var status = targetWaystone.filter(IWaystone::isValid)
+            final var status = targetWaystone.filter(Waystone::isValid)
                     .map(it -> WarpPlateBlock.WarpPlateStatus.ACTIVE)
                     .orElse(WarpPlateBlock.WarpPlateStatus.INVALID);
             final var canAfford = targetWaystone.map(it -> WaystoneTeleportManager.predictExperienceLevelCost(entity, it, getWaystone()))
@@ -170,7 +171,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
                 iterator.remove();
             } else if (ticksPassed > useTime) {
                 ItemStack targetAttunementStack = getTargetAttunementStack();
-                IWaystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
+                Waystone targetWaystone = WaystonesAPI.getBoundWaystone(null, targetAttunementStack).orElse(null);
                 if (targetWaystone != null && targetWaystone.isValid()) {
                     teleportToTarget(entity, targetWaystone, targetAttunementStack);
                 }
@@ -209,7 +210,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 
-    private void teleportToTarget(Entity entity, IWaystone targetWaystone, ItemStack targetAttunementStack) {
+    private void teleportToTarget(Entity entity, Waystone targetWaystone, ItemStack targetAttunementStack) {
         WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, getWaystone())
                 .flatMap(ctx -> {
                     ctx.setWarpItem(targetAttunementStack);
@@ -299,7 +300,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         for (int i = 0; i < getContainerSize(); i++) {
             ItemStack itemStack = getItem(i);
             if (itemStack.is(ModItemTags.WARP_SHARDS)) {
-                IWaystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(null, itemStack).orElse(null);
+                Waystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(null, itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
                     attunedShards.add(itemStack);
                 }
@@ -321,7 +322,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         return ItemStack.EMPTY;
     }
 
-    public Optional<IWaystone> getTargetWaystone() {
+    public Optional<Waystone> getTargetWaystone() {
         return WaystonesAPI.getBoundWaystone(null, getTargetAttunementStack());
     }
 

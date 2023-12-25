@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IAttunementItem;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.trait.IAttunementItem;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.core.WaystoneProxy;
@@ -31,7 +31,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        IWaystone waystoneAttunedTo = getWaystoneAttunedTo(null, null, itemStack);
+        Waystone waystoneAttunedTo = getWaystoneAttunedTo(null, null, itemStack);
         return waystoneAttunedTo != null && waystoneAttunedTo.isValid();
     }
 
@@ -39,7 +39,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
 
-        IWaystone attunedWaystone = getWaystoneAttunedTo(null, null, stack);
+        Waystone attunedWaystone = getWaystoneAttunedTo(null, null, stack);
         if (attunedWaystone == null || !attunedWaystone.isValid()) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_lost");
             textComponent.withStyle(ChatFormatting.GRAY);
@@ -55,7 +55,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
         Player player = Balm.getProxy().getClientPlayer();
         if (player != null && player.containerMenu instanceof WarpPlateMenu) {
-            IWaystone currentWarpPlate = ((WarpPlateMenu) player.containerMenu).getWaystone();
+            Waystone currentWarpPlate = ((WarpPlateMenu) player.containerMenu).getWaystone();
             if (attunedWaystone.getWaystoneUid().equals(currentWarpPlate.getWaystoneUid())) {
                 list.add(Component.translatable("tooltip.waystones.attuned_shard.move_to_other_warp_plate"));
             } else {
@@ -68,7 +68,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
     @Nullable
     @Override
-    public IWaystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         CompoundTag compound = itemStack.getTag();
         if (compound != null && compound.contains("AttunedToWaystone", Tag.TAG_INT_ARRAY)) {
             return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone"))));
@@ -78,7 +78,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
     }
 
     @Override
-    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable IWaystone waystone) {
+    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();

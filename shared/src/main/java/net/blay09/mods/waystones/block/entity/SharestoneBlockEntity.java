@@ -61,7 +61,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
-                Waystone.writeList(buf, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
+                WaystoneImpl.writeList(buf, PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone()));
             }
         };
     }
@@ -83,7 +83,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
-                Waystone.write(buf, getWaystone());
+                WaystoneImpl.write(buf, getWaystone());
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
                 buf.writeBoolean(error.isEmpty());
             }

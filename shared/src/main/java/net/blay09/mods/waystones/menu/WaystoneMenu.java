@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
@@ -19,12 +19,12 @@ import java.util.List;
 public class WaystoneMenu extends AbstractContainerMenu {
 
     private final Player player;
-    private final IWaystone waystone;
+    private final Waystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final ContainerData containerData;
     private final boolean canEdit;
 
-    public WaystoneMenu(int windowId, IWaystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
+    public WaystoneMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.player = playerInventory.player;
         this.waystone = waystone;
@@ -98,7 +98,7 @@ public class WaystoneMenu extends AbstractContainerMenu {
         return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
     }
 
-    public IWaystone getWaystone() {
+    public Waystone getWaystone() {
         return waystone;
     }
 

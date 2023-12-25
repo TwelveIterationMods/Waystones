@@ -1,10 +1,9 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -27,9 +26,9 @@ public class WaystoneButton extends Button {
             "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
 
     private final Cost cost;
-    private final IWaystone waystone;
+    private final Waystone waystone;
 
-    public WaystoneButton(int x, int y, IWaystone waystone, Cost cost, OnPress pressable) {
+    public WaystoneButton(int x, int y, Waystone waystone, Cost cost, OnPress pressable) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         Player player = Minecraft.getInstance().player;
         this.cost = cost;
@@ -41,7 +40,7 @@ public class WaystoneButton extends Button {
         }
     }
 
-    private static Component getWaystoneNameComponent(IWaystone waystone) {
+    private static Component getWaystoneNameComponent(Waystone waystone) {
         String effectiveName = waystone.getName();
         if (effectiveName.isEmpty()) {
             effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");

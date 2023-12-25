@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.WaystoneRemoveReceivedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneRemoveReceivedEvent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

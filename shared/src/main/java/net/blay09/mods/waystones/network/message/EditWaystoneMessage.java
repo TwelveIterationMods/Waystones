@@ -66,7 +66,7 @@ public class EditWaystoneMessage {
             return;
         }
 
-        final var backingWaystone = (Waystone) waystone.getBackingWaystone();
+        final var backingWaystone = (WaystoneImpl) waystone.getBackingWaystone();
         final var legalName = makeNameLegal(player.server, message.name);
         backingWaystone.setName(legalName);
 
@@ -77,7 +77,7 @@ public class EditWaystoneMessage {
         }
         backingWaystone.setVisibility(visibility);
 
-        WaystoneManager.get(player.server).setDirty();
+        WaystoneManagerImpl.get(player.server).setDirty();
         WaystoneSyncManager.sendWaystoneUpdateToAll(player.server, backingWaystone);
 
         player.closeContainer();
@@ -88,7 +88,7 @@ public class EditWaystoneMessage {
             name = Component.translatable("waystones.untitled_waystone").getString();
         }
         final var inventoryButtonMode = WaystonesConfig.getActive().inventoryButton.inventoryButton;
-        if (inventoryButtonMode.equals(name) && WaystoneManager.get(server).findWaystoneByName(name).isPresent()) {
+        if (inventoryButtonMode.equals(name) && WaystoneManagerImpl.get(server).findWaystoneByName(name).isPresent()) {
             return name + "*";
         }
 

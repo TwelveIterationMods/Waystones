@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class Waystone implements IWaystone, IMutableWaystone {
+public class WaystoneImpl implements Waystone, MutableWaystone {
 
     private final ResourceLocation waystoneType;
     private final UUID waystoneUid;
@@ -36,7 +36,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
 
     private UUID ownerUid;
 
-    public Waystone(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
+    public WaystoneImpl(ResourceLocation waystoneType, UUID waystoneUid, ResourceKey<Level> dimension, BlockPos pos, WaystoneOrigin origin, @Nullable UUID ownerUid) {
         this.waystoneType = waystoneType;
         this.waystoneUid = waystoneUid;
         this.dimension = dimension;
@@ -157,16 +157,16 @@ public class Waystone implements IWaystone, IMutableWaystone {
         return new TeleportDestination(level, location, direction);
     }
 
-    public static List<IWaystone> readList(FriendlyByteBuf buf) {
+    public static List<Waystone> readList(FriendlyByteBuf buf) {
         int size = buf.readShort();
-        List<IWaystone> waystones = new ArrayList<>(size);
+        List<Waystone> waystones = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             waystones.add(read(buf));
         }
         return waystones;
     }
 
-    public static IWaystone read(FriendlyByteBuf buf) {
+    public static Waystone read(FriendlyByteBuf buf) {
         UUID waystoneUid = buf.readUUID();
         ResourceLocation waystoneType = buf.readResourceLocation();
         String name = buf.readUtf();
@@ -175,13 +175,13 @@ public class Waystone implements IWaystone, IMutableWaystone {
         BlockPos pos = buf.readBlockPos();
         WaystoneOrigin origin = buf.readEnum(WaystoneOrigin.class);
 
-        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimension, pos, origin, null);
+        WaystoneImpl waystone = new WaystoneImpl(waystoneType, waystoneUid, dimension, pos, origin, null);
         waystone.setName(name);
         waystone.setVisibility(visibility);
         return waystone;
     }
 
-    public static IWaystone read(CompoundTag compound) {
+    public static Waystone read(CompoundTag compound) {
         UUID waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("WaystoneUid")));
         String name = compound.getString("Name");
         ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
@@ -196,7 +196,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         }
         UUID ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
         ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
-        Waystone waystone = new Waystone(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
+        WaystoneImpl waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
         if (compound.contains("Visibility")) {
             waystone.setVisibility(WaystoneVisibility.valueOf(compound.getString("Visibility")));
@@ -206,14 +206,14 @@ public class Waystone implements IWaystone, IMutableWaystone {
         return waystone;
     }
 
-    public static void writeList(FriendlyByteBuf buf, Collection<IWaystone> waystones) {
+    public static void writeList(FriendlyByteBuf buf, Collection<Waystone> waystones) {
         buf.writeShort(waystones.size());
-        for (IWaystone waystone : waystones) {
+        for (Waystone waystone : waystones) {
             write(buf, waystone);
         }
     }
 
-    public static void write(FriendlyByteBuf buf, IWaystone waystone) {
+    public static void write(FriendlyByteBuf buf, Waystone waystone) {
         buf.writeUUID(waystone.getWaystoneUid());
         buf.writeResourceLocation(waystone.getWaystoneType());
         buf.writeUtf(waystone.getName());
@@ -223,7 +223,7 @@ public class Waystone implements IWaystone, IMutableWaystone {
         buf.writeEnum(waystone.getOrigin());
     }
 
-    public static CompoundTag write(IWaystone waystone, CompoundTag compound) {
+    public static CompoundTag write(Waystone waystone, CompoundTag compound) {
         compound.put("WaystoneUid", NbtUtils.createUUID(waystone.getWaystoneUid()));
         compound.putString("Type", waystone.getWaystoneType().toString());
         compound.putString("Name", waystone.getName());

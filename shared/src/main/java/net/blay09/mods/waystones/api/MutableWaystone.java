@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.UUID;
 
-public interface IMutableWaystone {
+public interface MutableWaystone {
     void setName(String name);
 
     void setVisibility(WaystoneVisibility visibility);

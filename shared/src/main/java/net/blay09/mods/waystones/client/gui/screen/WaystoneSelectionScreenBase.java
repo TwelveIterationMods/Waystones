@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
@@ -42,8 +42,8 @@ import java.util.function.Predicate;
 
 public abstract class WaystoneSelectionScreenBase extends AbstractContainerScreen<WaystoneSelectionMenu> {
 
-    private final Collection<IWaystone> waystones;
-    private List<IWaystone> filteredWaystones;
+    private final Collection<Waystone> waystones;
+    private List<Waystone> filteredWaystones;
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
     private String searchText = "";
@@ -120,10 +120,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private void updateList() {
-        List<IWaystone> list = new ArrayList<>();
-        for (IWaystone iWaystone : waystones) {
-            if (iWaystone.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                list.add(iWaystone);
+        List<Waystone> list = new ArrayList<>();
+        for (Waystone waystone : waystones) {
+            if (waystone.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                list.add(waystone);
             }
         }
         final var sorting = getSorting();
@@ -148,7 +148,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         for (int i = 0; i < buttonsPerPage; i++) {
             int entryIndex = pageOffset * buttonsPerPage + i;
             if (entryIndex >= 0 && entryIndex < filteredWaystones.size()) {
-                IWaystone waystone = filteredWaystones.get(entryIndex);
+                Waystone waystone = filteredWaystones.get(entryIndex);
 
                 addRenderableWidget(createWaystoneButton(y, waystone));
 
@@ -185,7 +185,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         btnNextPage.setY(topPos + headerY + headerHeight + buttonsPerPage * 22 + (filteredWaystones.size() > 0 ? 10 : 0));
     }
 
-    private boolean allowDeletion(IWaystone waystone) {
+    private boolean allowDeletion(Waystone waystone) {
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !Minecraft.getInstance().player.getAbilities().instabuild) {
             return false;
         }
@@ -197,8 +197,8 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return allowDeletion();
     }
 
-    private WaystoneButton createWaystoneButton(int y, final IWaystone waystone) {
-        IWaystone waystoneFrom = menu.getWaystoneFrom();
+    private WaystoneButton createWaystoneButton(int y, final Waystone waystone) {
+        Waystone waystoneFrom = menu.getWaystoneFrom();
         Player player = Minecraft.getInstance().player;
         final var xpCost = WaystoneTeleportManager.predictExperienceLevelCost(Objects.requireNonNull(player),
                 waystone,
@@ -210,11 +210,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return btnWaystone;
     }
 
-    protected void onWaystoneSelected(IWaystone waystone) {
+    protected void onWaystoneSelected(Waystone waystone) {
         Balm.getNetworking().sendToServer(new SelectWaystoneMessage(waystone.getWaystoneUid()));
     }
 
-    private void sortWaystone(IWaystone waystone, int sortDir) {
+    private void sortWaystone(Waystone waystone, int sortDir) {
         final var waystoneUid = waystone.getWaystoneUid();
         if (Screen.hasShiftDown()) {
             if (sortDir == -1) {
@@ -270,7 +270,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         Font font = Minecraft.getInstance().font;
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        IWaystone fromWaystone = menu.getWaystoneFrom();
+        Waystone fromWaystone = menu.getWaystoneFrom();
         guiGraphics.drawCenteredString(font, getTitle(), imageWidth / 2, headerY + (fromWaystone != null ? 20 : 0), 0xFFFFFF);
         if (fromWaystone != null) {
             drawLocationHeader(guiGraphics, fromWaystone, mouseX, mouseY, imageWidth / 2, headerY);
@@ -285,7 +285,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         }
     }
 
-    private void drawLocationHeader(GuiGraphics guiGraphics, IWaystone waystone, int mouseX, int mouseY, int x, int y) {
+    private void drawLocationHeader(GuiGraphics guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
         Font font = Minecraft.getInstance().font;
 
         String locationPrefix = ChatFormatting.YELLOW + I18n.get("gui.waystones.waystone_selection.current_location") + " ";
@@ -340,7 +340,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         return this.searchBox.keyPressed(key, scanCode, modifiers);
     }
 
-    public Comparator<IWaystone> getSorting() {
+    public Comparator<Waystone> getSorting() {
         final var player = Minecraft.getInstance().player;
         final var sortingIndex = PlayerWaystoneManager.getSortingIndex(player);
         return new UserSortingComparator(sortingIndex);

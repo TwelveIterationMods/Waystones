@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.core.BlockPos;
@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class InvalidWaystone implements IWaystone {
+public class InvalidWaystone implements Waystone {
 
-    public static final IWaystone INSTANCE = new InvalidWaystone();
+    public static final Waystone INSTANCE = new InvalidWaystone();
 
     @Override
     public boolean isValid() {

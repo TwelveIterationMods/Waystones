@@ -2,9 +2,11 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.trait.IAttunementItem;
+import net.blay09.mods.waystones.api.trait.IFOVOnUse;
+import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -36,7 +38,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
-            IWaystone boundTo = getWaystoneAttunedTo(player.getServer(), player, stack);
+            Waystone boundTo = getWaystoneAttunedTo(player.getServer(), player, stack);
             if (boundTo != null) {
                 WaystonesAPI.createDefaultTeleportContext(player, boundTo, null)
                         .mapLeft(it -> it.setWarpItem(stack))
@@ -54,7 +56,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
     @Nullable
     @Override
-    public IWaystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         CompoundTag compound = itemStack.getTag();
         if (compound != null && compound.contains("AttunedToWaystone", Tag.TAG_INT_ARRAY)) {
             return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone"))));
@@ -64,7 +66,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     }
 
     @Override
-    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable IWaystone waystone) {
+    public void setWaystoneAttunedTo(ItemStack itemStack, @Nullable Waystone waystone) {
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();

@@ -1,12 +1,12 @@
 package net.blay09.mods.waystones.comparator;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-public class UserSortingComparator implements Comparator<IWaystone> {
+public class UserSortingComparator implements Comparator<Waystone> {
 
     private final List<UUID> sortingIndex;
 
@@ -15,7 +15,7 @@ public class UserSortingComparator implements Comparator<IWaystone> {
     }
 
     @Override
-    public int compare(IWaystone o1, IWaystone o2) {
+    public int compare(Waystone o1, Waystone o2) {
         final var index1 = sortingIndex.indexOf(o1.getWaystoneUid());
         final var index2 = sortingIndex.indexOf(o2.getWaystoneUid());
         if (index1 == -1 && index2 == -1) {

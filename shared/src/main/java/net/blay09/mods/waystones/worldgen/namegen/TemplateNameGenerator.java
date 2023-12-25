@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
@@ -25,7 +25,7 @@ public class TemplateNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String generateName(LevelAccessor level, IWaystone waystone, RandomSource rand) {
+    public String generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
         var result = template;
         for (final var entry : placeholders.entrySet()) {
             final var key = entry.getKey();

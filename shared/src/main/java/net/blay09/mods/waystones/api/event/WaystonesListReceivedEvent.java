@@ -1,6 +1,7 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.List;
 public class WaystonesListReceivedEvent extends BalmEvent {
 
     private final ResourceLocation waystoneType;
-    private final List<IWaystone> waystones;
+    private final List<Waystone> waystones;
 
-    public WaystonesListReceivedEvent(ResourceLocation waystoneType, List<IWaystone> waystones) {
+    public WaystonesListReceivedEvent(ResourceLocation waystoneType, List<Waystone> waystones) {
         this.waystoneType = waystoneType;
         this.waystones = waystones;
     }
@@ -25,7 +26,7 @@ public class WaystonesListReceivedEvent extends BalmEvent {
         return waystoneType;
     }
 
-    public List<IWaystone> getWaystones() {
+    public List<Waystone> getWaystones() {
         return waystones;
     }
 }

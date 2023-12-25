@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.handler;
 
 import net.blay09.mods.waystones.stats.ModStats;
-import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 
 public class WaystoneActivationStatHandler {
 

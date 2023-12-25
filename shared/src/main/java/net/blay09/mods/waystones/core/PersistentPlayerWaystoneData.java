@@ -2,7 +2,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -17,13 +17,13 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntilUnix";
 
     @Override
-    public void activateWaystone(Player player, IWaystone waystone) {
+    public void activateWaystone(Player player, Waystone waystone) {
         ListTag activatedWaystonesData = getActivatedWaystonesData(getWaystonesData(player));
         activatedWaystonesData.add(StringTag.valueOf(waystone.getWaystoneUid().toString()));
     }
 
     @Override
-    public boolean isWaystoneActivated(Player player, IWaystone waystone) {
+    public boolean isWaystoneActivated(Player player, Waystone waystone) {
         ListTag activatedWaystones = getActivatedWaystonesData(getWaystonesData(player));
         String waystoneUid = waystone.getWaystoneUid().toString();
         for (Tag activatedWaystone : activatedWaystones) {
@@ -36,9 +36,9 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public Collection<IWaystone> getWaystones(Player player) {
+    public Collection<Waystone> getWaystones(Player player) {
         final var activatedWaystonesTag = getActivatedWaystonesData(getWaystonesData(player));
-        final var waystones = new ArrayList<IWaystone>();
+        final var waystones = new ArrayList<Waystone>();
         for (final var iterator = activatedWaystonesTag.iterator(); iterator.hasNext(); ) {
             final var activatedWaystoneTag = iterator.next();
             final var proxy = new WaystoneProxy(player.getServer(), UUID.fromString(activatedWaystoneTag.getAsString()));
@@ -68,7 +68,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+    public List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
         final var sortingIndexData = getSortingIndexData(getWaystonesData(player));
         final var sortingIndex = new ArrayList<UUID>();
         final var existing = new HashSet<UUID>();
@@ -136,7 +136,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public void deactivateWaystone(Player player, IWaystone waystone) {
+    public void deactivateWaystone(Player player, Waystone waystone) {
         CompoundTag data = getWaystonesData(player);
         ListTag activatedWaystones = getActivatedWaystonesData(data);
         String waystoneUid = waystone.getWaystoneUid().toString();

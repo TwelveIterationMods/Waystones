@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.cost;
 
-import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -99,7 +99,7 @@ public class CostRegistry {
         registerSerializer(IdParameter.class, it -> new IdParameter(waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
 
-        registerConditionResolver("is_interdimensional", IWaystoneTeleportContext::isDimensionalTeleport);
+        registerConditionResolver("is_interdimensional", WaystoneTeleportContext::isDimensionalTeleport);
         registerConditionResolver("source_is_warp_plate",
                 it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
         registerConditionResolver("source_is_portstone",
@@ -225,7 +225,7 @@ public class CostRegistry {
         }
     }
 
-    public static void registerVariableResolver(String name, Function<IWaystoneTeleportContext, Float> resolver) {
+    public static void registerVariableResolver(String name, Function<WaystoneTeleportContext, Float> resolver) {
         register(new CostVariableResolver() {
             @Override
             public ResourceLocation getId() {
@@ -233,13 +233,13 @@ public class CostRegistry {
             }
 
             @Override
-            public float resolve(IWaystoneTeleportContext context) {
+            public float resolve(WaystoneTeleportContext context) {
                 return resolver.apply(context);
             }
         });
     }
 
-    public static void registerConditionResolver(String name, Function<IWaystoneTeleportContext, Boolean> resolver) {
+    public static void registerConditionResolver(String name, Function<WaystoneTeleportContext, Boolean> resolver) {
         register(new CostConditionResolver() {
             @Override
             public ResourceLocation getId() {
@@ -247,7 +247,7 @@ public class CostRegistry {
             }
 
             @Override
-            public boolean matches(IWaystoneTeleportContext context) {
+            public boolean matches(WaystoneTeleportContext context) {
                 return resolver.apply(context);
             }
         });
@@ -261,7 +261,7 @@ public class CostRegistry {
             }
 
             @Override
-            public boolean matches(IWaystoneTeleportContext context) {
+            public boolean matches(WaystoneTeleportContext context) {
                 return !resolver.apply(context);
             }
         });

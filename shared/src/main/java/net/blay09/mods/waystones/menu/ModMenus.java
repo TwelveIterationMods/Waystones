@@ -8,7 +8,7 @@ import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -32,7 +32,7 @@ public class ModMenus {
     public static void initialize(BalmMenus menus) {
         waystoneSelection = menus.registerMenu(id("waystone_selection"), (windowId, inventory, buf) -> {
             final var pos = buf.readBlockPos();
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             final var blockEntity = inventory.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntity waystone) {
                 return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), waystone.getWaystone(), windowId, waystones, Collections.emptySet());
@@ -42,23 +42,23 @@ public class ModMenus {
         });
 
         warpScrollSelection = menus.registerMenu(id("warp_scroll_selection"), (windowId, inventory, buf) -> {
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         warpStoneSelection = menus.registerMenu(id("warp_stone_selection"), (windowId, inventory, buf) -> {
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         portstoneSelection = menus.registerMenu(id("portstone_selection"), (windowId, inventory, buf) -> {
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
             final var pos = buf.readBlockPos();
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
 
             final var blockEntity = inventory.player.level().getBlockEntity(pos);
             if (blockEntity instanceof SharestoneBlockEntity sharestone) {
@@ -72,12 +72,12 @@ public class ModMenus {
         });
 
         inventorySelection = menus.registerMenu(id("inventory_selection"), (syncId, inventory, buf) -> {
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), null, syncId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
         });
 
         adminSelection = menus.registerMenu(id("admin_selection"), (syncId, inventory, buf) -> {
-            final var waystones = Waystone.readList(buf);
+            final var waystones = WaystoneImpl.readList(buf);
             return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), null, syncId, waystones, Set.of(TeleportFlags.ADMIN));
         });
 
@@ -94,7 +94,7 @@ public class ModMenus {
 
         waystoneSettings = menus.registerMenu(id("waystone"), (windowId, inv, data) -> {
             final var pos = data.readBlockPos();
-            final var waystone = Waystone.read(data);
+            final var waystone = WaystoneImpl.read(data);
             final var canEdit = data.readBoolean();
 
             BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);

@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.error;
 
 import org.jetbrains.annotations.Nullable;
 

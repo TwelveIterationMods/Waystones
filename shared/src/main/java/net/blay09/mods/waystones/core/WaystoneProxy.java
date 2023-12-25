@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class WaystoneProxy implements IWaystone, IMutableWaystone {
+public class WaystoneProxy implements Waystone, MutableWaystone {
 
     private final MinecraftServer server;
     private final UUID waystoneUid;
-    private IWaystone backingWaystone;
+    private Waystone backingWaystone;
 
     public WaystoneProxy(@Nullable MinecraftServer server, UUID waystoneUid) {
         this.server = server;
@@ -35,12 +35,12 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
 
     @Override
     public boolean isValid() {
-        return WaystoneManager.get(server).getWaystoneById(waystoneUid).isPresent();
+        return WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).isPresent();
     }
 
-    public IWaystone getBackingWaystone() {
+    public Waystone getBackingWaystone() {
         if (backingWaystone == null) {
-            backingWaystone = WaystoneManager.get(server).getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
+            backingWaystone = WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).orElse(InvalidWaystone.INSTANCE);
         }
 
         return backingWaystone;
@@ -93,33 +93,33 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
 
     @Override
     public void setName(String name) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setName(name);
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setName(name);
         }
     }
 
     @Override
     public void setDimension(ResourceKey<Level> dimension) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setDimension(dimension);
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setDimension(dimension);
         }
     }
 
     @Override
     public void setPos(BlockPos pos) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setPos(pos);
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setPos(pos);
         }
     }
 
     @Override
     public void setOwnerUid(UUID ownerUid) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setOwnerUid(ownerUid);
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setOwnerUid(ownerUid);
         }
     }
 
@@ -130,9 +130,9 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
 
     @Override
     public void setVisibility(WaystoneVisibility visibility) {
-        IWaystone backingWaystone = getBackingWaystone();
-        if (backingWaystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) backingWaystone).setVisibility(visibility);
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setVisibility(visibility);
         }
     }
 }

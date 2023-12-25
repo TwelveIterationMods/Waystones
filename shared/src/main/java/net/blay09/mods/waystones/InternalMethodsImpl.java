@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
+import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -32,7 +34,7 @@ import java.util.UUID;
 public class InternalMethodsImpl implements InternalMethods {
 
     @Override
-    public Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone) {
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportPets.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportPets.SAME_DIMENSION && !context.isDimensionalTeleport())) {
@@ -47,7 +49,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Either<IWaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, IWaystone waystone) {
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone) {
         if (!waystone.isValid()) {
             return Either.right(new WaystoneTeleportError.InvalidWaystone(waystone));
         }
@@ -66,45 +68,45 @@ public class InternalMethodsImpl implements InternalMethods {
             return Either.right(new WaystoneTeleportError.MissingWaystone(waystone));
         }
 
-        return Either.left(new WaystoneTeleportContext(entity, waystone, waystone.resolveDestination(targetLevel)));
+        return Either.left(new WaystoneTeleportContextImpl(entity, waystone, waystone.resolveDestination(targetLevel)));
     }
 
     @Override
-    public Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
+    public Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         return WaystoneTeleportManager.tryTeleport(context);
     }
 
     @Override
-    public List<Entity> forceTeleport(IWaystoneTeleportContext context) {
+    public List<Entity> forceTeleport(WaystoneTeleportContext context) {
         return WaystoneTeleportManager.doTeleport(context);
     }
 
     @Override
-    public Optional<IWaystone> getWaystoneAt(Level level, BlockPos pos) {
-        return WaystoneManager.get(level.getServer()).getWaystoneAt(level, pos);
+    public Optional<Waystone> getWaystoneAt(Level level, BlockPos pos) {
+        return WaystoneManagerImpl.get(level.getServer()).getWaystoneAt(level, pos);
     }
 
     @Override
-    public Optional<IWaystone> getWaystone(Level level, UUID uuid) {
-        return WaystoneManager.get(level.getServer()).getWaystoneById(uuid);
+    public Optional<Waystone> getWaystone(Level level, UUID uuid) {
+        return WaystoneManagerImpl.get(level.getServer()).getWaystoneById(uuid);
     }
 
     @Override
-    public ItemStack createAttunedShard(IWaystone warpPlate) {
+    public ItemStack createAttunedShard(Waystone warpPlate) {
         ItemStack itemStack = new ItemStack(ModItems.attunedShard);
         setBoundWaystone(itemStack, warpPlate);
         return itemStack;
     }
 
     @Override
-    public ItemStack createBoundScroll(IWaystone waystone) {
+    public ItemStack createBoundScroll(Waystone waystone) {
         ItemStack itemStack = new ItemStack(ModItems.warpScroll);
         setBoundWaystone(itemStack, waystone);
         return itemStack;
     }
 
     @Override
-    public Optional<IWaystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
+    public Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
         Block block = Balm.getRegistries().getBlock(style.getBlockRegistryName());
         level.setBlock(pos, block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
         level.setBlock(pos.above(), block.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
@@ -112,7 +114,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<IWaystone> placeSharestone(Level level, BlockPos pos, @Nullable DyeColor color) {
+    public Optional<Waystone> placeSharestone(Level level, BlockPos pos, @Nullable DyeColor color) {
         Block sharestone = color != null ? ModBlocks.scopedSharestones[color.ordinal()] : ModBlocks.sharestone;
         level.setBlock(pos, sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
         level.setBlock(pos.above(), sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
@@ -120,13 +122,13 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos) {
+    public Optional<Waystone> placeWarpPlate(Level level, BlockPos pos) {
         level.setBlock(pos, ModBlocks.warpPlate.defaultBlockState(), 3);
         return getWaystoneAt(level, pos);
     }
 
     @Override
-    public Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack) {
+    public Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
             return Optional.ofNullable(attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), player, itemStack));
         }
@@ -134,14 +136,14 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone) {
+    public void setBoundWaystone(ItemStack itemStack, @Nullable Waystone waystone) {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
             attunementItem.setWaystoneAttunedTo(itemStack, waystone);
         }
     }
 
     @Override
-    public Cost calculateCost(IWaystoneTeleportContext context) {
+    public Cost calculateCost(WaystoneTeleportContext context) {
         if (!WaystonesConfig.getActive().costs.enableCosts) {
             return NoCost.INSTANCE;
         }

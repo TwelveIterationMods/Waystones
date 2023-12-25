@@ -4,7 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
@@ -100,7 +100,7 @@ public class InventoryButtonGuiHandler {
                 }
 
                 long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
-                IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
+                Waystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
                 final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player, waystone, null) : NoCost.INSTANCE;
                 int secondsLeft = (int) (timeLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
@@ -113,7 +113,7 @@ public class InventoryButtonGuiHandler {
                     }
                 } else if (inventoryButtonMode.isReturnToNearest()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_nearest_waystone"));
-                    IWaystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
+                    Waystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
                     if (nearestWaystone != null) {
                         tooltip.add(formatTranslation(ChatFormatting.GRAY, "tooltip.waystones.bound_to", ChatFormatting.DARK_AQUA + nearestWaystone.getName()));
                     } else {

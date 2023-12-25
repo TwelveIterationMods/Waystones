@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.command;
 
 import net.blay09.mods.balm.api.command.BalmCommands;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.ChatFormatting;
@@ -59,7 +59,7 @@ public class ModCommands {
         ));
     }
 
-    private static Component componentForWaystoneList(ServerPlayer caller, ServerPlayer target, IWaystone waystone) {
+    private static Component componentForWaystoneList(ServerPlayer caller, ServerPlayer target, Waystone waystone) {
         final var waystoneDimensionId = waystone.getDimension().location();
         final var waystonePos = waystone.getPos();
         Component location;

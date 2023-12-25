@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public interface IWaystone {
+public interface Waystone {
     UUID getWaystoneUid();
 
     String getName();

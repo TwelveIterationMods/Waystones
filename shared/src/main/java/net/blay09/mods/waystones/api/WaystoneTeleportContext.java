@@ -11,54 +11,54 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface IWaystoneTeleportContext {
+public interface WaystoneTeleportContext {
     Entity getEntity();
 
-    IWaystone getTargetWaystone();
+    Waystone getTargetWaystone();
 
     TeleportDestination getDestination();
 
-    IWaystoneTeleportContext setDestination(TeleportDestination destination);
+    WaystoneTeleportContext setDestination(TeleportDestination destination);
 
     List<Mob> getLeashedEntities();
 
     List<Entity> getAdditionalEntities();
 
-    IWaystoneTeleportContext addAdditionalEntity(Entity additionalEntity);
+    WaystoneTeleportContext addAdditionalEntity(Entity additionalEntity);
 
-    Optional<IWaystone> getFromWaystone();
+    Optional<Waystone> getFromWaystone();
 
-    IWaystoneTeleportContext setFromWaystone(@Nullable IWaystone fromWaystone);
+    WaystoneTeleportContext setFromWaystone(@Nullable Waystone fromWaystone);
 
     ItemStack getWarpItem();
 
-    IWaystoneTeleportContext setWarpItem(ItemStack warpItem);
+    WaystoneTeleportContext setWarpItem(ItemStack warpItem);
 
     boolean isDimensionalTeleport();
 
     Cost getExperienceCost();
 
-    IWaystoneTeleportContext setExperienceCost(Cost cost);
+    WaystoneTeleportContext setExperienceCost(Cost cost);
 
-    IWaystoneTeleportContext setCooldown(int cooldown);
+    WaystoneTeleportContext setCooldown(int cooldown);
 
     int getCooldown();
 
     boolean playsSound();
 
-    IWaystoneTeleportContext setPlaysSound(boolean playsSound);
+    WaystoneTeleportContext setPlaysSound(boolean playsSound);
 
     boolean playsEffect();
 
-    IWaystoneTeleportContext setPlaysEffect(boolean playsEffect);
+    WaystoneTeleportContext setPlaysEffect(boolean playsEffect);
 
     Set<ResourceLocation> getFlags();
 
-    IWaystoneTeleportContext addFlag(ResourceLocation flag);
+    WaystoneTeleportContext addFlag(ResourceLocation flag);
 
-    IWaystoneTeleportContext removeFlag(ResourceLocation flag);
+    WaystoneTeleportContext removeFlag(ResourceLocation flag);
 
-    default IWaystoneTeleportContext addFlags(Set<ResourceLocation> flags) {
+    default WaystoneTeleportContext addFlags(Set<ResourceLocation> flags) {
         for (ResourceLocation flag : flags) {
             addFlag(flag);
         }

@@ -1,4 +1,4 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
 import net.minecraft.resources.ResourceLocation;

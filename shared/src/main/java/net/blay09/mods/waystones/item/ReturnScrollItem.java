@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +14,7 @@ public class ReturnScrollItem extends BoundScrollItem {
     }
 
     @Override
-    public @Nullable IWaystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public @Nullable Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         return PlayerWaystoneManager.getNearestWaystone(player);
     }
 }

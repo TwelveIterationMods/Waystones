@@ -3,6 +3,10 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.event.WaystoneInitializedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneRemovedEvent;
+import net.blay09.mods.waystones.api.event.WaystoneUpdatedEvent;
+import net.blay09.mods.waystones.api.event.WaystonesLoadedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,22 +26,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class WaystoneManager extends SavedData implements IWaystoneManager {
+public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
 
     private static final String DATA_NAME = Waystones.MOD_ID;
     private static final String TAG_WAYSTONES = "Waystones";
-    private static final WaystoneManager clientStorageCopy = new WaystoneManager();
+    private static final WaystoneManagerImpl clientStorageCopy = new WaystoneManagerImpl();
 
-    private final Map<UUID, IWaystone> waystones = new HashMap<>();
+    private final Map<UUID, Waystone> waystones = new HashMap<>();
 
-    public void addWaystone(IWaystone waystone) {
+    public void addWaystone(Waystone waystone) {
         waystones.put(waystone.getWaystoneUid(), waystone);
         setDirty();
         Balm.getEvents().fireEvent(new WaystoneInitializedEvent(waystone));
     }
 
-    public void updateWaystone(IWaystone waystone) {
-        Waystone mutableWaystone = (Waystone) waystones.getOrDefault(waystone.getWaystoneUid(), waystone);
+    public void updateWaystone(Waystone waystone) {
+        WaystoneImpl mutableWaystone = (WaystoneImpl) waystones.getOrDefault(waystone.getWaystoneUid(), waystone);
         mutableWaystone.setName(waystone.getName());
         mutableWaystone.setVisibility(waystone.getVisibility());
         waystones.put(waystone.getWaystoneUid(), mutableWaystone);
@@ -45,14 +49,14 @@ public class WaystoneManager extends SavedData implements IWaystoneManager {
         Balm.getEvents().fireEvent(new WaystoneUpdatedEvent(waystone));
     }
 
-    public void removeWaystone(IWaystone waystone) {
+    public void removeWaystone(Waystone waystone) {
         waystones.remove(waystone.getWaystoneUid());
         setDirty();
         Balm.getEvents().fireEvent(new WaystoneRemovedEvent(waystone));
     }
 
     @Override
-    public Optional<IWaystone> getWaystoneAt(BlockGetter world, BlockPos pos) {
+    public Optional<Waystone> getWaystoneAt(BlockGetter world, BlockPos pos) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase) {
             return Optional.of(((WaystoneBlockEntityBase) blockEntity).getWaystone());
@@ -62,38 +66,38 @@ public class WaystoneManager extends SavedData implements IWaystoneManager {
     }
 
     @Override
-    public Optional<IWaystone> getWaystoneById(UUID waystoneUid) {
+    public Optional<Waystone> getWaystoneById(UUID waystoneUid) {
         return Optional.ofNullable(waystones.get(waystoneUid));
     }
 
     @Override
-    public Optional<IWaystone> findWaystoneByName(String name) {
+    public Optional<Waystone> findWaystoneByName(String name) {
         return waystones.values().stream().filter(it -> it.getName().equals(name)).findFirst();
     }
 
     @Override
-    public Stream<IWaystone> getWaystones() {
+    public Stream<Waystone> getWaystones() {
         return waystones.values().stream();
     }
 
     @Override
-    public Stream<IWaystone> getWaystonesByType(ResourceLocation type) {
+    public Stream<Waystone> getWaystonesByType(ResourceLocation type) {
         return waystones.values().stream()
                 .filter(it -> it.getWaystoneType().equals(type))
-                .sorted(Comparator.comparing(IWaystone::getName)); // TODO this shouldn't sort here
+                .sorted(Comparator.comparing(Waystone::getName)); // TODO this shouldn't sort here
     }
 
     @Override
-    public List<IWaystone> getGlobalWaystones() {
+    public List<Waystone> getGlobalWaystones() {
         return waystones.values().stream().filter(it -> it.getVisibility() == WaystoneVisibility.GLOBAL).collect(Collectors.toList());
     }
 
-    public static WaystoneManager read(CompoundTag tagCompound) {
-        WaystoneManager waystoneManager = new WaystoneManager();
+    public static WaystoneManagerImpl read(CompoundTag tagCompound) {
+        WaystoneManagerImpl waystoneManager = new WaystoneManagerImpl();
         ListTag tagList = tagCompound.getList(TAG_WAYSTONES, Tag.TAG_COMPOUND);
         for (Tag tag : tagList) {
             CompoundTag compound = (CompoundTag) tag;
-            IWaystone waystone = Waystone.read(compound);
+            Waystone waystone = WaystoneImpl.read(compound);
             waystoneManager.waystones.put(waystone.getWaystoneUid(), waystone);
         }
         Balm.getEvents().fireEvent(new WaystonesLoadedEvent(waystoneManager));
@@ -103,17 +107,17 @@ public class WaystoneManager extends SavedData implements IWaystoneManager {
     @Override
     public CompoundTag save(CompoundTag tagCompound) {
         ListTag tagList = new ListTag();
-        for (IWaystone waystone : waystones.values()) {
-            tagList.add(Waystone.write(waystone, new CompoundTag()));
+        for (Waystone waystone : waystones.values()) {
+            tagList.add(WaystoneImpl.write(waystone, new CompoundTag()));
         }
         tagCompound.put(TAG_WAYSTONES, tagList);
         return tagCompound;
     }
 
-    public static WaystoneManager get(@Nullable MinecraftServer server) {
+    public static WaystoneManagerImpl get(@Nullable MinecraftServer server) {
         if (server != null) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManager::new, WaystoneManager::read,
+            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(WaystoneManagerImpl::new, WaystoneManagerImpl::read,
                     DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
         }
 

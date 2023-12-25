@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
+import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
@@ -42,15 +44,15 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static Cost predictExperienceLevelCost(Entity player, IWaystone waystone, @Nullable IWaystone fromWaystone) {
-        WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
+    public static Cost predictExperienceLevelCost(Entity player, Waystone waystone, @Nullable Waystone fromWaystone) {
+        WaystoneTeleportContextImpl context = new WaystoneTeleportContextImpl(player, waystone, null);
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
         context.setDestination(waystone.resolveDestination(player.level()));
         return WaystonesAPI.calculateCost(context);
     }
 
-    public static List<Entity> doTeleport(IWaystoneTeleportContext context) {
+    public static List<Entity> doTeleport(WaystoneTeleportContext context) {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
         context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
 
@@ -79,7 +81,7 @@ public class WaystoneTeleportManager {
         return teleportedEntities;
     }
 
-    private static List<Entity> teleportEntityAndAttached(Entity entity, IWaystoneTeleportContext context) {
+    private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context) {
         final var teleportedEntities = new ArrayList<Entity>();
 
         final var destination = context.getDestination();
@@ -182,13 +184,13 @@ public class WaystoneTeleportManager {
         }
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone) {
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone) {
         return WaystonesAPI.createDefaultTeleportContext(entity, waystone, fromWaystone)
                 .flatMap(WaystoneTeleportManager::tryTeleport)
                 .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity));
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {

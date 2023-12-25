@@ -2,13 +2,11 @@ package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.api.IAttunementItem;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,18 +20,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -149,7 +143,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, IWaystone waystone) {
+    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
         if (!world.isClientSide) {
             Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
             return InteractionResult.SUCCESS;
@@ -176,7 +170,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         return textFormatting != null ? textFormatting : ChatFormatting.GRAY;
     }
 
-    public static Component getGalacticName(IWaystone waystone) {
+    public static Component getGalacticName(Waystone waystone) {
         String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
         var galacticName = Component.literal(name);
         galacticName.withStyle(WarpPlateBlock.getColorForName(name));

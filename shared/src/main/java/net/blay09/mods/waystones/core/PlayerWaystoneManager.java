@@ -4,12 +4,13 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
+import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
 import net.blay09.mods.waystones.api.cost.Cost;
@@ -18,10 +19,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -38,23 +37,23 @@ public class PlayerWaystoneManager {
     private static final IPlayerWaystoneData persistentPlayerWaystoneData = new PersistentPlayerWaystoneData();
     private static final IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
 
-    public static boolean isWaystoneActivated(Player player, IWaystone waystone) {
+    public static boolean isWaystoneActivated(Player player, Waystone waystone) {
         return getPlayerWaystoneData(player.level()).isWaystoneActivated(player, waystone);
     }
 
-    public static void activateWaystone(Player player, IWaystone waystone) {
-        if (!waystone.hasName() && waystone instanceof IMutableWaystone && waystone.wasGenerated()) {
+    public static void activateWaystone(Player player, Waystone waystone) {
+        if (!waystone.hasName() && waystone instanceof MutableWaystone && waystone.wasGenerated()) {
             NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
             String name = NameGenerator.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
-            ((IMutableWaystone) waystone).setName(name);
+            ((MutableWaystone) waystone).setName(name);
         }
 
-        if (!waystone.hasOwner() && waystone instanceof IMutableWaystone) {
-            ((IMutableWaystone) waystone).setOwnerUid(player.getUUID());
+        if (!waystone.hasOwner() && waystone instanceof MutableWaystone) {
+            ((MutableWaystone) waystone).setOwnerUid(player.getUUID());
         }
 
         if (player.getServer() != null) {
-            WaystoneManager.get(player.getServer()).setDirty();
+            WaystoneManagerImpl.get(player.getServer()).setDirty();
         }
 
         if (!isWaystoneActivated(player, waystone) && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
@@ -65,19 +64,19 @@ public class PlayerWaystoneManager {
     }
 
     @Nullable
-    public static IWaystone getInventoryButtonTarget(Player player) {
+    public static Waystone getInventoryButtonTarget(Player player) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
         if (inventoryButtonMode.isReturnToNearest()) {
             return PlayerWaystoneManager.getNearestWaystone(player);
         } else if (inventoryButtonMode.hasNamedTarget()) {
-            return WaystoneManager.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget()).orElse(null);
+            return WaystoneManagerImpl.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget()).orElse(null);
         }
 
         return null;
     }
 
     public static boolean canUseInventoryButton(Player player) {
-        IWaystone waystone = getInventoryButtonTarget(player);
+        Waystone waystone = getInventoryButtonTarget(player);
         final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
                 waystone,
                 null) : NoCost.INSTANCE;
@@ -88,7 +87,7 @@ public class PlayerWaystoneManager {
         return getWarpStoneCooldownLeft(player) <= 0;
     }
 
-    public static double getCooldownMultiplier(IWaystone waystone) {
+    public static double getCooldownMultiplier(Waystone waystone) {
         return waystone.getVisibility() == WaystoneVisibility.GLOBAL ? WaystonesConfig.getActive().cooldowns.globalWaystoneCooldownMultiplier : 1f;
     }
 
@@ -117,7 +116,7 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static int getInventoryButtonCooldownPeriod(IWaystone waystone) {
+    public static int getInventoryButtonCooldownPeriod(Waystone waystone) {
         return (int) (getInventoryButtonCooldownPeriod() * getCooldownMultiplier(waystone));
     }
 
@@ -125,7 +124,7 @@ public class PlayerWaystoneManager {
         return WaystonesConfig.getActive().cooldowns.inventoryButtonCooldown;
     }
 
-    public static boolean canDimensionalWarpBetween(Entity player, IWaystone waystone) {
+    public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
         ResourceLocation fromDimension = player.level().dimension().location();
         ResourceLocation toDimension = waystone.getDimension().location();
         Collection<String> dimensionAllowList = WaystonesConfig.getActive().restrictions.dimensionalWarpAllowList;
@@ -140,7 +139,7 @@ public class PlayerWaystoneManager {
         return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.getVisibility() == WaystoneVisibility.GLOBAL;
     }
 
-    public static void deactivateWaystone(Player player, IWaystone waystone) {
+    public static void deactivateWaystone(Player player, Waystone waystone) {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
     }
 
@@ -171,7 +170,7 @@ public class PlayerWaystoneManager {
     }
 
     @Nullable
-    public static IWaystone getNearestWaystone(Player player) {
+    public static Waystone getNearestWaystone(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
@@ -181,7 +180,7 @@ public class PlayerWaystoneManager {
                 }).orElse(null);
     }
 
-    public static Collection<IWaystone> getActivatedWaystones(Player player) {
+    public static Collection<Waystone> getActivatedWaystones(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player);
     }
 
@@ -193,7 +192,7 @@ public class PlayerWaystoneManager {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
     }
 
-    public static boolean mayTeleportToWaystone(Player player, IWaystone waystone) {
+    public static boolean mayTeleportToWaystone(Player player, Waystone waystone) {
         return true;
     }
 
@@ -201,7 +200,7 @@ public class PlayerWaystoneManager {
         return getPlayerWaystoneData(player.level()).getSortingIndex(player);
     }
 
-    public static List<UUID> ensureSortingIndex(Player player, Collection<IWaystone> waystones) {
+    public static List<UUID> ensureSortingIndex(Player player, Collection<Waystone> waystones) {
         return getPlayerWaystoneData(player.level()).ensureSortingIndex(player, waystones);
     }
 
@@ -217,7 +216,7 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).sortWaystoneSwap(player, waystoneUid, otherWaystoneUid);
     }
 
-    public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, IWaystone waystone) {
+    public static void activeWaystoneForEveryone(@Nullable MinecraftServer server, Waystone waystone) {
         if (server == null) {
             return;
         }
@@ -230,7 +229,7 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static void removeKnownWaystone(@Nullable MinecraftServer server, IWaystone waystone) {
+    public static void removeKnownWaystone(@Nullable MinecraftServer server, Waystone waystone) {
         if (server == null) {
             return;
         }
@@ -242,19 +241,19 @@ public class PlayerWaystoneManager {
         }
     }
 
-    public static Collection<IWaystone> getTargetsForPlayer(Player player) {
+    public static Collection<Waystone> getTargetsForPlayer(Player player) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
-    public static Collection<IWaystone> getTargetsForItem(Player player, ItemStack itemStack) {
+    public static Collection<Waystone> getTargetsForItem(Player player, ItemStack itemStack) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 
-    public static Collection<IWaystone> getTargetsForWaystone(Player player, IWaystone waystone) {
+    public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
         final var waystoneType = waystone.getWaystoneType();
-        final var result = new ArrayList<IWaystone>();
+        final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
-            result.addAll(WaystoneManager.get(player.getServer()).getWaystonesByType(waystoneType).toList());
+            result.addAll(WaystoneManagerImpl.get(player.getServer()).getWaystonesByType(waystoneType).toList());
         } else {
             result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
         }
@@ -267,7 +266,7 @@ public class PlayerWaystoneManager {
         return result;
     }
 
-    public static Collection<IWaystone> getTargetsForInventoryButton(ServerPlayer player) {
+    public static Collection<Waystone> getTargetsForInventoryButton(ServerPlayer player) {
         return PlayerWaystoneManager.getActivatedWaystones(player);
     }
 }

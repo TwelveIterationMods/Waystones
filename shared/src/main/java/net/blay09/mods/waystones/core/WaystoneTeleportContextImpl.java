@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.core;
 
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.cost.NoCost;
@@ -13,16 +13,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class WaystoneTeleportContext implements IWaystoneTeleportContext {
+public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final Entity entity;
-    private final IWaystone targetWaystone;
+    private final Waystone targetWaystone;
 
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
     private final Set<ResourceLocation> flags = new HashSet<>();
 
     private TeleportDestination destination;
-    private IWaystone fromWaystone;
+    private Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
 
@@ -32,7 +32,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private boolean playsSound = true;
     private boolean playsEffect = true;
 
-    public WaystoneTeleportContext(Entity entity, IWaystone targetWaystone, TeleportDestination destination) {
+    public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone, TeleportDestination destination) {
         this.entity = entity;
         this.targetWaystone = targetWaystone;
         this.destination = destination;
@@ -44,7 +44,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystone getTargetWaystone() {
+    public Waystone getTargetWaystone() {
         return targetWaystone;
     }
 
@@ -54,7 +54,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext setDestination(TeleportDestination destination) {
+    public WaystoneTeleportContext setDestination(TeleportDestination destination) {
         this.destination = destination;
         return this;
     }
@@ -70,19 +70,19 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext addAdditionalEntity(Entity additionalEntity) {
+    public WaystoneTeleportContext addAdditionalEntity(Entity additionalEntity) {
         this.additionalEntities.add(additionalEntity);
         return this;
     }
 
     @Override
     @Nullable
-    public Optional<IWaystone> getFromWaystone() {
+    public Optional<Waystone> getFromWaystone() {
         return Optional.ofNullable(fromWaystone);
     }
 
     @Override
-    public IWaystoneTeleportContext setFromWaystone(@Nullable IWaystone fromWaystone) {
+    public WaystoneTeleportContext setFromWaystone(@Nullable Waystone fromWaystone) {
         this.fromWaystone = fromWaystone;
         return this;
     }
@@ -93,7 +93,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext setWarpItem(ItemStack warpItem) {
+    public WaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
         return this;
     }
@@ -109,13 +109,13 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext setExperienceCost(Cost cost) {
+    public WaystoneTeleportContext setExperienceCost(Cost cost) {
         this.xpCost = cost;
         return this;
     }
 
     @Override
-    public IWaystoneTeleportContext setCooldown(int cooldown) {
+    public WaystoneTeleportContext setCooldown(int cooldown) {
         this.cooldown = cooldown;
         return this;
     }
@@ -131,7 +131,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext setPlaysSound(boolean playsSound) {
+    public WaystoneTeleportContext setPlaysSound(boolean playsSound) {
         this.playsSound = playsSound;
         return this;
     }
@@ -142,7 +142,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext setPlaysEffect(boolean playsEffect) {
+    public WaystoneTeleportContext setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
         return this;
     }
@@ -153,13 +153,13 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public IWaystoneTeleportContext addFlag(ResourceLocation flag) {
+    public WaystoneTeleportContext addFlag(ResourceLocation flag) {
         flags.add(flag);
         return this;
     }
 
     @Override
-    public IWaystoneTeleportContext removeFlag(ResourceLocation flag) {
+    public WaystoneTeleportContext removeFlag(ResourceLocation flag) {
         flags.remove(flag);
         return this;
     }

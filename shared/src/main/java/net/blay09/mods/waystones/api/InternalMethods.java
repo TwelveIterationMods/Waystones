@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -16,33 +17,33 @@ import java.util.UUID;
 
 public interface InternalMethods {
 
-    Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone);
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone);
 
-    Either<IWaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, IWaystone waystone);
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
 
-    Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context);
+    Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
 
-    List<Entity> forceTeleport(IWaystoneTeleportContext context);
+    List<Entity> forceTeleport(WaystoneTeleportContext context);
 
-    Optional<IWaystone> getWaystoneAt(Level level, BlockPos pos);
+    Optional<Waystone> getWaystoneAt(Level level, BlockPos pos);
 
-    Optional<IWaystone> getWaystone(Level level, UUID uuid);
+    Optional<Waystone> getWaystone(Level level, UUID uuid);
 
-    ItemStack createAttunedShard(IWaystone warpPlate);
+    ItemStack createAttunedShard(Waystone warpPlate);
 
-    ItemStack createBoundScroll(IWaystone waystone);
+    ItemStack createBoundScroll(Waystone waystone);
 
-    Optional<IWaystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style);
+    Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style);
 
-    Optional<IWaystone> placeSharestone(Level level, BlockPos pos, DyeColor color);
+    Optional<Waystone> placeSharestone(Level level, BlockPos pos, DyeColor color);
 
-    Optional<IWaystone> placeWarpPlate(Level level, BlockPos pos);
+    Optional<Waystone> placeWarpPlate(Level level, BlockPos pos);
 
-    Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack);
+    Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack);
 
-    void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone);
+    void setBoundWaystone(ItemStack itemStack, @Nullable Waystone waystone);
 
-    Cost calculateCost(IWaystoneTeleportContext context);
+    Cost calculateCost(WaystoneTeleportContext context);
 
     void registerCostType(CostType<?> costType);
 

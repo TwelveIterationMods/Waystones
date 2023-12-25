@@ -2,8 +2,8 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
-import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.api.WaystonesListReceivedEvent;
+import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.core.*;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,9 +17,9 @@ import java.util.List;
 public class KnownWaystonesMessage {
 
     private final ResourceLocation type;
-    private final Collection<IWaystone> waystones;
+    private final Collection<Waystone> waystones;
 
-    public KnownWaystonesMessage(ResourceLocation type, Collection<IWaystone> waystones) {
+    public KnownWaystonesMessage(ResourceLocation type, Collection<Waystone> waystones) {
         this.type = type;
         this.waystones = waystones;
     }
@@ -27,17 +27,17 @@ public class KnownWaystonesMessage {
     public static void encode(KnownWaystonesMessage message, FriendlyByteBuf buf) {
         buf.writeResourceLocation(message.type);
         buf.writeShort(message.waystones.size());
-        for (IWaystone waystone : message.waystones) {
-            Waystone.write(buf, waystone);
+        for (Waystone waystone : message.waystones) {
+            WaystoneImpl.write(buf, waystone);
         }
     }
 
     public static KnownWaystonesMessage decode(FriendlyByteBuf buf) {
         ResourceLocation type = buf.readResourceLocation();
         int waystoneCount = buf.readShort();
-        List<IWaystone> waystones = new ArrayList<>();
+        List<Waystone> waystones = new ArrayList<>();
         for (int i = 0; i < waystoneCount; i++) {
-            waystones.add(Waystone.read(buf));
+            waystones.add(WaystoneImpl.read(buf));
         }
         return new KnownWaystonesMessage(type, waystones);
     }
@@ -51,8 +51,8 @@ public class KnownWaystonesMessage {
 
         Balm.getEvents().fireEvent(new WaystonesListReceivedEvent(message.type, waystones));
 
-        for (IWaystone waystone : message.waystones) {
-            WaystoneManager.get(player.getServer()).updateWaystone(waystone);
+        for (Waystone waystone : message.waystones) {
+            WaystoneManagerImpl.get(player.getServer()).updateWaystone(waystone);
         }
     }
 }

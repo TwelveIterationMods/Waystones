@@ -2,11 +2,11 @@ package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
-import net.blay09.mods.waystones.api.IResetUseOnDamage;
+import net.blay09.mods.waystones.api.trait.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
@@ -146,7 +146,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    Waystone.writeList(buf, waystones);
+                    WaystoneImpl.writeList(buf, waystones);
                 }
             });
         }

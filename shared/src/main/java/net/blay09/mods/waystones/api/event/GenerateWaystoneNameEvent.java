@@ -1,18 +1,19 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.Waystone;
 
 public class GenerateWaystoneNameEvent extends BalmEvent {
 
-    private final IWaystone waystone;
+    private final Waystone waystone;
     private String name;
 
-    public GenerateWaystoneNameEvent(IWaystone waystone, String name) {
+    public GenerateWaystoneNameEvent(Waystone waystone, String name) {
         this.waystone = waystone;
         this.name = name;
     }
 
-    public IWaystone getWaystone() {
+    public Waystone getWaystone() {
         return waystone;
     }
 

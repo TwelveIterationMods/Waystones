@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.minecraft.core.BlockPos;
@@ -45,7 +45,7 @@ public class LandingStoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
-                Waystone.write(buf, getWaystone());
+                WaystoneImpl.write(buf, getWaystone());
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
                 buf.writeBoolean(error.isEmpty());
             }

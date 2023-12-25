@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.core.*;
@@ -36,9 +36,9 @@ public class RemoveWaystoneMessage {
 
         // If the waystone is global and the player is in creative mode, remove the global-ness
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && player.getAbilities().instabuild) {
-            IWaystone backingWaystone = waystone.getBackingWaystone();
-            if (backingWaystone instanceof Waystone) {
-                ((Waystone) backingWaystone).setVisibility(WaystoneVisibility.ACTIVATION);
+            Waystone backingWaystone = waystone.getBackingWaystone();
+            if (backingWaystone instanceof WaystoneImpl) {
+                ((WaystoneImpl) backingWaystone).setVisibility(WaystoneVisibility.ACTIVATION);
 
                 // Check if the waystone block still exists - if not, completely remove the waystone from existence to remove it from all players
                 // This way we can't have orphan global waystones left over. And just in case the waystone *was* just being silk-touch moved, it's easy to reactivate a global waystone for everyone (since it does that automatically).
@@ -46,7 +46,7 @@ public class RemoveWaystoneMessage {
                 BlockPos pos = backingWaystone.getPos();
                 BlockState state = targetWorld != null ? targetWorld.getBlockState(pos) : null;
                 if (targetWorld == null || !(state.getBlock() instanceof WaystoneBlock)) {
-                    WaystoneManager.get(player.server).removeWaystone(backingWaystone);
+                    WaystoneManagerImpl.get(player.server).removeWaystone(backingWaystone);
                     PlayerWaystoneManager.removeKnownWaystone(player.server, backingWaystone);
                     WaystoneSyncManager.sendWaystoneRemovalToAll(player.server, backingWaystone, true);
                 }

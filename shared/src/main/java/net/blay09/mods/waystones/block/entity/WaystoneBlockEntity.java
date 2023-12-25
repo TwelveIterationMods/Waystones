@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -50,7 +50,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
                 final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
-                Waystone.writeList(buf, waystones);
+                WaystoneImpl.writeList(buf, waystones);
             }
         };
     }
@@ -72,7 +72,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeBlockPos(worldPosition);
-                Waystone.write(buf, getWaystone());
+                WaystoneImpl.write(buf, getWaystone());
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
                 buf.writeBoolean(error.isEmpty());
             }

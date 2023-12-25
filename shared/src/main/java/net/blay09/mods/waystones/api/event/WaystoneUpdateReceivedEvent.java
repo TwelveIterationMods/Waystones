@@ -1,18 +1,19 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.event;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.Waystone;
 
 /**
  * This event is on the client side when the client has received an update to a waystone.
  */
 public class WaystoneUpdateReceivedEvent extends BalmEvent {
-    private final IWaystone waystone;
+    private final Waystone waystone;
 
-    public WaystoneUpdateReceivedEvent(IWaystone waystone) {
+    public WaystoneUpdateReceivedEvent(Waystone waystone) {
         this.waystone = waystone;
     }
 
-    public IWaystone getWaystone() {
+    public Waystone getWaystone() {
         return waystone;
     }
 }

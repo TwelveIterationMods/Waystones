@@ -1,8 +1,7 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +22,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
     private final int visibleRegionHeight;
     private static boolean shiftGuard;
 
-    public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, IWaystone waystone, OnPress pressable) {
+    public RemoveWaystoneButton(int x, int y, int visibleRegionStart, int visibleRegionHeight, Waystone waystone, OnPress pressable) {
         super(x, y, 18, 18, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         this.visibleRegionStart = visibleRegionStart;
         this.visibleRegionHeight = visibleRegionHeight;

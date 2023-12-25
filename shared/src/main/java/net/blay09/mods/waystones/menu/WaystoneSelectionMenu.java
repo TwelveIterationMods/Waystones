@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    private final IWaystone fromWaystone;
-    private final Collection<IWaystone> waystones;
+    private final Waystone fromWaystone;
+    private final Collection<Waystone> waystones;
     private final Set<ResourceLocation> flags;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable IWaystone fromWaystone, int windowId, Collection<IWaystone> waystones, Set<ResourceLocation> flags1) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags1) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
@@ -41,11 +41,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     }
 
     @Nullable
-    public IWaystone getWaystoneFrom() {
+    public Waystone getWaystoneFrom() {
         return fromWaystone;
     }
 
-    public Collection<IWaystone> getWaystones() {
+    public Collection<Waystone> getWaystones() {
         return waystones;
     }
 

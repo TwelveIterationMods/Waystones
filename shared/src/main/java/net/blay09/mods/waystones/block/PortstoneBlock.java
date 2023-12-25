@@ -7,7 +7,7 @@ import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.Waystone;
+import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -140,7 +140,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    Waystone.writeList(buf, waystones);
+                    WaystoneImpl.writeList(buf, waystones);
                 }
             });
         }

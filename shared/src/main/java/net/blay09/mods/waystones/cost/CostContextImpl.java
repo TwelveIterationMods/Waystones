@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.cost;
 
-import com.mojang.datafixers.util.Pair;
-import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.api.cost.CostContext;
-import net.blay09.mods.waystones.api.cost.CostModifier;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -13,9 +11,9 @@ import java.util.Map;
 public class CostContextImpl implements CostContext {
 
     private final Map<ResourceLocation, Cost> costInstances = new HashMap<>();
-    private final IWaystoneTeleportContext context;
+    private final WaystoneTeleportContext context;
 
-    public CostContextImpl(IWaystoneTeleportContext context) {
+    public CostContextImpl(WaystoneTeleportContext context) {
         this.context = context;
     }
 

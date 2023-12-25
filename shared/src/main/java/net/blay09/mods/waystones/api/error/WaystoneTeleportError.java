@@ -1,5 +1,6 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.error;
 
+import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -37,26 +38,26 @@ public class WaystoneTeleportError {
     }
 
     public static class InvalidWaystone extends WaystoneTeleportError {
-        private final IWaystone waystone;
+        private final Waystone waystone;
 
-        public InvalidWaystone(IWaystone waystone) {
+        public InvalidWaystone(Waystone waystone) {
             this.waystone = waystone;
         }
 
-        public IWaystone getWaystone() {
+        public Waystone getWaystone() {
             return waystone;
         }
     }
 
     public static class MissingWaystone extends WaystoneTeleportError {
-        private final IWaystone waystone;
+        private final Waystone waystone;
 
-        public MissingWaystone(IWaystone waystone) {
+        public MissingWaystone(Waystone waystone) {
             super("chat.waystones.waystone_missing");
             this.waystone = waystone;
         }
 
-        public IWaystone getWaystone() {
+        public Waystone getWaystone() {
             return waystone;
         }
     }
