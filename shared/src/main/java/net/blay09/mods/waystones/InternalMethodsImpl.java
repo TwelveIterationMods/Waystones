@@ -46,7 +46,7 @@ public class InternalMethodsImpl implements InternalMethods {
             context.setCooldown(PlayerWaystoneManager.getCooldownPeriod(warpMode, waystone));
 
             // Use the context so far to determine the xp cost
-            context.setExperienceCost(WaystoneTeleportManager.getExperienceLevelCost(context));
+            context.setExperienceCost(calculateCost(context));
         });
     }
 
@@ -74,7 +74,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystone fromWaystone) {
+    public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         return WaystoneTeleportManager.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
     }
 

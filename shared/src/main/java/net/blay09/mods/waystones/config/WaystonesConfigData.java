@@ -31,70 +31,14 @@ public class WaystonesConfigData implements BalmConfigData {
         public boolean enableCosts = true;
 
         @Synced
-        @Comment("Set to false to simply disable all xp costs.")
+        @Comment("")
         public List<String> costModifiers = List.of(
-                "waystones:distance_add_xp(0.01)",
-                "waystones:source_multiply_xp(waystone:warp_plate, 0)",
-                "waystones:target_multiply_xp(waystone:global_waystone, 0)",
-                "waystones:dimensional_add_xp(27)",
-                "waystones:min_xp(0)",
-                "waystones:max_xp(27)");
-
-        @Synced
-        @Comment("Set to true if experience cost should cost full levels rather than experience points. Make sure to also adjust blocksPerXpLevel, maximumBaseXpCost and dimensionalWarpXpCost appropriately.")
-        public boolean xpCostsFullLevels = false;
-
-        @Synced
-        @Comment("Set to true if experience cost should be inverted, meaning the shorter the distance, the more expensive. Can be used to encourage other methods for short-distance travel.")
-        public boolean inverseXpCost = false;
-
-        @Synced
-        @Comment("The amount of blocks per xp level requirement. If set to 500, the base xp cost for travelling 1000 blocks will be 2 levels.")
-        public int blocksPerXpLevel = 100;
-
-        @Synced
-        @Comment("The minimum base xp cost (may be subceeded by multipliers defined below)")
-        public double minimumBaseXpCost = 0f;
-
-        @Synced
-        @Comment("The maximum base xp cost (may be exceeded by multipliers defined below), set to 0 to disable all distance-based XP costs")
-        public double maximumBaseXpCost = 27f;
-
-        @Synced
-        @Comment("How much xp is needed per leashed animal to travel with you")
-        public int xpCostPerLeashed = 0;
-
-        @Synced
-        @Comment("The base xp level cost when travelling between dimensions. Ignores block distance.")
-        public int dimensionalWarpXpCost = 27;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting to a global waystone through any method.")
-        public double globalWaystoneXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting using a Warp Stone item (not the Waystone block, Konstantin)")
-        public double warpStoneXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting from one waystone to another.")
-        public double waystoneXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting from one sharestone to another.")
-        public double sharestoneXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting from a portstone.")
-        public double portstoneXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting from one warp plate to another.")
-        public double warpPlateXpCostMultiplier = 0f;
-
-        @Synced
-        @Comment("The multiplier applied to the base xp cost when teleporting via the inventory button.")
-        public double inventoryButtonXpCostMultiplier = 0f;
+                "scaled_add_xp(distance, 0.01)",
+                "conditional_multiply_xp(source_is_warp_plate, 0)",
+                "conditional_multiply_xp(target_is_global_waystone, 0)",
+                "conditional_add_xp(is_interdimensional, 27)",
+                "min_xp(0)",
+                "max_xp(27)");
     }
 
     public static class Restrictions {

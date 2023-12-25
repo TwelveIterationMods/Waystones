@@ -33,13 +33,20 @@ public class CostContextImpl implements CostContext {
     }
 
     public float getContextValue(ResourceLocation id) {
-        return switch (id.toString()) {
-            case "waystones:distance" -> (float) Math.sqrt(context.getEntity().distanceToSqr(context.getDestination().getLocation()));
-            default -> 0f;
-        };
+        final var resolver = CostRegistry.getVariableResolver(id);
+        if (resolver != null) {
+            return resolver.resolve(context);
+        }
+
+        return 0f;
     }
 
     public boolean matchesCondition(ResourceLocation id) {
+        final var resolver = CostRegistry.getConditionResolver(id);
+        if (resolver != null) {
+            return resolver.matches(context);
+        }
+
         return false;
     }
 

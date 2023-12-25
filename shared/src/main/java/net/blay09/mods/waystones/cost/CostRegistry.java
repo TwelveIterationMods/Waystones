@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.cost;
 
 import com.mojang.datafixers.util.Pair;
+import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.cost.*;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,6 +16,8 @@ public class CostRegistry {
     private static final Map<ResourceLocation, CostType<?>> costTypes = new HashMap<>();
     private static final Map<ResourceLocation, CostModifier<?, ?>> costModifiers = new HashMap<>();
     private static final Map<Class<?>, CostParameterSerializer<?>> costParameterSerializers = new HashMap<>();
+    private static final Map<ResourceLocation, CostVariableResolver> costVariableResolvers = new HashMap<>();
+    private static final Map<ResourceLocation, CostConditionPredicate> costConditionResolvers = new HashMap<>();
 
     public record IntParameter(int value) {
     }
@@ -111,9 +115,14 @@ public class CostRegistry {
 
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
-        registerSerializer(IdParameter.class, it -> new IdParameter(deserializeWaystonesResourceLocation(it)));
+        registerSerializer(IdParameter.class, it -> new IdParameter(waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(ConditionalFloatParameter.class);
+
+        registerConditionResolver("is_interdimensional", IWaystoneTeleportContext::isDimensionalTeleport);
+        registerConditionResolver("source_is_warp_plate",
+                it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
+        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getDestination().getLocation())));
     }
 
     public static void register(CostType<?> costType) {
@@ -128,6 +137,14 @@ public class CostRegistry {
         costParameterSerializers.put(costParameterSerializer.getType(), costParameterSerializer);
     }
 
+    public static void register(CostVariableResolver costVariableResolver) {
+        costVariableResolvers.put(costVariableResolver.getId(), costVariableResolver);
+    }
+
+    public static void register(CostConditionPredicate costConditionPredicate) {
+        costConditionResolvers.put(costConditionPredicate.getId(), costConditionPredicate);
+    }
+
     public static <T extends Cost, P> Optional<Pair<CostModifier<T, P>, P>> deserializeModifier(String modifier) {
         final var openParen = modifier.indexOf('(');
         final var closeParen = modifier.indexOf(')');
@@ -135,7 +152,7 @@ public class CostRegistry {
             return Optional.empty();
         }
 
-        final var modifierId = deserializeWaystonesResourceLocation(modifier.substring(0, openParen));
+        final var modifierId = waystonesResourceLocation(modifier.substring(0, openParen));
         final var parameterString = modifier.substring(openParen + 1, closeParen);
         final var costModifier = CostRegistry.<T, P>getCostModifier(modifierId);
         if (costModifier == null) {
@@ -146,7 +163,7 @@ public class CostRegistry {
         return Optional.of(Pair.of(costModifier, parameters));
     }
 
-    private static ResourceLocation deserializeWaystonesResourceLocation(String value) {
+    private static ResourceLocation waystonesResourceLocation(String value) {
         final var colon = value.indexOf(':');
         final var namespace = colon != -1 ? value.substring(0, colon) : "waystones";
         final var path = colon != -1 ? value.substring(colon + 1) : value;
@@ -183,6 +200,48 @@ public class CostRegistry {
         }
     }
 
+    public static void registerVariableResolver(String name, Function<IWaystoneTeleportContext, Float> resolver) {
+        register(new CostVariableResolver() {
+            @Override
+            public ResourceLocation getId() {
+                return waystonesResourceLocation(name);
+            }
+
+            @Override
+            public float resolve(IWaystoneTeleportContext context) {
+                return resolver.apply(context);
+            }
+        });
+    }
+
+    public static void registerConditionResolver(String name, Function<IWaystoneTeleportContext, Boolean> resolver) {
+        register(new CostConditionPredicate() {
+            @Override
+            public ResourceLocation getId() {
+                return waystonesResourceLocation(name);
+            }
+
+            @Override
+            public boolean matches(IWaystoneTeleportContext context) {
+                return resolver.apply(context);
+            }
+        });
+
+        final var index = name.indexOf("is_");
+        final var notName = index != -1 ? name.substring(0, index + 3) + "not_" + name.substring(index + 3) : "not_" + name;
+        register(new CostConditionPredicate() {
+            @Override
+            public ResourceLocation getId() {
+                return waystonesResourceLocation(notName);
+            }
+
+            @Override
+            public boolean matches(IWaystoneTeleportContext context) {
+                return !resolver.apply(context);
+            }
+        });
+    }
+
     public static <T> void registerDefaultSerializer(Class<T> type) {
         registerSerializer(type, it -> deserializeParameterList(type, it));
     }
@@ -205,7 +264,7 @@ public class CostRegistry {
         register(new CostModifier<T, P>() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation("waystones", name);
+                return waystonesResourceLocation(name);
             }
 
             @Override
@@ -233,5 +292,13 @@ public class CostRegistry {
     @SuppressWarnings("unchecked")
     public static <T extends Cost, P> CostModifier<T, P> getCostModifier(ResourceLocation costModifier) {
         return (CostModifier<T, P>) costModifiers.get(costModifier);
+    }
+
+    public static CostVariableResolver getVariableResolver(ResourceLocation id) {
+        return costVariableResolvers.get(id);
+    }
+
+    public static CostConditionPredicate getConditionResolver(ResourceLocation id) {
+        return costConditionResolvers.get(id);
     }
 }

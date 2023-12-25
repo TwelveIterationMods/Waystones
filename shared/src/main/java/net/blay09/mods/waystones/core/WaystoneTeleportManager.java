@@ -28,10 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class WaystoneTeleportManager {
 
@@ -52,56 +49,8 @@ public class WaystoneTeleportManager {
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
         context.setWarpMode(warpMode);
-        return getExperienceLevelCost(context);
+        return WaystonesAPI.calculateCost(context);
     }
-
-    public static Cost getExperienceLevelCost(IWaystoneTeleportContext context) {
-        final var xpCost = getExperienceLevelCost(context.getEntity(), context.getTargetWaystone(), context.getWarpMode(), context);
-        if (WaystonesConfig.getActive().costs.xpCostsFullLevels) {
-            return new ExperienceLevelCost(xpCost);
-        } else {
-            return new ExperiencePointsCost(xpCost);
-        }
-    }
-
-    @Deprecated
-    public static int getExperienceLevelCost(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystoneTeleportContext context) {
-        if (!(entity instanceof Player player)) {
-            return 0;
-        }
-
-        if (context.getFromWaystone() != null && waystone.getWaystoneUid().equals(context.getFromWaystone().getWaystoneUid())) {
-            return 0;
-        }
-
-        int xpForLeashed = WaystonesConfig.getActive().costs.xpCostPerLeashed * context.getLeashedEntities().size();
-
-        double xpCostMultiplier = warpMode.getXpCostMultiplier();
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
-            xpCostMultiplier *= WaystonesConfig.getActive().costs.globalWaystoneXpCostMultiplier;
-        }
-
-        BlockPos pos = waystone.getPos();
-        double dist = Math.sqrt(player.distanceToSqr(pos.getX(), player.getY(), pos.getZ())); // ignore y distance
-        final double minimumXpCost = WaystonesConfig.getActive().costs.minimumBaseXpCost;
-        final double maximumXpCost = WaystonesConfig.getActive().costs.maximumBaseXpCost;
-        double xpLevelCost;
-        if (waystone.getDimension() != player.level().dimension()) {
-            int dimensionalWarpXpCost = WaystonesConfig.getActive().costs.dimensionalWarpXpCost;
-            xpLevelCost = Mth.clamp(dimensionalWarpXpCost, minimumXpCost, dimensionalWarpXpCost);
-        } else if (WaystonesConfig.getActive().costs.blocksPerXpLevel > 0) {
-            xpLevelCost = Mth.clamp(Math.floor(dist / (float) WaystonesConfig.getActive().costs.blocksPerXpLevel), minimumXpCost, maximumXpCost);
-
-            if (WaystonesConfig.getActive().costs.inverseXpCost) {
-                xpLevelCost = maximumXpCost - xpLevelCost;
-            }
-        } else {
-            xpLevelCost = minimumXpCost;
-        }
-
-        return (int) Math.round((xpLevelCost + xpForLeashed) * xpCostMultiplier);
-    }
-
 
     public static List<Entity> doTeleport(IWaystoneTeleportContext context) {
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
@@ -235,7 +184,6 @@ public class WaystoneTeleportManager {
         }
     }
 
-
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         return WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
                 .flatMap(WaystoneTeleportManager::tryTeleport)
@@ -252,11 +200,12 @@ public class WaystoneTeleportManager {
         final var waystone = context.getTargetWaystone();
         final var entity = context.getEntity();
         final var warpMode = context.getWarpMode();
-        if (!PlayerWaystoneManager.canUseWarpMode(entity, warpMode, context.getWarpItem(), context.getFromWaystone())) {
+        if (!PlayerWaystoneManager.canUseWarpMode(entity, warpMode, context.getWarpItem(), context.getFromWaystone().orElse(null))) {
             return Either.right(new WaystoneTeleportError.WarpModeRejected());
         }
 
-        if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult().withDefault(() -> PlayerWaystoneManager.canDimensionalWarpBetween(entity, waystone))) {
+        if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult()
+                .withDefault(() -> PlayerWaystoneManager.canDimensionalWarpBetween(entity, waystone))) {
             return Either.right(new WaystoneTeleportError.DimensionalWarpDenied());
         }
 

@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IWaystoneTeleportContext {
     Entity getEntity();
@@ -24,7 +25,7 @@ public interface IWaystoneTeleportContext {
 
     void addAdditionalEntity(Entity additionalEntity);
 
-    @Nullable IWaystone getFromWaystone();
+    Optional<IWaystone> getFromWaystone();
 
     void setFromWaystone(@Nullable IWaystone fromWaystone);
 

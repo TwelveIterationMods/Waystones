@@ -10,14 +10,14 @@ import java.util.function.Supplier;
  */
 @Deprecated(forRemoval = true)
 public enum WarpMode {
-    INVENTORY_BUTTON(() -> WaystonesConfig.getActive().costs.inventoryButtonXpCostMultiplier,  false),
+    INVENTORY_BUTTON(() -> 0.0, false),
     WARP_SCROLL(() -> 0.0, true),
-    RETURN_SCROLL(() -> 0.0,  true),
-    WARP_STONE(() -> WaystonesConfig.getActive().costs.warpStoneXpCostMultiplier,  false),
-    WAYSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().costs.waystoneXpCostMultiplier,  false),
-    SHARESTONE_TO_SHARESTONE(() -> WaystonesConfig.getActive().costs.sharestoneXpCostMultiplier,  false),
-    WARP_PLATE(() -> WaystonesConfig.getActive().costs.warpPlateXpCostMultiplier, false),
-    PORTSTONE_TO_WAYSTONE(() -> WaystonesConfig.getActive().costs.portstoneXpCostMultiplier,  false),
+    RETURN_SCROLL(() -> 0.0, true),
+    WARP_STONE(() -> 0.0, false),
+    WAYSTONE_TO_WAYSTONE(() -> 0.0, false),
+    SHARESTONE_TO_SHARESTONE(() -> 0.0, false),
+    WARP_PLATE(() -> 0.0, false),
+    PORTSTONE_TO_WAYSTONE(() -> 0.0, false),
     CUSTOM(() -> 0.0, false);
 
     public static WarpMode[] values = values();

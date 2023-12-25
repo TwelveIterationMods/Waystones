@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private final Entity entity;
@@ -77,8 +78,8 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     @Override
     @Nullable
-    public IWaystone getFromWaystone() {
-        return fromWaystone;
+    public Optional<IWaystone> getFromWaystone() {
+        return Optional.ofNullable(fromWaystone);
     }
 
     @Override
