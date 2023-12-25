@@ -2,31 +2,38 @@ package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerWaystoneCooldownsMessage {
 
-    private final long inventoryButtonCooldownUntil;
-    private final long warpStoneCooldownUntil;
+    private final Map<ResourceLocation, Long> cooldowns;
 
-    public PlayerWaystoneCooldownsMessage(long inventoryButtonCooldownUntil, long warpStoneCooldownUntil) {
-        this.inventoryButtonCooldownUntil = inventoryButtonCooldownUntil;
-        this.warpStoneCooldownUntil = warpStoneCooldownUntil;
+    public PlayerWaystoneCooldownsMessage(Map<ResourceLocation, Long> cooldowns) {
+        this.cooldowns = cooldowns;
     }
 
     public static void encode(PlayerWaystoneCooldownsMessage message, FriendlyByteBuf buf) {
-        buf.writeLong(message.inventoryButtonCooldownUntil);
-        buf.writeLong(message.warpStoneCooldownUntil);
+        buf.writeByte(message.cooldowns.size());
+        for (Map.Entry<ResourceLocation, Long> entry : message.cooldowns.entrySet()) {
+            buf.writeResourceLocation(entry.getKey());
+            buf.writeLong(entry.getValue());
+        }
     }
 
     public static PlayerWaystoneCooldownsMessage decode(FriendlyByteBuf buf) {
-        long inventoryButtonCooldownUntil = buf.readLong();
-        long warpStoneCooldownUntil = buf.readLong();
-        return new PlayerWaystoneCooldownsMessage(inventoryButtonCooldownUntil, warpStoneCooldownUntil);
+        final var size = buf.readByte();
+        final var cooldowns = new HashMap<ResourceLocation, Long>(size);
+        for (var i = 0; i < size; i++) {
+            cooldowns.put(buf.readResourceLocation(), buf.readLong());
+        }
+        return new PlayerWaystoneCooldownsMessage(cooldowns);
     }
 
     public static void handle(Player player, PlayerWaystoneCooldownsMessage message) {
-        PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, message.inventoryButtonCooldownUntil);
-        PlayerWaystoneManager.setWarpStoneCooldownUntil(player, message.warpStoneCooldownUntil);
+        message.cooldowns.forEach((key, timestamp) -> PlayerWaystoneManager.setCooldownUntil(player, key, timestamp));
     }
 }

@@ -85,14 +85,6 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Cooldowns {
         @Synced
-        @Comment("The multiplier applied to the cooldown when teleporting to a global waystone via inventory button or warp stone.")
-        public double globalWaystoneCooldownMultiplier = 1f;
-
-        @Synced
-        @Comment("The cooldown between usages of the warp stone in seconds. This is bound to the player, not the item, so multiple warp stones share the same cooldown.")
-        public int warpStoneCooldown = 30;
-
-        @Synced
         @Comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
         public int warpStoneUseTime = 32;
 
@@ -103,10 +95,6 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
         public int scrollUseTime = 32;
-
-        @Synced
-        @Comment("The cooldown between usages of the inventory button in seconds.")
-        public int inventoryButtonCooldown = 300;
     }
 
     public static class InventoryButton {

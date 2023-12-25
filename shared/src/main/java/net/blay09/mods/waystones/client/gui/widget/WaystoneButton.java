@@ -74,13 +74,13 @@ public class WaystoneButton extends Button {
         }
 
         // render xp cost
-        if (!cost.isEmpty()) {
+        final var numericalCost = cost.getNumericalCost(mc.player);
+        if (numericalCost > 0) {
             boolean canAfford = cost.canAfford(mc.player);
-            final var xpCostAsLevels = cost.getNumericalCost(mc.player);
-            final var spriteIndex = Math.max(0, Math.min(xpCostAsLevels, 3) - 1);
+            final var spriteIndex = Math.max(0, Math.min(numericalCost, 3) - 1);
             guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], getX() + 2, getY() + 2, 16, 16);
 
-            if (xpCostAsLevels > 3) {
+            if (numericalCost > 3) {
                 guiGraphics.drawString(mc.font, "+", getX() + 17, getY() + 6, 0xC8FF8F);
             }
 

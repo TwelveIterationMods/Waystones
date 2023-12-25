@@ -38,12 +38,9 @@ public class ExperiencePointsCost implements Cost {
 
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return points == 0;
+        if (points > 0) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points));
+        }
     }
 
     private static int calculateLevelCostFromExperiencePoints(int currentLevel, int xpLoss) {

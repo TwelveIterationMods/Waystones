@@ -4,7 +4,10 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
+import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneCooldowns;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
@@ -57,12 +60,13 @@ public class InventoryButtonGuiHandler {
             warpButton = new WaystoneInventoryButton((AbstractContainerScreen<?>) screen, button -> {
                 Player player = mc.player;
 
-                // Reset cooldown if player is in creative mode
+                // Reset cooldowns if player is in creative mode
                 if (player.getAbilities().instabuild) {
-                    PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, 0);
+                    PlayerWaystoneManager.resetCooldowns(player);
                 }
 
-                if (PlayerWaystoneManager.canUseInventoryButton(player)) {
+                final var cost = WaystonesAPI.calculateCost(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
+                if (cost.canAfford(player)) {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                     } else if (inventoryButtonMode.isReturnToNearest()) {
@@ -99,10 +103,10 @@ public class InventoryButtonGuiHandler {
                     return;
                 }
 
-                long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
+                long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
                 Waystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
                 final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player, waystone, null) : NoCost.INSTANCE;
-                int secondsLeft = (int) (timeLeft / 1000);
+                int secondsLeft = (int) (millisLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
                     tooltip.add(formatTranslation(ChatFormatting.GRAY,

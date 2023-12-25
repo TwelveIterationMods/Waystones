@@ -16,7 +16,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
     public static class Pre extends WaystoneTeleportEvent {
         private final WaystoneTeleportContext context;
         private EventResult dimensionalTeleportResult = EventResult.DEFAULT;
-        private EventResult consumeItemResult = EventResult.DEFAULT;
 
         public Pre(WaystoneTeleportContext context) {
             this.context = context;
@@ -26,20 +25,12 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             return context;
         }
 
-        public Cost getExperienceCost() {
-            return context.getExperienceCost();
+        public Cost getCost() {
+            return context.getCost();
         }
 
-        public void setExperienceCost(Cost cost) {
-            context.setExperienceCost(cost);
-        }
-
-        public int getCooldown() {
-            return context.getCooldown();
-        }
-
-        public void setCooldown(int cooldown) {
-            context.setCooldown(cooldown);
+        public void setCost(Cost cost) {
+            context.setCost(cost);
         }
 
         public TeleportDestination getDestination() {
@@ -60,14 +51,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
 
         public void setDimensionalTeleportResult(EventResult dimensionalTeleportResult) {
             this.dimensionalTeleportResult = dimensionalTeleportResult;
-        }
-
-        public EventResult getConsumeItemResult() {
-            return consumeItemResult;
-        }
-
-        public void setConsumeItemResult(EventResult consumeItemResult) {
-            this.consumeItemResult = consumeItemResult;
         }
     }
 

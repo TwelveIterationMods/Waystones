@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneCooldowns;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.network.message.*;
 import net.minecraft.resources.ResourceLocation;
@@ -68,8 +69,7 @@ public class WaystoneSyncManager {
     }
 
     public static void sendWaystoneCooldowns(Player player) {
-        long inventoryButtonCooldownUntil = PlayerWaystoneManager.getInventoryButtonCooldownUntil(player);
-        long warpStoneCooldownUntil = PlayerWaystoneManager.getWarpStoneCooldownUntil(player);
-        Balm.getNetworking().sendTo(player, new PlayerWaystoneCooldownsMessage(inventoryButtonCooldownUntil, warpStoneCooldownUntil));
+        final var cooldowns = PlayerWaystoneManager.getCooldowns(player);
+        Balm.getNetworking().sendTo(player, new PlayerWaystoneCooldownsMessage(cooldowns));
     }
 }

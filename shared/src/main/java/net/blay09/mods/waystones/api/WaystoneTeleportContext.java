@@ -36,13 +36,9 @@ public interface WaystoneTeleportContext {
 
     boolean isDimensionalTeleport();
 
-    Cost getExperienceCost();
+    Cost getCost();
 
-    WaystoneTeleportContext setExperienceCost(Cost cost);
-
-    WaystoneTeleportContext setCooldown(int cooldown);
-
-    int getCooldown();
+    WaystoneTeleportContext setCost(Cost cost);
 
     boolean playsSound();
 

@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.nbt.*;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -13,8 +14,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     private static final String TAG_NAME = "WaystonesData";
     private static final String ACTIVATED_WAYSTONES = "Waystones";
     private static final String SORTING_INDEX = "SortingIndex";
-    private static final String INVENTORY_BUTTON_COOLDOWN_UNTIL = "InventoryButtonCooldownUntilUnix";
-    private static final String WARP_STONE_COOLDOWN_UNTIL = "WarpStoneCooldownUntilUnix";
+    private static final String COOLDOWNS = "Cooldowns";
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -150,23 +150,36 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public long getWarpStoneCooldownUntil(Player player) {
-        return getWaystonesData(player).getLong(WARP_STONE_COOLDOWN_UNTIL);
+    public Map<ResourceLocation, Long> getCooldowns(Player player) {
+        final var waystonesData = getWaystonesData(player);
+        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
+        final var cooldownMap = new HashMap<ResourceLocation, Long>();
+        for (final var key : cooldowns.getAllKeys()) {
+            cooldownMap.put(new ResourceLocation(key), cooldowns.getLong(key));
+        }
+
+        return cooldownMap;
     }
 
     @Override
-    public void setWarpStoneCooldownUntil(Player player, long timeStamp) {
-        getWaystonesData(player).putLong(WARP_STONE_COOLDOWN_UNTIL, timeStamp);
+    public void resetCooldowns(Player player) {
+        final var waystonesData = getWaystonesData(player);
+        waystonesData.put(COOLDOWNS, new CompoundTag());
     }
 
     @Override
-    public long getInventoryButtonCooldownUntil(Player player) {
-        return getWaystonesData(player).getLong(INVENTORY_BUTTON_COOLDOWN_UNTIL);
+    public long getCooldownUntil(Player player, ResourceLocation key) {
+        final var waystonesData = getWaystonesData(player);
+        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
+        return cooldowns.getLong(key.toString());
     }
 
     @Override
-    public void setInventoryButtonCooldownUntil(Player player, long timeStamp) {
-        getWaystonesData(player).putLong(INVENTORY_BUTTON_COOLDOWN_UNTIL, timeStamp);
+    public void setCooldownUntil(Player player, ResourceLocation key, long timeStamp) {
+        final var waystonesData = getWaystonesData(player);
+        final var cooldowns = waystonesData.getCompound(COOLDOWNS);
+        cooldowns.putLong(key.toString(), timeStamp);
+        waystonesData.put(COOLDOWNS, cooldowns);
     }
 
     private static ListTag getActivatedWaystonesData(CompoundTag data) {

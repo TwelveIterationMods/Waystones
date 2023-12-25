@@ -15,17 +15,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class WaystonesAPI {
 
     public static InternalMethods __internalMethods;
 
-    public static Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone) {
-        return __internalMethods.createDefaultTeleportContext(entity, waystone, fromWaystone);
+    public static Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
+        return __internalMethods.createDefaultTeleportContext(entity, waystone, init);
     }
 
     public static Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone) {
         return __internalMethods.createCustomTeleportContext(entity, waystone);
+    }
+
+    public static WaystoneTeleportContext createUnboundTeleportContext(Entity entity) {
+        return __internalMethods.createUnboundTeleportContext(entity);
     }
 
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {

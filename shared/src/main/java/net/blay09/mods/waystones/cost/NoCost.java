@@ -29,11 +29,6 @@ public class NoCost implements Cost {
 
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        tooltip.add(Component.translatable("gui.waystones.waystone_selection.no_xp_requirement"));
     }
 
-    @Override
-    public boolean isEmpty() {
-        return true;
-    }
 }

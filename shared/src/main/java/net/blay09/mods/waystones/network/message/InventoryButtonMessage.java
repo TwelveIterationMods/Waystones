@@ -41,16 +41,12 @@ public class InventoryButtonMessage {
 
         // Reset cooldown if player is in creative mode
         if (player.getAbilities().instabuild) {
-            PlayerWaystoneManager.setInventoryButtonCooldownUntil(player, 0);
-        }
-
-        if (!PlayerWaystoneManager.canUseInventoryButton(player)) {
-            return;
+            PlayerWaystoneManager.resetCooldowns(player);
         }
 
         Waystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone != null) {
-            WaystonesAPI.createDefaultTeleportContext(player, waystone, null)
+            WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
                     .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);

@@ -30,21 +30,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class InternalMethodsImpl implements InternalMethods {
 
     @Override
-    public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone) {
+    public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
             final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportPets.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportPets.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(entity));
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
-            context.setFromWaystone(fromWaystone);
-
-            // Use the context so far to determine the xp cost
-            context.setExperienceCost(calculateCost(context));
+            init.accept(context);
+            context.setCost(calculateCost(context));
         });
     }
 
@@ -69,6 +68,13 @@ public class InternalMethodsImpl implements InternalMethods {
         }
 
         return Either.left(new WaystoneTeleportContextImpl(entity, waystone, waystone.resolveDestination(targetLevel)));
+    }
+
+    @Override
+    public WaystoneTeleportContext createUnboundTeleportContext(Entity entity) {
+        return new WaystoneTeleportContextImpl(entity,
+                InvalidWaystone.INSTANCE,
+                new TeleportDestination(entity.level(), entity.position(), entity.getDirection()));
     }
 
     @Override

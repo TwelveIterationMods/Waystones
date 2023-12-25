@@ -156,72 +156,22 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        // Reset cooldown when using in creative mode
-        if (player.getAbilities().instabuild) {
-            PlayerWaystoneManager.setWarpStoneCooldownUntil(player, 0);
+        final var itemStack = player.getItemInHand(hand);
+        if (!player.isUsingItem() && !world.isClientSide) {
+            world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
-
-        if (PlayerWaystoneManager.canUseWarpStone(player, itemStack)) {
-            if (!player.isUsingItem() && !world.isClientSide) {
-                world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
-            }
-            if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
-                finishUsingItem(itemStack, world, player);
-            } else {
-                player.startUsingItem(hand);
-            }
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
+        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
+            finishUsingItem(itemStack, world, player);
         } else {
-            var chatComponent = Component.translatable("chat.waystones.warpstone_not_charged");
-            chatComponent.withStyle(ChatFormatting.RED);
-            player.displayClientMessage(chatComponent, true);
-            return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
+            player.startUsingItem(hand);
         }
-    }
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
 
-    @Override
-    public boolean isBarVisible(ItemStack itemStack) {
-        return getBarWidth(itemStack) < MAX_BAR_WIDTH;
-    }
-
-    @Override
-    public int getBarWidth(ItemStack itemStack) {
-        Player player = Balm.getProxy().getClientPlayer();
-        if (player == null) {
-            return MAX_BAR_WIDTH;
-        }
-
-        long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        int maxCooldown = WaystonesConfig.getActive().cooldowns.warpStoneCooldown * 1000;
-        if (maxCooldown == 0) {
-            return MAX_BAR_WIDTH;
-        }
-
-        return Math.round(MAX_BAR_WIDTH - (float) timeLeft * MAX_BAR_WIDTH / (float) maxCooldown);
     }
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        Player player = Balm.getProxy().getClientPlayer();
-        return player != null ? PlayerWaystoneManager.canUseWarpStone(player, itemStack) || super.isFoil(itemStack) : super.isFoil(itemStack);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
-        Player player = Balm.getProxy().getClientPlayer();
-        if (player == null) {
-            return;
-        }
-
-        long timeLeft = PlayerWaystoneManager.getWarpStoneCooldownLeft(player);
-        int secondsLeft = (int) (timeLeft / 1000);
-        if (secondsLeft > 0) {
-            var secondsLeftText = Component.translatable("tooltip.waystones.cooldown_left", secondsLeft);
-            secondsLeftText.withStyle(ChatFormatting.GOLD);
-            list.add(secondsLeftText);
-        }
+        return true;
     }
 
 }

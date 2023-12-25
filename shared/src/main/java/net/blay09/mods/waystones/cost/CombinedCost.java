@@ -40,8 +40,4 @@ public class CombinedCost implements Cost {
         costs.forEach(cost -> cost.appendHoverText(player, tooltip));
     }
 
-    @Override
-    public boolean isEmpty() {
-        return costs.stream().allMatch(Cost::isEmpty);
-    }
 }

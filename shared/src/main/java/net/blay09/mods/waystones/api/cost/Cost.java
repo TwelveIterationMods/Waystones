@@ -16,6 +16,4 @@ public interface Cost {
 
     void appendHoverText(Player player, List<Component> tooltip);
 
-    boolean isEmpty();
-
 }

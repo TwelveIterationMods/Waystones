@@ -40,8 +40,10 @@ public class SelectWaystoneMessage {
             return;
         }
 
-        WaystonesAPI.createDefaultTeleportContext(player, waystone, selectionMenu.getWaystoneFrom())
-                .mapLeft(it -> it.addFlags(selectionMenu.getFlags()))
+        WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
+                    it.setFromWaystone(selectionMenu.getWaystoneFrom());
+                    it.addFlags(selectionMenu.getFlags());
+                })
                 .ifLeft(WaystonesAPI::tryTeleport);
         player.closeContainer();
     }

@@ -44,6 +44,7 @@ public class WaystoneTeleportManager {
         );
     }
 
+    @Deprecated(forRemoval = true)
     public static Cost predictExperienceLevelCost(Entity player, Waystone waystone, @Nullable Waystone fromWaystone) {
         WaystoneTeleportContextImpl context = new WaystoneTeleportContextImpl(player, waystone, null);
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
@@ -184,12 +185,6 @@ public class WaystoneTeleportManager {
         }
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone) {
-        return WaystonesAPI.createDefaultTeleportContext(entity, waystone, fromWaystone)
-                .flatMap(WaystoneTeleportManager::tryTeleport)
-                .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity));
-    }
-
     public static Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context) {
         WaystoneTeleportEvent.Pre event = new WaystoneTeleportEvent.Pre(context);
         Balm.getEvents().fireEvent(event);
@@ -220,16 +215,12 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && !context.getExperienceCost().canAfford(player) && !player.getAbilities().instabuild) {
+        if (entity instanceof Player player && !context.getCost().canAfford(player) && !player.getAbilities().instabuild) {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
         if (entity instanceof Player player) {
-            if (context.hasFlag(TeleportFlags.INVENTORY_BUTTON)) {
-                PlayerWaystoneManager.applyInventoryButtonCooldown(player, context.getCooldown());
-            }
-
-            context.getExperienceCost().consume(player);
+            context.getCost().consume(player);
         }
 
         final var teleportedEntities = doTeleport(context);

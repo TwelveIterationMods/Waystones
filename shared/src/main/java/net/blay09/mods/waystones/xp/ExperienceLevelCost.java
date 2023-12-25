@@ -34,13 +34,10 @@ public class ExperienceLevelCost implements Cost {
     }
 
     @Override
-    public boolean isEmpty() {
-        return levels == 0;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels));
+        if (levels > 0) {
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels));
+        }
     }
 
     public void setLevels(int levels) {

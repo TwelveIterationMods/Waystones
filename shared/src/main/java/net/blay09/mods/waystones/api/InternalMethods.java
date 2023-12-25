@@ -14,12 +14,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface InternalMethods {
 
-    Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, @Nullable Waystone fromWaystone);
+    Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init);
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
+
+    WaystoneTeleportContext createUnboundTeleportContext(Entity entity);
 
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
 

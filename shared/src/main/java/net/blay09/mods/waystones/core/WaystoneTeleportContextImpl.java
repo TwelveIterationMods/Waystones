@@ -26,9 +26,8 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     private ItemStack warpItem = ItemStack.EMPTY;
 
-    private Cost xpCost = NoCost.INSTANCE;
+    private Cost cost = NoCost.INSTANCE;
 
-    private int cooldown;
     private boolean playsSound = true;
     private boolean playsEffect = true;
 
@@ -104,25 +103,14 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    public Cost getExperienceCost() {
-        return xpCost;
+    public Cost getCost() {
+        return cost;
     }
 
     @Override
-    public WaystoneTeleportContext setExperienceCost(Cost cost) {
-        this.xpCost = cost;
+    public WaystoneTeleportContext setCost(Cost cost) {
+        this.cost = cost;
         return this;
-    }
-
-    @Override
-    public WaystoneTeleportContext setCooldown(int cooldown) {
-        this.cooldown = cooldown;
-        return this;
-    }
-
-    @Override
-    public int getCooldown() {
-        return cooldown;
     }
 
     @Override

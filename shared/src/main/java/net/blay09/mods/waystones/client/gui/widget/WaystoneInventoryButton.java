@@ -4,6 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.mixin.AbstractContainerScreenAccessor;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.TeleportFlags;
+import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -30,6 +33,8 @@ public class WaystoneInventoryButton extends Button {
     private final Supplier<Integer> xPosition;
     private final Supplier<Integer> yPosition;
 
+    private final Cost cost;
+
     public WaystoneInventoryButton(AbstractContainerScreen<?> parentScreen, OnPress pressable, Supplier<Boolean> visiblePredicate, Supplier<Integer> xPosition, Supplier<Integer> yPosition) {
         super(0, 0, 16, 16, Component.empty(), pressable, Button.DEFAULT_NARRATION);
         this.parentScreen = parentScreen;
@@ -38,6 +43,9 @@ public class WaystoneInventoryButton extends Button {
         this.yPosition = yPosition;
         this.iconItem = new ItemStack(ModItems.boundScroll);
         this.iconItemHovered = new ItemStack(ModItems.warpScroll);
+
+        final var player = Minecraft.getInstance().player;
+        cost = WaystonesAPI.calculateCost(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
     }
 
     @Override
@@ -46,10 +54,10 @@ public class WaystoneInventoryButton extends Button {
         if (visible) {
             setX(((AbstractContainerScreenAccessor) parentScreen).getLeftPos() + xPosition.get());
             setY(((AbstractContainerScreenAccessor) parentScreen).getTopPos() + yPosition.get());
-            isHovered = mouseX >= getX() && mouseY >= getY() && mouseX <getX() + width && mouseY < getY() + height;
+            isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
 
-            Player player = Minecraft.getInstance().player;
-            if (PlayerWaystoneManager.canUseInventoryButton(Objects.requireNonNull(player))) {
+            final var player = Minecraft.getInstance().player;
+            if (cost.canAfford(player)) {
                 ItemStack icon = isHovered ? iconItemHovered : iconItem;
                 guiGraphics.renderItem(icon, getX(), getY());
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, icon, getX(), getY());

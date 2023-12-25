@@ -211,11 +211,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     }
 
     private void teleportToTarget(Entity entity, Waystone targetWaystone, ItemStack targetAttunementStack) {
-        WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, getWaystone())
-                .flatMap(ctx -> {
-                    ctx.setWarpItem(targetAttunementStack);
-                    return WaystoneTeleportManager.tryTeleport(ctx);
+        WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> {
+                    it.setFromWaystone(getWaystone());
+                    it.setWarpItem(targetAttunementStack);
                 })
+                .flatMap(WaystonesAPI::tryTeleport)
                 .ifRight(informRejectedTeleport(entity))
                 .ifLeft(entities -> {
                     if (targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS)) {

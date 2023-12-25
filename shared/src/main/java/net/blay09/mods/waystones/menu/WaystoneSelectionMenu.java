@@ -18,11 +18,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
     private final Collection<Waystone> waystones;
     private final Set<ResourceLocation> flags;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags1) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags) {
         super(type, windowId);
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
-        this.flags = flags1;
+        this.flags = flags;
     }
 
     @Override

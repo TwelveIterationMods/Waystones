@@ -39,12 +39,20 @@ public class CostRegistry {
     public record VariableScaledParameter(IdParameter id, FloatParameter scale) {
     }
 
+    public record CooldownParameter(IdParameter id, FloatParameter seconds) {
+    }
+
+    public record VariableScaledCooldownParameter(IdParameter variable, IdParameter cooldown, FloatParameter seconds) {
+    }
+
     public static void registerDefaults() {
         final var experiencePoints = new ExperiencePointsCostType();
         final var levels = new ExperienceLevelCostType();
+        final var cooldown = new CooldownCostType();
 
         register(experiencePoints);
         register(levels);
+        register(cooldown);
 
         registerModifier("add_levels", levels, FloatParameter.class, (cost, context, parameters) -> {
             cost.setLevels((int) (cost.getLevels() + parameters.value));
@@ -94,10 +102,34 @@ public class CostRegistry {
             return cost;
         });
 
+        registerModifier("add_cooldown", cooldown, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) ((float) cost.getCooldownSeconds() + parameters.seconds.value));
+            return cost;
+        });
+        registerModifier("multiply_cooldown", cooldown, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) ((float) cost.getCooldownSeconds() * parameters.seconds.value));
+            return cost;
+        });
+        registerModifier("scaled_add_cooldown", cooldown, VariableScaledCooldownParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.variable.value);
+            cost.setCooldown(parameters.cooldown.value, (int) ((float) cost.getCooldownSeconds() + sourceValue * parameters.seconds.value));
+            return cost;
+        });
+        registerModifier("min_cooldown", cooldown, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) Math.max(cost.getCooldownSeconds(), parameters.seconds.value));
+            return cost;
+        });
+        registerModifier("max_cooldown", cooldown, CooldownParameter.class, (cost, context, parameters) -> {
+            cost.setCooldown(parameters.id.value, (int) Math.min(cost.getCooldownSeconds(), parameters.seconds.value));
+            return cost;
+        });
+
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
         registerSerializer(IdParameter.class, it -> new IdParameter(waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
+        registerDefaultSerializer(CooldownParameter.class);
+        registerDefaultSerializer(VariableScaledCooldownParameter.class);
 
         registerConditionResolver("is_interdimensional", WaystoneTeleportContext::isDimensionalTeleport);
         registerConditionResolver("source_is_warp_plate",
@@ -181,7 +213,7 @@ public class CostRegistry {
 
         try {
             final var parameters = deserializeParameter(costModifier.getParameterType(), parameterString);
-            return Optional.of(new ConfiguredCostModifier<T, P>(costModifier, conditions, parameters));
+            return Optional.of(new ConfiguredCostModifier<>(costModifier, conditions, parameters));
         } catch (Exception e) {
             logger.error("Failed to process waystone cost", e);
             return Optional.empty();

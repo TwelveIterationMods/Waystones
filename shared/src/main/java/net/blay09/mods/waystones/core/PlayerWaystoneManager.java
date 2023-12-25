@@ -75,22 +75,6 @@ public class PlayerWaystoneManager {
         return null;
     }
 
-    public static boolean canUseInventoryButton(Player player) {
-        Waystone waystone = getInventoryButtonTarget(player);
-        final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
-                waystone,
-                null) : NoCost.INSTANCE;
-        return getInventoryButtonCooldownLeft(player) <= 0 && xpCost.canAfford(player);
-    }
-
-    public static boolean canUseWarpStone(Player player, ItemStack heldItem) {
-        return getWarpStoneCooldownLeft(player) <= 0;
-    }
-
-    public static double getCooldownMultiplier(Waystone waystone) {
-        return waystone.getVisibility() == WaystoneVisibility.GLOBAL ? WaystonesConfig.getActive().cooldowns.globalWaystoneCooldownMultiplier : 1f;
-    }
-
     private static void informPlayer(Entity entity, String translationKey) {
         if (entity instanceof Player) {
             var chatComponent = Component.translatable(translationKey);
@@ -106,22 +90,6 @@ public class PlayerWaystoneManager {
                 informPlayer(entityToInform, error.getTranslationKey());
             }
         };
-    }
-
-    public static void applyInventoryButtonCooldown(Player player, int cooldown) {
-        if (cooldown > 0) {
-            final Level level = player.level();
-            getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
-            WaystoneSyncManager.sendWaystoneCooldowns(player);
-        }
-    }
-
-    public static int getInventoryButtonCooldownPeriod(Waystone waystone) {
-        return (int) (getInventoryButtonCooldownPeriod() * getCooldownMultiplier(waystone));
-    }
-
-    private static int getInventoryButtonCooldownPeriod() {
-        return WaystonesConfig.getActive().cooldowns.inventoryButtonCooldown;
     }
 
     public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
@@ -143,30 +111,25 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
     }
 
-    public static long getWarpStoneCooldownUntil(Player player) {
-        return getPlayerWaystoneData(player.level()).getWarpStoneCooldownUntil(player);
+    public static Map<ResourceLocation, Long> getCooldowns(Player player) {
+        return getPlayerWaystoneData(player.level()).getCooldowns(player);
     }
 
-    public static long getWarpStoneCooldownLeft(Player player) {
-        long cooldownUntil = getWarpStoneCooldownUntil(player);
+    public static void resetCooldowns(Player player) {
+        getPlayerWaystoneData(player.level()).resetCooldowns(player);
+    }
+
+    public static long getCooldownUntil(Player player, ResourceLocation key) {
+        return getPlayerWaystoneData(player.level()).getCooldownUntil(player, key);
+    }
+
+    public static long getCooldownMillisLeft(Player player, ResourceLocation key) {
+        long cooldownUntil = getCooldownUntil(player, key);
         return Math.max(0, cooldownUntil - System.currentTimeMillis());
     }
 
-    public static void setWarpStoneCooldownUntil(Player player, long timeStamp) {
-        getPlayerWaystoneData(player.level()).setWarpStoneCooldownUntil(player, timeStamp);
-    }
-
-    public static long getInventoryButtonCooldownUntil(Player player) {
-        return getPlayerWaystoneData(player.level()).getInventoryButtonCooldownUntil(player);
-    }
-
-    public static long getInventoryButtonCooldownLeft(Player player) {
-        long cooldownUntil = getInventoryButtonCooldownUntil(player);
-        return Math.max(0, cooldownUntil - System.currentTimeMillis());
-    }
-
-    public static void setInventoryButtonCooldownUntil(Player player, long timeStamp) {
-        getPlayerWaystoneData(player.level()).setInventoryButtonCooldownUntil(player, timeStamp);
+    public static void setCooldownUntil(Player player, ResourceLocation key, long timestamp) {
+        getPlayerWaystoneData(player.level()).setCooldownUntil(player, key, timestamp);
     }
 
     @Nullable

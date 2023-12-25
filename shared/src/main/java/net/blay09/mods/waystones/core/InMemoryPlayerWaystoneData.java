@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -8,8 +9,7 @@ import java.util.*;
 public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     private final List<UUID> sortingIndex = new ArrayList<>();
     private final Map<UUID, Waystone> waystones = new HashMap<>();
-    private long warpStoneCooldownUntil;
-    private long inventoryButtonCooldownUntil;
+    private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
 
     @Override
     public void activateWaystone(Player player, Waystone waystone) {
@@ -29,23 +29,23 @@ public class InMemoryPlayerWaystoneData implements IPlayerWaystoneData {
     }
 
     @Override
-    public long getWarpStoneCooldownUntil(Player player) {
-        return warpStoneCooldownUntil;
+    public Map<ResourceLocation, Long> getCooldowns(Player player) {
+        return cooldowns;
     }
 
     @Override
-    public void setWarpStoneCooldownUntil(Player player, long timeStamp) {
-        warpStoneCooldownUntil = timeStamp;
+    public void resetCooldowns(Player player) {
+        cooldowns.clear();
     }
 
     @Override
-    public long getInventoryButtonCooldownUntil(Player player) {
-        return inventoryButtonCooldownUntil;
+    public long getCooldownUntil(Player player, ResourceLocation key) {
+        return cooldowns.getOrDefault(key, 0L);
     }
 
     @Override
-    public void setInventoryButtonCooldownUntil(Player player, long timeStamp) {
-        inventoryButtonCooldownUntil = timeStamp;
+    public void setCooldownUntil(Player player, ResourceLocation key, long timeStamp) {
+        cooldowns.put(key, timeStamp);
     }
 
     @Override
