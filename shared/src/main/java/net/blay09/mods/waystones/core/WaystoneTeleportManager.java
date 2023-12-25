@@ -3,10 +3,12 @@ package net.blay09.mods.waystones.core;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.cost.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
+import net.blay09.mods.waystones.xp.ExperienceLevelCost;
+import net.blay09.mods.waystones.xp.ExperiencePointsCost;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -45,7 +47,7 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static ExperienceCost predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+    public static Cost predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
@@ -53,12 +55,12 @@ public class WaystoneTeleportManager {
         return getExperienceLevelCost(context);
     }
 
-    public static ExperienceCost getExperienceLevelCost(IWaystoneTeleportContext context) {
+    public static Cost getExperienceLevelCost(IWaystoneTeleportContext context) {
         final var xpCost = getExperienceLevelCost(context.getEntity(), context.getTargetWaystone(), context.getWarpMode(), context);
         if (WaystonesConfig.getActive().costs.xpCostsFullLevels) {
-            return ExperienceCost.fromLevels(xpCost);
+            return new ExperienceLevelCost(xpCost);
         } else {
-            return ExperienceCost.fromExperience(xpCost);
+            return new ExperiencePointsCost(xpCost);
         }
     }
 

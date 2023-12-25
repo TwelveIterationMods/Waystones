@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
@@ -13,7 +14,7 @@ import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
-import net.blay09.mods.waystones.api.cost.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -101,10 +102,10 @@ public class InventoryButtonGuiHandler {
 
                 long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
                 IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
-                final ExperienceCost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
+                final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
                         waystone,
                         WarpMode.INVENTORY_BUTTON,
-                        null) : ExperienceCost.NoExperienceCost.INSTANCE;
+                        null) : NoCost.INSTANCE;
                 int secondsLeft = (int) (timeLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
