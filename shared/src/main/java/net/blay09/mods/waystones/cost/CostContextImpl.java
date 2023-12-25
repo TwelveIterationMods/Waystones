@@ -19,12 +19,16 @@ public class CostContextImpl implements CostContext {
         this.context = context;
     }
 
-    public <T extends Cost, P> void apply(Pair<CostModifier<T, P>, P> modifierAndParameters) {
-        applyModifier(modifierAndParameters.getFirst(), modifierAndParameters.getSecond());
-    }
-
     @SuppressWarnings("unchecked")
-    public <T extends Cost, P> void applyModifier(CostModifier<T, P> modifier, P parameters) {
+    public <T extends Cost, P> void apply(CostRegistry.ConfiguredCostModifier<T, P> configuredModifier) {
+        for (final var condition : configuredModifier.conditions()) {
+            if (!matchesCondition(condition)) {
+                return;
+            }
+        }
+
+        final var modifier = configuredModifier.modifier();
+        final var parameters = configuredModifier.parameters();
         var costInstance = (T) costInstances.get(modifier.getCostType());
         if (costInstance == null) {
             costInstance = CostRegistry.<T>getCostType(modifier.getCostType()).createInstance();

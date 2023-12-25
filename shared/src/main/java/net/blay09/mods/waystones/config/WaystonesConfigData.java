@@ -32,12 +32,12 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @ExpectedType(String.class)
-        @Comment("List of cost modifiers with comma-separated parameters in parentheses. Will be applied in order.")
+        @Comment("List of cost modifiers with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
         public List<String> costModifiers = List.of(
-                "scaled_add_xp(distance, 0.01)",
-                "conditional_multiply_xp(source_is_warp_plate, 0)",
-                "conditional_multiply_xp(target_is_global, 0)",
-                "conditional_add_xp(is_interdimensional, 27)",
+                "[is_not_interdimensional] scaled_add_xp(distance, 0.01)",
+                "[is_interdimensional] add_xp(27)",
+                "[source_is_warp_plate] multiply_xp(0)",
+                "[target_is_global] multiply_xp(0)",
                 "min_xp(0)",
                 "max_xp(27)");
     }

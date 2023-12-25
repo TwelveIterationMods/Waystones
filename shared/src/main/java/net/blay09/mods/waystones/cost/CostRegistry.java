@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.cost;
 
-import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
@@ -12,9 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class CostRegistry {
@@ -26,6 +23,9 @@ public class CostRegistry {
     private static final Map<Class<?>, CostParameterSerializer<?>> costParameterSerializers = new HashMap<>();
     private static final Map<ResourceLocation, CostVariableResolver> costVariableResolvers = new HashMap<>();
     private static final Map<ResourceLocation, CostConditionResolver> costConditionResolvers = new HashMap<>();
+
+    public record ConfiguredCostModifier<T extends Cost, P>(CostModifier<T, P> modifier, List<ResourceLocation> conditions, P parameters) {
+    }
 
     public record IntParameter(int value) {
     }
@@ -39,9 +39,6 @@ public class CostRegistry {
     public record VariableScaledParameter(IdParameter id, FloatParameter scale) {
     }
 
-    public record ConditionalFloatParameter(IdParameter id, FloatParameter scale) {
-    }
-
     public static void registerDefaults() {
         final var experiencePoints = new ExperiencePointsCostType();
         final var levels = new ExperienceLevelCostType();
@@ -53,20 +50,8 @@ public class CostRegistry {
             cost.setLevels((int) (cost.getLevels() + parameters.value));
             return cost;
         });
-        registerModifier("conditional_add_levels", levels, ConditionalFloatParameter.class, (cost, context, parameters) -> {
-            if (context.matchesCondition(parameters.id.value)) {
-                cost.setLevels((int) (cost.getLevels() + parameters.scale.value));
-            }
-            return cost;
-        });
         registerModifier("multiply_levels", levels, FloatParameter.class, (cost, context, parameters) -> {
             cost.setLevels((int) (cost.getLevels() * parameters.value));
-            return cost;
-        });
-        registerModifier("conditional_multiply_levels", levels, ConditionalFloatParameter.class, (cost, context, parameters) -> {
-            if (context.matchesCondition(parameters.id.value)) {
-                cost.setLevels((int) (cost.getLevels() * parameters.scale.value));
-            }
             return cost;
         });
         registerModifier("scaled_add_levels", levels, VariableScaledParameter.class, (cost, context, parameters) -> {
@@ -91,20 +76,8 @@ public class CostRegistry {
             cost.setPoints(cost.getPoints() + parameters.value);
             return cost;
         });
-        registerModifier("conditional_add_xp", experiencePoints, ConditionalFloatParameter.class, (cost, context, parameters) -> {
-            if (context.matchesCondition(parameters.id.value)) {
-                cost.setPoints((int) (cost.getPoints() + parameters.scale.value));
-            }
-            return cost;
-        });
         registerModifier("multiply_xp", experiencePoints, FloatParameter.class, (cost, context, parameters) -> {
             cost.setPoints((int) (cost.getPoints() * parameters.value));
-            return cost;
-        });
-        registerModifier("conditional_multiply_xp", experiencePoints, ConditionalFloatParameter.class, (cost, context, parameters) -> {
-            if (context.matchesCondition(parameters.id.value)) {
-                cost.setPoints((int) (cost.getPoints() * parameters.scale.value));
-            }
             return cost;
         });
         registerModifier("scaled_add_xp", experiencePoints, VariableScaledParameter.class, (cost, context, parameters) -> {
@@ -125,7 +98,6 @@ public class CostRegistry {
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
         registerSerializer(IdParameter.class, it -> new IdParameter(waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
-        registerDefaultSerializer(ConditionalFloatParameter.class);
 
         registerConditionResolver("is_interdimensional", IWaystoneTeleportContext::isDimensionalTeleport);
         registerConditionResolver("source_is_warp_plate",
@@ -175,15 +147,33 @@ public class CostRegistry {
         costConditionResolvers.put(costConditionResolver.getId(), costConditionResolver);
     }
 
-    public static <T extends Cost, P> Optional<Pair<CostModifier<T, P>, P>> deserializeModifier(String modifier) {
-        final var openParen = modifier.indexOf('(');
-        final var closeParen = modifier.indexOf(')');
-        if (openParen == -1 || closeParen == -1) {
+    public static <T extends Cost, P> Optional<ConfiguredCostModifier<T, P>> deserializeModifier(String modifier) {
+        // format: [commaSeparatedConditions] modifierId(parameter1, parameter2, ...)
+        final var conditionStart = modifier.indexOf('[');
+        final var conditionEnd = modifier.indexOf(']');
+        final List<ResourceLocation> conditions = new ArrayList<>();
+        if (conditionStart != -1 && conditionEnd != -1) {
+            final var conditionString = modifier.substring(conditionStart + 1, conditionEnd);
+            for (final var condition : conditionString.split(",")) {
+                final var conditionId = waystonesResourceLocation(condition.trim());
+                final var costCondition = CostRegistry.getConditionResolver(conditionId);
+                if (costCondition == null) {
+                    logger.error("Failed to process waystone cost: Unknown condition {}", conditionId);
+                    return Optional.empty();
+                }
+                conditions.add(conditionId);
+            }
+        }
+
+        final var parameterStart = modifier.indexOf('(');
+        final var parameterEnd = modifier.indexOf(')');
+        if (parameterStart == -1 || parameterEnd == -1) {
             return Optional.empty();
         }
 
-        final var modifierId = waystonesResourceLocation(modifier.substring(0, openParen));
-        final var parameterString = modifier.substring(openParen + 1, closeParen);
+        final var modifierStart = conditionEnd != -1 ? conditionEnd + 1 : 0;
+        final var modifierId = waystonesResourceLocation(modifier.substring(modifierStart, parameterStart).trim());
+        final var parameterString = modifier.substring(parameterStart + 1, parameterEnd);
         final var costModifier = CostRegistry.<T, P>getCostModifier(modifierId);
         if (costModifier == null) {
             return Optional.empty();
@@ -191,7 +181,7 @@ public class CostRegistry {
 
         try {
             final var parameters = deserializeParameter(costModifier.getParameterType(), parameterString);
-            return Optional.of(Pair.of(costModifier, parameters));
+            return Optional.of(new ConfiguredCostModifier<T, P>(costModifier, conditions, parameters));
         } catch (Exception e) {
             logger.error("Failed to process waystone cost", e);
             return Optional.empty();
