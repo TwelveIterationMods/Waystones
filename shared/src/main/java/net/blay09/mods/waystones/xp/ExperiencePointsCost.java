@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.xp;
 
-import net.blay09.mods.waystones.api.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.ExperienceCost;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -24,6 +24,11 @@ public class ExperiencePointsCost implements ExperienceCost {
     @Override
     public void consume(Player player) {
         player.giveExperiencePoints(-points);
+    }
+
+    @Override
+    public void rollback(Player player) {
+        player.giveExperiencePoints(points);
     }
 
     @Override

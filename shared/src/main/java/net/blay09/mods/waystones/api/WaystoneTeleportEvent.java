@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.blay09.mods.waystones.api.cost.ExperienceCost;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

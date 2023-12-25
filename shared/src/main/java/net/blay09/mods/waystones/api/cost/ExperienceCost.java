@@ -1,8 +1,7 @@
-package net.blay09.mods.waystones.api;
+package net.blay09.mods.waystones.api.cost;
 
 import net.blay09.mods.waystones.xp.ExperienceLevelCost;
 import net.blay09.mods.waystones.xp.ExperiencePointsCost;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -12,6 +11,8 @@ public interface ExperienceCost {
     boolean canAfford(Player player);
 
     void consume(Player player);
+
+    void rollback(Player player);
 
     int getCostAsLevels(Player player);
 
@@ -37,6 +38,10 @@ public interface ExperienceCost {
 
         @Override
         public void consume(Player player) {
+        }
+
+        @Override
+        public void rollback(Player player) {
         }
 
         @Override

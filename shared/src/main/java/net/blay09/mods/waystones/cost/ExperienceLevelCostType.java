@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.cost;
 
+import net.blay09.mods.waystones.api.cost.CostType;
 import net.blay09.mods.waystones.xp.ExperienceLevelCost;
 import net.minecraft.resources.ResourceLocation;
 
