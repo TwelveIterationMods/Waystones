@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -8,22 +9,39 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class WaystonePermissionManager {
 
+    private static final Set<WaystoneVisibility> DEFAULT_VISIBILITIES = Set.of(WaystoneVisibility.SHARD_ONLY, WaystoneVisibility.ACTIVATION);
+
     public static Optional<WaystoneEditError> mayEditWaystone(Player player, Level world, Waystone waystone) {
-        if (WaystonesConfig.getActive().restrictions.restrictEditToOwner && !waystone.isOwner(player)) {
+        if (skipsPermissions(player)) {
+            return Optional.empty();
+        }
+
+        final var config = WaystonesConfig.getActive();
+        if (waystone.hasOwner() && config.restrictions.restrictEdits.contains(WaystoneOrigin.PLAYER) && !waystone.isOwner(player)) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !mayEditGlobalWaystones(player)) {
+        if (waystone.getOrigin() != WaystoneOrigin.PLAYER && config.restrictions.restrictEdits.contains(waystone.getOrigin())) {
+            return Optional.of(new WaystoneEditError.NotOwner());
+        }
+
+        if (!isAllowedVisibility(waystone.getVisibility())) {
             return Optional.of(new WaystoneEditError.RequiresCreative());
         }
 
         return Optional.empty();
     }
 
-    public static boolean mayEditGlobalWaystones(Player player) {
-        return player.getAbilities().instabuild || !WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode;
+    public static boolean isAllowedVisibility(WaystoneVisibility visibility) {
+        final var config = WaystonesConfig.getActive();
+        return DEFAULT_VISIBILITIES.contains(visibility) || config.restrictions.allowedVisibilities.contains(visibility);
+    }
+
+    public static boolean skipsPermissions(Player player) {
+        return player.getAbilities().instabuild;
     }
 }

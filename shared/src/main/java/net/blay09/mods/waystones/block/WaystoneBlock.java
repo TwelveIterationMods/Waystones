@@ -81,11 +81,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {
-                if (WaystonesConfig.getActive().restrictions.allowWaystoneToWaystoneTeleport) {
-                    Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
-                } else {
-                    player.displayClientMessage(Component.translatable("chat.waystones.waystone_to_waystone_disabled"), true);
-                }
+                Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);

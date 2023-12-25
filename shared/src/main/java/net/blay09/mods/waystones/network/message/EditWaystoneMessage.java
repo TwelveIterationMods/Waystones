@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
@@ -55,9 +54,8 @@ public class EditWaystoneMessage {
             visibility = settingsMenu.getVisibilityOptions().get(0);
         }
 
-        if (visibility == WaystoneVisibility.GLOBAL && waystone.getWaystoneType()
-                .equals(WaystoneTypes.WAYSTONE) && !WaystonePermissionManager.mayEditGlobalWaystones(player)) {
-            Waystones.logger.warn("{} tried to edit a global waystone without permission", player.getName().getString());
+        if (!WaystonePermissionManager.isAllowedVisibility(visibility) && !WaystonePermissionManager.skipsPermissions(player)) {
+            Waystones.logger.warn("{} tried to edit a restricted waystone without permission", player.getName().getString());
             return;
         }
 
@@ -70,8 +68,8 @@ public class EditWaystoneMessage {
         final var legalName = makeNameLegal(player.server, message.name);
         backingWaystone.setName(legalName);
 
-        if (WaystonePermissionManager.mayEditGlobalWaystones(player)) {
-            if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL && visibility == WaystoneVisibility.GLOBAL) {
+        if (visibility == WaystoneVisibility.GLOBAL && (WaystonePermissionManager.isAllowedVisibility(visibility) || WaystonePermissionManager.skipsPermissions(player))) {
+            if (backingWaystone.getVisibility() != WaystoneVisibility.GLOBAL) {
                 PlayerWaystoneManager.activeWaystoneForEveryone(player.server, backingWaystone);
             }
         }

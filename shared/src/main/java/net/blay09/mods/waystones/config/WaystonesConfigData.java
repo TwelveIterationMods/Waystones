@@ -2,11 +2,14 @@ package net.blay09.mods.waystones.config;
 
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData {
@@ -51,8 +54,9 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Restrictions {
         @Synced
-        @Comment("If enabled, only the owner of a waystone (the one who placed it) can rename it.")
-        public boolean restrictEditToOwner = false;
+        @Comment("List of waystone origins that should prevent others from editing. PLAYER is special in that it allows only edits by the owner of the waystone.")
+        @ExpectedType(WaystoneOrigin.class)
+        public Set<WaystoneOrigin> restrictEdits = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
@@ -68,22 +72,23 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("Set to 'ALLOW' to allow dimensional warp in general. Set to 'GLOBAL_ONLY' to restrict dimensional warp to global waystones. Set to 'DENY' to disallow all dimensional warps.")
+        @Deprecated(forRemoval = true)
         public DimensionalWarp dimensionalWarp = DimensionalWarp.ALLOW;
 
         @Comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
         @ExpectedType(String.class)
+        @Deprecated(forRemoval = true)
         public List<String> dimensionalWarpAllowList = new ArrayList<>();
 
         @Comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
         @ExpectedType(String.class)
+        @Deprecated(forRemoval = true)
         public List<String> dimensionalWarpDenyList = new ArrayList<>();
 
-        @Comment("Set to true if players should be able to teleport between waystones by simply right-clicking a waystone.")
-        public boolean allowWaystoneToWaystoneTeleport = true;
-
         @Synced
-        @Comment("Set to false to allow non-creative players to make waystones globally activated for all players.")
-        public boolean globalWaystoneSetupRequiresCreativeMode = true;
+        @Comment("Add GLOBAL to allow every player to create global waystones.")
+        @ExpectedType(WaystoneVisibility.class)
+        public Set<WaystoneVisibility> allowedVisibilities = Set.of();
     }
 
     public static class Cooldowns {

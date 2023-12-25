@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -112,7 +113,7 @@ public class WaystoneMenu extends AbstractContainerMenu {
         } else {
             final var result = new ArrayList<WaystoneVisibility>();
             result.add(WaystoneVisibility.ACTIVATION);
-            if (!WaystonesConfig.getActive().restrictions.globalWaystoneSetupRequiresCreativeMode || player.getAbilities().instabuild) {
+            if (WaystonePermissionManager.isAllowedVisibility(WaystoneVisibility.GLOBAL) || WaystonePermissionManager.skipsPermissions(player)) {
                 result.add(WaystoneVisibility.GLOBAL);
             }
             return result;
