@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -201,7 +202,7 @@ public class WaystoneTeleportManager {
         }
 
         if (!context.getLeashedEntities().isEmpty()) {
-            if (!WaystonesConfig.getActive().restrictions.transportLeashed) {
+            if (WaystonesConfig.getActive().restrictions.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
@@ -210,7 +211,7 @@ public class WaystoneTeleportManager {
                 return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied());
             }
 
-            if (context.isDimensionalTeleport() && !WaystonesConfig.getActive().restrictions.transportLeashedDimensional) {
+            if (context.isDimensionalTeleport() && WaystonesConfig.getActive().restrictions.transportLeashed == WaystonesConfigData.TransportMobs.SAME_DIMENSION) {
                 return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }

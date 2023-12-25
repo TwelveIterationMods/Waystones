@@ -1,20 +1,26 @@
 package net.blay09.mods.waystones.config;
 
-import com.google.common.collect.Lists;
 import net.blay09.mods.balm.api.config.*;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Config(Waystones.MOD_ID)
 public class WaystonesConfigData implements BalmConfigData {
 
-    public enum TransportPets {
+    public enum TransportMobs {
         ENABLED,
         SAME_DIMENSION,
         DISABLED
+    }
+
+    public enum VillageWaystoneGeneration {
+        DISABLED,
+        REGULAR,
+        FREQUENT
     }
 
     public Costs costs = new Costs();
@@ -50,19 +56,15 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
-        public TransportPets transportPets = TransportPets.SAME_DIMENSION;
+        public TransportMobs transportPets = TransportMobs.SAME_DIMENSION;
 
         @Synced
-        @Comment("If enabled, leashed mobs will be teleported with you")
-        public boolean transportLeashed = true;
-
-        @Synced
-        @Comment("Whether to take leashed mobs with you when teleporting between dimensions")
-        public boolean transportLeashedDimensional = true;
+        @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
+        public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
         @Comment("List of leashed mobs that cannot be taken with you when teleporting")
         @ExpectedType(String.class)
-        public List<String> leashedDenyList = Lists.newArrayList("minecraft:wither");
+        public List<String> leashedDenyList = List.of("minecraft:wither");
 
         @Synced
         @Comment("Set to 'ALLOW' to allow dimensional warp in general. Set to 'GLOBAL_ONLY' to restrict dimensional warp to global waystones. Set to 'DENY' to disallow all dimensional warps.")
@@ -125,11 +127,11 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
         @ExpectedType(String.class)
-        public List<String> dimensionAllowList = Lists.newArrayList("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end");
+        public List<String> dimensionAllowList = List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end");
 
         @Comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
         @ExpectedType(String.class)
-        public List<String> dimensionDenyList = new ArrayList<>();
+        public List<String> dimensionDenyList = Collections.emptyList();
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
@@ -139,13 +141,10 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
         @ExpectedType(String.class)
-        public List<String> customWaystoneNames = new ArrayList<>();
+        public List<String> nameGenerationPresets = Collections.emptyList();
 
-        @Comment("Set to true if waystones should be added to the generation of villages. Some villages may still spawn without a waystone.")
-        public boolean spawnInVillages = true;
-
-        @Comment("Ensures that pretty much every village will have a waystone, by spawning it as early as possible. In addition, this means waystones will generally be located in the center of the village.")
-        public boolean forceSpawnInVillages = false;
+        @Comment("Set to REGULAR to have waystones spawn in some villages. Set to FREQUENT to have waystones spawn in most villages. Set to DISABLED to disable waystone generation in villages. Waystones will only spawn in vanilla or supported villages.")
+        public VillageWaystoneGeneration spawnInVillages = VillageWaystoneGeneration.REGULAR;
     }
 
     public static class Compatibility {
