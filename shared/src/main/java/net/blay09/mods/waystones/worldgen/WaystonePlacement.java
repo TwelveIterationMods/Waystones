@@ -67,7 +67,7 @@ public class WaystonePlacement extends PlacementModifier {
     }
 
     private boolean isWaystoneChunk(PlacementContext world, BlockPos pos) {
-        final int chunkDistance = WaystonesConfig.getActive().worldGen.frequency;
+        final int chunkDistance = WaystonesConfig.getActive().worldGen.chunksBetweenWaystones;
         if (chunkDistance == 0) {
             return false;
         }

@@ -39,11 +39,11 @@ public class Waystones {
         ModRecipes.initialize(Balm.getRecipes());
         ModCommands.initialize(Balm.getCommands());
 
-        if (WaystonesConfig.getActive().compatibility.blueMapIntegration) {
+        if (WaystonesConfig.getActive().compatibility.blueMap) {
             Balm.initializeIfLoaded("bluemap", "net.blay09.mods.waystones.compat.BlueMapIntegration");
         }
 
-        if (WaystonesConfig.getActive().compatibility.dynmapIntegration) {
+        if (WaystonesConfig.getActive().compatibility.dynmap) {
             Balm.initializeIfLoaded("dynmap", "net.blay09.mods.waystones.compat.DynmapIntegration");
         }
     }

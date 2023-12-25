@@ -106,16 +106,20 @@ public class WaystonesConfigData implements BalmConfigData {
         public String inventoryButton = "";
 
         @Comment("The x position of the warp button in the inventory.")
-        public int warpButtonX = 58;
+        @Synced
+        public int inventoryButtonX = 58;
 
         @Comment("The y position of the warp button in the inventory.")
-        public int warpButtonY = 60;
+        @Synced
+        public int inventoryButtonY = 60;
 
         @Comment("The y position of the warp button in the creative menu.")
-        public int creativeWarpButtonX = 88;
+        @Synced
+        public int creativeInventoryButtonX = 88;
 
         @Comment("The y position of the warp button in the creative menu.")
-        public int creativeWarpButtonY = 33;
+        @Synced
+        public int creativeInventoryButtonY = 33;
     }
 
     public static class WorldGen {
@@ -123,7 +127,7 @@ public class WaystonesConfigData implements BalmConfigData {
         public WorldGenStyle worldGenStyle = WorldGenStyle.BIOME;
 
         @Comment("Approximate chunk distance between waystones generated freely in world generation. Set to 0 to disable generation.")
-        public int frequency = 25;
+        public int chunksBetweenWaystones = 25;
 
         @Comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
         @ExpectedType(String.class)
@@ -149,16 +153,16 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Compatibility {
         @Comment("If enabled, JourneyMap waypoints will be created for each activated waystone.")
-        public boolean displayWaystonesOnJourneyMap = true;
+        public boolean journeyMap = true;
 
         @Comment("If enabled, JourneyMap waypoints will only be created if the mod 'JourneyMap Integration' is not installed")
-        public boolean preferJourneyMapIntegration = true;
+        public boolean preferJourneyMapIntegrationMod = true;
 
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to BlueMap.")
-        public boolean blueMapIntegration = true;
+        public boolean blueMap = true;
 
         @Comment("If enabled, Waystones will add markers for waystones and sharestones to Dynmap.")
-        public boolean dynmapIntegration = true;
+        public boolean dynmap = true;
     }
 
     public static class Client {
