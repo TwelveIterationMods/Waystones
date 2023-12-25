@@ -135,9 +135,9 @@ public class Waystone implements IWaystone, IMutableWaystone {
     }
 
     @Override
-    public TeleportDestination resolveDestination(ServerLevel level) {
+    public TeleportDestination resolveDestination(Level level) {
         BlockState state = level.getBlockState(pos);
-        Direction direction = state.getValue(WaystoneBlock.FACING);
+        Direction direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
         // Use a list to keep order intact - it might check one direction twice, but no one cares
         List<Direction> directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
         for (Direction candidate : directionCandidates) {

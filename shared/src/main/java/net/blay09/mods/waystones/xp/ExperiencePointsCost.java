@@ -1,11 +1,13 @@
 package net.blay09.mods.waystones.xp;
 
-import net.blay09.mods.waystones.api.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-public class ExperiencePointsCost implements ExperienceCost {
-    private final int points;
+import java.util.List;
+
+public class ExperiencePointsCost implements Cost {
+    private int points;
 
     public ExperiencePointsCost(int points) {
         this.points = Math.max(0, points);
@@ -25,13 +27,18 @@ public class ExperiencePointsCost implements ExperienceCost {
     }
 
     @Override
-    public int getCostAsLevels(Player player) {
+    public void rollback(Player player) {
+        player.giveExperiencePoints(points);
+    }
+
+    @Override
+    public int getNumericalCost(Player player) {
         return calculateLevelCostFromExperiencePoints(player.experienceLevel, points);
     }
 
     @Override
-    public Component getCostAsTooltip(Player player) {
-        return Component.translatable("gui.waystones.waystone_selection.xp_requirement", points);
+    public void appendHoverText(Player player, List<Component> tooltip) {
+        tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points));
     }
 
     @Override
@@ -75,5 +82,13 @@ public class ExperiencePointsCost implements ExperienceCost {
             currentCumulativeXp += getXpNeededForNextLevel(level);
         }
         return currentCumulativeXp;
+    }
+
+    public void setPoints(int value) {
+        this.points = value;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }

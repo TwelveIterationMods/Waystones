@@ -3,15 +3,16 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
-import net.blay09.mods.waystones.api.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private final Entity entity;
@@ -28,7 +29,7 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Nullable
     private Boolean consumesWarpItem; // nullable for now so we can fall back to legacy warp mode implementation
 
-    private ExperienceCost xpCost = ExperienceCost.NoExperienceCost.INSTANCE;
+    private Cost xpCost = NoCost.INSTANCE;
 
     private int cooldown;
     private boolean playsSound = true;
@@ -77,8 +78,8 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     @Override
     @Nullable
-    public IWaystone getFromWaystone() {
-        return fromWaystone;
+    public Optional<IWaystone> getFromWaystone() {
+        return Optional.ofNullable(fromWaystone);
     }
 
     @Override
@@ -102,13 +103,13 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public ExperienceCost getExperienceCost() {
+    public Cost getExperienceCost() {
         return xpCost;
     }
 
     @Override
-    public void setExperienceCost(ExperienceCost experienceCost) {
-        this.xpCost = experienceCost;
+    public void setExperienceCost(Cost cost) {
+        this.xpCost = cost;
     }
 
     @Override

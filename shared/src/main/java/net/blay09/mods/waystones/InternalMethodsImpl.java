@@ -3,11 +3,15 @@ package net.blay09.mods.waystones;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.cost.*;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.cost.CostContextImpl;
+import net.blay09.mods.waystones.cost.CostRegistry;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -41,7 +45,7 @@ public class InternalMethodsImpl implements InternalMethods {
             context.setCooldown(PlayerWaystoneManager.getCooldownPeriod(warpMode, waystone));
 
             // Use the context so far to determine the xp cost
-            context.setExperienceCost(WaystoneTeleportManager.getExperienceLevelCost(context));
+            context.setExperienceCost(calculateCost(context));
         });
     }
 
@@ -69,7 +73,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystone fromWaystone) {
+    public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
         return WaystoneTeleportManager.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
     }
 
@@ -147,5 +151,45 @@ public class InternalMethodsImpl implements InternalMethods {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
             attunementItem.setWaystoneAttunedTo(itemStack, waystone);
         }
+    }
+
+    @Override
+    public Cost calculateCost(IWaystoneTeleportContext context) {
+        if (!WaystonesConfig.getActive().costs.enableCosts) {
+            return NoCost.INSTANCE;
+        }
+
+        final var costContext = new CostContextImpl(context);
+        final var configuredModifiers = WaystonesConfig.getActive().costs.costModifiers;
+        for (final var modifier : configuredModifiers) {
+            CostRegistry.deserializeModifier(modifier).ifPresent(costContext::apply);
+        }
+
+        return costContext.resolve();
+    }
+
+    @Override
+    public void registerCostType(CostType<?> costType) {
+        CostRegistry.register(costType);
+    }
+
+    @Override
+    public void registerCostModifier(CostModifier<?, ?> costModifier) {
+        CostRegistry.register(costModifier);
+    }
+
+    @Override
+    public void registerCostVariableResolver(CostVariableResolver costVariableResolver) {
+        CostRegistry.register(costVariableResolver);
+    }
+
+    @Override
+    public void registerCostConditionPredicate(CostConditionResolver costConditionResolver) {
+        CostRegistry.register(costConditionResolver);
+    }
+
+    @Override
+    public void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer) {
+        CostRegistry.register(costParameterSerializer);
     }
 }

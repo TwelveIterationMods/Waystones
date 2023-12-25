@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
@@ -11,7 +12,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
-import net.blay09.mods.waystones.api.ExperienceCost;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,10 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class PlayerWaystoneManager {
@@ -80,10 +78,10 @@ public class PlayerWaystoneManager {
 
     public static boolean canUseInventoryButton(Player player) {
         IWaystone waystone = getInventoryButtonTarget(player);
-        final ExperienceCost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
+        final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
                 waystone,
                 WarpMode.INVENTORY_BUTTON,
-                null) : ExperienceCost.NoExperienceCost.INSTANCE;
+                null) : NoCost.INSTANCE;
         return getInventoryButtonCooldownLeft(player) <= 0 && xpCost.canAfford(player);
     }
 

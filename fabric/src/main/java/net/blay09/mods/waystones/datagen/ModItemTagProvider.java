@@ -19,6 +19,7 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
+        getOrCreateTagBuilder(ModItemTags.SCROLLS).add(ModItems.warpScroll, ModItems.returnScroll, ModItems.boundScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll);
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.api;
 
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -7,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IWaystoneTeleportContext {
     Entity getEntity();
@@ -23,7 +25,7 @@ public interface IWaystoneTeleportContext {
 
     void addAdditionalEntity(Entity additionalEntity);
 
-    @Nullable IWaystone getFromWaystone();
+    Optional<IWaystone> getFromWaystone();
 
     void setFromWaystone(@Nullable IWaystone fromWaystone);
 
@@ -33,9 +35,9 @@ public interface IWaystoneTeleportContext {
 
     boolean isDimensionalTeleport();
 
-    ExperienceCost getExperienceCost();
+    Cost getExperienceCost();
 
-    void setExperienceCost(ExperienceCost experienceCost);
+    void setExperienceCost(Cost cost);
 
     void setCooldown(int cooldown);
 

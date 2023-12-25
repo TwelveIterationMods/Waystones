@@ -47,7 +47,7 @@ public interface IWaystone {
         return false;
     }
 
-    default TeleportDestination resolveDestination(ServerLevel level) {
+    default TeleportDestination resolveDestination(Level level) {
         return new TeleportDestination(level, getPos().getCenter(), Direction.NORTH);
     }
 
