@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
@@ -27,7 +28,7 @@ public class SelectWaystoneMessage {
         return new SelectWaystoneMessage(waystoneUid);
     }
 
-    public static void handle(ServerPlayer player, SelectWaystoneMessage message) {
+    public static void handle(final ServerPlayer player, SelectWaystoneMessage message) {
         if (!(player.containerMenu instanceof WaystoneSelectionMenu selectionMenu)) {
             return;
         }
@@ -44,7 +45,8 @@ public class SelectWaystoneMessage {
                     it.setFromWaystone(selectionMenu.getWaystoneFrom());
                     it.addFlags(selectionMenu.getFlags());
                 })
-                .ifLeft(WaystonesAPI::tryTeleport);
+                .ifLeft(WaystonesAPI::tryTeleport)
+                .ifLeft(selectionMenu.getPostTeleportHandler());
         player.closeContainer();
     }
 

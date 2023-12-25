@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -11,12 +12,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     private final Waystone fromWaystone;
     private final Collection<Waystone> waystones;
     private final Set<ResourceLocation> flags;
+    private Consumer<WaystoneTeleportContext> postTeleportHandler = it -> {};
 
     public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable Waystone fromWaystone, int windowId, Collection<Waystone> waystones, Set<ResourceLocation> flags) {
         super(type, windowId);
@@ -51,5 +54,14 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
     public Set<ResourceLocation> getFlags() {
         return flags;
+    }
+
+    public Consumer<WaystoneTeleportContext> getPostTeleportHandler() {
+        return postTeleportHandler;
+    }
+
+    public WaystoneSelectionMenu setPostTeleportHandler(Consumer<WaystoneTeleportContext> postTeleportHandler) {
+        this.postTeleportHandler = postTeleportHandler;
+        return this;
     }
 }
