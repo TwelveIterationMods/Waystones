@@ -277,9 +277,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
-        var component = Component.literal(waystone.getName());
-        component.withStyle(ChatFormatting.AQUA);
-        tooltip.add(component);
+        tooltip.add(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
     }
 
     @Override

@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Плита перемещения",
   "gui.waystones.waystone_selection.next_page": "Далее",
   "gui.waystones.waystone_selection.previous_page": "Назад",
-  "gui.waystones.waystone_selection.current_location": "Текущее местоположение:",
+  "gui.waystones.waystone_selection.current_location": "Текущее местоположение: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<безымянный>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Зажмите Shift для удаления",
   "gui.waystones.waystone_selection.click_to_delete": "Нажмите, чтобы удалить",

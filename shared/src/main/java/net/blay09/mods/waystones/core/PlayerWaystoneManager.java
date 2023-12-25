@@ -4,18 +4,13 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmEnvironment;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
-import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
-import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
-import net.blay09.mods.waystones.api.cost.Cost;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +23,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class PlayerWaystoneManager {
 
@@ -44,7 +38,7 @@ public class PlayerWaystoneManager {
     public static void activateWaystone(Player player, Waystone waystone) {
         if (!waystone.hasName() && waystone instanceof MutableWaystone && waystone.wasGenerated()) {
             NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
-            String name = NameGenerator.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
+            final var name = NameGeneratorManager.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
             ((MutableWaystone) waystone).setName(name);
         }
 
@@ -73,23 +67,6 @@ public class PlayerWaystoneManager {
         }
 
         return null;
-    }
-
-    private static void informPlayer(Entity entity, String translationKey) {
-        if (entity instanceof Player) {
-            var chatComponent = Component.translatable(translationKey);
-            chatComponent.withStyle(ChatFormatting.RED);
-            ((Player) entity).displayClientMessage(chatComponent, false);
-        }
-    }
-
-    public static Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
-        return error -> {
-            logger.info("Rejected teleport: " + error.getClass().getSimpleName());
-            if (error.getTranslationKey() != null) {
-                informPlayer(entityToInform, error.getTranslationKey());
-            }
-        };
     }
 
     public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
@@ -153,10 +130,6 @@ public class PlayerWaystoneManager {
 
     public static IPlayerWaystoneData getPlayerWaystoneData(BalmEnvironment side) {
         return side.isClient() ? inMemoryPlayerWaystoneData : persistentPlayerWaystoneData;
-    }
-
-    public static boolean mayTeleportToWaystone(Player player, Waystone waystone) {
-        return true;
     }
 
     public static List<UUID> getSortingIndex(Player player) {

@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "傳送壓力板",
   "gui.waystones.waystone_selection.next_page": "下一頁",
   "gui.waystones.waystone_selection.previous_page": "上一頁",
-  "gui.waystones.waystone_selection.current_location": "目前所在地：",
+  "gui.waystones.waystone_selection.current_location": "目前所在地：%s",
   "gui.waystones.waystone_selection.unnamed_waystone": "（尚未命名）",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "若欲刪除，請按住 Shift 並點擊左鍵",
   "gui.waystones.waystone_selection.click_to_delete": "點擊左鍵以刪除",

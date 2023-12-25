@@ -83,8 +83,7 @@ public class WaystoneManagerImpl extends SavedData implements WaystoneManager {
     @Override
     public Stream<Waystone> getWaystonesByType(ResourceLocation type) {
         return waystones.values().stream()
-                .filter(it -> it.getWaystoneType().equals(type))
-                .sorted(Comparator.comparing(Waystone::getName)); // TODO this shouldn't sort here
+                .filter(it -> it.getWaystoneType().equals(type));
     }
 
     @Override

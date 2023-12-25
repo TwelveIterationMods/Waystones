@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Đĩa dịch chuyển",
   "gui.waystones.waystone_selection.next_page": "Tiếp",
   "gui.waystones.waystone_selection.previous_page": "Trước",
-  "gui.waystones.waystone_selection.current_location": "Vị trí hiện tại:",
+  "gui.waystones.waystone_selection.current_location": "Vị trí hiện tại: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<Chưa đặt tên>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Giữ phím shift và nhấn chuột để xóa",
   "gui.waystones.waystone_selection.click_to_delete": "Bấm để xóa",

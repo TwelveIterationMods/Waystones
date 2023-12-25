@@ -41,15 +41,14 @@ public class WaystoneButton extends Button {
     }
 
     private static Component getWaystoneNameComponent(Waystone waystone) {
-        String effectiveName = waystone.getName();
-        if (effectiveName.isEmpty()) {
-            effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");
+        var effectiveName = waystone.getName().copy();
+        if (effectiveName.getString().isEmpty()) {
+            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
-        final var textComponent = Component.literal(effectiveName);
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
-            textComponent.withStyle(ChatFormatting.YELLOW);
+            effectiveName.withStyle(ChatFormatting.YELLOW);
         }
-        return textComponent;
+        return effectiveName;
     }
 
     @Override

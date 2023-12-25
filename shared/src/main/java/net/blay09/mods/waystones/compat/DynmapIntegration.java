@@ -101,7 +101,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     public static Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
         return markerSet.createMarker(getMarkerId(waystone),
-                waystone.getName(),
+                waystone.getName().getString(),
                 true,
                 waystone.getDimension().location().toString(),
                 waystone.getPos().getX(),

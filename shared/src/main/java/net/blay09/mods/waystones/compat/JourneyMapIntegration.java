@@ -15,6 +15,7 @@ import net.blay09.mods.waystones.api.event.WaystonesListReceivedEvent;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,9 +140,9 @@ public class JourneyMapIntegration implements IClientPlugin {
         try {
             final var prefixedId = getPrefixedWaystoneId(waystone);
             final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
-            final var waystoneName = waystone.hasName() ? waystone.getName() : I18n.get("waystones.map.untitled_waystone");
-            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, prefixedId, waystoneName, waystone.getDimension(), waystone.getPos());
-            waypoint.setName(waystoneName);
+            final var waystoneName = waystone.hasName() ? waystone.getName() : Component.translatable("waystones.map.untitled_waystone");
+            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, prefixedId, waystoneName.getString(), waystone.getDimension(), waystone.getPos());
+            waypoint.setName(waystoneName.getString());
             waypoint.setGroup(getWaystoneGroup(waystone));
             if (oldWaypoint != null) {
                 waypoint.setEnabled(oldWaypoint.isEnabled());

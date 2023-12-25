@@ -83,15 +83,15 @@ public class EditWaystoneMessage {
         player.closeContainer();
     }
 
-    private static String makeNameLegal(MinecraftServer server, String name) {
-        if (name.trim().isEmpty()) {
-            name = Component.translatable("waystones.untitled_waystone").getString();
+    private static Component makeNameLegal(MinecraftServer server, String input) {
+        if (input.trim().isEmpty()) {
+            return Component.translatable("waystones.untitled_waystone");
         }
         final var inventoryButtonMode = WaystonesConfig.getActive().inventoryButton.inventoryButton;
-        if (inventoryButtonMode.equals(name) && WaystoneManagerImpl.get(server).findWaystoneByName(name).isPresent()) {
-            return name + "*";
+        if (inventoryButtonMode.equals(input) && WaystoneManagerImpl.get(server).findWaystoneByName(input).isPresent()) {
+            return Component.literal(input + "*");
         }
 
-        return name;
+        return Component.literal(input);
     }
 }

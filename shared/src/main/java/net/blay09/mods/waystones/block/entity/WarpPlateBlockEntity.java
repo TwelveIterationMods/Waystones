@@ -11,7 +11,7 @@ import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
-import net.blay09.mods.waystones.worldgen.namegen.NameGenerator;
+import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -60,9 +60,9 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         super.initializeWaystone(world, player, origin);
 
         // Warp Plates generate a name on placement always
-        Waystone waystone = getWaystone();
+        final var waystone = getWaystone();
         if (waystone instanceof MutableWaystone) {
-            String name = NameGenerator.get(world.getServer()).getName(world, waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
+            final var name = NameGeneratorManager.get(world.getServer()).getName(world, waystone, world.getRandom(), NameGenerationMode.RANDOM_ONLY);
             ((MutableWaystone) waystone).setName(name);
         }
 

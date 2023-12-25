@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "ワーププレート",
   "gui.waystones.waystone_selection.next_page": "次ページ",
   "gui.waystones.waystone_selection.previous_page": "前ページ",
-  "gui.waystones.waystone_selection.current_location": "現在位置:",
+  "gui.waystones.waystone_selection.current_location": "現在位置: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<未設定>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "シフトを押しながらブロック使用で非活性化",
   "gui.waystones.waystone_selection.click_to_delete": "ブロック使用で非活性化",

@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "전송판",
   "gui.waystones.waystone_selection.next_page": "다음",
   "gui.waystones.waystone_selection.previous_page": "이전",
-  "gui.waystones.waystone_selection.current_location": "현재 위치:",
+  "gui.waystones.waystone_selection.current_location": "현재 위치: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<이름 없음>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "지울려면 쉬프트+클릭을 하세요",
   "gui.waystones.waystone_selection.click_to_delete": "지울려면 클릭",

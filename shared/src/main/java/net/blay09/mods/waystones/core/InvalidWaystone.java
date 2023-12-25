@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -34,8 +35,8 @@ public class InvalidWaystone implements Waystone {
     }
 
     @Override
-    public String getName() {
-        return "invalid";
+    public Component getName() {
+        return Component.literal("invalid");
     }
 
     @Override

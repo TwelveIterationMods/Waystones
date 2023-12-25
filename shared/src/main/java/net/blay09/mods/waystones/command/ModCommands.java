@@ -80,7 +80,7 @@ public class ModCommands {
                 .withStyle(ChatFormatting.YELLOW)
                 .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
 
-        final var waystoneName = Component.literal(waystone.getName())
+        final var waystoneName = waystone.getName().copy()
                 .withStyle(ChatFormatting.GREEN)
                 .withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestedCommand)));
 

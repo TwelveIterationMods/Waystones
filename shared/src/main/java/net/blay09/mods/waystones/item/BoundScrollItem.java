@@ -88,7 +88,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
 
         final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
         if (boundTo != null) {
-            final var boundToValueComponent = Component.literal(boundTo.getName()).withStyle(ChatFormatting.AQUA);
+            final var boundToValueComponent = boundTo.getName().copy().withStyle(ChatFormatting.AQUA);
             list.add(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
         }
     }

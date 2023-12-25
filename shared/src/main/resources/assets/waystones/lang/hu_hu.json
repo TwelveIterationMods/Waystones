@@ -12,7 +12,7 @@
   "container.waystones.waystone_settings": "Irányoszlop nevének megadása:",
   "gui.waystones.waystone_selection.next_page": "Következő",
   "gui.waystones.waystone_selection.previous_page": "Előző",
-  "gui.waystones.waystone_selection.current_location": "Jelenlegi helyszín:",
+  "gui.waystones.waystone_selection.current_location": "Jelenlegi helyszín: %s",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Tartsd nyomva a Shift-et és kattints a törléshez",
   "gui.waystones.waystone_selection.click_to_delete": "Kattints a törléshez",
   "gui.waystones.waystone_selection.no_waystones_activated": "Még nem aktiváltál egy irányoszlopot sem.",

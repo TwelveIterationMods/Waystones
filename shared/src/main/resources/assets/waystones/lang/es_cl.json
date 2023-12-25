@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Warp Plate",
   "gui.waystones.waystone_selection.next_page": "Siguiente",
   "gui.waystones.waystone_selection.previous_page": "Anterior",
-  "gui.waystones.waystone_selection.current_location": "Ubicación actual:",
+  "gui.waystones.waystone_selection.current_location": "Ubicación actual: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<unnamed>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Mantén Shift y Click para eliminar",
   "gui.waystones.waystone_selection.click_to_delete": "Click para eliminar",

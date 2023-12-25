@@ -10,7 +10,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +33,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     private ResourceKey<Level> dimension;
     private BlockPos pos;
 
-    private String name = "";
+    private Component name = Component.empty();
     private WaystoneVisibility visibility;
 
     private UUID ownerUid;
@@ -61,12 +63,12 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(Component name) {
         this.name = name;
     }
 
@@ -167,36 +169,39 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     public static Waystone read(FriendlyByteBuf buf) {
-        UUID waystoneUid = buf.readUUID();
-        ResourceLocation waystoneType = buf.readResourceLocation();
-        String name = buf.readUtf();
+        final var waystoneUid = buf.readUUID();
+        final var waystoneType = buf.readResourceLocation();
+        final var name = buf.readComponent();
         final var visibility = buf.readEnum(WaystoneVisibility.class);
-        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
-        BlockPos pos = buf.readBlockPos();
-        WaystoneOrigin origin = buf.readEnum(WaystoneOrigin.class);
+        final var dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
+        final var pos = buf.readBlockPos();
+        final var origin = buf.readEnum(WaystoneOrigin.class);
 
-        WaystoneImpl waystone = new WaystoneImpl(waystoneType, waystoneUid, dimension, pos, origin, null);
+        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimension, pos, origin, null);
         waystone.setName(name);
         waystone.setVisibility(visibility);
         return waystone;
     }
 
     public static Waystone read(CompoundTag compound) {
-        UUID waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("WaystoneUid")));
-        String name = compound.getString("Name");
-        ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
-        BlockPos pos = NbtUtils.readBlockPos(compound.getCompound("BlockPos"));
-        boolean wasGenerated = compound.getBoolean("WasGenerated"); // legacy
-        WaystoneOrigin origin = wasGenerated ? WaystoneOrigin.WILDERNESS : WaystoneOrigin.UNKNOWN;
+        final var waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("WaystoneUid")));
+        final var legacyName = compound.getString("Name");
+        final var name = compound.contains("NameV2")
+                ? Component.Serializer.fromJson(compound.getString("NameV2"))
+                : Component.literal(legacyName);
+        final var dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
+        final var pos = NbtUtils.readBlockPos(compound.getCompound("BlockPos"));
+        final var legacyWasGenerated = compound.getBoolean("WasGenerated");
+        var origin = legacyWasGenerated ? WaystoneOrigin.WILDERNESS : WaystoneOrigin.UNKNOWN;
         if (compound.contains("Origin")) {
             try {
                 origin = WaystoneOrigin.valueOf(compound.getString("Origin"));
             } catch (IllegalArgumentException ignored) {
             }
         }
-        UUID ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-        ResourceLocation waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
-        WaystoneImpl waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
+        final var ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
+        final var waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
+        final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
         if (compound.contains("Visibility")) {
             waystone.setVisibility(WaystoneVisibility.valueOf(compound.getString("Visibility")));
@@ -216,7 +221,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     public static void write(FriendlyByteBuf buf, Waystone waystone) {
         buf.writeUUID(waystone.getWaystoneUid());
         buf.writeResourceLocation(waystone.getWaystoneType());
-        buf.writeUtf(waystone.getName());
+        buf.writeComponent(waystone.getName());
         buf.writeEnum(waystone.getVisibility());
         buf.writeResourceLocation(waystone.getDimension().location());
         buf.writeBlockPos(waystone.getPos());
@@ -226,7 +231,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     public static CompoundTag write(Waystone waystone, CompoundTag compound) {
         compound.put("WaystoneUid", NbtUtils.createUUID(waystone.getWaystoneUid()));
         compound.putString("Type", waystone.getWaystoneType().toString());
-        compound.putString("Name", waystone.getName());
+        compound.putString("NameV2", Component.Serializer.toJson(waystone.getName()));
         compound.putString("World", waystone.getDimension().location().toString());
         compound.put("BlockPos", NbtUtils.writeBlockPos(waystone.getPos()));
         compound.putString("Origin", waystone.getOrigin().name());

@@ -50,7 +50,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
         if (attunedWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
             list.add(WarpPlateBlock.getGalacticName(attunedWaystone));
         } else {
-            list.add(Component.literal(attunedWaystone.getName()).withStyle(ChatFormatting.LIGHT_PURPLE));
+            list.add(attunedWaystone.getName().copy().withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
         Player player = Balm.getProxy().getClientPlayer();

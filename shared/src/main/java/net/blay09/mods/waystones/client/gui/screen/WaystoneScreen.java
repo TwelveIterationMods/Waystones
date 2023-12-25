@@ -44,7 +44,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
     public void init() {
         super.init();
         final var waystone = menu.getWaystone();
-        var oldText = waystone.getName();
+        var oldText = waystone.getName().getString();
         if (textField != null) {
             oldText = textField.getValue();
         }

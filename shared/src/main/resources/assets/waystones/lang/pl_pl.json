@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Płyta teleportacyjna",
   "gui.waystones.waystone_selection.next_page": "Następne",
   "gui.waystones.waystone_selection.previous_page": "Poprzednie",
-  "gui.waystones.waystone_selection.current_location": "Obecna lokalizacja:",
+  "gui.waystones.waystone_selection.current_location": "Obecna lokalizacja: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<nienazwane>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Przytrzymaj shift i kliknij aby usunąć",
   "gui.waystones.waystone_selection.click_to_delete": "Kliknij aby usunąć",

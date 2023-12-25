@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Placca del teletrasporto",
   "gui.waystones.waystone_selection.next_page": "Avanti",
   "gui.waystones.waystone_selection.previous_page": "Indietro",
-  "gui.waystones.waystone_selection.current_location": "Posizione attuale:",
+  "gui.waystones.waystone_selection.current_location": "Posizione attuale: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<senza nome>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Tieni premuto SHIFT e clicca per eliminare",
   "gui.waystones.waystone_selection.click_to_delete": "Clicca per eliminare",

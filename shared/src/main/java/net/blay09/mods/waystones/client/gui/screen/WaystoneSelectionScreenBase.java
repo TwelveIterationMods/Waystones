@@ -122,7 +122,7 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private void updateList() {
         List<Waystone> list = new ArrayList<>();
         for (Waystone waystone : waystones) {
-            if (waystone.getName().toLowerCase().contains(searchText.toLowerCase())) {
+            if (waystone.getName().getString().toLowerCase().contains(searchText.toLowerCase())) {
                 list.add(waystone);
             }
         }
@@ -288,12 +288,11 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private void drawLocationHeader(GuiGraphics guiGraphics, Waystone waystone, int mouseX, int mouseY, int x, int y) {
         Font font = Minecraft.getInstance().font;
 
-        String locationPrefix = ChatFormatting.YELLOW + I18n.get("gui.waystones.waystone_selection.current_location") + " ";
-        int locationPrefixWidth = font.width(locationPrefix);
+        int locationPrefixWidth = font.width(Component.translatable("gui.waystones.waystone_selection.current_location", ""));
 
-        String effectiveName = waystone.getName();
-        if (effectiveName.isEmpty()) {
-            effectiveName = I18n.get("gui.waystones.waystone_selection.unnamed_waystone");
+        var effectiveName = waystone.getName().copy();
+        if (effectiveName.getString().isEmpty()) {
+            effectiveName = Component.translatable("gui.waystones.waystone_selection.unnamed_waystone");
         }
         int locationWidth = font.width(effectiveName);
 
@@ -304,12 +303,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         isLocationHeaderHovered = mouseX >= startX && mouseX < startX + locationWidth + 16
                 && mouseY >= startY && mouseY < startY + font.lineHeight;
 
-        String fullText = locationPrefix + ChatFormatting.WHITE;
         if (isLocationHeaderHovered) {
-            fullText += ChatFormatting.UNDERLINE;
+            effectiveName.withStyle(ChatFormatting.UNDERLINE);
         }
-        fullText += effectiveName;
 
+        final var fullText = Component.translatable("gui.waystones.waystone_selection.current_location",
+                effectiveName.withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.YELLOW);
         guiGraphics.drawString(font, fullText, x - fullWidth / 2, y, 0xFFFFFF);
 
         if (isLocationHeaderHovered) {

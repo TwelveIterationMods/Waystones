@@ -36,7 +36,7 @@
 
   "gui.waystones.waystone_selection.next_page": "Suivant",
   "gui.waystones.waystone_selection.previous_page": "Précédent",
-  "gui.waystones.waystone_selection.current_location": "Location actuelle:",
+  "gui.waystones.waystone_selection.current_location": "Location actuelle: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<unnamed>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Maintenez MAJ et cliquez pour supprimer",
   "gui.waystones.waystone_selection.click_to_delete": "Cliquez pour supprimer",

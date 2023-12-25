@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Işınlanma Plakası",
   "gui.waystones.waystone_selection.next_page": "Sonraki",
   "gui.waystones.waystone_selection.previous_page": "Önceki",
-  "gui.waystones.waystone_selection.current_location": "Konumunuz:",
+  "gui.waystones.waystone_selection.current_location": "Konumunuz: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<isimsiz>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Silmek için shifte basılı tutarken tıklayın",
   "gui.waystones.waystone_selection.click_to_delete": "Silmek için tıklayın",

@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Мандрівна плита",
   "gui.waystones.waystone_selection.next_page": "Наступні",
   "gui.waystones.waystone_selection.previous_page": "Попередні",
-  "gui.waystones.waystone_selection.current_location": "Поточне місцеперебування:",
+  "gui.waystones.waystone_selection.current_location": "Поточне місцеперебування: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<неназваний>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Утримуйте shift та клацніть, щоб видалити",
   "gui.waystones.waystone_selection.click_to_delete": "Клацніть, щоб видалити",

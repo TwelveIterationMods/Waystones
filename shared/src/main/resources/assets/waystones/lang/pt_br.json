@@ -12,7 +12,7 @@
   "container.waystones.waystone_settings": "Insira o nome do Obelisco:",
   "gui.waystones.waystone_selection.next_page": "Próximo",
   "gui.waystones.waystone_selection.previous_page": "Anterior",
-  "gui.waystones.waystone_selection.current_location": "Localização atual:",
+  "gui.waystones.waystone_selection.current_location": "Localização atual: %s",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Segure Shift e Clique para deletar",
   "gui.waystones.waystone_selection.click_to_delete": "Clique para deletar",
   "gui.waystones.waystone_selection.no_waystones_activated": "Você ainda não ativou nenhum Obelisco.",

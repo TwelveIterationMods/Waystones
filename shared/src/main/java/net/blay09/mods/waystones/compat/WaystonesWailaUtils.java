@@ -29,7 +29,7 @@ public class WaystonesWailaUtils {
             Waystone waystone = waystoneBlockEntity.getWaystone();
             boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone);
             if (isActivated && waystone.hasName() && waystone.isValid()) {
-                tooltipConsumer.accept(Component.literal(waystone.getName()));
+                tooltipConsumer.accept(waystone.getName());
             } else {
                 tooltipConsumer.accept(Component.translatable("tooltip.waystones.undiscovered"));
             }

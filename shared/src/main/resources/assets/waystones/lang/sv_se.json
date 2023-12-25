@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Teleporteringsplatta",
   "gui.waystones.waystone_selection.next_page": "Nästa",
   "gui.waystones.waystone_selection.previous_page": "Föregående",
-  "gui.waystones.waystone_selection.current_location": "Nuvarande plats:",
+  "gui.waystones.waystone_selection.current_location": "Nuvarande plats: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<namnlös>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Håll ned Shift och klicka för att radera",
   "gui.waystones.waystone_selection.click_to_delete": "Klicka för att radera",

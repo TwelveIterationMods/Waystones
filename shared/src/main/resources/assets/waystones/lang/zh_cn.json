@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "传送石板",
   "gui.waystones.waystone_selection.next_page": "下一页",
   "gui.waystones.waystone_selection.previous_page": "上一页",
-  "gui.waystones.waystone_selection.current_location": "当前位置：",
+  "gui.waystones.waystone_selection.current_location": "当前位置：%s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<未命名>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "按住Shift才能删除",
   "gui.waystones.waystone_selection.click_to_delete": "点击删除",

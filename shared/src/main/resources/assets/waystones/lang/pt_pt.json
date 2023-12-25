@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Placa de transporte",
   "gui.waystones.waystone_selection.next_page": "Seguinte",
   "gui.waystones.waystone_selection.previous_page": "Anterior",
-  "gui.waystones.waystone_selection.current_location": "Localização atual:",
+  "gui.waystones.waystone_selection.current_location": "Localização atual: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<sem nome>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Segure shift e clique para apagar",
   "gui.waystones.waystone_selection.click_to_delete": "Clique para apagar",

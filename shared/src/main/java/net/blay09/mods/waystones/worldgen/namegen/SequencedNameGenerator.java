@@ -1,25 +1,28 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
-public class SequencedNameGenerator implements INameGenerator {
+import java.util.Optional;
 
-    private final INameGenerator[] nameGenerators;
+public class SequencedNameGenerator implements NameGenerator {
 
-    public SequencedNameGenerator(INameGenerator... nameGenerators) {
+    private final NameGenerator[] nameGenerators;
+
+    public SequencedNameGenerator(NameGenerator... nameGenerators) {
         this.nameGenerators = nameGenerators;
     }
 
     @Override
-    public String generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
-        for (INameGenerator nameGenerator : nameGenerators) {
-            String name = nameGenerator.generateName(level, waystone, rand);
-            if (name != null) {
+    public Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
+        for (final var nameGenerator : nameGenerators) {
+            final var name = nameGenerator.generateName(level, waystone, rand);
+            if (name.isPresent()) {
                 return name;
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

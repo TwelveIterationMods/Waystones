@@ -171,11 +171,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     public static Component getGalacticName(Waystone waystone) {
-        String name = StringUtils.substringBeforeLast(waystone.getName(), " ");
-        var galacticName = Component.literal(name);
-        galacticName.withStyle(WarpPlateBlock.getColorForName(name));
-        galacticName.withStyle(GALACTIC_STYLE);
-        return galacticName;
+        final var name = StringUtils.substringBeforeLast(waystone.getName().getString(), " ");
+        return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(GALACTIC_STYLE);
     }
 
     @Override

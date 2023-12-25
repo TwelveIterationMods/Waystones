@@ -1,10 +1,13 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
-public class MrPorkNameGenerator implements INameGenerator {
+import java.util.Optional;
+
+public class MrPorkNameGenerator implements NameGenerator {
 
     private static final String[] random1 = new String[]{
             "Kr", "Ca", "Ra",
@@ -28,8 +31,9 @@ public class MrPorkNameGenerator implements INameGenerator {
     };
 
     @Override
-    public String generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
-        return random1[rand.nextInt(random1.length)] + random2[rand.nextInt(random2.length)] + random3[rand.nextInt(random3.length)];
+    public Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
+        final var literal = random1[rand.nextInt(random1.length)] + random2[rand.nextInt(random2.length)] + random3[rand.nextInt(random3.length)];
+        return Optional.of(Component.literal(literal));
     }
 
 }

@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -57,7 +58,7 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
-    public String getName() {
+    public Component getName() {
         return getBackingWaystone().getName();
     }
 
@@ -92,7 +93,7 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(Component name) {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setName(name);

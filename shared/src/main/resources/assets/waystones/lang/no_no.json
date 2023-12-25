@@ -34,7 +34,7 @@
   "container.waystones.warp_plate": "Portalplate",
   "gui.waystones.waystone_selection.next_page": "Neste",
   "gui.waystones.waystone_selection.previous_page": "Forrige",
-  "gui.waystones.waystone_selection.current_location": "Nåværende lokasjon:",
+  "gui.waystones.waystone_selection.current_location": "Nåværende lokasjon: %s",
   "gui.waystones.waystone_selection.unnamed_waystone": "<navnløs>",
   "gui.waystones.waystone_selection.hold_shift_to_delete": "Hold shift og klikk for å slette",
   "gui.waystones.waystone_selection.click_to_delete": "Klikk for å slette",

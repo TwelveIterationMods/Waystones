@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public interface Waystone {
     UUID getWaystoneUid();
 
-    String getName();
+    Component getName();
 
     ResourceKey<Level> getDimension();
 
@@ -36,7 +37,7 @@ public interface Waystone {
     ResourceLocation getWaystoneType();
 
     default boolean hasName() {
-        return !getName().isEmpty();
+        return !getName().getString().isEmpty();
     }
 
     default boolean hasOwner() {

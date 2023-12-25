@@ -1,108 +1,12 @@
 package net.blay09.mods.waystones.worldgen.namegen;
 
-import com.google.common.collect.Sets;
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.event.GenerateWaystoneNameEvent;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.Optional;
 
-public class NameGenerator extends SavedData {
-
-    private static final String DATA_NAME = Waystones.MOD_ID + "_NameGenerator";
-    private static final String USED_NAMES = "UsedNames";
-    private static final NameGenerator clientStorageCopy = new NameGenerator();
-
-    private final Set<String> usedNames = Sets.newHashSet();
-
-    private INameGenerator getNameGenerator(NameGenerationMode nameGenerationMode) {
-        final var randomGenerator = new TemplateNameGenerator(WaystonesConfig.getActive().worldGen.nameGenerationTemplate)
-                .with("MrPork", new MrPorkNameGenerator())
-                .with("Biome", new BiomeNameGenerator());
-        switch (nameGenerationMode) {
-            case MIXED:
-                return new MixedNameGenerator(randomGenerator, new CustomNameGenerator(false, usedNames));
-            case RANDOM_ONLY:
-                return randomGenerator;
-            case PRESET_ONLY:
-                return new CustomNameGenerator(true, usedNames);
-            case PRESET_FIRST:
-            default:
-                return new SequencedNameGenerator(new CustomNameGenerator(false, usedNames), randomGenerator);
-        }
-    }
-
-    public synchronized String getName(LevelAccessor level, Waystone waystone, RandomSource rand, NameGenerationMode nameGenerationMode) {
-        INameGenerator nameGenerator = getNameGenerator(nameGenerationMode);
-        String originalName = nameGenerator.generateName(level, waystone, rand);
-        if (originalName == null) {
-            // This should never happen, but just in case generate a fallback if something did go wrong
-            originalName = Objects.requireNonNull(new MrPorkNameGenerator().generateName(level, waystone, rand));
-        }
-        String name = resolveDuplicate(originalName);
-
-        GenerateWaystoneNameEvent event = new GenerateWaystoneNameEvent(waystone, name);
-        Balm.getEvents().fireEvent(event);
-        name = event.getName();
-
-        usedNames.add(name);
-        setDirty();
-        return name;
-    }
-
-    private String resolveDuplicate(String name) {
-        String tryName = name;
-        int i = 1;
-        while (usedNames.contains(tryName)) {
-            tryName = name + " " + RomanNumber.toRoman(i);
-            i++;
-        }
-        return tryName;
-    }
-
-    public static NameGenerator load(CompoundTag compound) {
-        NameGenerator nameGenerator = new NameGenerator();
-        ListTag tagList = compound.getList(USED_NAMES, Tag.TAG_STRING);
-        for (Tag tag : tagList) {
-            nameGenerator.usedNames.add(tag.getAsString());
-        }
-        return nameGenerator;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compound) {
-        ListTag tagList = new ListTag();
-        for (String entry : usedNames) {
-            tagList.add(StringTag.valueOf(entry));
-        }
-        compound.put(USED_NAMES, tagList);
-        return compound;
-    }
-
-    public static NameGenerator get(@Nullable MinecraftServer server) {
-        if (server != null) {
-            ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            return Objects.requireNonNull(overworld).getDataStorage().computeIfAbsent(new Factory<>(NameGenerator::new,
-                    NameGenerator::load,
-                    DataFixTypes.SAVED_DATA_MAP_DATA), DATA_NAME); // TODO this is most likely wrong but I don't think Forge has a solution, Fabric allows null
-        }
-
-        return clientStorageCopy;
-    }
-
+public interface NameGenerator {
+    Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand);
 }

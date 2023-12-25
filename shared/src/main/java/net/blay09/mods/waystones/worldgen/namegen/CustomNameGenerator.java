@@ -2,12 +2,13 @@ package net.blay09.mods.waystones.worldgen.namegen;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
 import java.util.*;
 
-public class CustomNameGenerator implements INameGenerator {
+public class CustomNameGenerator implements NameGenerator {
 
     private final boolean allowDuplicates;
     private final Set<String> usedNames;
@@ -18,15 +19,15 @@ public class CustomNameGenerator implements INameGenerator {
     }
 
     @Override
-    public String generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
-        List<String> customNames = WaystonesConfig.getActive().worldGen.customWaystoneNames;
+    public Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
+        final var customNames = WaystonesConfig.getActive().worldGen.customWaystoneNames;
         Collections.shuffle(customNames);
-        for (String customName : customNames) {
+        for (final var customName : customNames) {
             if (allowDuplicates || !usedNames.contains(customName)) {
-                return customName;
+                return Optional.of(Component.literal(customName));
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 }

@@ -7,16 +7,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 
-public class BiomeNameGenerator implements INameGenerator {
+import java.util.Optional;
+
+public class BiomeNameGenerator implements NameGenerator {
     @Override
-    public String generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
+    public Optional<Component> generateName(LevelAccessor level, Waystone waystone, RandomSource rand) {
         final var biome = level.getBiome(waystone.getPos());
-        return biome.unwrapKey()
+        return Optional.of(biome.unwrapKey()
                 .map(ResourceKey::location)
                 .map(ResourceLocation::toString)
                 .map(it -> "biome." + it.replace(":", "."))
                 .map(Component::translatable)
-                .map(Component::getString)
-                .orElse("Corrupted Lands");
+                .orElseGet(() -> Component.literal("Corrupted Lands")));
     }
 }
