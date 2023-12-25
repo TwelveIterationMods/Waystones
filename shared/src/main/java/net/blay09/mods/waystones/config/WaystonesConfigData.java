@@ -31,11 +31,12 @@ public class WaystonesConfigData implements BalmConfigData {
         public boolean enableCosts = true;
 
         @Synced
+        @ExpectedType(String.class)
         @Comment("")
         public List<String> costModifiers = List.of(
                 "scaled_add_xp(distance, 0.01)",
                 "conditional_multiply_xp(source_is_warp_plate, 0)",
-                "conditional_multiply_xp(target_is_global_waystone, 0)",
+                "conditional_multiply_xp(target_is_global, 0)",
                 "conditional_add_xp(is_interdimensional, 27)",
                 "min_xp(0)",
                 "max_xp(27)");

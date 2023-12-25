@@ -3,8 +3,13 @@ package net.blay09.mods.waystones.cost;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.WaystoneTypes;
+import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +17,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class CostRegistry {
+
+    private static final Logger logger = LoggerFactory.getLogger(CostRegistry.class);
 
     private static final Map<ResourceLocation, CostType<?>> costTypes = new HashMap<>();
     private static final Map<ResourceLocation, CostModifier<?, ?>> costModifiers = new HashMap<>();
@@ -122,7 +129,24 @@ public class CostRegistry {
         registerConditionResolver("is_interdimensional", IWaystoneTeleportContext::isDimensionalTeleport);
         registerConditionResolver("source_is_warp_plate",
                 it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
-        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getDestination().getLocation())));
+        registerConditionResolver("source_is_portstone",
+                it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE)).orElse(false));
+        registerConditionResolver("source_is_waystone",
+                it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)).orElse(false));
+        registerConditionResolver("source_is_sharestone",
+                it -> it.getFromWaystone().map(waystone -> WaystoneTypes.isSharestone(waystone.getWaystoneType())).orElse(false));
+        registerConditionResolver("source_is_inventory_button", it -> it.getWarpMode() == WarpMode.INVENTORY_BUTTON);
+        registerConditionResolver("source_is_scroll", it -> it.getWarpItem().is(ModItemTags.SCROLLS));
+        registerConditionResolver("source_is_bound_scroll", it -> it.getWarpItem().is(ModItemTags.BOUND_SCROLLS));
+        registerConditionResolver("source_is_return_scroll", it -> it.getWarpItem().is(ModItemTags.RETURN_SCROLLS));
+        registerConditionResolver("source_is_warp_scroll", it -> it.getWarpItem().is(ModItemTags.WARP_SCROLLS));
+        registerConditionResolver("source_is_warp_stone", it -> it.getWarpItem().is(ModItemTags.WARP_STONES));
+        registerConditionResolver("target_is_warp_plate", it -> it.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WARP_PLATE));
+        registerConditionResolver("target_is_global", it -> it.getTargetWaystone().getVisibility() == WaystoneVisibility.GLOBAL);
+        registerConditionResolver("target_is_sharestone", it -> WaystoneTypes.isSharestone(it.getTargetWaystone().getWaystoneType()));
+        registerConditionResolver("target_is_waystone", it -> it.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
+        registerConditionResolver("target_is_landing_stone", it -> it.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.LANDING_STONE));
+        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getDestination().location())));
     }
 
     public static void register(CostType<?> costType) {
@@ -159,8 +183,13 @@ public class CostRegistry {
             return Optional.empty();
         }
 
-        final var parameters = deserializeParameterList(costModifier.getParameterType(), parameterString);
-        return Optional.of(Pair.of(costModifier, parameters));
+        try {
+            final var parameters = deserializeParameter(costModifier.getParameterType(), parameterString);
+            return Optional.of(Pair.of(costModifier, parameters));
+        } catch (Exception e) {
+            logger.error("Failed to process waystone cost", e);
+            return Optional.empty();
+        }
     }
 
     private static ResourceLocation waystonesResourceLocation(String value) {
@@ -190,7 +219,7 @@ public class CostRegistry {
 
         final var parameterValues = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            parameterValues[i] = deserializeParameter(parameterTypes[i], parameters[i]);
+            parameterValues[i] = deserializeParameter(parameterTypes[i], parameters[i].trim());
         }
 
         try {

@@ -7,8 +7,6 @@ import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
-import net.blay09.mods.waystones.xp.ExperienceLevelCost;
-import net.blay09.mods.waystones.xp.ExperiencePointsCost;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,6 +47,7 @@ public class WaystoneTeleportManager {
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
         context.setWarpMode(warpMode);
+        context.setDestination(waystone.resolveDestination(player.level()));
         return WaystonesAPI.calculateCost(context);
     }
 
@@ -60,8 +59,8 @@ public class WaystoneTeleportManager {
         BlockPos sourcePos = context.getEntity().blockPosition();
 
         final var destination = context.getDestination();
-        final var targetLevel = destination.getLevel();
-        final var targetPos = BlockPos.containing(destination.getLocation());
+        final var targetLevel = (ServerLevel) destination.level();
+        final var targetPos = BlockPos.containing(destination.location());
 
         BlockEntity targetTileEntity = targetLevel.getBlockEntity(targetPos);
         if (targetTileEntity instanceof WarpPlateBlockEntity warpPlate) {
@@ -85,9 +84,9 @@ public class WaystoneTeleportManager {
         final var teleportedEntities = new ArrayList<Entity>();
 
         final var destination = context.getDestination();
-        final var targetLevel = destination.getLevel();
-        final var targetLocation = destination.getLocation();
-        final var targetDirection = destination.getDirection();
+        final var targetLevel = (ServerLevel) destination.level();
+        final var targetLocation = destination.location();
+        final var targetDirection = destination.direction();
 
         final var mount = entity.getVehicle();
         Entity teleportedMount = null;

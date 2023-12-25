@@ -29,7 +29,7 @@ public class WaystoneProxy implements IWaystone, IMutableWaystone {
     }
 
     @Override
-    public TeleportDestination resolveDestination(ServerLevel level) {
+    public TeleportDestination resolveDestination(Level level) {
         return getBackingWaystone().resolveDestination(level);
     }
 

@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class ModItemTags {
+    public static final TagKey<Item> SCROLLS = TagKey.create(Registries.ITEM, new ResourceLocation(Waystones.MOD_ID, "scrolls"));
     public static final TagKey<Item> BOUND_SCROLLS = TagKey.create(Registries.ITEM, new ResourceLocation(Waystones.MOD_ID, "bound_scrolls"));
     public static final TagKey<Item> RETURN_SCROLLS = TagKey.create(Registries.ITEM, new ResourceLocation(Waystones.MOD_ID, "return_scrolls"));
     public static final TagKey<Item> WARP_SCROLLS = TagKey.create(Registries.ITEM, new ResourceLocation(Waystones.MOD_ID, "warp_scrolls"));
