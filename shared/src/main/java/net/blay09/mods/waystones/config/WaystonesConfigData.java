@@ -39,7 +39,8 @@ public class WaystonesConfigData implements BalmConfigData {
                 "[source_is_warp_plate] multiply_xp(0)",
                 "[target_is_global] multiply_xp(0)",
                 "min_xp(0)",
-                "max_xp(27)");
+                "max_xp(27)",
+                "[source_is_inventory_button] add_cooldown(inventory_button, 300)");
     }
 
     public static class Restrictions {
