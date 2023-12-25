@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.cost.*;
 import net.blay09.mods.waystones.core.WarpMode;
+import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class CostRegistry {
     private static final Map<ResourceLocation, CostModifier<?, ?>> costModifiers = new HashMap<>();
     private static final Map<Class<?>, CostParameterSerializer<?>> costParameterSerializers = new HashMap<>();
     private static final Map<ResourceLocation, CostVariableResolver> costVariableResolvers = new HashMap<>();
-    private static final Map<ResourceLocation, CostConditionPredicate> costConditionResolvers = new HashMap<>();
+    private static final Map<ResourceLocation, CostConditionResolver> costConditionResolvers = new HashMap<>();
 
     public record IntParameter(int value) {
     }
@@ -146,7 +147,12 @@ public class CostRegistry {
         registerConditionResolver("target_is_sharestone", it -> WaystoneTypes.isSharestone(it.getTargetWaystone().getWaystoneType()));
         registerConditionResolver("target_is_waystone", it -> it.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
         registerConditionResolver("target_is_landing_stone", it -> it.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.LANDING_STONE));
+        registerConditionResolver("is_with_pets", it -> !WaystoneTeleportManager.findPets(it.getEntity()).isEmpty());
+        registerConditionResolver("is_with_leashed", it -> !WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).isEmpty());
+
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getDestination().location())));
+        registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
+        registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
     }
 
     public static void register(CostType<?> costType) {
@@ -165,8 +171,8 @@ public class CostRegistry {
         costVariableResolvers.put(costVariableResolver.getId(), costVariableResolver);
     }
 
-    public static void register(CostConditionPredicate costConditionPredicate) {
-        costConditionResolvers.put(costConditionPredicate.getId(), costConditionPredicate);
+    public static void register(CostConditionResolver costConditionResolver) {
+        costConditionResolvers.put(costConditionResolver.getId(), costConditionResolver);
     }
 
     public static <T extends Cost, P> Optional<Pair<CostModifier<T, P>, P>> deserializeModifier(String modifier) {
@@ -244,7 +250,7 @@ public class CostRegistry {
     }
 
     public static void registerConditionResolver(String name, Function<IWaystoneTeleportContext, Boolean> resolver) {
-        register(new CostConditionPredicate() {
+        register(new CostConditionResolver() {
             @Override
             public ResourceLocation getId() {
                 return waystonesResourceLocation(name);
@@ -258,7 +264,7 @@ public class CostRegistry {
 
         final var index = name.indexOf("is_");
         final var notName = index != -1 ? name.substring(0, index + 3) + "not_" + name.substring(index + 3) : "not_" + name;
-        register(new CostConditionPredicate() {
+        register(new CostConditionResolver() {
             @Override
             public ResourceLocation getId() {
                 return waystonesResourceLocation(notName);
@@ -314,7 +320,7 @@ public class CostRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> CostType<T> getCostType(ResourceLocation costType) {
+    public static <T extends Cost> CostType<T> getCostType(ResourceLocation costType) {
         return (CostType<T>) costTypes.get(costType);
     }
 
@@ -327,7 +333,7 @@ public class CostRegistry {
         return costVariableResolvers.get(id);
     }
 
-    public static CostConditionPredicate getConditionResolver(ResourceLocation id) {
+    public static CostConditionResolver getConditionResolver(ResourceLocation id) {
         return costConditionResolvers.get(id);
     }
 }

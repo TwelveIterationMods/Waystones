@@ -3,8 +3,7 @@ package net.blay09.mods.waystones;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.cost.Cost;
-import net.blay09.mods.waystones.api.cost.CostContext;
+import net.blay09.mods.waystones.api.cost.*;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -167,5 +166,30 @@ public class InternalMethodsImpl implements InternalMethods {
         }
 
         return costContext.resolve();
+    }
+
+    @Override
+    public void registerCostType(CostType<?> costType) {
+        CostRegistry.register(costType);
+    }
+
+    @Override
+    public void registerCostModifier(CostModifier<?, ?> costModifier) {
+        CostRegistry.register(costModifier);
+    }
+
+    @Override
+    public void registerCostVariableResolver(CostVariableResolver costVariableResolver) {
+        CostRegistry.register(costVariableResolver);
+    }
+
+    @Override
+    public void registerCostConditionPredicate(CostConditionResolver costConditionResolver) {
+        CostRegistry.register(costConditionResolver);
+    }
+
+    @Override
+    public void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer) {
+        CostRegistry.register(costParameterSerializer);
     }
 }

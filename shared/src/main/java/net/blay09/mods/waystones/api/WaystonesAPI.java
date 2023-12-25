@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.cost.*;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -85,6 +85,26 @@ public class WaystonesAPI {
 
     public static Cost calculateCost(IWaystoneTeleportContext context) {
         return __internalMethods.calculateCost(context);
+    }
+
+    public static void registerCostType(CostType<?> costType) {
+        __internalMethods.registerCostType(costType);
+    }
+
+    public static void registerCostModifier(CostModifier<?, ?> costModifier) {
+        __internalMethods.registerCostModifier(costModifier);
+    }
+
+    public static void registerCostVariableResolver(CostVariableResolver costVariableResolver) {
+        __internalMethods.registerCostVariableResolver(costVariableResolver);
+    }
+
+    public static void registerCostConditionPredicate(CostConditionResolver costConditionResolver) {
+        __internalMethods.registerCostConditionPredicate(costConditionResolver);
+    }
+
+    public static void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer) {
+        __internalMethods.registerCostParameterSerializer(costParameterSerializer);
     }
 
 }
