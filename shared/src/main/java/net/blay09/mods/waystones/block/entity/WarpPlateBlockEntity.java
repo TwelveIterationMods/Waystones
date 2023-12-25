@@ -213,10 +213,16 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, getWaystone())
                 .flatMap(ctx -> {
                     ctx.setWarpItem(targetAttunementStack);
-                    ctx.setConsumesWarpItem(targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS));
                     return WaystoneTeleportManager.tryTeleport(ctx);
                 })
                 .ifRight(informRejectedTeleport(entity))
+                .ifLeft(entities -> {
+                    if (targetAttunementStack.is(ModItemTags.SINGLE_USE_WARP_SHARDS)) {
+                        if (!(entity instanceof Player player) || !player.getAbilities().instabuild) {
+                            targetAttunementStack.shrink(1);
+                        }
+                    }
+                })
                 .ifLeft(entities -> entities.forEach(this::applyWarpPlateEffects))
                 .left();
     }

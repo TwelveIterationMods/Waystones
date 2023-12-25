@@ -222,13 +222,10 @@ public class WaystoneTeleportManager {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
-        boolean isCreativeMode = entity instanceof Player && ((Player) entity).getAbilities().instabuild;
-        if (!context.getWarpItem().isEmpty() && event.getConsumeItemResult().withDefault(() -> !isCreativeMode && context.consumesWarpItem())) {
-            context.getWarpItem().shrink(1);
-        }
-
         if (entity instanceof Player player) {
-            PlayerWaystoneManager.applyInventoryButtonCooldown(player, context.getCooldown()); // TODO only if we're actually using inventory button
+            if (context.hasFlag(TeleportFlags.INVENTORY_BUTTON)) {
+                PlayerWaystoneManager.applyInventoryButtonCooldown(player, context.getCooldown());
+            }
 
             context.getExperienceCost().consume(player);
         }

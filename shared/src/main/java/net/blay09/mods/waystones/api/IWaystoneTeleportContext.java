@@ -52,10 +52,6 @@ public interface IWaystoneTeleportContext {
 
     IWaystoneTeleportContext setPlaysEffect(boolean playsEffect);
 
-    boolean consumesWarpItem();
-
-    IWaystoneTeleportContext setConsumesWarpItem(boolean consumesWarpItem);
-
     Set<ResourceLocation> getFlags();
 
     IWaystoneTeleportContext addFlag(ResourceLocation flag);
@@ -67,5 +63,9 @@ public interface IWaystoneTeleportContext {
             addFlag(flag);
         }
         return this;
+    }
+
+    default boolean hasFlag(ResourceLocation flag) {
+        return getFlags().contains(flag);
     }
 }

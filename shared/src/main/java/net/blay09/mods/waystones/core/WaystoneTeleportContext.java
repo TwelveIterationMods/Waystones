@@ -25,7 +25,6 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private IWaystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
-    private boolean consumesWarpItem;
 
     private Cost xpCost = NoCost.INSTANCE;
 
@@ -145,17 +144,6 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     @Override
     public IWaystoneTeleportContext setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
-        return this;
-    }
-
-    @Override
-    public boolean consumesWarpItem() {
-        return this.consumesWarpItem;
-    }
-
-    @Override
-    public IWaystoneTeleportContext setConsumesWarpItem(boolean consumesWarpItem) {
-        this.consumesWarpItem = consumesWarpItem;
         return this;
     }
 
