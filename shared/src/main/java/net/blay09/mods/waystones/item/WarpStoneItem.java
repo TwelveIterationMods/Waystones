@@ -6,12 +6,10 @@ import net.blay09.mods.waystones.api.IResetUseOnDamage;
 import net.blay09.mods.waystones.compat.Compat;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -35,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -142,7 +141,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), WarpMode.WARP_STONE, null, windowId, waystones);
+                    return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet());
                 }
 
                 @Override

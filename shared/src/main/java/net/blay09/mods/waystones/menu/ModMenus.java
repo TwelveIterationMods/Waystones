@@ -3,17 +3,20 @@ package net.blay09.mods.waystones.menu;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.Set;
 
 public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
@@ -32,7 +35,7 @@ public class ModMenus {
             final var waystones = Waystone.readList(buf);
             final var blockEntity = inventory.player.level().getBlockEntity(pos);
             if (blockEntity instanceof WaystoneBlockEntity waystone) {
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.WAYSTONE_TO_WAYSTONE, waystone.getWaystone(), windowId, waystones);
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), waystone.getWaystone(), windowId, waystones, Collections.emptySet());
             }
 
             return null;
@@ -40,17 +43,17 @@ public class ModMenus {
 
         warpScrollSelection = menus.registerMenu(id("warp_scroll_selection"), (windowId, inventory, buf) -> {
             final var waystones = Waystone.readList(buf);
-            return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), WarpMode.WARP_SCROLL, null, windowId, waystones);
+            return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         warpStoneSelection = menus.registerMenu(id("warp_stone_selection"), (windowId, inventory, buf) -> {
             final var waystones = Waystone.readList(buf);
-            return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), WarpMode.WARP_STONE, null, windowId, waystones);
+            return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         portstoneSelection = menus.registerMenu(id("portstone_selection"), (windowId, inventory, buf) -> {
             final var waystones = Waystone.readList(buf);
-            return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.PORTSTONE_TO_WAYSTONE, null, windowId, waystones);
+            return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), null, windowId, waystones, Collections.emptySet());
         });
 
         sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
@@ -60,10 +63,9 @@ public class ModMenus {
             final var blockEntity = inventory.player.level().getBlockEntity(pos);
             if (blockEntity instanceof SharestoneBlockEntity sharestone) {
                 return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(),
-                        WarpMode.SHARESTONE_TO_SHARESTONE,
                         sharestone.getWaystone(),
                         syncId,
-                        waystones);
+                        waystones, Collections.emptySet());
             }
 
             return null;
@@ -71,12 +73,12 @@ public class ModMenus {
 
         inventorySelection = menus.registerMenu(id("inventory_selection"), (syncId, inventory, buf) -> {
             final var waystones = Waystone.readList(buf);
-            return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), WarpMode.INVENTORY_BUTTON, null, syncId, waystones);
+            return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), null, syncId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
         });
 
         adminSelection = menus.registerMenu(id("admin_selection"), (syncId, inventory, buf) -> {
             final var waystones = Waystone.readList(buf);
-            return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), WarpMode.CUSTOM, null, syncId, waystones);
+            return new WaystoneSelectionMenu(ModMenus.adminSelection.get(), null, syncId, waystones, Set.of(TeleportFlags.ADMIN));
         });
 
         warpPlate = menus.registerMenu(id("warp_plate"), (windowId, inv, data) -> {

@@ -202,7 +202,6 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
         Player player = Minecraft.getInstance().player;
         final var xpCost = WaystoneTeleportManager.predictExperienceLevelCost(Objects.requireNonNull(player),
                 waystone,
-                menu.getWarpMode(),
                 waystoneFrom);
         WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpCost, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {

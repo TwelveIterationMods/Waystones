@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,6 +36,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PortstoneBlock extends WaystoneBlockBase {
@@ -135,7 +135,7 @@ public class PortstoneBlock extends WaystoneBlockBase {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), WarpMode.PORTSTONE_TO_WAYSTONE, null, windowId, waystones);
+                    return new WaystoneSelectionMenu(ModMenus.portstoneSelection.get(), null, windowId, waystones, Collections.emptySet());
                 }
 
                 @Override

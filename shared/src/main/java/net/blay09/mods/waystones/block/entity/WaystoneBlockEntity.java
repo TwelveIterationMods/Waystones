@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.menu.WaystoneMenu;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +17,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Collections;
 
 public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
 
@@ -42,7 +43,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                 final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, getWaystone());
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), WarpMode.WAYSTONE_TO_WAYSTONE, getWaystone(), windowId, waystones);
+                return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(), getWaystone(), windowId, waystones, Collections.emptySet());
             }
 
             @Override

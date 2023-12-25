@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.cost.*;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +16,11 @@ import java.util.UUID;
 
 public interface InternalMethods {
 
-    Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone);
+    Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone);
 
     Either<IWaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, IWaystone waystone);
 
-    Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, IWaystone fromWaystone);
-
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context);
-
-    Either<List<Entity>, WaystoneTeleportError> forceTeleportToWaystone(Entity entity, IWaystone waystone);
 
     List<Entity> forceTeleport(IWaystoneTeleportContext context);
 

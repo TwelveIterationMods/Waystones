@@ -5,14 +5,13 @@ import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.cost.NoCost;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     private final Entity entity;
@@ -20,14 +19,13 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
 
     private final List<Entity> additionalEntities = new ArrayList<>();
     private final List<Mob> leashedEntities = new ArrayList<>();
+    private final Set<ResourceLocation> flags = new HashSet<>();
 
     private TeleportDestination destination;
     private IWaystone fromWaystone;
 
-    private WarpMode warpMode = WarpMode.CUSTOM;
     private ItemStack warpItem = ItemStack.EMPTY;
-    @Nullable
-    private Boolean consumesWarpItem; // nullable for now so we can fall back to legacy warp mode implementation
+    private boolean consumesWarpItem;
 
     private Cost xpCost = NoCost.INSTANCE;
 
@@ -57,8 +55,9 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void setDestination(TeleportDestination destination) {
+    public IWaystoneTeleportContext setDestination(TeleportDestination destination) {
         this.destination = destination;
+        return this;
     }
 
     @Override
@@ -72,8 +71,9 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void addAdditionalEntity(Entity additionalEntity) {
+    public IWaystoneTeleportContext addAdditionalEntity(Entity additionalEntity) {
         this.additionalEntities.add(additionalEntity);
+        return this;
     }
 
     @Override
@@ -83,8 +83,9 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void setFromWaystone(@Nullable IWaystone fromWaystone) {
+    public IWaystoneTeleportContext setFromWaystone(@Nullable IWaystone fromWaystone) {
         this.fromWaystone = fromWaystone;
+        return this;
     }
 
     @Override
@@ -93,8 +94,9 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void setWarpItem(ItemStack warpItem) {
+    public IWaystoneTeleportContext setWarpItem(ItemStack warpItem) {
         this.warpItem = warpItem;
+        return this;
     }
 
     @Override
@@ -108,13 +110,15 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void setExperienceCost(Cost cost) {
+    public IWaystoneTeleportContext setExperienceCost(Cost cost) {
         this.xpCost = cost;
+        return this;
     }
 
     @Override
-    public void setCooldown(int cooldown) {
+    public IWaystoneTeleportContext setCooldown(int cooldown) {
         this.cooldown = cooldown;
+        return this;
     }
 
     @Override
@@ -123,23 +127,14 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public WarpMode getWarpMode() {
-        return warpMode;
-    }
-
-    @Override
-    public void setWarpMode(WarpMode warpMode) {
-        this.warpMode = warpMode;
-    }
-
-    @Override
     public boolean playsSound() {
         return playsSound;
     }
 
     @Override
-    public void setPlaysSound(boolean playsSound) {
+    public IWaystoneTeleportContext setPlaysSound(boolean playsSound) {
         this.playsSound = playsSound;
+        return this;
     }
 
     @Override
@@ -148,17 +143,36 @@ public class WaystoneTeleportContext implements IWaystoneTeleportContext {
     }
 
     @Override
-    public void setPlaysEffect(boolean playsEffect) {
+    public IWaystoneTeleportContext setPlaysEffect(boolean playsEffect) {
         this.playsEffect = playsEffect;
+        return this;
     }
 
     @Override
     public boolean consumesWarpItem() {
-        return this.consumesWarpItem == null ? getWarpMode().consumesItem() : this.consumesWarpItem;
+        return this.consumesWarpItem;
     }
 
     @Override
-    public void setConsumesWarpItem(boolean consumesWarpItem) {
+    public IWaystoneTeleportContext setConsumesWarpItem(boolean consumesWarpItem) {
         this.consumesWarpItem = consumesWarpItem;
+        return this;
+    }
+
+    @Override
+    public Set<ResourceLocation> getFlags() {
+        return flags;
+    }
+
+    @Override
+    public IWaystoneTeleportContext addFlag(ResourceLocation flag) {
+        flags.add(flag);
+        return this;
+    }
+
+    @Override
+    public IWaystoneTeleportContext removeFlag(ResourceLocation flag) {
+        flags.remove(flag);
+        return this;
     }
 }

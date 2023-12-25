@@ -32,17 +32,14 @@ import java.util.UUID;
 public class InternalMethodsImpl implements InternalMethods {
 
     @Override
-    public Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+    public Either<IWaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
-            context.setWarpMode(warpMode);
             final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportPets.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportPets.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(entity));
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
             context.setFromWaystone(fromWaystone);
-            context.setWarpItem(PlayerWaystoneManager.findWarpItem(entity, warpMode));
-            context.setCooldown(PlayerWaystoneManager.getCooldownPeriod(warpMode, waystone));
 
             // Use the context so far to determine the xp cost
             context.setExperienceCost(calculateCost(context));
@@ -73,18 +70,8 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        return WaystoneTeleportManager.tryTeleportToWaystone(entity, waystone, warpMode, fromWaystone);
-    }
-
-    @Override
     public Either<List<Entity>, WaystoneTeleportError> tryTeleport(IWaystoneTeleportContext context) {
         return WaystoneTeleportManager.tryTeleport(context);
-    }
-
-    @Override
-    public Either<List<Entity>, WaystoneTeleportError> forceTeleportToWaystone(Entity entity, IWaystone waystone) {
-        return createDefaultTeleportContext(entity, waystone, WarpMode.CUSTOM, null).mapLeft(this::forceTeleport);
     }
 
     @Override

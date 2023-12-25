@@ -34,7 +34,7 @@ public class WaystoneButton extends Button {
         Player player = Minecraft.getInstance().player;
         this.cost = cost;
         this.waystone = waystone;
-        if (player == null || !PlayerWaystoneManager.mayTeleportToWaystone(player, waystone)) {
+        if (player == null) {
             active = false;
         } else if (!cost.canAfford(player) && !player.getAbilities().instabuild) {
             active = false;

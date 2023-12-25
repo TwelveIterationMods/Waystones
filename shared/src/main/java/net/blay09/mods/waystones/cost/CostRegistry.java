@@ -1,10 +1,10 @@
 package net.blay09.mods.waystones.cost;
 
 import net.blay09.mods.waystones.api.IWaystoneTeleportContext;
+import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.cost.*;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.ResourceLocation;
@@ -108,7 +108,7 @@ public class CostRegistry {
                 it -> it.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)).orElse(false));
         registerConditionResolver("source_is_sharestone",
                 it -> it.getFromWaystone().map(waystone -> WaystoneTypes.isSharestone(waystone.getWaystoneType())).orElse(false));
-        registerConditionResolver("source_is_inventory_button", it -> it.getWarpMode() == WarpMode.INVENTORY_BUTTON);
+        registerConditionResolver("source_is_inventory_button", it -> it.getFlags().contains(TeleportFlags.INVENTORY_BUTTON));
         registerConditionResolver("source_is_scroll", it -> it.getWarpItem().is(ModItemTags.SCROLLS));
         registerConditionResolver("source_is_bound_scroll", it -> it.getWarpItem().is(ModItemTags.BOUND_SCROLLS));
         registerConditionResolver("source_is_return_scroll", it -> it.getWarpItem().is(ModItemTags.RETURN_SCROLLS));

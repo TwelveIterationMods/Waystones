@@ -80,7 +80,6 @@ public class PlayerWaystoneManager {
         IWaystone waystone = getInventoryButtonTarget(player);
         final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player,
                 waystone,
-                WarpMode.INVENTORY_BUTTON,
                 null) : NoCost.INSTANCE;
         return getInventoryButtonCooldownLeft(player) <= 0 && xpCost.canAfford(player);
     }
@@ -110,27 +109,20 @@ public class PlayerWaystoneManager {
         };
     }
 
-    public static void applyCooldown(WarpMode warpMode, Player player, int cooldown) {
+    public static void applyInventoryButtonCooldown(Player player, int cooldown) {
         if (cooldown > 0) {
             final Level level = player.level();
-            switch (warpMode) {
-                case INVENTORY_BUTTON -> getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
-                case WARP_STONE -> getPlayerWaystoneData(level).setWarpStoneCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
-            }
+            getPlayerWaystoneData(level).setInventoryButtonCooldownUntil(player, System.currentTimeMillis() + cooldown * 1000L);
             WaystoneSyncManager.sendWaystoneCooldowns(player);
         }
     }
 
-    public static int getCooldownPeriod(WarpMode warpMode, IWaystone waystone) {
-        return (int) (getCooldownPeriod(warpMode) * getCooldownMultiplier(waystone));
+    public static int getInventoryButtonCooldownPeriod(IWaystone waystone) {
+        return (int) (getInventoryButtonCooldownPeriod() * getCooldownMultiplier(waystone));
     }
 
-    private static int getCooldownPeriod(WarpMode warpMode) {
-        return switch (warpMode) {
-            case INVENTORY_BUTTON -> WaystonesConfig.getActive().cooldowns.inventoryButtonCooldown;
-            case WARP_STONE -> WaystonesConfig.getActive().cooldowns.warpStoneCooldown;
-            default -> 0;
-        };
+    private static int getInventoryButtonCooldownPeriod() {
+        return WaystonesConfig.getActive().cooldowns.inventoryButtonCooldown;
     }
 
     public static boolean canDimensionalWarpBetween(Entity player, IWaystone waystone) {
@@ -148,47 +140,8 @@ public class PlayerWaystoneManager {
         return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.getVisibility() == WaystoneVisibility.GLOBAL;
     }
 
-    public static ItemStack findWarpItem(Entity entity, WarpMode warpMode) {
-        return switch (warpMode) {
-            case WARP_SCROLL -> findWarpItem(entity, ModItemTags.WARP_SCROLLS);
-            case WARP_STONE -> findWarpItem(entity, ModItemTags.WARP_STONES);
-            case RETURN_SCROLL -> findWarpItem(entity, ModItemTags.RETURN_SCROLLS);
-            default -> ItemStack.EMPTY;
-        };
-    }
-
-    private static ItemStack findWarpItem(Entity entity, TagKey<Item> warpItemTag) {
-        if (entity instanceof LivingEntity livingEntity) {
-            if (livingEntity.getMainHandItem().is(warpItemTag)) {
-                return livingEntity.getMainHandItem();
-            } else if (livingEntity.getOffhandItem().is(warpItemTag)) {
-                return livingEntity.getOffhandItem();
-            }
-        }
-
-        return ItemStack.EMPTY;
-    }
-
     public static void deactivateWaystone(Player player, IWaystone waystone) {
         getPlayerWaystoneData(player.level()).deactivateWaystone(player, waystone);
-    }
-
-    public static boolean canUseWarpMode(Entity entity, WarpMode warpMode, ItemStack heldItem, @Nullable IWaystone fromWaystone) {
-        return switch (warpMode) {
-            case INVENTORY_BUTTON -> entity instanceof Player && PlayerWaystoneManager.canUseInventoryButton(((Player) entity));
-            case WARP_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_SCROLLS);
-            case RETURN_SCROLL -> !heldItem.isEmpty() && heldItem.is(ModItemTags.RETURN_SCROLLS);
-            case WARP_STONE -> !heldItem.isEmpty() && heldItem.is(ModItemTags.WARP_STONES) && entity instanceof Player
-                    && PlayerWaystoneManager.canUseWarpStone(((Player) entity), heldItem);
-            case WAYSTONE_TO_WAYSTONE -> WaystonesConfig.getActive()
-                    .restrictions.allowWaystoneToWaystoneTeleport && fromWaystone != null && fromWaystone.isValid()
-                    && fromWaystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE);
-            case SHARESTONE_TO_SHARESTONE -> fromWaystone != null && fromWaystone.isValid() && WaystoneTypes.isSharestone(fromWaystone.getWaystoneType());
-            case WARP_PLATE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE);
-            case PORTSTONE_TO_WAYSTONE -> fromWaystone != null && fromWaystone.isValid() && fromWaystone.getWaystoneType().equals(WaystoneTypes.PORTSTONE);
-            case CUSTOM -> true;
-        };
-
     }
 
     public static long getWarpStoneCooldownUntil(Player player) {

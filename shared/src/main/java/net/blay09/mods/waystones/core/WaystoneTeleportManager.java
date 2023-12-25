@@ -42,11 +42,10 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static Cost predictExperienceLevelCost(Entity player, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
+    public static Cost predictExperienceLevelCost(Entity player, IWaystone waystone, @Nullable IWaystone fromWaystone) {
         WaystoneTeleportContext context = new WaystoneTeleportContext(player, waystone, null);
         context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
         context.setFromWaystone(fromWaystone);
-        context.setWarpMode(warpMode);
         context.setDestination(waystone.resolveDestination(player.level()));
         return WaystonesAPI.calculateCost(context);
     }
@@ -183,8 +182,8 @@ public class WaystoneTeleportManager {
         }
     }
 
-    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, WarpMode warpMode, @Nullable IWaystone fromWaystone) {
-        return WaystonesAPI.createDefaultTeleportContext(entity, waystone, warpMode, fromWaystone)
+    public static Either<List<Entity>, WaystoneTeleportError> tryTeleportToWaystone(Entity entity, IWaystone waystone, @Nullable IWaystone fromWaystone) {
+        return WaystonesAPI.createDefaultTeleportContext(entity, waystone, fromWaystone)
                 .flatMap(WaystoneTeleportManager::tryTeleport)
                 .ifRight(PlayerWaystoneManager.informRejectedTeleport(entity));
     }
@@ -198,10 +197,6 @@ public class WaystoneTeleportManager {
 
         final var waystone = context.getTargetWaystone();
         final var entity = context.getEntity();
-        final var warpMode = context.getWarpMode();
-        if (!PlayerWaystoneManager.canUseWarpMode(entity, warpMode, context.getWarpItem(), context.getFromWaystone().orElse(null))) {
-            return Either.right(new WaystoneTeleportError.WarpModeRejected());
-        }
 
         if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult()
                 .withDefault(() -> PlayerWaystoneManager.canDimensionalWarpBetween(entity, waystone))) {
@@ -233,7 +228,8 @@ public class WaystoneTeleportManager {
         }
 
         if (entity instanceof Player player) {
-            PlayerWaystoneManager.applyCooldown(warpMode, player, context.getCooldown());
+            PlayerWaystoneManager.applyInventoryButtonCooldown(player, context.getCooldown()); // TODO only if we're actually using inventory button
+
             context.getExperienceCost().consume(player);
         }
 

@@ -64,9 +64,6 @@ public class WaystoneTeleportError {
     public static class CancelledByEvent extends WaystoneTeleportError {
     }
 
-    public static class WarpModeRejected extends WaystoneTeleportError {
-    }
-
     public static class DimensionalWarpDenied extends WaystoneTeleportError {
         public DimensionalWarpDenied() {
             super("chat.waystones.cannot_dimension_warp");

@@ -22,6 +22,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+
 public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
     public SharestoneBlockEntity(BlockPos pos, BlockState state) {
@@ -53,7 +55,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
                 final var fromWaystone = getWaystone();
                 final var waystones = PlayerWaystoneManager.getTargetsForWaystone(player, fromWaystone);
                 PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, windowId, waystones);
+                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), fromWaystone, windowId, waystones, Collections.emptySet());
             }
 
             @Override

@@ -11,7 +11,6 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
 import net.blay09.mods.waystones.api.cost.Cost;
@@ -102,7 +101,7 @@ public class InventoryButtonGuiHandler {
 
                 long timeLeft = PlayerWaystoneManager.getInventoryButtonCooldownLeft(player);
                 IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
-                final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player, waystone, WarpMode.INVENTORY_BUTTON, null) : NoCost.INSTANCE;
+                final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player, waystone, null) : NoCost.INSTANCE;
                 int secondsLeft = (int) (timeLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));

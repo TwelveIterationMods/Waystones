@@ -1,8 +1,8 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -10,18 +10,19 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    private final WarpMode warpMode;
     private final IWaystone fromWaystone;
     private final Collection<IWaystone> waystones;
+    private final Set<ResourceLocation> flags;
 
-    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, WarpMode warpMode, @Nullable IWaystone fromWaystone, int windowId, Collection<IWaystone> waystones) {
+    public WaystoneSelectionMenu(MenuType<WaystoneSelectionMenu> type, @Nullable IWaystone fromWaystone, int windowId, Collection<IWaystone> waystones, Set<ResourceLocation> flags1) {
         super(type, windowId);
-        this.warpMode = warpMode;
         this.fromWaystone = fromWaystone;
         this.waystones = waystones;
+        this.flags = flags1;
     }
 
     @Override
@@ -44,12 +45,11 @@ public class WaystoneSelectionMenu extends AbstractContainerMenu {
         return fromWaystone;
     }
 
-    public WarpMode getWarpMode() {
-        return warpMode;
-    }
-
     public Collection<IWaystone> getWaystones() {
         return waystones;
     }
 
+    public Set<ResourceLocation> getFlags() {
+        return flags;
+    }
 }

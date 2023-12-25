@@ -3,14 +3,14 @@ package net.blay09.mods.waystones.network.message;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.IWaystone;
+import net.blay09.mods.waystones.api.TeleportFlags;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.Waystone;
-import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +18,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.Set;
 
 public class InventoryButtonMessage {
 
@@ -29,7 +30,7 @@ public class InventoryButtonMessage {
         return new InventoryButtonMessage();
     }
 
-    public static void handle(ServerPlayer player, InventoryButtonMessage message) {
+    public static void handle(final ServerPlayer player, InventoryButtonMessage message) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
         if (!inventoryButtonMode.isEnabled()) {
             return;
@@ -50,7 +51,8 @@ public class InventoryButtonMessage {
 
         IWaystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
         if (waystone != null) {
-            WaystoneTeleportManager.tryTeleportToWaystone(player, waystone, WarpMode.INVENTORY_BUTTON, null);
+            WaystonesAPI.createDefaultTeleportContext(player, waystone, null)
+                    .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
@@ -62,7 +64,7 @@ public class InventoryButtonMessage {
 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) {
-                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), WarpMode.INVENTORY_BUTTON, null, windowId, waystones);
+                    return new WaystoneSelectionMenu(ModMenus.inventorySelection.get(), null, windowId, waystones, Set.of(TeleportFlags.INVENTORY_BUTTON));
                 }
 
                 @Override
