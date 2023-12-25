@@ -3,11 +3,16 @@ package net.blay09.mods.waystones;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.cost.CostContext;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.cost.CostContextImpl;
+import net.blay09.mods.waystones.cost.CostRegistry;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -147,5 +152,20 @@ public class InternalMethodsImpl implements InternalMethods {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
             attunementItem.setWaystoneAttunedTo(itemStack, waystone);
         }
+    }
+
+    @Override
+    public Cost calculateCost(IWaystoneTeleportContext context) {
+        if (!WaystonesConfig.getActive().costs.enableCosts) {
+            return NoCost.INSTANCE;
+        }
+
+        final var costContext = new CostContextImpl(context);
+        final var configuredModifiers = WaystonesConfig.getActive().costs.costModifiers;
+        for (final var modifier : configuredModifiers) {
+            CostRegistry.deserializeModifier(modifier).ifPresent(costContext::apply);
+        }
+
+        return costContext.resolve();
     }
 }

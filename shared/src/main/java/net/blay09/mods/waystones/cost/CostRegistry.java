@@ -1,10 +1,12 @@
 package net.blay09.mods.waystones.cost;
 
+import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.waystones.api.cost.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class CostRegistry {
@@ -109,12 +111,7 @@ public class CostRegistry {
 
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
-        registerSerializer(IdParameter.class, it -> {
-            final var colon = it.indexOf(':');
-            final var namespace = colon != -1 ? it.substring(0, colon) : "waystones";
-            final var path = colon != -1 ? it.substring(colon + 1) : it;
-            return new IdParameter(new ResourceLocation(namespace, path));
-        });
+        registerSerializer(IdParameter.class, it -> new IdParameter(deserializeWaystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(ConditionalFloatParameter.class);
     }
@@ -129,6 +126,31 @@ public class CostRegistry {
 
     public static void register(CostParameterSerializer<?> costParameterSerializer) {
         costParameterSerializers.put(costParameterSerializer.getType(), costParameterSerializer);
+    }
+
+    public static <T extends Cost, P> Optional<Pair<CostModifier<T, P>, P>> deserializeModifier(String modifier) {
+        final var openParen = modifier.indexOf('(');
+        final var closeParen = modifier.indexOf(')');
+        if (openParen == -1 || closeParen == -1) {
+            return Optional.empty();
+        }
+
+        final var modifierId = deserializeWaystonesResourceLocation(modifier.substring(0, openParen));
+        final var parameterString = modifier.substring(openParen + 1, closeParen);
+        final var costModifier = CostRegistry.<T, P>getCostModifier(modifierId);
+        if (costModifier == null) {
+            return Optional.empty();
+        }
+
+        final var parameters = deserializeParameterList(costModifier.getParameterType(), parameterString);
+        return Optional.of(Pair.of(costModifier, parameters));
+    }
+
+    private static ResourceLocation deserializeWaystonesResourceLocation(String value) {
+        final var colon = value.indexOf(':');
+        final var namespace = colon != -1 ? value.substring(0, colon) : "waystones";
+        final var path = colon != -1 ? value.substring(colon + 1) : value;
+        return new ResourceLocation(namespace, path);
     }
 
     @SuppressWarnings("unchecked")
@@ -179,7 +201,7 @@ public class CostRegistry {
         });
     }
 
-    private static <T, P> void registerModifier(String name, CostType<T> costType, Class<P> parameterType, CostModifierFunction<T, P> function) {
+    private static <T extends Cost, P> void registerModifier(String name, CostType<T> costType, Class<P> parameterType, CostModifierFunction<T, P> function) {
         register(new CostModifier<T, P>() {
             @Override
             public ResourceLocation getId() {
@@ -208,7 +230,8 @@ public class CostRegistry {
         return (CostType<T>) costTypes.get(costType);
     }
 
-    public static CostModifier<?, ?> getCostModifier(ResourceLocation costModifier) {
-        return costModifiers.get(costModifier);
+    @SuppressWarnings("unchecked")
+    public static <T extends Cost, P> CostModifier<T, P> getCostModifier(ResourceLocation costModifier) {
+        return (CostModifier<T, P>) costModifiers.get(costModifier);
     }
 }

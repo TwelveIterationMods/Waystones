@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -81,4 +82,9 @@ public class WaystonesAPI {
     public static ItemStack createBoundScroll(IWaystone waystone) {
         return __internalMethods.createBoundScroll(waystone);
     }
+
+    public static Cost calculateCost(IWaystoneTeleportContext context) {
+        return __internalMethods.calculateCost(context);
+    }
+
 }

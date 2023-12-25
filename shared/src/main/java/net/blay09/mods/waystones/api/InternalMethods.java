@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
+import net.blay09.mods.waystones.api.cost.Cost;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -45,4 +46,6 @@ public interface InternalMethods {
     Optional<IWaystone> getBoundWaystone(Player player, ItemStack itemStack);
 
     void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone);
+
+    Cost calculateCost(IWaystoneTeleportContext context);
 }
