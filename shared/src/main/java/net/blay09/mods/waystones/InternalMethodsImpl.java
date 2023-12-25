@@ -136,7 +136,7 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack) {
         if (itemStack.getItem() instanceof IAttunementItem attunementItem) {
-            return Optional.ofNullable(attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), player, itemStack));
+            return attunementItem.getWaystoneAttunedTo(Balm.getHooks().getServer(), player, itemStack);
         }
         return Optional.empty();
     }

@@ -124,13 +124,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     public void onEntityCollision(Entity entity) {
         Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
         if (ticksPassed == null || ticksPassed != -1) {
-            final var targetWaystone = getTargetWaystone();
-            final var status = targetWaystone.filter(Waystone::isValid)
-                    .map(it -> WarpPlateBlock.WarpPlateStatus.ACTIVE)
-                    .orElse(WarpPlateBlock.WarpPlateStatus.INVALID);
-            final var canAfford = targetWaystone.map(it -> WaystoneTeleportManager.predictExperienceLevelCost(entity, it, getWaystone()))
-                    .map(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
-                    .orElse(true);
+            final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
+            final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.ACTIVE : WarpPlateBlock.WarpPlateStatus.INVALID;
+            final var canAfford = WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
+                    .mapLeft(WaystoneTeleportContext::getCost)
+                    .mapLeft(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
+                    .left().orElse(true);
             level.setBlock(worldPosition, getBlockState()
                     .setValue(WarpPlateBlock.STATUS, canAfford ? status : WarpPlateBlock.WarpPlateStatus.INVALID), 3);
         }

@@ -9,12 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ConfirmScreen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
 public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
 
-    private final String waystoneName;
+    private final Component waystoneName;
 
     public InventoryButtonReturnConfirmScreen() {
         this("");
@@ -31,17 +30,16 @@ public class InventoryButtonReturnConfirmScreen extends ConfirmScreen {
         this.waystoneName = getWaystoneName(targetWaystone);
     }
 
-    private static String getWaystoneName(String targetWaystone) {
+    private static Component getWaystoneName(String targetWaystone) {
         if (!targetWaystone.isEmpty()) {
-            return ChatFormatting.GRAY + I18n.get("gui.waystones.inventory.confirm_return_bound_to", targetWaystone);
+            return Component.translatable("gui.waystones.inventory.confirm_return_bound_to", targetWaystone).withStyle(ChatFormatting.GRAY);
         }
 
-        Waystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(Minecraft.getInstance().player);
-        if (nearestWaystone != null) {
-            return ChatFormatting.GRAY + I18n.get("gui.waystones.inventory.confirm_return_bound_to", nearestWaystone.getName());
-        }
-
-        return ChatFormatting.GRAY + I18n.get("gui.waystones.inventory.confirm_return.noWaystoneActive");
+        final var player = Minecraft.getInstance().player;
+        final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
+        return nearestWaystone.map(Waystone::getName)
+                .map(it -> Component.translatable("gui.waystones.inventory.confirm_return_bound_to", it).withStyle(ChatFormatting.GRAY))
+                .orElse(Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

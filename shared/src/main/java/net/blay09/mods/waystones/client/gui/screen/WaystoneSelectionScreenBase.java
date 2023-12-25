@@ -3,15 +3,14 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
-import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneTypes;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
+import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
+import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
@@ -198,12 +197,12 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private WaystoneButton createWaystoneButton(int y, final Waystone waystone) {
-        Waystone waystoneFrom = menu.getWaystoneFrom();
-        Player player = Minecraft.getInstance().player;
-        final var xpCost = WaystoneTeleportManager.predictExperienceLevelCost(Objects.requireNonNull(player),
-                waystone,
-                waystoneFrom);
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, xpCost, button -> onWaystoneSelected(waystone));
+        final var waystoneFrom = menu.getWaystoneFrom();
+        final var player = Minecraft.getInstance().player;
+        final var cost = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.setFromWaystone(waystoneFrom))
+                .mapLeft(WaystoneTeleportContext::getCost)
+                .left().orElse(NoCost.INSTANCE);
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, cost, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }

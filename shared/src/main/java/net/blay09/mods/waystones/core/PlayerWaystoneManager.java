@@ -57,16 +57,15 @@ public class PlayerWaystoneManager {
         }
     }
 
-    @Nullable
-    public static Waystone getInventoryButtonTarget(Player player) {
+    public static Optional<Waystone> getInventoryButtonTarget(Player player) {
         InventoryButtonMode inventoryButtonMode = WaystonesConfig.getActive().getInventoryButtonMode();
         if (inventoryButtonMode.isReturnToNearest()) {
             return PlayerWaystoneManager.getNearestWaystone(player);
         } else if (inventoryButtonMode.hasNamedTarget()) {
-            return WaystoneManagerImpl.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget()).orElse(null);
+            return WaystoneManagerImpl.get(player.getServer()).findWaystoneByName(inventoryButtonMode.getNamedTarget());
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
@@ -109,15 +108,14 @@ public class PlayerWaystoneManager {
         getPlayerWaystoneData(player.level()).setCooldownUntil(player, key, timestamp);
     }
 
-    @Nullable
-    public static Waystone getNearestWaystone(Player player) {
+    public static Optional<Waystone> getNearestWaystone(Player player) {
         return getPlayerWaystoneData(player.level()).getWaystones(player).stream()
                 .filter(it -> it.getDimension() == player.level().dimension())
                 .min((first, second) -> {
                     double firstDist = first.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
                     double secondDist = second.getPos().distToCenterSqr(player.getX(), player.getY(), player.getZ());
                     return (int) Math.round(firstDist) - (int) Math.round(secondDist);
-                }).orElse(null);
+                });
     }
 
     public static Collection<Waystone> getActivatedWaystones(Player player) {

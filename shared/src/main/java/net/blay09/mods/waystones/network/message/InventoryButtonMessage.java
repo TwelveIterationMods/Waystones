@@ -44,9 +44,9 @@ public class InventoryButtonMessage {
             PlayerWaystoneManager.resetCooldowns(player);
         }
 
-        Waystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
-        if (waystone != null) {
-            WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
+        final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
+        if (waystone.isPresent()) {
+            WaystonesAPI.createDefaultTeleportContext(player, waystone.get(), it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
                     .mapLeft(WaystonesAPI::tryTeleport);
         } else if (inventoryButtonMode.isReturnToAny()) {
             final var waystones = PlayerWaystoneManager.getTargetsForInventoryButton(player);

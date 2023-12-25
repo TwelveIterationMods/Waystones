@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.minecraft.ChatFormatting;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractAttunedShardItem extends Item implements IAttunementItem {
 
@@ -31,16 +33,16 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-        Waystone waystoneAttunedTo = getWaystoneAttunedTo(null, null, itemStack);
-        return waystoneAttunedTo != null && waystoneAttunedTo.isValid();
+        final var waystoneAttunedTo = getWaystoneAttunedTo(null, null, itemStack);
+        return waystoneAttunedTo.map(Waystone::isValid).orElse(false);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, world, list, flag);
 
-        Waystone attunedWaystone = getWaystoneAttunedTo(null, null, stack);
-        if (attunedWaystone == null || !attunedWaystone.isValid()) {
+        final var attunedWaystone = getWaystoneAttunedTo(null, null, stack).orElse(InvalidWaystone.INSTANCE);
+        if (!attunedWaystone.isValid()) {
             var textComponent = Component.translatable("tooltip.waystones.attuned_shard.attunement_lost");
             textComponent.withStyle(ChatFormatting.GRAY);
             list.add(textComponent);
@@ -66,15 +68,14 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
         }
     }
 
-    @Nullable
     @Override
-    public Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         CompoundTag compound = itemStack.getTag();
         if (compound != null && compound.contains("AttunedToWaystone", Tag.TAG_INT_ARRAY)) {
-            return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone"))));
+            return Optional.of(new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone")))));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override

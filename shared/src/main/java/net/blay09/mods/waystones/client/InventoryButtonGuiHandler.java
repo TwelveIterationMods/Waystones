@@ -4,19 +4,15 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
-import net.blay09.mods.waystones.api.TeleportFlags;
-import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneCooldowns;
-import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.api.*;
+import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.cost.NoCost;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
-import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.network.message.InventoryButtonMessage;
-import net.blay09.mods.waystones.api.cost.Cost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -70,7 +66,7 @@ public class InventoryButtonGuiHandler {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                     } else if (inventoryButtonMode.isReturnToNearest()) {
-                        if (PlayerWaystoneManager.getNearestWaystone(player) != null) {
+                        if (PlayerWaystoneManager.getNearestWaystone(player).isPresent()) {
                             mc.setScreen(new InventoryButtonReturnConfirmScreen());
                         }
                     } else if (inventoryButtonMode.isReturnToAny()) {
@@ -104,52 +100,45 @@ public class InventoryButtonGuiHandler {
                 }
 
                 long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
-                Waystone waystone = PlayerWaystoneManager.getInventoryButtonTarget(player);
-                final Cost xpCost = waystone != null ? WaystoneTeleportManager.predictExperienceLevelCost(player, waystone, null) : NoCost.INSTANCE;
+                final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
+                final var cost = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
+                        .mapLeft(WaystoneTeleportContext::getCost)
+                        .left().orElse(NoCost.INSTANCE);
                 int secondsLeft = (int) (millisLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
-                    tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
-                    tooltip.add(formatTranslation(ChatFormatting.GRAY,
-                            "tooltip.waystones.bound_to",
-                            ChatFormatting.DARK_AQUA + inventoryButtonMode.getNamedTarget()));
+                    tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
+                    final var targetComponent = Component.literal(inventoryButtonMode.getNamedTarget()).withStyle(ChatFormatting.DARK_AQUA);
+                    tooltip.add(Component.translatable("tooltip.waystones.bound_to", targetComponent).withStyle(ChatFormatting.GRAY));
                     if (secondsLeft > 0) {
                         tooltip.add(Component.empty());
                     }
                 } else if (inventoryButtonMode.isReturnToNearest()) {
-                    tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_nearest_waystone"));
-                    Waystone nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
-                    if (nearestWaystone != null) {
-                        tooltip.add(formatTranslation(ChatFormatting.GRAY, "tooltip.waystones.bound_to", nearestWaystone.getName().copy().withStyle(ChatFormatting.DARK_AQUA)));
-                    } else {
-                        tooltip.add(formatTranslation(ChatFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
-                    }
+                    tooltip.add(Component.translatable("gui.waystones.inventory.return_to_nearest_waystone").withStyle(ChatFormatting.YELLOW));
+                    final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
+                    tooltip.add(nearestWaystone.map(it -> it.getName().copy().withStyle(ChatFormatting.DARK_AQUA))
+                            .map(it -> Component.translatable("tooltip.waystones.bound_to", it).withStyle(ChatFormatting.GRAY))
+                            .orElseGet(() -> Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.RED)));
                     if (secondsLeft > 0) {
                         tooltip.add(Component.empty());
                     }
                 } else if (inventoryButtonMode.isReturnToAny()) {
-                    tooltip.add(formatTranslation(ChatFormatting.YELLOW, "gui.waystones.inventory.return_to_waystone"));
+                    tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     if (PlayerWaystoneManager.getActivatedWaystones(player).isEmpty()) {
-                        tooltip.add(formatTranslation(ChatFormatting.RED, "gui.waystones.inventory.no_waystones_activated"));
+                        tooltip.add(Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.RED));
                     }
                 }
 
-                if (!xpCost.canAfford(player)) {
-                    tooltip.add(formatTranslation(ChatFormatting.RED, "tooltip.waystones.not_enough_xp", xpCost));
+                if (!cost.canAfford(player)) {
+                    cost.appendHoverText(player, tooltip);
                 }
 
                 if (secondsLeft > 0) {
-                    tooltip.add(formatTranslation(ChatFormatting.GOLD, "tooltip.waystones.cooldown_left", secondsLeft));
+                    tooltip.add(Component.translatable("tooltip.waystones.cooldown_left", secondsLeft).withStyle(ChatFormatting.GOLD));
                 }
 
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
             }
         });
-    }
-
-    private static Component formatTranslation(ChatFormatting formatting, String key, Object... args) {
-        final var result = Component.translatable(key, args);
-        result.withStyle(formatting);
-        return result;
     }
 
 }

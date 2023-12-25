@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse, IAttunementItem {
 
@@ -38,30 +39,28 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
-            Waystone boundTo = getWaystoneAttunedTo(player.getServer(), player, stack);
-            if (boundTo != null) {
-                WaystonesAPI.createDefaultTeleportContext(player, boundTo, it -> it.setWarpItem(stack))
-                        .mapLeft(WaystonesAPI::tryTeleport)
-                        .ifLeft(it -> {
-                            if (!player.getAbilities().instabuild) {
-                                stack.shrink(1);
-                            }
-                        });
-            }
+            final var boundTo = getWaystoneAttunedTo(player.getServer(), player, stack);
+            boundTo.ifPresent(targetWaystone -> WaystonesAPI.createDefaultTeleportContext(player, targetWaystone, it -> it.setWarpItem(stack))
+                    .mapLeft(WaystonesAPI::tryTeleport)
+                    .ifLeft(it -> {
+                        if (!player.getAbilities().instabuild) {
+                            stack.shrink(1);
+                        }
+                    })
+            );
         }
 
         return stack;
     }
 
-    @Nullable
     @Override
-    public Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         CompoundTag compound = itemStack.getTag();
         if (compound != null && compound.contains("AttunedToWaystone", Tag.TAG_INT_ARRAY)) {
-            return new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone"))));
+            return Optional.of(new WaystoneProxy(server, NbtUtils.loadUUID(Objects.requireNonNull(compound.get("AttunedToWaystone")))));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -87,10 +86,10 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
         }
 
         final var boundTo = getWaystoneAttunedTo(player.getServer(), player, itemStack);
-        if (boundTo != null) {
-            final var boundToValueComponent = boundTo.getName().copy().withStyle(ChatFormatting.AQUA);
+        boundTo.ifPresent(it -> {
+            final var boundToValueComponent = it.getName().copy().withStyle(ChatFormatting.AQUA);
             list.add(Component.translatable("tooltip.waystones.bound_to", boundToValueComponent).withStyle(ChatFormatting.GRAY));
-        }
+        });
     }
 
     @Override

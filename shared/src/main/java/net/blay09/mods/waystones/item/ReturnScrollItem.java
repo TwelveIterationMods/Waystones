@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class ReturnScrollItem extends BoundScrollItem {
 
     public ReturnScrollItem(Properties properties) {
@@ -14,7 +16,7 @@ public class ReturnScrollItem extends BoundScrollItem {
     }
 
     @Override
-    public @Nullable Waystone getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
+    public Optional<Waystone> getWaystoneAttunedTo(MinecraftServer server, Player player, ItemStack itemStack) {
         return PlayerWaystoneManager.getNearestWaystone(player);
     }
 }
