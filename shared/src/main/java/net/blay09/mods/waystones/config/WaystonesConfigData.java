@@ -32,7 +32,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @ExpectedType(String.class)
-        @Comment("")
+        @Comment("List of cost modifiers with comma-separated parameters in parentheses. Will be applied in order.")
         public List<String> costModifiers = List.of(
                 "scaled_add_xp(distance, 0.01)",
                 "conditional_multiply_xp(source_is_warp_plate, 0)",
