@@ -101,9 +101,8 @@ public class InventoryButtonGuiHandler {
 
                 long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
-                final var requirements = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
-                        .mapLeft(WaystoneTeleportContext::getRequirements)
-                        .left().orElse(NoRequirement.INSTANCE);
+                final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
+                final var requirements = WaystonesAPI.resolveRequirements(context);
                 int secondsLeft = (int) (millisLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));

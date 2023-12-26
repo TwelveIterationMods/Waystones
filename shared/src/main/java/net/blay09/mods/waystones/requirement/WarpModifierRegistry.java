@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.requirement;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystoneTypes;
@@ -19,13 +20,11 @@ import java.util.function.Supplier;
 
 public class WarpModifierRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(WarpModifierRegistry.class);
-
     private static final Map<ResourceLocation, RequirementType<?>> requirementTypes = new HashMap<>();
-    private static final Map<ResourceLocation, WarpRequirementModifier<?, ?>> requirementModifiers = new HashMap<>();
+    private static final Map<ResourceLocation, RequirementFunction<?, ?>> requirementFunctions = new HashMap<>();
     private static final Map<Class<?>, ParameterSerializer<?>> parameterSerializers = new HashMap<>();
     private static final Map<ResourceLocation, VariableResolver> variableResolvers = new HashMap<>();
-    private static final Map<ResourceLocation, ConditionResolver> conditionResolvers = new HashMap<>();
+    private static final Map<ResourceLocation, ConditionResolver<?>> conditionResolvers = new HashMap<>();
 
     public record NoParameter() {
         public static final NoParameter INSTANCE = new NoParameter();
@@ -128,9 +127,10 @@ public class WarpModifierRegistry {
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
 
+        registerSerializer(NoParameter.class, it -> NoParameter.INSTANCE);
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
-        registerSerializer(IdParameter.class, it -> new IdParameter(waystonesResourceLocation(it)));
+        registerSerializer(IdParameter.class, it -> new IdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(CooldownParameter.class);
         registerDefaultSerializer(VariableScaledCooldownParameter.class);
@@ -172,7 +172,7 @@ public class WarpModifierRegistry {
                 NoParameter.class,
                 (context, parameters) -> !WaystoneTeleportManager.findLeashedAnimals(context.getEntity()).isEmpty());
 
-        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getDestination().location())));
+        registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
         registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
     }
@@ -181,8 +181,8 @@ public class WarpModifierRegistry {
         requirementTypes.put(requirementType.getId(), requirementType);
     }
 
-    public static void register(WarpRequirementModifier<?, ?> costModifier) {
-        requirementModifiers.put(costModifier.getId(), costModifier);
+    public static void register(RequirementFunction<?, ?> requirementFunction) {
+        requirementFunctions.put(requirementFunction.getId(), requirementFunction);
     }
 
     public static void register(ParameterSerializer<?> parameterSerializer) {
@@ -197,88 +197,11 @@ public class WarpModifierRegistry {
         conditionResolvers.put(conditionResolver.getId(), conditionResolver);
     }
 
-    public static <T extends WarpRequirement, P> Optional<ConfiguredRequirementModifier<T, P>> deserializeModifier(String modifier) {
-        final var conditionStart = modifier.indexOf('[');
-        final var conditionEnd = modifier.indexOf(']');
-        final List<ConfiguredCondition<?>> conditions = new ArrayList<>();
-        if (conditionStart != -1 && conditionEnd != -1) {
-            final var conditionString = modifier.substring(conditionStart + 1, conditionEnd);
-            for (final var condition : conditionString.split(",")) {
-                final var conditionId = waystonesResourceLocation(condition.trim());
-                final var conditionResolver = WarpModifierRegistry.getConditionResolver(conditionId);
-                if (conditionResolver == null) {
-                    logger.error("Failed to process waystone requirements: Unknown condition {}", conditionId);
-                    return Optional.empty();
-                }
-                conditions.add(new ConfiguredCondition<>((ConditionResolver<? super NoParameter>) conditionResolver, NoParameter.INSTANCE));
-            }
-        }
-
-        final var parameterStart = modifier.indexOf('(');
-        final var parameterEnd = modifier.indexOf(')');
-        if (parameterStart == -1 || parameterEnd == -1) {
-            return Optional.empty();
-        }
-
-        final var modifierStart = conditionEnd != -1 ? conditionEnd + 1 : 0;
-        final var modifierId = waystonesResourceLocation(modifier.substring(modifierStart, parameterStart).trim());
-        final var parameterString = modifier.substring(parameterStart + 1, parameterEnd);
-        final var costModifier = WarpModifierRegistry.<T, P>getCostModifier(modifierId);
-        if (costModifier == null) {
-            return Optional.empty();
-        }
-
-        try {
-            final var parameters = deserializeParameter(costModifier.getParameterType(), parameterString);
-            return Optional.of(new ConfiguredRequirementModifier<>(costModifier, conditions, parameters));
-        } catch (Exception e) {
-            logger.error("Failed to process waystone requirements", e);
-            return Optional.empty();
-        }
-    }
-
-    private static ResourceLocation waystonesResourceLocation(String value) {
-        final var colon = value.indexOf(':');
-        final var namespace = colon != -1 ? value.substring(0, colon) : "waystones";
-        final var path = colon != -1 ? value.substring(colon + 1) : value;
-        return new ResourceLocation(namespace, path);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T deserializeParameter(Class<T> type, String value) {
-        final var serializer = parameterSerializers.get(type);
-        if (serializer == null) {
-            throw new IllegalArgumentException("No serializer registered for type " + type);
-        }
-        return (T) serializer.deserialize(value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T deserializeParameterList(Class<T> type, String commaSeparatedParameters) {
-        final var constructor = type.getConstructors()[0];
-        final var parameterTypes = constructor.getParameterTypes();
-        final var parameters = commaSeparatedParameters.split(",");
-        if (parameters.length != parameterTypes.length) {
-            throw new IllegalArgumentException("Parameter count mismatch for type " + type);
-        }
-
-        final var parameterValues = new Object[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            parameterValues[i] = deserializeParameter(parameterTypes[i], parameters[i].trim());
-        }
-
-        try {
-            return (T) constructor.newInstance(parameterValues);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static void registerVariableResolver(String name, Function<WaystoneTeleportContext, Float> resolver) {
         register(new VariableResolver() {
             @Override
             public ResourceLocation getId() {
-                return waystonesResourceLocation(name);
+                return new ResourceLocation(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -292,7 +215,7 @@ public class WarpModifierRegistry {
         register(new ConditionResolver<P>() {
             @Override
             public ResourceLocation getId() {
-                return waystonesResourceLocation(name);
+                return new ResourceLocation(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -311,7 +234,7 @@ public class WarpModifierRegistry {
         register(new ConditionResolver<P>() {
             @Override
             public ResourceLocation getId() {
-                return waystonesResourceLocation(notName);
+                return new ResourceLocation(Waystones.MOD_ID, notName);
             }
 
             @Override
@@ -327,7 +250,7 @@ public class WarpModifierRegistry {
     }
 
     public static <T> void registerDefaultSerializer(Class<T> type) {
-        registerSerializer(type, it -> deserializeParameterList(type, it));
+        registerSerializer(type, it -> RequirementModifierParser.deserializeParameterList(type, it));
     }
 
     public static <T> void registerSerializer(Class<T> type, Function<String, T> deserializer) {
@@ -345,10 +268,10 @@ public class WarpModifierRegistry {
     }
 
     private static <T extends WarpRequirement, P> void registerModifier(String name, RequirementType<T> requirementType, Class<P> parameterType, WarpRequirementModifierFunction<T, P> function, Supplier<Boolean> predicate) {
-        register(new WarpRequirementModifier<T, P>() {
+        register(new RequirementFunction<T, P>() {
             @Override
             public ResourceLocation getId() {
-                return waystonesResourceLocation(name);
+                return new ResourceLocation(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -374,13 +297,13 @@ public class WarpModifierRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WarpRequirement> RequirementType<T> getRequirementType(ResourceLocation costType) {
-        return (RequirementType<T>) requirementTypes.get(costType);
+    public static <T extends WarpRequirement> RequirementType<T> getRequirementType(ResourceLocation id) {
+        return (RequirementType<T>) requirementTypes.get(id);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WarpRequirement, P> WarpRequirementModifier<T, P> getCostModifier(ResourceLocation costModifier) {
-        return (WarpRequirementModifier<T, P>) requirementModifiers.get(costModifier);
+    public static <T extends WarpRequirement, P> RequirementFunction<T, P> getRequirementFunction(ResourceLocation id) {
+        return (RequirementFunction<T, P>) requirementFunctions.get(id);
     }
 
     public static VariableResolver getVariableResolver(ResourceLocation id) {
@@ -389,5 +312,10 @@ public class WarpModifierRegistry {
 
     public static ConditionResolver<?> getConditionResolver(ResourceLocation id) {
         return conditionResolvers.get(id);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> ParameterSerializer<T> getParameterSerializer(Class<T> type) {
+        return (ParameterSerializer<T>) parameterSerializers.get(type);
     }
 }

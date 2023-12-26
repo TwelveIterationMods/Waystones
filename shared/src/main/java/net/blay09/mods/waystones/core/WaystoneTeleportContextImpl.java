@@ -2,7 +2,6 @@ package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
-import net.blay09.mods.waystones.api.TeleportDestination;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +20,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private final List<Mob> leashedEntities = new ArrayList<>();
     private final Set<ResourceLocation> flags = new HashSet<>();
 
-    private TeleportDestination destination;
     private Waystone fromWaystone;
 
     private ItemStack warpItem = ItemStack.EMPTY;
@@ -31,10 +29,9 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     private boolean playsSound = true;
     private boolean playsEffect = true;
 
-    public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone, TeleportDestination destination) {
+    public WaystoneTeleportContextImpl(Entity entity, Waystone targetWaystone) {
         this.entity = entity;
         this.targetWaystone = targetWaystone;
-        this.destination = destination;
     }
 
     @Override
@@ -45,17 +42,6 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     @Override
     public Waystone getTargetWaystone() {
         return targetWaystone;
-    }
-
-    @Override
-    public TeleportDestination getDestination() {
-        return destination;
-    }
-
-    @Override
-    public WaystoneTeleportContext setDestination(TeleportDestination destination) {
-        this.destination = destination;
-        return this;
     }
 
     @Override

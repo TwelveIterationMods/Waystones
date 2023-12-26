@@ -29,6 +29,10 @@ public class WaystonesAPI {
         return __internalMethods.createCustomTeleportContext(entity, waystone);
     }
 
+    public static WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone) {
+        return __internalMethods.createUnboundTeleportContext(entity, waystone);
+    }
+
     public static WaystoneTeleportContext createUnboundTeleportContext(Entity entity) {
         return __internalMethods.createUnboundTeleportContext(entity);
     }
@@ -88,7 +92,7 @@ public class WaystonesAPI {
         __internalMethods.registerRequirementType(requirementType);
     }
 
-    public static void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier) {
+    public static void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier) {
         __internalMethods.registerRequirementModifier(requirementModifier);
     }
 
@@ -96,7 +100,7 @@ public class WaystonesAPI {
         __internalMethods.registerVariableResolver(variableResolver);
     }
 
-    public static void registerConditionPredicate(ConditionResolver conditionResolver) {
+    public static void registerConditionPredicate(ConditionResolver<?> conditionResolver) {
         __internalMethods.registerConditionResolver(conditionResolver);
     }
 

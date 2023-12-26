@@ -16,10 +16,6 @@ public interface WaystoneTeleportContext {
 
     Waystone getTargetWaystone();
 
-    TeleportDestination getDestination();
-
-    WaystoneTeleportContext setDestination(TeleportDestination destination);
-
     List<Mob> getLeashedEntities();
 
     List<Entity> getAdditionalEntities();

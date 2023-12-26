@@ -33,14 +33,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             context.setRequirements(warpRequirement);
         }
 
-        public TeleportDestination getDestination() {
-            return context.getDestination();
-        }
-
-        public void setDestination(ServerLevel level, Vec3 location, Direction direction) {
-            context.setDestination(new TeleportDestination(level, location, direction));
-        }
-
         public void addAdditionalEntity(Entity additionalEntity) {
             context.addAdditionalEntity(additionalEntity);
         }

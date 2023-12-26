@@ -25,13 +25,14 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
             }
         }
 
-        final var modifier = configuredModifier.modifier();
-        final var parameters = configuredModifier.parameters();
-        var requirement = (T) requirements.get(modifier.getRequirementType());
-        if (requirement == null) {
-            requirement = WarpModifierRegistry.<T>getRequirementType(modifier.getRequirementType()).createInstance();
+        final var requirement = configuredModifier.requirement();
+        final var modifier = requirement.modifier();
+        final var parameters = requirement.parameters();
+        var existing = (T) requirements.get(modifier.getRequirementType());
+        if (existing == null) {
+            existing = WarpModifierRegistry.<T>getRequirementType(modifier.getRequirementType()).createInstance();
         }
-        requirements.put(modifier.getRequirementType(), modifier.apply(requirement, this, parameters));
+        requirements.put(modifier.getRequirementType(), modifier.apply(existing, this, parameters));
     }
 
     public float getContextValue(ResourceLocation id) {
@@ -53,6 +54,6 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         } else if (requirements.size() == 1) {
             return requirements.values().iterator().next();
         }
-        return new CombinedWarpRequirement(requirements.values());
+        return new CombinedRequirement(requirements.values());
     }
 }

@@ -3,7 +3,6 @@ package net.blay09.mods.waystones.core;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -44,13 +42,13 @@ public class WaystoneTeleportManager {
     }
 
     public static List<Entity> doTeleport(WaystoneTeleportContext context) {
-        List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context);
-        context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context)));
+        final var sourceLevel = (ServerLevel) context.getEntity().level();
+        final var destination = context.getTargetWaystone().resolveDestination(sourceLevel);
 
-        ServerLevel sourceWorld = (ServerLevel) context.getEntity().level();
+        List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context, destination);
+        context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context, destination)));
+
         BlockPos sourcePos = context.getEntity().blockPosition();
-
-        final var destination = context.getDestination();
         final var targetLevel = (ServerLevel) destination.level();
         final var targetPos = BlockPos.containing(destination.location());
 
@@ -60,22 +58,21 @@ public class WaystoneTeleportManager {
         }
 
         if (context.playsSound()) {
-            sourceWorld.playSound(context.getEntity(), sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
+            sourceLevel.playSound(context.getEntity(), sourcePos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.01f, 1f);
             targetLevel.playSound(null, targetPos, SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.05f, 1f);
         }
 
         if (context.playsEffect()) {
-            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceWorld, sourcePos, new TeleportEffectMessage(sourcePos)));
+            teleportedEntities.forEach(additionalEntity -> Balm.getNetworking().sendToTracking(sourceLevel, sourcePos, new TeleportEffectMessage(sourcePos)));
             Balm.getNetworking().sendToTracking(targetLevel, targetPos, new TeleportEffectMessage(targetPos));
         }
 
         return teleportedEntities;
     }
 
-    private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context) {
+    private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination) {
         final var teleportedEntities = new ArrayList<Entity>();
 
-        final var destination = context.getDestination();
         final var targetLevel = (ServerLevel) destination.level();
         final var targetLocation = destination.location();
         final var targetDirection = destination.direction();

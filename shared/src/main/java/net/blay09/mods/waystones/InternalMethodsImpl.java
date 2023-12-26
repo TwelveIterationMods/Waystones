@@ -11,7 +11,7 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.requirement.NoRequirement;
+import net.blay09.mods.waystones.requirement.RequirementModifierParser;
 import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
 import net.blay09.mods.waystones.requirement.WarpModifierRegistry;
 import net.blay09.mods.waystones.item.ModItems;
@@ -67,14 +67,17 @@ public class InternalMethodsImpl implements InternalMethods {
             return Either.right(new WaystoneTeleportError.MissingWaystone(waystone));
         }
 
-        return Either.left(new WaystoneTeleportContextImpl(entity, waystone, waystone.resolveDestination(targetLevel)));
+        return Either.left(new WaystoneTeleportContextImpl(entity, waystone));
+    }
+
+    @Override
+    public WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone) {
+        return new WaystoneTeleportContextImpl(entity, waystone);
     }
 
     @Override
     public WaystoneTeleportContext createUnboundTeleportContext(Entity entity) {
-        return new WaystoneTeleportContextImpl(entity,
-                InvalidWaystone.INSTANCE,
-                new TeleportDestination(entity.level(), entity.position(), entity.getDirection()));
+        return new WaystoneTeleportContextImpl(entity, InvalidWaystone.INSTANCE);
     }
 
     @Override
@@ -153,8 +156,8 @@ public class InternalMethodsImpl implements InternalMethods {
         final var requirementsContext = new WarpRequirementsContextImpl(context);
         final var configuredModifiers = WaystonesConfig.getActive().teleports.warpRequirements;
         for (final var modifier : configuredModifiers) {
-            WarpModifierRegistry.deserializeModifier(modifier)
-                    .filter(configuredModifier -> configuredModifier.modifier().isEnabled())
+            RequirementModifierParser.parse(modifier)
+                    .filter(configuredModifier -> configuredModifier.requirement().modifier().isEnabled())
                     .ifPresent(requirementsContext::apply);
         }
 
@@ -167,7 +170,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier) {
+    public void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier) {
         WarpModifierRegistry.register(requirementModifier);
     }
 
@@ -177,7 +180,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public void registerConditionResolver(ConditionResolver conditionResolver) {
+    public void registerConditionResolver(ConditionResolver<?> conditionResolver) {
         WarpModifierRegistry.register(conditionResolver);
     }
 

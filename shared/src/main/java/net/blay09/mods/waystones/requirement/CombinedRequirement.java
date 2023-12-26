@@ -7,11 +7,11 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Collection;
 import java.util.List;
 
-public class CombinedWarpRequirement implements WarpRequirement {
+public class CombinedRequirement implements WarpRequirement {
 
     private final Collection<WarpRequirement> warpRequirements;
 
-    public CombinedWarpRequirement(Collection<WarpRequirement> warpRequirements) {
+    public CombinedRequirement(Collection<WarpRequirement> warpRequirements) {
         this.warpRequirements = warpRequirements;
     }
 

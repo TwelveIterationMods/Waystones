@@ -33,7 +33,7 @@ public class ExperiencePointsRequirement implements WarpRequirement {
 
     @Override
     public int getNumericalValue(Player player) {
-        return calculateLevelCostFromExperiencePoints(player.experienceLevel, points);
+        return points > 0 ? Math.max(1, calculateLevelCostFromExperiencePoints(player.experienceLevel, points)) : 0;
     }
 
     @Override

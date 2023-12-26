@@ -22,6 +22,8 @@ public interface InternalMethods {
 
     Either<WaystoneTeleportContext, WaystoneTeleportError> createCustomTeleportContext(Entity entity, Waystone waystone);
 
+    WaystoneTeleportContext createUnboundTeleportContext(Entity entity, Waystone waystone);
+
     WaystoneTeleportContext createUnboundTeleportContext(Entity entity);
 
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
@@ -50,11 +52,11 @@ public interface InternalMethods {
 
     void registerRequirementType(RequirementType<?> requirementType);
 
-    void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier);
+    void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier);
 
     void registerVariableResolver(VariableResolver variableResolver);
 
-    void registerConditionResolver(ConditionResolver conditionResolver);
+    void registerConditionResolver(ConditionResolver<?> conditionResolver);
 
     void registerParameterSerializer(ParameterSerializer<?> parameterSerializer);
 }
