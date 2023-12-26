@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.compat;
 
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -13,7 +14,7 @@ public class RepurposedStructuresIntegration {
             new ResourceLocation("repurposed_structures", "json_conditions"), "waystones");
 
     public static final DeferredHolder<Supplier<Boolean>, Supplier<Boolean>> WAYSTONE_CONFIG_CONDITION = RS_CONDITIONS_REGISTRY.register(
-            "config", () -> () -> WaystonesConfig.getActive().worldGen.spawnInVillages || WaystonesConfig.getActive().worldGen.forceSpawnInVillages);
+            "config", () -> () -> WaystonesConfig.getActive().worldGen.spawnInVillages != WaystonesConfigData.VillageWaystoneGeneration.DISABLED);
 
     public RepurposedStructuresIntegration() {
         final var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
