@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +38,7 @@ public class WaystonesConfigData implements BalmConfigData {
         @Synced
         @Comment("List of waystone origins that should prevent others from editing. PLAYER is special in that it allows only edits by the owner of the waystone.")
         @ExpectedType(WaystoneOrigin.class)
-        public Set<WaystoneOrigin> restrictEdits = Set.of(WaystoneOrigin.PLAYER);
+        public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
         @Comment("Add GLOBAL to allow every player to create global waystones.")
@@ -129,18 +128,18 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class WorldGen {
         @Comment("Set to 'DEFAULT' to only generate the normally textured waystones. Set to 'MOSSY' or 'SANDY' to generate all as that variant. Set to 'BIOME' to make the style depend on the biome it is generated in.")
-        public WorldGenStyle worldGenStyle = WorldGenStyle.BIOME;
+        public WorldGenStyle wildWaystoneStyle = WorldGenStyle.BIOME;
 
-        @Comment("Approximate chunk distance between waystones generated freely in world generation. Set to 0 to disable generation.")
-        public int chunksBetweenWaystones = 25;
+        @Comment("Approximate chunk distance between wild waystones being generated. Set to 0 to disable generation.")
+        public int chunksBetweenWildWaystones = 25;
 
-        @Comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
+        @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList are used.")
         @ExpectedType(String.class)
-        public Set<ResourceLocation> dimensionAllowList = Set.of(new ResourceLocation("overworld"), new ResourceLocation("the_nether"), new ResourceLocation("the_end"));
+        public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(new ResourceLocation("overworld"), new ResourceLocation("the_nether"), new ResourceLocation("the_end"));
 
-        @Comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
+        @Comment("List of dimensions that wild waystones are not allowed to spawn in. Only used if wildWaystonesDimensionAllowList is empty.")
         @ExpectedType(String.class)
-        public Set<ResourceLocation> dimensionDenyList = Set.of();
+        public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;

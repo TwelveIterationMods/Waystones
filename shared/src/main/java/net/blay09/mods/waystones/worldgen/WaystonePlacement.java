@@ -66,14 +66,14 @@ public class WaystonePlacement extends PlacementModifier {
     }
 
     private boolean isWaystoneChunk(PlacementContext world, BlockPos pos) {
-        final int chunkDistance = WaystonesConfig.getActive().worldGen.chunksBetweenWaystones;
+        final int chunkDistance = WaystonesConfig.getActive().worldGen.chunksBetweenWildWaystones;
         if (chunkDistance == 0) {
             return false;
         }
 
         ResourceLocation dimension = world.getLevel().getLevel().dimension().location();
-        final var dimensionAllowList = WaystonesConfig.getActive().worldGen.dimensionAllowList;
-        final var dimensionDenyList = WaystonesConfig.getActive().worldGen.dimensionDenyList;
+        final var dimensionAllowList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionAllowList;
+        final var dimensionDenyList = WaystonesConfig.getActive().worldGen.wildWaystonesDimensionDenyList;
         if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension)) {
             return false;
         } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension)) {

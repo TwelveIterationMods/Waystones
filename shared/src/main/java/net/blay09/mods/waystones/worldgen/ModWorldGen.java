@@ -103,7 +103,7 @@ public class ModWorldGen {
     }
 
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
-        WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGen.worldGenStyle;
+        WorldGenStyle worldGenStyle = WaystonesConfig.getActive().worldGen.wildWaystoneStyle;
         return switch (worldGenStyle) {
             case MOSSY -> mossyWaystone;
             case SANDY -> sandyWaystone;

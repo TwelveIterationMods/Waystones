@@ -23,11 +23,11 @@ public class WaystonePermissionManager {
         }
 
         final var config = WaystonesConfig.getActive();
-        if (waystone.hasOwner() && config.general.restrictEdits.contains(WaystoneOrigin.PLAYER) && !waystone.isOwner(player)) {
+        if (waystone.hasOwner() && config.general.restrictedWaystones.contains(WaystoneOrigin.PLAYER) && !waystone.isOwner(player)) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
-        if (waystone.getOrigin() != WaystoneOrigin.PLAYER && config.general.restrictEdits.contains(waystone.getOrigin())) {
+        if (waystone.getOrigin() != WaystoneOrigin.PLAYER && config.general.restrictedWaystones.contains(waystone.getOrigin())) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
