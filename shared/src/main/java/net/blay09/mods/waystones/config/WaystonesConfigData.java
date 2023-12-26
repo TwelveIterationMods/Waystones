@@ -60,11 +60,11 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Teleports {
         @Synced
-        @Comment("Set to false to simply disable all xp costs. See warpConfig for more fine-grained control.")
+        @Comment("Set to false to simply disable all xp costs. See warpRequirements for more fine-grained control.")
         public boolean enableCosts = true;
 
         @Synced
-        @Comment("Set to false to simply disable all cooldowns. See warpConfig for more fine-grained control.")
+        @Comment("Set to false to simply disable all cooldowns. See warpRequirements for more fine-grained control.")
         public boolean enableCooldowns = true;
 
         @Synced
@@ -87,7 +87,7 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
         public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
-        @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates")
+        @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
         @ExpectedType(String.class)
         public Set<ResourceLocation> entityDenyList = Set.of(new ResourceLocation("wither"));
 
@@ -113,19 +113,19 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("Set to 'NONE' for no inventory button. Set to 'NEAREST' for an inventory button that teleports to the nearest waystone. Set to 'ANY' for an inventory button that opens the waystone selection menu. Set to a waystone name for an inventory button that teleports to a specifically named waystone.")
         public String inventoryButton = "";
 
-        @Comment("The x position of the warp button in the inventory.")
+        @Comment("The x position of the inventory button in the inventory.")
         @Synced
         public int inventoryButtonX = 58;
 
-        @Comment("The y position of the warp button in the inventory.")
+        @Comment("The y position of the inventory button in the inventory.")
         @Synced
         public int inventoryButtonY = 60;
 
-        @Comment("The y position of the warp button in the creative menu.")
+        @Comment("The y position of the inventory button in the creative menu.")
         @Synced
         public int creativeInventoryButtonX = 88;
 
-        @Comment("The y position of the warp button in the creative menu.")
+        @Comment("The y position of the inventory button in the creative menu.")
         @Synced
         public int creativeInventoryButtonY = 33;
     }
@@ -145,7 +145,7 @@ public class WaystonesConfigData implements BalmConfigData {
         @ExpectedType(String.class)
         public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
 
-        @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
+        @Comment("Set to 'PRESET_FIRST' to first use names from the nameGenerationPresets. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
 
         @Comment("The template to use when generating new names. Supported placeholders are {Biome} (english biome name) and {MrPork} (the default name generator).")
