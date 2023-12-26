@@ -36,7 +36,7 @@ public class RequirementModifierParser {
         while (conditionMatcher.find()) {
             final var conditionId = waystonesResourceLocation(conditionMatcher.group(1));
             final var args = conditionMatcher.group(2);
-            final var conditionResolver = WarpModifierRegistry.getConditionResolver(conditionId);
+            final var conditionResolver = RequirementRegistry.getConditionResolver(conditionId);
             conditions.add(parseCondition(conditionResolver, args != null ? args : ""));
         }
 
@@ -55,7 +55,7 @@ public class RequirementModifierParser {
         if (functionMatcher.find()) {
             final var requirementId = waystonesResourceLocation(functionMatcher.group(1));
             final var args = functionMatcher.group(2);
-            final var requirement = WarpModifierRegistry.getRequirementFunction(requirementId);
+            final var requirement = RequirementRegistry.getRequirementFunction(requirementId);
             return parseRequirement(requirement, args != null ? args : "");
         } else {
             throw new IllegalArgumentException("Invalid format for requirement modifier: " + functionPart);
@@ -75,7 +75,7 @@ public class RequirementModifierParser {
     }
 
     public static <T> T deserializeParameter(Class<T> type, String value) {
-        final var serializer = WarpModifierRegistry.getParameterSerializer(type);
+        final var serializer = RequirementRegistry.getParameterSerializer(type);
         if (serializer == null) {
             throw new IllegalArgumentException("No serializer registered for type " + type);
         }

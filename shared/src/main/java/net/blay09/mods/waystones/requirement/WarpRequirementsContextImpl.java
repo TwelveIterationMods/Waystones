@@ -30,13 +30,13 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         final var parameters = requirement.parameters();
         var existing = (T) requirements.get(modifier.getRequirementType());
         if (existing == null) {
-            existing = WarpModifierRegistry.<T>getRequirementType(modifier.getRequirementType()).createInstance();
+            existing = RequirementRegistry.<T>getRequirementType(modifier.getRequirementType()).createInstance();
         }
         requirements.put(modifier.getRequirementType(), modifier.apply(existing, this, parameters));
     }
 
     public float getContextValue(ResourceLocation id) {
-        final var resolver = WarpModifierRegistry.getVariableResolver(id);
+        final var resolver = RequirementRegistry.getVariableResolver(id);
         if (resolver != null) {
             return resolver.resolve(context);
         }

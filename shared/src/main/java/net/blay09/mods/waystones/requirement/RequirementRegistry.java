@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class WarpModifierRegistry {
+public class RequirementRegistry {
 
     private static final Map<ResourceLocation, RequirementType<?>> requirementTypes = new HashMap<>();
     private static final Map<ResourceLocation, RequirementFunction<?, ?>> requirementFunctions = new HashMap<>();

@@ -13,7 +13,7 @@ import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.requirement.RequirementModifierParser;
 import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
-import net.blay09.mods.waystones.requirement.WarpModifierRegistry;
+import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -166,26 +166,26 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public void registerRequirementType(RequirementType<?> requirementType) {
-        WarpModifierRegistry.register(requirementType);
+        RequirementRegistry.register(requirementType);
     }
 
     @Override
     public void registerRequirementModifier(RequirementFunction<?, ?> requirementModifier) {
-        WarpModifierRegistry.register(requirementModifier);
+        RequirementRegistry.register(requirementModifier);
     }
 
     @Override
     public void registerVariableResolver(VariableResolver variableResolver) {
-        WarpModifierRegistry.register(variableResolver);
+        RequirementRegistry.register(variableResolver);
     }
 
     @Override
     public void registerConditionResolver(ConditionResolver<?> conditionResolver) {
-        WarpModifierRegistry.register(conditionResolver);
+        RequirementRegistry.register(conditionResolver);
     }
 
     @Override
     public void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
-        WarpModifierRegistry.register(parameterSerializer);
+        RequirementRegistry.register(parameterSerializer);
     }
 }

@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.command.ModCommands;
 import net.blay09.mods.waystones.config.WaystonesConfig;
-import net.blay09.mods.waystones.requirement.WarpModifierRegistry;
+import net.blay09.mods.waystones.requirement.RequirementRegistry;
 import net.blay09.mods.waystones.handler.ModEventHandlers;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -25,7 +25,7 @@ public class Waystones {
 
     public static void initialize() {
         WaystonesAPI.__internalMethods = new InternalMethodsImpl();
-        WarpModifierRegistry.registerDefaults();
+        RequirementRegistry.registerDefaults();
 
         WaystonesConfig.initialize();
         ModStats.initialize();
