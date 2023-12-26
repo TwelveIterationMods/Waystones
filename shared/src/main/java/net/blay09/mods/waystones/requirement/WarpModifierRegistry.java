@@ -10,8 +10,6 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.resources.ResourceLocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -39,13 +37,16 @@ public class WarpModifierRegistry {
     public record IdParameter(ResourceLocation value) {
     }
 
-    public record VariableScaledParameter(IdParameter id, FloatParameter scale) {
+    public record WaystonesIdParameter(ResourceLocation value) {
     }
 
-    public record CooldownParameter(IdParameter id, FloatParameter seconds) {
+    public record VariableScaledParameter(WaystonesIdParameter id, FloatParameter scale) {
     }
 
-    public record VariableScaledCooldownParameter(IdParameter variable, IdParameter cooldown, FloatParameter seconds) {
+    public record CooldownParameter(WaystonesIdParameter id, FloatParameter seconds) {
+    }
+
+    public record VariableScaledCooldownParameter(WaystonesIdParameter variable, WaystonesIdParameter cooldown, FloatParameter seconds) {
     }
 
     public static void registerDefaults() {
@@ -127,10 +128,13 @@ public class WarpModifierRegistry {
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
 
+        registerModifier("refuse", createDefaultType("refuse", RefuseRequirement.class), NoParameter.class, (cost, context, parameters) -> cost, () -> true);
+
         registerSerializer(NoParameter.class, it -> NoParameter.INSTANCE);
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
-        registerSerializer(IdParameter.class, it -> new IdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
+        registerSerializer(IdParameter.class, it -> new IdParameter(new ResourceLocation(it)));
+        registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(CooldownParameter.class);
         registerDefaultSerializer(VariableScaledCooldownParameter.class);
@@ -171,10 +175,45 @@ public class WarpModifierRegistry {
         registerConditionResolver("is_with_leashed",
                 NoParameter.class,
                 (context, parameters) -> !WaystoneTeleportManager.findLeashedAnimals(context.getEntity()).isEmpty());
+        registerConditionResolver("source_is_dimension",
+                IdParameter.class,
+                (context, parameters) -> context.getFromWaystone()
+                        .map(waystone -> waystone.getDimension().location())
+                        .orElseGet(() -> context.getEntity().level().dimension().location())
+                        .equals(parameters.value));
+        registerConditionResolver("target_is_dimension",
+                IdParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getDimension().location().equals(parameters.value));
+        registerConditionResolver("involves_dimension",
+                IdParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getDimension().location().equals(parameters.value) || context.getFromWaystone()
+                        .map(waystone -> waystone.getDimension().location())
+                        .orElseGet(() -> context.getEntity().level().dimension().location())
+                        .equals(parameters.value));
 
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
         registerVariableResolver("pets", it -> (float) WaystoneTeleportManager.findPets(it.getEntity()).size());
+    }
+
+    private static <T extends WarpRequirement> RequirementType<T> createDefaultType(String name, Class<T> requirementClass) {
+        final var requirementType = new RequirementType<T>() {
+            @Override
+            public ResourceLocation getId() {
+                return new ResourceLocation(Waystones.MOD_ID, name);
+            }
+
+            @Override
+            public T createInstance() {
+                try {
+                    return requirementClass.getConstructor().newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        register(requirementType);
+        return requirementType;
     }
 
     public static void register(RequirementType<?> requirementType) {
