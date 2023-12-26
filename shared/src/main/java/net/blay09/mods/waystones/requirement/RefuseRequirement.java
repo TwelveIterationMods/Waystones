@@ -7,6 +7,16 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 public class RefuseRequirement implements WarpRequirement {
+
+    private Component message = Component.empty();
+
+    public RefuseRequirement() {
+    }
+
+    public RefuseRequirement(Component message) {
+        this.message = message;
+    }
+
     @Override
     public boolean canAfford(Player player) {
         return false;
@@ -27,5 +37,14 @@ public class RefuseRequirement implements WarpRequirement {
 
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
+        tooltip.add(message);
+    }
+
+    public void setMessage(Component message) {
+        this.message = message;
+    }
+
+    public Component getMessage() {
+        return message;
     }
 }

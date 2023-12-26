@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -40,6 +41,9 @@ public class RequirementRegistry {
     }
 
     public record WaystonesIdParameter(ResourceLocation value) {
+    }
+
+    public record ComponentParameter(Component value) {
     }
 
     public record VariableScaledParameter(WaystonesIdParameter id, FloatParameter scale) {
@@ -189,13 +193,17 @@ public class RequirementRegistry {
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
 
-        registerModifier("refuse", createDefaultType("refuse", RefuseRequirement.class), NoParameter.class, (cost, context, parameters) -> cost, () -> true);
+        registerModifier("refuse", createDefaultType("refuse", RefuseRequirement.class), ComponentParameter.class, (cost, context, parameters) -> {
+            cost.setMessage(parameters.value);
+            return cost;
+        }, () -> true);
 
         registerSerializer(NoParameter.class, it -> NoParameter.INSTANCE);
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
         registerSerializer(IdParameter.class, it -> new IdParameter(new ResourceLocation(it)));
         registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
+        registerSerializer(ComponentParameter.class, it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(CooldownParameter.class);
         registerDefaultSerializer(VariableScaledCooldownParameter.class);
@@ -253,6 +261,10 @@ public class RequirementRegistry {
                         .map(waystone -> waystone.getDimension().location())
                         .orElseGet(() -> context.getEntity().level().dimension().location())
                         .equals(parameters.value));
+        registerConditionResolver("is_within_distance",
+                FloatParameter.class,
+                (context, parameters) -> (float) Math.sqrt(context.getEntity()
+                        .distanceToSqr(context.getTargetWaystone().getPos().getCenter())) <= parameters.value);
 
         registerVariableResolver("distance", it -> (float) Math.sqrt(it.getEntity().distanceToSqr(it.getTargetWaystone().getPos().getCenter())));
         registerVariableResolver("leashed", it -> (float) WaystoneTeleportManager.findLeashedAnimals(it.getEntity()).size());
