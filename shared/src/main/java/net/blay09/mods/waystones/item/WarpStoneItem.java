@@ -43,7 +43,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return WaystonesConfig.getActive().cooldowns.warpStoneUseTime;
+        return WaystonesConfig.getActive().general.warpStoneUseTime;
     }
 
     @Override

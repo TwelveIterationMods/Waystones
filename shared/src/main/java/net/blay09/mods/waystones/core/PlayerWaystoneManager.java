@@ -71,15 +71,15 @@ public class PlayerWaystoneManager {
     public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
         ResourceLocation fromDimension = player.level().dimension().location();
         ResourceLocation toDimension = waystone.getDimension().location();
-        Collection<String> dimensionAllowList = WaystonesConfig.getActive().restrictions.dimensionalWarpAllowList;
-        Collection<String> dimensionDenyList = WaystonesConfig.getActive().restrictions.dimensionalWarpDenyList;
+        Collection<String> dimensionAllowList = WaystonesConfig.getActive().teleports.dimensionalWarpAllowList;
+        Collection<String> dimensionDenyList = WaystonesConfig.getActive().teleports.dimensionalWarpDenyList;
         if (!dimensionAllowList.isEmpty() && (!dimensionAllowList.contains(toDimension.toString()) || !dimensionAllowList.contains(fromDimension.toString()))) {
             return false;
         } else if (!dimensionDenyList.isEmpty() && (dimensionDenyList.contains(toDimension.toString()) || dimensionDenyList.contains(fromDimension.toString()))) {
             return false;
         }
 
-        DimensionalWarp dimensionalWarpMode = WaystonesConfig.getActive().restrictions.dimensionalWarp;
+        DimensionalWarp dimensionalWarpMode = WaystonesConfig.getActive().teleports.dimensionalWarp;
         return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.getVisibility() == WaystoneVisibility.GLOBAL;
     }
 

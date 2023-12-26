@@ -21,11 +21,11 @@ public class WaystonePermissionManager {
         }
 
         final var config = WaystonesConfig.getActive();
-        if (waystone.hasOwner() && config.restrictions.restrictEdits.contains(WaystoneOrigin.PLAYER) && !waystone.isOwner(player)) {
+        if (waystone.hasOwner() && config.general.restrictEdits.contains(WaystoneOrigin.PLAYER) && !waystone.isOwner(player)) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
-        if (waystone.getOrigin() != WaystoneOrigin.PLAYER && config.restrictions.restrictEdits.contains(waystone.getOrigin())) {
+        if (waystone.getOrigin() != WaystoneOrigin.PLAYER && config.general.restrictEdits.contains(waystone.getOrigin())) {
             return Optional.of(new WaystoneEditError.NotOwner());
         }
 
@@ -38,7 +38,7 @@ public class WaystonePermissionManager {
 
     public static boolean isAllowedVisibility(WaystoneVisibility visibility) {
         final var config = WaystonesConfig.getActive();
-        return DEFAULT_VISIBILITIES.contains(visibility) || config.restrictions.allowedVisibilities.contains(visibility);
+        return DEFAULT_VISIBILITIES.contains(visibility) || config.general.allowedVisibilities.contains(visibility);
     }
 
     public static boolean skipsPermissions(Player player) {

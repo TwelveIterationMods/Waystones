@@ -26,15 +26,39 @@ public class WaystonesConfigData implements BalmConfigData {
         FREQUENT
     }
 
-    public Costs costs = new Costs();
-    public Restrictions restrictions = new Restrictions();
-    public Cooldowns cooldowns = new Cooldowns();
+    public General general = new General();
+    public Teleports teleports = new Teleports();
     public InventoryButton inventoryButton = new InventoryButton();
     public WorldGen worldGen = new WorldGen();
     public Client client = new Client();
     public Compatibility compatibility = new Compatibility();
 
-    public static class Costs {
+    public static class General {
+
+        @Synced
+        @Comment("List of waystone origins that should prevent others from editing. PLAYER is special in that it allows only edits by the owner of the waystone.")
+        @ExpectedType(WaystoneOrigin.class)
+        public Set<WaystoneOrigin> restrictEdits = Set.of(WaystoneOrigin.PLAYER);
+
+        @Synced
+        @Comment("Add GLOBAL to allow every player to create global waystones.")
+        @ExpectedType(WaystoneVisibility.class)
+        public Set<WaystoneVisibility> allowedVisibilities = Set.of();
+
+        @Synced
+        @Comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
+        public int warpStoneUseTime = 32;
+
+        @Synced
+        @Comment("The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.")
+        public int warpPlateUseTime = 15;
+
+        @Synced
+        @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
+        public int scrollUseTime = 32;
+    }
+
+    public static class Teleports {
         @Synced
         @Comment("Set to false to simply disable all xp costs.")
         public boolean enableCosts = true;
@@ -50,13 +74,6 @@ public class WaystonesConfigData implements BalmConfigData {
                 "min_xp(0)",
                 "max_xp(27)",
                 "[source_is_inventory_button] add_cooldown(inventory_button, 300)");
-    }
-
-    public static class Restrictions {
-        @Synced
-        @Comment("List of waystone origins that should prevent others from editing. PLAYER is special in that it allows only edits by the owner of the waystone.")
-        @ExpectedType(WaystoneOrigin.class)
-        public Set<WaystoneOrigin> restrictEdits = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
@@ -85,24 +102,6 @@ public class WaystonesConfigData implements BalmConfigData {
         @Deprecated(forRemoval = true)
         public List<String> dimensionalWarpDenyList = new ArrayList<>();
 
-        @Synced
-        @Comment("Add GLOBAL to allow every player to create global waystones.")
-        @ExpectedType(WaystoneVisibility.class)
-        public Set<WaystoneVisibility> allowedVisibilities = Set.of();
-    }
-
-    public static class Cooldowns {
-        @Synced
-        @Comment("The time in ticks that it takes to use a warp stone. This is the charge-up time when holding right-click.")
-        public int warpStoneUseTime = 32;
-
-        @Synced
-        @Comment("The time in ticks that it takes to use a warp plate. This is the time the player has to stand on top for.")
-        public int warpPlateUseTime = 15;
-
-        @Synced
-        @Comment("The time in ticks it takes to use a scroll. This is the charge-up time when holding right-click.")
-        public int scrollUseTime = 32;
     }
 
     public static class InventoryButton {

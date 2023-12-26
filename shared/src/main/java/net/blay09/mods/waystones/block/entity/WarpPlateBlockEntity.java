@@ -205,7 +205,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             }
         }
 
-        int configuredUseTime = WaystonesConfig.getActive().cooldowns.warpPlateUseTime;
+        int configuredUseTime = WaystonesConfig.getActive().general.warpPlateUseTime;
         return Mth.clamp((int) (configuredUseTime * useTimeMultiplier), 1, configuredUseTime * 2);
     }
 

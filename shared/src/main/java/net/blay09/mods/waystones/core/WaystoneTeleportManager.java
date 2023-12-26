@@ -202,16 +202,16 @@ public class WaystoneTeleportManager {
         }
 
         if (!context.getLeashedEntities().isEmpty()) {
-            if (WaystonesConfig.getActive().restrictions.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
+            if (WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
-            List<ResourceLocation> forbidden = WaystonesConfig.getActive().restrictions.leashedDenyList.stream().map(ResourceLocation::new).toList();
+            List<ResourceLocation> forbidden = WaystonesConfig.getActive().teleports.leashedDenyList.stream().map(ResourceLocation::new).toList();
             if (context.getLeashedEntities().stream().anyMatch(e -> forbidden.contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType())))) {
                 return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied());
             }
 
-            if (context.isDimensionalTeleport() && WaystonesConfig.getActive().restrictions.transportLeashed == WaystonesConfigData.TransportMobs.SAME_DIMENSION) {
+            if (context.isDimensionalTeleport() && WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.SAME_DIMENSION) {
                 return Either.right(new WaystoneTeleportError.LeashedDimensionalWarpDenied());
             }
         }

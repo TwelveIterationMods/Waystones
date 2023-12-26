@@ -37,7 +37,7 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Either<WaystoneTeleportContext, WaystoneTeleportError> createDefaultTeleportContext(Entity entity, Waystone waystone, Consumer<WaystoneTeleportContext> init) {
         return WaystonesAPI.createCustomTeleportContext(entity, waystone).ifLeft(context -> {
-            final var shouldTransportPets = WaystonesConfig.getActive().restrictions.transportPets;
+            final var shouldTransportPets = WaystonesConfig.getActive().teleports.transportPets;
             if (shouldTransportPets == WaystonesConfigData.TransportMobs.ENABLED || (shouldTransportPets == WaystonesConfigData.TransportMobs.SAME_DIMENSION && !context.isDimensionalTeleport())) {
                 context.getAdditionalEntities().addAll(WaystoneTeleportManager.findPets(entity));
             }
@@ -150,12 +150,12 @@ public class InternalMethodsImpl implements InternalMethods {
 
     @Override
     public Cost calculateCost(WaystoneTeleportContext context) {
-        if (!WaystonesConfig.getActive().costs.enableCosts) {
+        if (!WaystonesConfig.getActive().teleports.enableCosts) {
             return NoCost.INSTANCE;
         }
 
         final var costContext = new CostContextImpl(context);
-        final var configuredModifiers = WaystonesConfig.getActive().costs.costModifiers;
+        final var configuredModifiers = WaystonesConfig.getActive().teleports.costModifiers;
         for (final var modifier : configuredModifiers) {
             CostRegistry.deserializeModifier(modifier).ifPresent(costContext::apply);
         }
