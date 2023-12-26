@@ -55,7 +55,7 @@ public class TheOneProbeIntegration {
                 Waystone waystone = ((WaystoneBlockEntityBase) tileEntity).getWaystone();
                 boolean isActivated = !waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE) || PlayerWaystoneManager.isWaystoneActivated(player, waystone);
                 if (isActivated && waystone.hasName() && waystone.isValid()) {
-                    info.text(Component.literal(waystone.getName()));
+                    info.text(waystone.getName());
                 } else {
                     info.text(Component.translatable("tooltip.waystones.undiscovered"));
                 }
