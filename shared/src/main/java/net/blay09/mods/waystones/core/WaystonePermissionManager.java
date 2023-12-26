@@ -5,6 +5,8 @@ import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -43,5 +45,10 @@ public class WaystonePermissionManager {
 
     public static boolean skipsPermissions(Player player) {
         return player.getAbilities().instabuild;
+    }
+
+    public static boolean isEntityDeniedTeleports(Entity entity) {
+        final var deniedEntities = WaystonesConfig.getActive().teleports.entityDenyList;
+        return deniedEntities.contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
     }
 }

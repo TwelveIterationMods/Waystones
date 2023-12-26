@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,9 +84,9 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
         public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
-        @Comment("List of leashed mobs that cannot be taken with you when teleporting")
+        @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates")
         @ExpectedType(String.class)
-        public List<String> leashedDenyList = List.of("minecraft:wither");
+        public Set<ResourceLocation> entityDenyList = Set.of(new ResourceLocation("wither"));
 
         @Synced
         @Comment("Set to 'ALLOW' to allow dimensional warp in general. Set to 'GLOBAL_ONLY' to restrict dimensional warp to global waystones. Set to 'DENY' to disallow all dimensional warps.")

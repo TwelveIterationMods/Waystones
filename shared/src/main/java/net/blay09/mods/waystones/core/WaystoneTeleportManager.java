@@ -12,9 +12,7 @@ import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -35,7 +33,7 @@ public class WaystoneTeleportManager {
 
     public static Collection<? extends Entity> findPets(Entity entity) {
         return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
-                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit()
+                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
         );
     }
 
@@ -206,9 +204,10 @@ public class WaystoneTeleportManager {
                 return Either.right(new WaystoneTeleportError.LeashedWarpDenied());
             }
 
-            List<ResourceLocation> forbidden = WaystonesConfig.getActive().teleports.leashedDenyList.stream().map(ResourceLocation::new).toList();
-            if (context.getLeashedEntities().stream().anyMatch(e -> forbidden.contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType())))) {
-                return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied());
+            for (final var leashedEntity : context.getLeashedEntities()) {
+                if(WaystonePermissionManager.isEntityDeniedTeleports(leashedEntity)) {
+                    return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied(leashedEntity));
+                }
             }
 
             if (context.isDimensionalTeleport() && WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.SAME_DIMENSION) {

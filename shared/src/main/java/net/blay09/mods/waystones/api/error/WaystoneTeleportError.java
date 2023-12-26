@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.api.error;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,8 +79,15 @@ public class WaystoneTeleportError {
     }
 
     public static class SpecificLeashedWarpDenied extends WaystoneTeleportError {
-        public SpecificLeashedWarpDenied() {
+        private final Entity entity;
+
+        public SpecificLeashedWarpDenied(Entity entity) {
             super("chat.waystones.cannot_transport_this_leashed");
+            this.entity = entity;
+        }
+
+        public Entity getEntity() {
+            return entity;
         }
     }
 

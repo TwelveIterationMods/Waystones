@@ -122,7 +122,11 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     }
 
     public void onEntityCollision(Entity entity) {
-        Integer ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
+        if (WaystonePermissionManager.isEntityDeniedTeleports(entity)) {
+            return;
+        }
+
+        final var ticksPassed = ticksPassedPerEntity.putIfAbsent(entity, 0);
         if (ticksPassed == null || ticksPassed != -1) {
             final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
             final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.ACTIVE : WarpPlateBlock.WarpPlateStatus.INVALID;
