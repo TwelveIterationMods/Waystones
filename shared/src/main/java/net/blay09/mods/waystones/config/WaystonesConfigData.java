@@ -60,19 +60,23 @@ public class WaystonesConfigData implements BalmConfigData {
 
     public static class Teleports {
         @Synced
-        @Comment("Set to false to simply disable all xp costs.")
+        @Comment("Set to false to simply disable all xp costs. See warpConfig for more fine-grained control.")
         public boolean enableCosts = true;
 
         @Synced
+        @Comment("Set to false to simply disable all cooldowns. See warpConfig for more fine-grained control.")
+        public boolean enableCooldowns = true;
+
+        @Synced
         @ExpectedType(String.class)
-        @Comment("List of cost modifiers with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
-        public List<String> costModifiers = List.of(
-                "[is_not_interdimensional] scaled_add_xp(distance, 0.01)",
-                "[is_interdimensional] add_xp(27)",
-                "[source_is_warp_plate] multiply_xp(0)",
-                "[target_is_global] multiply_xp(0)",
-                "min_xp(0)",
-                "max_xp(27)",
+        @Comment("List of warp requirements with comma-separated parameters in parentheses. Conditions can be defined as comma-separated list in square brackets. Will be applied in order.")
+        public List<String> warpRequirements = List.of(
+                "[is_not_interdimensional] scaled_add_xp_cost(distance, 0.01)",
+                "[is_interdimensional] add_xp_cost(27)",
+                "[source_is_warp_plate] multiply_xp_cost(0)",
+                "[target_is_global] multiply_xp_cost(0)",
+                "min_xp_cost(0)",
+                "max_xp_cost(27)",
                 "[source_is_inventory_button] add_cooldown(inventory_button, 300)");
 
         @Synced

@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.core;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
@@ -41,15 +41,6 @@ public class WaystoneTeleportManager {
         return player.level().getEntitiesOfClass(Mob.class, new AABB(player.blockPosition()).inflate(10),
                 e -> player.equals(e.getLeashHolder())
         );
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Cost predictExperienceLevelCost(Entity player, Waystone waystone, @Nullable Waystone fromWaystone) {
-        WaystoneTeleportContextImpl context = new WaystoneTeleportContextImpl(player, waystone, null);
-        context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(player));
-        context.setFromWaystone(fromWaystone);
-        context.setDestination(waystone.resolveDestination(player.level()));
-        return WaystonesAPI.calculateCost(context);
     }
 
     public static List<Entity> doTeleport(WaystoneTeleportContext context) {
@@ -215,12 +206,12 @@ public class WaystoneTeleportManager {
             }
         }
 
-        if (entity instanceof Player player && !context.getCost().canAfford(player) && !player.getAbilities().instabuild) {
+        if (entity instanceof Player player && !context.getRequirements().canAfford(player) && !player.getAbilities().instabuild) {
             return Either.right(new WaystoneTeleportError.NotEnoughXp());
         }
 
         if (entity instanceof Player player) {
-            context.getCost().consume(player);
+            context.getRequirements().consume(player);
         }
 
         final var teleportedEntities = doTeleport(context);

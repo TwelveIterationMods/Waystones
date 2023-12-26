@@ -3,7 +3,7 @@ package net.blay09.mods.waystones;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
-import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.block.ModBlocks;
@@ -11,9 +11,9 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.cost.CostContextImpl;
-import net.blay09.mods.waystones.cost.CostRegistry;
-import net.blay09.mods.waystones.cost.NoCost;
+import net.blay09.mods.waystones.requirement.NoRequirement;
+import net.blay09.mods.waystones.requirement.WarpRequirementsContextImpl;
+import net.blay09.mods.waystones.requirement.WarpModifierRegistry;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -43,7 +43,7 @@ public class InternalMethodsImpl implements InternalMethods {
             }
             context.getLeashedEntities().addAll(WaystoneTeleportManager.findLeashedAnimals(entity));
             init.accept(context);
-            context.setCost(calculateCost(context));
+            context.setRequirements(resolveRequirements(context));
         });
     }
 
@@ -149,42 +149,40 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Cost calculateCost(WaystoneTeleportContext context) {
-        if (!WaystonesConfig.getActive().teleports.enableCosts) {
-            return NoCost.INSTANCE;
-        }
-
-        final var costContext = new CostContextImpl(context);
-        final var configuredModifiers = WaystonesConfig.getActive().teleports.costModifiers;
+    public WarpRequirement resolveRequirements(WaystoneTeleportContext context) {
+        final var requirementsContext = new WarpRequirementsContextImpl(context);
+        final var configuredModifiers = WaystonesConfig.getActive().teleports.warpRequirements;
         for (final var modifier : configuredModifiers) {
-            CostRegistry.deserializeModifier(modifier).ifPresent(costContext::apply);
+            WarpModifierRegistry.deserializeModifier(modifier)
+                    .filter(configuredModifier -> configuredModifier.modifier().isEnabled())
+                    .ifPresent(requirementsContext::apply);
         }
 
-        return costContext.resolve();
+        return requirementsContext.resolve();
     }
 
     @Override
-    public void registerCostType(CostType<?> costType) {
-        CostRegistry.register(costType);
+    public void registerRequirementType(RequirementType<?> requirementType) {
+        WarpModifierRegistry.register(requirementType);
     }
 
     @Override
-    public void registerCostModifier(CostModifier<?, ?> costModifier) {
-        CostRegistry.register(costModifier);
+    public void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier) {
+        WarpModifierRegistry.register(requirementModifier);
     }
 
     @Override
-    public void registerCostVariableResolver(CostVariableResolver costVariableResolver) {
-        CostRegistry.register(costVariableResolver);
+    public void registerVariableResolver(VariableResolver variableResolver) {
+        WarpModifierRegistry.register(variableResolver);
     }
 
     @Override
-    public void registerCostConditionPredicate(CostConditionResolver costConditionResolver) {
-        CostRegistry.register(costConditionResolver);
+    public void registerConditionResolver(ConditionResolver conditionResolver) {
+        WarpModifierRegistry.register(conditionResolver);
     }
 
     @Override
-    public void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer) {
-        CostRegistry.register(costParameterSerializer);
+    public void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
+        WarpModifierRegistry.register(parameterSerializer);
     }
 }

@@ -3,8 +3,8 @@ package net.blay09.mods.waystones.core;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
-import net.blay09.mods.waystones.api.cost.Cost;
-import net.blay09.mods.waystones.cost.NoCost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -26,7 +26,7 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
 
     private ItemStack warpItem = ItemStack.EMPTY;
 
-    private Cost cost = NoCost.INSTANCE;
+    private WarpRequirement warpRequirement = NoRequirement.INSTANCE;
 
     private boolean playsSound = true;
     private boolean playsEffect = true;
@@ -103,13 +103,13 @@ public class WaystoneTeleportContextImpl implements WaystoneTeleportContext {
     }
 
     @Override
-    public Cost getCost() {
-        return cost;
+    public WarpRequirement getRequirements() {
+        return warpRequirement;
     }
 
     @Override
-    public WaystoneTeleportContext setCost(Cost cost) {
-        this.cost = cost;
+    public WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement) {
+        this.warpRequirement = warpRequirement;
         return this;
     }
 

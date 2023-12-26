@@ -6,7 +6,7 @@ import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.core.InvalidWaystone;
-import net.blay09.mods.waystones.cost.NoCost;
+import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.client.gui.screen.InventoryButtonReturnConfirmScreen;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneInventoryButton;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
@@ -61,8 +61,8 @@ public class InventoryButtonGuiHandler {
                     PlayerWaystoneManager.resetCooldowns(player);
                 }
 
-                final var cost = WaystonesAPI.calculateCost(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
-                if (cost.canAfford(player)) {
+                final var requirements = WaystonesAPI.resolveRequirements(WaystonesAPI.createUnboundTeleportContext(player).addFlag(TeleportFlags.INVENTORY_BUTTON));
+                if (requirements.canAfford(player)) {
                     if (inventoryButtonMode.hasNamedTarget()) {
                         mc.setScreen(new InventoryButtonReturnConfirmScreen(inventoryButtonMode.getNamedTarget()));
                     } else if (inventoryButtonMode.isReturnToNearest()) {
@@ -101,9 +101,9 @@ public class InventoryButtonGuiHandler {
 
                 long millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, WaystoneCooldowns.INVENTORY_BUTTON);
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
-                final var cost = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
-                        .mapLeft(WaystoneTeleportContext::getCost)
-                        .left().orElse(NoCost.INSTANCE);
+                final var requirements = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.addFlag(TeleportFlags.INVENTORY_BUTTON))
+                        .mapLeft(WaystoneTeleportContext::getRequirements)
+                        .left().orElse(NoRequirement.INSTANCE);
                 int secondsLeft = (int) (millisLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
@@ -128,8 +128,8 @@ public class InventoryButtonGuiHandler {
                     }
                 }
 
-                if (!cost.canAfford(player)) {
-                    cost.appendHoverText(player, tooltip);
+                if (!requirements.canAfford(player)) {
+                    requirements.appendHoverText(player, tooltip);
                 }
 
                 if (secondsLeft > 0) {

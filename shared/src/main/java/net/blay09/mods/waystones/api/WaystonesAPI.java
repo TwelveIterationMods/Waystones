@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -80,28 +80,28 @@ public class WaystonesAPI {
         return __internalMethods.createBoundScroll(waystone);
     }
 
-    public static Cost calculateCost(WaystoneTeleportContext context) {
-        return __internalMethods.calculateCost(context);
+    public static WarpRequirement resolveRequirements(WaystoneTeleportContext context) {
+        return __internalMethods.resolveRequirements(context);
     }
 
-    public static void registerCostType(CostType<?> costType) {
-        __internalMethods.registerCostType(costType);
+    public static void registerRequirementType(RequirementType<?> requirementType) {
+        __internalMethods.registerRequirementType(requirementType);
     }
 
-    public static void registerCostModifier(CostModifier<?, ?> costModifier) {
-        __internalMethods.registerCostModifier(costModifier);
+    public static void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier) {
+        __internalMethods.registerRequirementModifier(requirementModifier);
     }
 
-    public static void registerCostVariableResolver(CostVariableResolver costVariableResolver) {
-        __internalMethods.registerCostVariableResolver(costVariableResolver);
+    public static void registerVariableResolver(VariableResolver variableResolver) {
+        __internalMethods.registerVariableResolver(variableResolver);
     }
 
-    public static void registerCostConditionPredicate(CostConditionResolver costConditionResolver) {
-        __internalMethods.registerCostConditionPredicate(costConditionResolver);
+    public static void registerConditionPredicate(ConditionResolver conditionResolver) {
+        __internalMethods.registerConditionResolver(conditionResolver);
     }
 
-    public static void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer) {
-        __internalMethods.registerCostParameterSerializer(costParameterSerializer);
+    public static void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
+        __internalMethods.registerParameterSerializer(parameterSerializer);
     }
 
 }

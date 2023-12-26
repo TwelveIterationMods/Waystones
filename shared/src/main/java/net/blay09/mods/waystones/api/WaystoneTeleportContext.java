@@ -1,6 +1,6 @@
 package net.blay09.mods.waystones.api;
 
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -36,9 +36,9 @@ public interface WaystoneTeleportContext {
 
     boolean isDimensionalTeleport();
 
-    Cost getCost();
+    WarpRequirement getRequirements();
 
-    WaystoneTeleportContext setCost(Cost cost);
+    WaystoneTeleportContext setRequirements(WarpRequirement warpRequirement);
 
     boolean playsSound();
 

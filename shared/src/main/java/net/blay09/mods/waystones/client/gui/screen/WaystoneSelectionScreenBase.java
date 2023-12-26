@@ -9,8 +9,7 @@ import net.blay09.mods.waystones.client.gui.widget.RemoveWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.SortWaystoneButton;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.comparator.UserSortingComparator;
-import net.blay09.mods.waystones.core.WaystoneTeleportManager;
-import net.blay09.mods.waystones.cost.NoCost;
+import net.blay09.mods.waystones.requirement.NoRequirement;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.network.message.RemoveWaystoneMessage;
@@ -199,10 +198,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     private WaystoneButton createWaystoneButton(int y, final Waystone waystone) {
         final var waystoneFrom = menu.getWaystoneFrom();
         final var player = Minecraft.getInstance().player;
-        final var cost = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.setFromWaystone(waystoneFrom))
-                .mapLeft(WaystoneTeleportContext::getCost)
-                .left().orElse(NoCost.INSTANCE);
-        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, cost, button -> onWaystoneSelected(waystone));
+        final var requirements = WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> it.setFromWaystone(waystoneFrom))
+                .mapLeft(WaystoneTeleportContext::getRequirements)
+                .left().orElse(NoRequirement.INSTANCE);
+        WaystoneButton btnWaystone = new WaystoneButton(width / 2 - 100, y, waystone, requirements, button -> onWaystoneSelected(waystone));
         if (waystoneFrom != null && waystone.getWaystoneUid().equals(waystoneFrom.getWaystoneUid())) {
             btnWaystone.active = false;
         }

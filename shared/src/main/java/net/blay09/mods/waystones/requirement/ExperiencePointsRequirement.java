@@ -1,15 +1,15 @@
-package net.blay09.mods.waystones.xp;
+package net.blay09.mods.waystones.requirement;
 
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class ExperiencePointsCost implements Cost {
+public class ExperiencePointsRequirement implements WarpRequirement {
     private int points;
 
-    public ExperiencePointsCost(int points) {
+    public ExperiencePointsRequirement(int points) {
         this.points = Math.max(0, points);
     }
 
@@ -32,7 +32,7 @@ public class ExperiencePointsCost implements Cost {
     }
 
     @Override
-    public int getNumericalCost(Player player) {
+    public int getNumericalValue(Player player) {
         return calculateLevelCostFromExperiencePoints(player.experienceLevel, points);
     }
 

@@ -1,6 +1,6 @@
-package net.blay09.mods.waystones.cost;
+package net.blay09.mods.waystones.requirement;
 
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.ChatFormatting;
@@ -10,12 +10,12 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class CooldownCost implements Cost {
+public class CooldownRequirement implements WarpRequirement {
 
     private ResourceLocation key;
     private int seconds;
 
-    public CooldownCost(ResourceLocation key, int seconds) {
+    public CooldownRequirement(ResourceLocation key, int seconds) {
         this.key = key;
         this.seconds = seconds;
     }
@@ -39,7 +39,7 @@ public class CooldownCost implements Cost {
     }
 
     @Override
-    public int getNumericalCost(Player player) {
+    public int getNumericalValue(Player player) {
         return 0;
     }
 

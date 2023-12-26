@@ -4,12 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -25,17 +24,17 @@ public class WaystoneButton extends Button {
     private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1_disabled"), new ResourceLocation(
             "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
 
-    private final Cost cost;
+    private final WarpRequirement warpRequirement;
     private final Waystone waystone;
 
-    public WaystoneButton(int x, int y, Waystone waystone, Cost cost, OnPress pressable) {
+    public WaystoneButton(int x, int y, Waystone waystone, WarpRequirement warpRequirement, OnPress pressable) {
         super(x, y, 200, 20, getWaystoneNameComponent(waystone), pressable, Button.DEFAULT_NARRATION);
         Player player = Minecraft.getInstance().player;
-        this.cost = cost;
+        this.warpRequirement = warpRequirement;
         this.waystone = waystone;
         if (player == null) {
             active = false;
-        } else if (!cost.canAfford(player) && !player.getAbilities().instabuild) {
+        } else if (!warpRequirement.canAfford(player) && !player.getAbilities().instabuild) {
             active = false;
         }
     }
@@ -73,9 +72,9 @@ public class WaystoneButton extends Button {
         }
 
         // render xp cost
-        final var numericalCost = cost.getNumericalCost(mc.player);
+        final var numericalCost = warpRequirement.getNumericalValue(mc.player);
         if (numericalCost > 0) {
-            boolean canAfford = cost.canAfford(mc.player);
+            boolean canAfford = warpRequirement.canAfford(mc.player);
             final var spriteIndex = Math.max(0, Math.min(numericalCost, 3) - 1);
             guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], getX() + 2, getY() + 2, 16, 16);
 
@@ -85,7 +84,7 @@ public class WaystoneButton extends Button {
 
             if (isHovered && mouseX <= getX() + 16) {
                 final List<Component> tooltip = new ArrayList<>();
-                cost.appendHoverText(mc.player, tooltip);
+                warpRequirement.appendHoverText(mc.player, tooltip);
                 guiGraphics.renderTooltip(mc.font, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
             }
         }

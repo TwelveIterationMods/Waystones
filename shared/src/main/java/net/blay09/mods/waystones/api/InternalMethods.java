@@ -1,7 +1,7 @@
 package net.blay09.mods.waystones.api;
 
 import com.mojang.datafixers.util.Either;
-import net.blay09.mods.waystones.api.cost.*;
+import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -46,15 +46,15 @@ public interface InternalMethods {
 
     void setBoundWaystone(ItemStack itemStack, @Nullable Waystone waystone);
 
-    Cost calculateCost(WaystoneTeleportContext context);
+    WarpRequirement resolveRequirements(WaystoneTeleportContext context);
 
-    void registerCostType(CostType<?> costType);
+    void registerRequirementType(RequirementType<?> requirementType);
 
-    void registerCostModifier(CostModifier<?, ?> costModifier);
+    void registerRequirementModifier(WarpRequirementModifier<?, ?> requirementModifier);
 
-    void registerCostVariableResolver(CostVariableResolver costVariableResolver);
+    void registerVariableResolver(VariableResolver variableResolver);
 
-    void registerCostConditionPredicate(CostConditionResolver costConditionResolver);
+    void registerConditionResolver(ConditionResolver conditionResolver);
 
-    void registerCostParameterSerializer(CostParameterSerializer<?> costParameterSerializer);
+    void registerParameterSerializer(ParameterSerializer<?> parameterSerializer);
 }

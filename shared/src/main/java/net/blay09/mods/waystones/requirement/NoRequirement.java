@@ -1,13 +1,13 @@
-package net.blay09.mods.waystones.cost;
+package net.blay09.mods.waystones.requirement;
 
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public class NoCost implements Cost {
-    public static final Cost INSTANCE = new NoCost();
+public class NoRequirement implements WarpRequirement {
+    public static final WarpRequirement INSTANCE = new NoRequirement();
 
     @Override
     public boolean canAfford(Player player) {
@@ -23,7 +23,7 @@ public class NoCost implements Cost {
     }
 
     @Override
-    public int getNumericalCost(Player player) {
+    public int getNumericalValue(Player player) {
         return 0;
     }
 

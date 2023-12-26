@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.api.event;
 import net.blay09.mods.balm.api.event.BalmEvent;
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.blay09.mods.waystones.api.TeleportDestination;
-import net.blay09.mods.waystones.api.cost.Cost;
+import net.blay09.mods.waystones.api.requirement.WarpRequirement;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -25,12 +25,12 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
             return context;
         }
 
-        public Cost getCost() {
-            return context.getCost();
+        public WarpRequirement getRequirements() {
+            return context.getRequirements();
         }
 
-        public void setCost(Cost cost) {
-            context.setCost(cost);
+        public void setRequirements(WarpRequirement warpRequirement) {
+            context.setRequirements(warpRequirement);
         }
 
         public TeleportDestination getDestination() {

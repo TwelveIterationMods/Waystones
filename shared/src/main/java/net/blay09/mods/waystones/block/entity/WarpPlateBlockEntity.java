@@ -131,7 +131,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
             final var targetWaystone = getTargetWaystone().orElse(InvalidWaystone.INSTANCE);
             final var status = targetWaystone.isValid() ? WarpPlateBlock.WarpPlateStatus.ACTIVE : WarpPlateBlock.WarpPlateStatus.INVALID;
             final var canAfford = WaystonesAPI.createDefaultTeleportContext(entity, targetWaystone, it -> it.setFromWaystone(getWaystone()))
-                    .mapLeft(WaystoneTeleportContext::getCost)
+                    .mapLeft(WaystoneTeleportContext::getRequirements)
                     .mapLeft(it -> !(entity instanceof Player player) || player.getAbilities().instabuild || it.canAfford(player))
                     .left().orElse(true);
             level.setBlock(worldPosition, getBlockState()

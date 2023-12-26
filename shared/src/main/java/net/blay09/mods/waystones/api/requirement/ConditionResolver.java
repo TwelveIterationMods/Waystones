@@ -1,9 +1,9 @@
-package net.blay09.mods.waystones.api.cost;
+package net.blay09.mods.waystones.api.requirement;
 
 import net.blay09.mods.waystones.api.WaystoneTeleportContext;
 import net.minecraft.resources.ResourceLocation;
 
-public interface CostVariableResolver {
+public interface ConditionResolver {
     ResourceLocation getId();
-    float resolve(WaystoneTeleportContext context);
+    boolean matches(WaystoneTeleportContext context);
 }
