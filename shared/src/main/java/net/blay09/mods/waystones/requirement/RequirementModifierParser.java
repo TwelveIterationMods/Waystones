@@ -13,19 +13,13 @@ import java.util.regex.Pattern;
 public class RequirementModifierParser {
 
     public static Optional<ConfiguredRequirementModifier<?, ?>> parse(String input) {
-        final var pattern = Pattern.compile("\\[(.*?)]\\s*(\\w+\\(.*?\\))");
-        final var matcher = pattern.matcher(input);
-
-        if (matcher.find()) {
-            String conditionsPart = matcher.group(1);
-            String functionPart = matcher.group(2);
-
-            final var conditions = parseConditions(conditionsPart);
-            final var requirement = parseRequirement(functionPart);
-            return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
-        } else {
-            return Optional.empty();
-        }
+        final var conditionsStart = input.indexOf('[');
+        final var conditionsEnd = input.indexOf(']');
+        final var conditionsPart = conditionsStart != -1 && conditionsEnd != - 1 ? input.substring(conditionsStart + 1, conditionsEnd) : "";
+        final var functionPart = input.substring(conditionsEnd + 1).trim();
+        final var conditions = parseConditions(conditionsPart);
+        final var requirement = parseRequirement(functionPart);
+        return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
     }
 
     private static List<ConfiguredCondition<?>> parseConditions(String conditionsPart) {

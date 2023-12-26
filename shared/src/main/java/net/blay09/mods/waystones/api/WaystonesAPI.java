@@ -41,7 +41,7 @@ public class WaystonesAPI {
         return __internalMethods.tryTeleport(context);
     }
 
-    public static List<Entity> forceTeleport(WaystoneTeleportContext context) {
+    public static Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context) {
         return __internalMethods.forceTeleport(context);
     }
 

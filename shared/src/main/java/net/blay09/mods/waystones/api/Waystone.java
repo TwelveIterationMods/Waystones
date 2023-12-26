@@ -48,9 +48,5 @@ public interface Waystone {
         return false;
     }
 
-    default TeleportDestination resolveDestination(Level level) {
-        return new TeleportDestination(level, getPos().getCenter(), Direction.NORTH);
-    }
-
     WaystoneVisibility getVisibility();
 }

@@ -86,7 +86,7 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public List<Entity> forceTeleport(WaystoneTeleportContext context) {
+    public Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context) {
         return WaystoneTeleportManager.doTeleport(context);
     }
 

@@ -1,10 +1,12 @@
 package net.blay09.mods.waystones.core;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
@@ -12,6 +14,7 @@ import net.blay09.mods.waystones.network.message.TeleportEffectMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -41,14 +44,22 @@ public class WaystoneTeleportManager {
         );
     }
 
-    public static List<Entity> doTeleport(WaystoneTeleportContext context) {
+    public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context) {
+        final var server = context.getEntity().getServer();
+        if (server == null) {
+            return Either.right(new WaystoneTeleportError.NotOnServer());
+        }
+
+        return resolveDestination(server, context.getTargetWaystone()).flatMap(it -> doTeleport(context, it));
+    }
+
+    public static Either<List<Entity>, WaystoneTeleportError> doTeleport(WaystoneTeleportContext context, TeleportDestination destination) {
         final var sourceLevel = (ServerLevel) context.getEntity().level();
-        final var destination = context.getTargetWaystone().resolveDestination(sourceLevel);
-
         List<Entity> teleportedEntities = teleportEntityAndAttached(context.getEntity(), context, destination);
-        context.getAdditionalEntities().forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context, destination)));
+        context.getAdditionalEntities()
+                .forEach(additionalEntity -> teleportedEntities.addAll(teleportEntityAndAttached(additionalEntity, context, destination)));
 
-        BlockPos sourcePos = context.getEntity().blockPosition();
+        final var sourcePos = context.getEntity().blockPosition();
         final var targetLevel = (ServerLevel) destination.level();
         final var targetPos = BlockPos.containing(destination.location());
 
@@ -67,7 +78,7 @@ public class WaystoneTeleportManager {
             Balm.getNetworking().sendToTracking(targetLevel, targetPos, new TeleportEffectMessage(targetPos));
         }
 
-        return teleportedEntities;
+        return Either.left(teleportedEntities);
     }
 
     private static List<Entity> teleportEntityAndAttached(Entity entity, WaystoneTeleportContext context, TeleportDestination destination) {
@@ -165,6 +176,36 @@ public class WaystoneTeleportManager {
         return entity;
     }
 
+    private static Either<TeleportDestination, WaystoneTeleportError> resolveDestination(MinecraftServer server, Waystone waystone) {
+        final var level = server.getLevel(waystone.getDimension());
+        if (level == null) {
+            return Either.right(new WaystoneTeleportError.InvalidDimension(waystone.getDimension()));
+        }
+
+        final var pos = waystone.getPos();
+        final var state = level.getBlockState(pos);
+        var direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
+
+        // Use a list to keep order intact - it might check one direction twice, but no one cares
+        final var directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
+        for (Direction candidate : directionCandidates) {
+            BlockPos offsetPos = pos.relative(candidate);
+            BlockPos offsetPosUp = offsetPos.above();
+            if (level.getBlockState(offsetPos).isSuffocating(level, offsetPos) || level.getBlockState(offsetPosUp).isSuffocating(level, offsetPosUp)) {
+                continue;
+            }
+
+            direction = candidate;
+            break;
+        }
+
+        final var waystoneType = waystone.getWaystoneType();
+        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneTypes.WARP_PLATE) || waystoneType.equals(WaystoneTypes.LANDING_STONE));
+        final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
+        final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
+        return Either.left(new TeleportDestination(level, location, direction));
+    }
+
     private static void sendHackySyncPacketsAfterTeleport(Entity entity) {
         if (entity instanceof ServerPlayer player) {
             // No idea why this is still needed since we're using the same code as /tp. Maybe /tp is broken too for interdimensional travel.
@@ -187,7 +228,7 @@ public class WaystoneTeleportManager {
             }
 
             for (final var leashedEntity : context.getLeashedEntities()) {
-                if(WaystonePermissionManager.isEntityDeniedTeleports(leashedEntity)) {
+                if (WaystonePermissionManager.isEntityDeniedTeleports(leashedEntity)) {
                     return Either.right(new WaystoneTeleportError.SpecificLeashedWarpDenied(leashedEntity));
                 }
             }
@@ -205,11 +246,7 @@ public class WaystoneTeleportManager {
             context.getRequirements().consume(player);
         }
 
-        final var teleportedEntities = doTeleport(context);
-
-        Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities));
-
-        return Either.left(teleportedEntities);
+        return doTeleport(context).ifLeft(teleportedEntities -> Balm.getEvents().fireEvent(new WaystoneTeleportEvent.Post(context, teleportedEntities)));
     }
 
 }

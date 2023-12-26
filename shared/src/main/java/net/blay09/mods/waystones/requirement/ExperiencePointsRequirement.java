@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -39,7 +40,7 @@ public class ExperiencePointsRequirement implements WarpRequirement {
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
         if (points > 0) {
-            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points));
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points).withStyle(ChatFormatting.GREEN));
         }
     }
 

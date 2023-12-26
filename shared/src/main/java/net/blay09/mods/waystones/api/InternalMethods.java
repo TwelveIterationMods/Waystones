@@ -28,7 +28,7 @@ public interface InternalMethods {
 
     Either<List<Entity>, WaystoneTeleportError> tryTeleport(WaystoneTeleportContext context);
 
-    List<Entity> forceTeleport(WaystoneTeleportContext context);
+    Either<List<Entity>, WaystoneTeleportError> forceTeleport(WaystoneTeleportContext context);
 
     Optional<Waystone> getWaystoneAt(Level level, BlockPos pos);
 

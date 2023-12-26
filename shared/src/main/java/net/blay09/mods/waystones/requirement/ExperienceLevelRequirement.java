@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -36,7 +37,7 @@ public class ExperienceLevelRequirement implements WarpRequirement {
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
         if (levels > 0) {
-            tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels));
+            tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels).withStyle(ChatFormatting.GREEN));
         }
     }
 

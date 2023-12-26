@@ -50,6 +50,7 @@
   "gui.waystones.waystone_selection.no_waystones_activated": "You have not activated any waystones yet.",
   "gui.waystones.waystone_selection.level_requirement": "Level Requirement: %d",
   "gui.waystones.waystone_selection.xp_requirement": "Experience Cost: %d",
+  "gui.waystones.waystone_selection.item_requirement": "%dx %s",
   "gui.waystones.waystone_selection.no_xp_requirement": "Experience Cost: Free",
   "gui.waystones.inventory.no_waystones_activated": "You have not activated any waystones yet.",
   "gui.waystones.inventory.confirm_return": "Do you really want to warp back to this waystone?",

@@ -30,11 +30,6 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
-    public TeleportDestination resolveDestination(Level level) {
-        return getBackingWaystone().resolveDestination(level);
-    }
-
-    @Override
     public boolean isValid() {
         return WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).isPresent();
     }

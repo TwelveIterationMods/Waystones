@@ -329,6 +329,10 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
 
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (this.searchBox == null) {
+            return super.keyPressed(key, scanCode, modifiers);
+        }
+
         if (!this.searchBox.isFocused() || (key == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc())) {
             return super.keyPressed(key, scanCode, modifiers);
         }

@@ -136,29 +136,6 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         return state.is(ModBlockTags.IS_TELEPORT_TARGET);
     }
 
-    @Override
-    public TeleportDestination resolveDestination(Level level) {
-        BlockState state = level.getBlockState(pos);
-        Direction direction = state.hasProperty(WaystoneBlock.FACING) ? state.getValue(WaystoneBlock.FACING) : Direction.NORTH;
-        // Use a list to keep order intact - it might check one direction twice, but no one cares
-        List<Direction> directionCandidates = Lists.newArrayList(direction, Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH);
-        for (Direction candidate : directionCandidates) {
-            BlockPos offsetPos = pos.relative(candidate);
-            BlockPos offsetPosUp = offsetPos.above();
-            if (level.getBlockState(offsetPos).isSuffocating(level, offsetPos) || level.getBlockState(offsetPosUp).isSuffocating(level, offsetPosUp)) {
-                continue;
-            }
-
-            direction = candidate;
-            break;
-        }
-
-        BlockPos targetPos = (getWaystoneType().equals(WaystoneTypes.WARP_PLATE) || getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) ? getPos() : getPos().relative(
-                direction);
-        Vec3 location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
-        return new TeleportDestination(level, location, direction);
-    }
-
     public static List<Waystone> readList(FriendlyByteBuf buf) {
         int size = buf.readShort();
         List<Waystone> waystones = new ArrayList<>(size);
