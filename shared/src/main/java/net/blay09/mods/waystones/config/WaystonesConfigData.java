@@ -136,11 +136,11 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("List of dimensions that waystones are allowed to spawn in through world gen. If left empty, all dimensions except those in worldGenDimensionDenyList are used.")
         @ExpectedType(String.class)
-        public List<String> dimensionAllowList = List.of("minecraft:overworld", "minecraft:the_nether", "minecraft:the_end");
+        public Set<ResourceLocation> dimensionAllowList = Set.of(new ResourceLocation("overworld"), new ResourceLocation("the_nether"), new ResourceLocation("the_end"));
 
         @Comment("List of dimensions that waystones are not allowed to spawn in through world gen. Only used if worldGenDimensionAllowList is empty.")
         @ExpectedType(String.class)
-        public List<String> dimensionDenyList = Collections.emptyList();
+        public Set<ResourceLocation> dimensionDenyList = Set.of();
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the custom names list. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")
         public NameGenerationMode nameGenerationMode = NameGenerationMode.PRESET_FIRST;
@@ -150,7 +150,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("These names will be used for the PRESET name generation mode. See the nameGenerationMode option for more info.")
         @ExpectedType(String.class)
-        public List<String> nameGenerationPresets = Collections.emptyList();
+        public List<String> nameGenerationPresets = List.of();
 
         @Comment("Set to REGULAR to have waystones spawn in some villages. Set to FREQUENT to have waystones spawn in most villages. Set to DISABLED to disable waystone generation in villages. Waystones will only spawn in vanilla or supported villages.")
         public VillageWaystoneGeneration spawnInVillages = VillageWaystoneGeneration.REGULAR;

@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -73,11 +72,11 @@ public class WaystonePlacement extends PlacementModifier {
         }
 
         ResourceLocation dimension = world.getLevel().getLevel().dimension().location();
-        List<? extends String> dimensionAllowList = WaystonesConfig.getActive().worldGen.dimensionAllowList;
-        List<? extends String> dimensionDenyList = WaystonesConfig.getActive().worldGen.dimensionDenyList;
-        if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension.toString())) {
+        final var dimensionAllowList = WaystonesConfig.getActive().worldGen.dimensionAllowList;
+        final var dimensionDenyList = WaystonesConfig.getActive().worldGen.dimensionDenyList;
+        if (!dimensionAllowList.isEmpty() && !dimensionAllowList.contains(dimension)) {
             return false;
-        } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension.toString())) {
+        } else if (!dimensionDenyList.isEmpty() && dimensionDenyList.contains(dimension)) {
             return false;
         }
 
