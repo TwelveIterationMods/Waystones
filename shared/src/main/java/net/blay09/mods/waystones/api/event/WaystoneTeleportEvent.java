@@ -15,7 +15,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
 
     public static class Pre extends WaystoneTeleportEvent {
         private final WaystoneTeleportContext context;
-        private EventResult dimensionalTeleportResult = EventResult.DEFAULT;
 
         public Pre(WaystoneTeleportContext context) {
             this.context = context;
@@ -35,14 +34,6 @@ public abstract class WaystoneTeleportEvent extends BalmEvent {
 
         public void addAdditionalEntity(Entity additionalEntity) {
             context.addAdditionalEntity(additionalEntity);
-        }
-
-        public EventResult getDimensionalTeleportResult() {
-            return dimensionalTeleportResult;
-        }
-
-        public void setDimensionalTeleportResult(EventResult dimensionalTeleportResult) {
-            this.dimensionalTeleportResult = dimensionalTeleportResult;
         }
     }
 

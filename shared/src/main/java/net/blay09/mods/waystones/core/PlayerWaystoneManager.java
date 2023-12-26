@@ -6,7 +6,6 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.config.DimensionalWarp;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
@@ -14,19 +13,14 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class PlayerWaystoneManager {
-
-    private static final Logger logger = LogManager.getLogger();
 
     private static final IPlayerWaystoneData persistentPlayerWaystoneData = new PersistentPlayerWaystoneData();
     private static final IPlayerWaystoneData inMemoryPlayerWaystoneData = new InMemoryPlayerWaystoneData();
@@ -66,21 +60,6 @@ public class PlayerWaystoneManager {
         }
 
         return Optional.empty();
-    }
-
-    public static boolean canDimensionalWarpBetween(Entity player, Waystone waystone) {
-        ResourceLocation fromDimension = player.level().dimension().location();
-        ResourceLocation toDimension = waystone.getDimension().location();
-        Collection<String> dimensionAllowList = WaystonesConfig.getActive().teleports.dimensionalWarpAllowList;
-        Collection<String> dimensionDenyList = WaystonesConfig.getActive().teleports.dimensionalWarpDenyList;
-        if (!dimensionAllowList.isEmpty() && (!dimensionAllowList.contains(toDimension.toString()) || !dimensionAllowList.contains(fromDimension.toString()))) {
-            return false;
-        } else if (!dimensionDenyList.isEmpty() && (dimensionDenyList.contains(toDimension.toString()) || dimensionDenyList.contains(fromDimension.toString()))) {
-            return false;
-        }
-
-        DimensionalWarp dimensionalWarpMode = WaystonesConfig.getActive().teleports.dimensionalWarp;
-        return dimensionalWarpMode == DimensionalWarp.ALLOW || dimensionalWarpMode == DimensionalWarp.GLOBAL_ONLY && waystone.getVisibility() == WaystoneVisibility.GLOBAL;
     }
 
     public static void deactivateWaystone(Player player, Waystone waystone) {

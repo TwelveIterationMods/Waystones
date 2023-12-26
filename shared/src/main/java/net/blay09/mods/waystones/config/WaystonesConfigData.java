@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -90,22 +89,6 @@ public class WaystonesConfigData implements BalmConfigData {
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
         @ExpectedType(String.class)
         public Set<ResourceLocation> entityDenyList = Set.of(new ResourceLocation("wither"));
-
-        @Synced
-        @Comment("Set to 'ALLOW' to allow dimensional warp in general. Set to 'GLOBAL_ONLY' to restrict dimensional warp to global waystones. Set to 'DENY' to disallow all dimensional warps.")
-        @Deprecated(forRemoval = true)
-        public DimensionalWarp dimensionalWarp = DimensionalWarp.ALLOW;
-
-        @Comment("List of dimensions that players are allowed to warp cross-dimension from and to. If left empty, all dimensions except those in dimensionalWarpDenyList are allowed.")
-        @ExpectedType(String.class)
-        @Deprecated(forRemoval = true)
-        public List<String> dimensionalWarpAllowList = new ArrayList<>();
-
-        @Comment("List of dimensions that players are not allowed to warp cross-dimension from and to. Only used if dimensionalWarpAllowList is empty.")
-        @ExpectedType(String.class)
-        @Deprecated(forRemoval = true)
-        public List<String> dimensionalWarpDenyList = new ArrayList<>();
-
     }
 
     public static class InventoryButton {

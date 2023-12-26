@@ -179,13 +179,7 @@ public class WaystoneTeleportManager {
             return Either.right(new WaystoneTeleportError.CancelledByEvent());
         }
 
-        final var waystone = context.getTargetWaystone();
         final var entity = context.getEntity();
-
-        if (context.isDimensionalTeleport() && !event.getDimensionalTeleportResult()
-                .withDefault(() -> PlayerWaystoneManager.canDimensionalWarpBetween(entity, waystone))) {
-            return Either.right(new WaystoneTeleportError.DimensionalWarpDenied());
-        }
 
         if (!context.getLeashedEntities().isEmpty()) {
             if (WaystonesConfig.getActive().teleports.transportLeashed == WaystonesConfigData.TransportMobs.DISABLED) {
