@@ -18,7 +18,7 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends WarpRequirement, P> void apply(WarpModifierRegistry.ConfiguredRequirementModifier<T, P> configuredModifier) {
+    public <T extends WarpRequirement, P> void apply(ConfiguredRequirementModifier<T, P> configuredModifier) {
         for (final var condition : configuredModifier.conditions()) {
             if (!matchesCondition(condition)) {
                 return;
@@ -43,13 +43,8 @@ public class WarpRequirementsContextImpl implements WarpRequirementsContext {
         return 0f;
     }
 
-    public boolean matchesCondition(ResourceLocation id) {
-        final var resolver = WarpModifierRegistry.getConditionResolver(id);
-        if (resolver != null) {
-            return resolver.matches(context);
-        }
-
-        return false;
+    public <P> boolean matchesCondition(ConfiguredCondition<P> configuredCondition) {
+        return configuredCondition.resolver().matches(context, configuredCondition.parameters());
     }
 
     public WarpRequirement resolve() {
