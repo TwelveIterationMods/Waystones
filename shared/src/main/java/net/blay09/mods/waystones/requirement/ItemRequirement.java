@@ -68,15 +68,15 @@ public class ItemRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return count;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
         if (count > 0) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.item_requirement", count, itemStack.getHoverName()).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return itemStack.isEmpty() || count <= 0;
     }
 
     public ItemStack getItemStack() {

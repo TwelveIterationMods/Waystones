@@ -23,12 +23,11 @@ public class NoRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return 0;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
     }
 
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
 }

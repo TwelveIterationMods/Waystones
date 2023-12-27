@@ -9,35 +9,38 @@ import java.util.List;
 
 public class CombinedRequirement implements WarpRequirement {
 
-    private final Collection<WarpRequirement> warpRequirements;
+    private final Collection<WarpRequirement> requirements;
 
-    public CombinedRequirement(Collection<WarpRequirement> warpRequirements) {
-        this.warpRequirements = warpRequirements;
+    public CombinedRequirement(Collection<WarpRequirement> requirements) {
+        this.requirements = requirements;
     }
 
     @Override
     public boolean canAfford(Player player) {
-        return warpRequirements.stream().allMatch(requirement -> requirement.canAfford(player));
+        return requirements.stream().allMatch(requirement -> requirement.canAfford(player));
     }
 
     @Override
     public void consume(Player player) {
-        warpRequirements.forEach(requirement -> requirement.consume(player));
+        requirements.forEach(requirement -> requirement.consume(player));
     }
 
     @Override
     public void rollback(Player player) {
-        warpRequirements.forEach(requirement -> requirement.rollback(player));
-    }
-
-    @Override
-    public int getNumericalValue(Player player) {
-        return warpRequirements.stream().mapToInt(requirement -> requirement.getNumericalValue(player)).max().orElse(0);
+        requirements.forEach(requirement -> requirement.rollback(player));
     }
 
     @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        warpRequirements.forEach(requirement -> requirement.appendHoverText(player, tooltip));
+        requirements.forEach(requirement -> requirement.appendHoverText(player, tooltip));
     }
 
+    @Override
+    public boolean isEmpty() {
+        return requirements.stream().allMatch(WarpRequirement::isEmpty);
+    }
+
+    public Collection<WarpRequirement> getRequirements() {
+        return requirements;
+    }
 }

@@ -33,18 +33,18 @@ public class ExperiencePointsRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return points > 0 ? Math.max(1, calculateLevelCostFromExperiencePoints(player.experienceLevel, points)) : 0;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
         if (points > 0) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.xp_requirement", points).withStyle(ChatFormatting.GREEN));
         }
     }
 
-    private static int calculateLevelCostFromExperiencePoints(int currentLevel, int xpLoss) {
+    @Override
+    public boolean isEmpty() {
+        return points <= 0;
+    }
+
+    public static int calculateLevelCostFromExperiencePoints(int currentLevel, int xpLoss) {
         return currentLevel - calculateLevelMinusExperiencePoints(currentLevel, xpLoss);
     }
 

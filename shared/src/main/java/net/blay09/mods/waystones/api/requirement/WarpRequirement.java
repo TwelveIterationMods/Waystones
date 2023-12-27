@@ -12,14 +12,9 @@ public interface WarpRequirement {
 
     void rollback(Player player);
 
-    /**
-     * Right now, should return the cost in terms of "units", be it xp, levels, or items. Used for the level cost display. Only supports 0-3, above shows as 3+.
-     *
-     * @deprecated In the future, this will be replaced by proper control over how a requirement should be displayed.
-     */
-    @Deprecated
-    int getNumericalValue(Player player);
-
     void appendHoverText(Player player, List<Component> tooltip);
 
+    default boolean isEmpty() {
+        return false;
+    }
 }

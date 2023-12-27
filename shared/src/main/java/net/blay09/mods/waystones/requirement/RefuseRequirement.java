@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.requirement;
 
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -31,13 +32,8 @@ public class RefuseRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return 0;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        tooltip.add(message);
+        tooltip.add(message.copy().withStyle(ChatFormatting.RED));
     }
 
     public void setMessage(Component message) {

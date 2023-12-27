@@ -22,7 +22,7 @@ public class CooldownRequirement implements WarpRequirement {
 
     @Override
     public boolean canAfford(Player player) {
-        return PlayerWaystoneManager.getCooldownMillisLeft(player, key) <= 0;
+        return getCooldownMillisLeft(player) <= 0;
     }
 
     @Override
@@ -39,21 +39,29 @@ public class CooldownRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return 0;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
-        final var millisLeft = PlayerWaystoneManager.getCooldownMillisLeft(player, key);
+        final var millisLeft = getCooldownMillisLeft(player);
         if (millisLeft > 0) {
             tooltip.add(Component.translatable("tooltip.waystones.cooldown_left", millisLeft / 1000).withStyle(ChatFormatting.GOLD));
         }
     }
 
+    public long getCooldownMillisLeft(Player player) {
+        return PlayerWaystoneManager.getCooldownMillisLeft(player, key);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return seconds <= 0;
+    }
+
     public void setCooldown(ResourceLocation key, int seconds) {
         this.key = key;
         this.seconds = seconds;
+    }
+
+    public ResourceLocation getCooldownKey() {
+        return key;
     }
 
     public int getCooldownSeconds() {

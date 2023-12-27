@@ -5,12 +5,12 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
+import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -19,10 +19,6 @@ import java.util.Optional;
 
 public class WaystoneButton extends Button {
 
-    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1"), new ResourceLocation(
-            "container/enchanting_table/level_2"), new ResourceLocation("container/enchanting_table/level_3")};
-    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1_disabled"), new ResourceLocation(
-            "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
 
     private final WarpRequirement warpRequirement;
     private final Waystone waystone;
@@ -55,37 +51,38 @@ public class WaystoneButton extends Button {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        Minecraft mc = Minecraft.getInstance();
+        final var font = Minecraft.getInstance().font;
+        final var player = Minecraft.getInstance().player;
 
         // render distance
-        if (waystone.getDimension() == mc.player.level().dimension() && isActive()) {
-            int distance = (int) mc.player.position().distanceTo(waystone.getPos().getCenter());
+        if (waystone.getDimension() == player.level().dimension() && isActive()) {
+            int distance = (int) player.position().distanceTo(waystone.getPos().getCenter());
             String distanceStr;
-            if (distance < 10000 && (mc.font.width(getMessage()) < 120 || distance < 1000)) {
+            if (distance < 10000 && (font.width(getMessage()) < 120 || distance < 1000)) {
                 distanceStr = distance + "m";
             } else {
                 // sorry for ugly code, chatgpt was down and this was the only thing my dumbed down brain could come up with
                 distanceStr = String.format("%.1f", distance / 1000f).replace(",0", "").replace(".0", "") + "km";
             }
-            int xOffset = getWidth() - mc.font.width(distanceStr);
-            guiGraphics.drawString(mc.font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
+            int xOffset = getWidth() - font.width(distanceStr);
+            guiGraphics.drawString(font, distanceStr, getX() + xOffset - 4, getY() + 6, 0xFFFFFF);
         }
 
-        // render xp cost
-        final var numericalCost = warpRequirement.getNumericalValue(mc.player);
-        if (numericalCost > 0) {
-            boolean canAfford = warpRequirement.canAfford(mc.player);
-            final var spriteIndex = Math.max(0, Math.min(numericalCost, 3) - 1);
-            guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], getX() + 2, getY() + 2, 16, 16);
+        renderRequirements(warpRequirement, guiGraphics, mouseX, mouseY, partialTicks);
+    }
 
-            if (numericalCost > 3) {
-                guiGraphics.drawString(mc.font, "+", getX() + 17, getY() + 6, 0xC8FF8F);
-            }
+    @SuppressWarnings("unchecked")
+    private <T extends WarpRequirement> void renderRequirements(T requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        final var font = Minecraft.getInstance().font;
+        final var player = Minecraft.getInstance().player;
+        final var renderer = RequirementClientRegistry.getRenderer((Class<T>) requirement.getClass());
+        if (renderer != null) {
+            renderer.renderWidget(player, requirement, guiGraphics, mouseX, mouseY, partialTicks, getX() + 2, getY() + 2);
 
-            if (isHovered && mouseX <= getX() + 16) {
+            if (isHovered && mouseX < getX() + 2 + renderer.getWidth(requirement)) {
                 final List<Component> tooltip = new ArrayList<>();
-                warpRequirement.appendHoverText(mc.player, tooltip);
-                guiGraphics.renderTooltip(mc.font, tooltip, Optional.empty(), mouseX, mouseY + mc.font.lineHeight);
+                warpRequirement.appendHoverText(player, tooltip);
+                guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY + font.lineHeight);
             }
         }
     }

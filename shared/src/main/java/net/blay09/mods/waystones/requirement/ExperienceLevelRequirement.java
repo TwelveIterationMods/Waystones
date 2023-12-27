@@ -30,15 +30,15 @@ public class ExperienceLevelRequirement implements WarpRequirement {
     }
 
     @Override
-    public int getNumericalValue(Player player) {
-        return levels;
-    }
-
-    @Override
     public void appendHoverText(Player player, List<Component> tooltip) {
         if (levels > 0) {
             tooltip.add(Component.translatable("gui.waystones.waystone_selection.level_requirement", levels).withStyle(ChatFormatting.GREEN));
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return levels <= 0;
     }
 
     public void setLevels(int levels) {
