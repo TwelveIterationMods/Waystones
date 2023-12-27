@@ -1,3 +1,27 @@
+- Added ability to delete Sharestones while in creative mode (for cases where corrupt entries are leftover)
+- Added durability to warp stones, removed the default cooldown from it
+- Added a new warpRequirements option which replaces all existing xp cost options and allows for a lot more flexibility
+- Added support for item costs (e.g. `add_item_cost(waystones:warp_dust, 1)` in warpRequirements)
+- Added support for custom cooldown types (e.g. `add_cooldown("my_cooldown", 10)` in warpRequirements)
+- Added support for minimum and maximum teleport ranges (e.g. `[is_not_within_distance(1000)] refuse()`)
+- Changed default experience costs to use experience points instead of levels
+- Changed the waystone settings screen to use the same slot layout as warp plates
+- Changed bound scrolls to be created by attuning a warp scroll in a waystone instead of right-clicking it
+- Changed waystone settings screen to open even when shift-right-clicking with an item in hand
+- Changed leashedDenyList config option to entityDenyList, which applies to leashed, pets, and warp plates
+- Changed inventory button position to be synced property, meaning it can be controlled by the server
+- Changed waystone names to be stored as Components, which is mostly a technical change but allows for more flexibility in the future
+- Fixed textfield in settings screen being auto-focused even when a name was already set
+- Fixed waystone settings screen not closing when enter is pressed
+- Fixed waystone screen not opening when edit permissions are not present
+- Fixed xp cost not displaying while in creative, which could be confusing when testing
+- Renamed and restructured some config options to be easier to understand
+- Renamed `waystones:warp_plate` recipe type to `waystones:waystone`
+- Restructured and cleaned up many parts of the API - mods depending on the Waystones API will have to update!
+- Removed old dimensional teleport options as they can be replicated using warpRequirements (e.g. `[is_interdimensional, involves_dimension(the_nether)] refuse()`)
+- Removed restrictToCreative and generatedWaystonesUnbreakable options as they never worked well, do not match Vanilla Minecraft expectations, and can be better solved with other utility mods
+- Removed some obsolete `waystones:waystone` and `waystones:sharestone` tags in favor of `waystones:waystones` and `waystones:sharestones`
+
 - Added Blackstone, Deepslate and Endstone Waystones
 - Added Landing Stone, a warp plate you can teleport to but not from
 - Added a new settings screen for all types of waystones that allows attuned shards to be created for every type
