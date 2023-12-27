@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
         textField.setValue(oldText);
         textField.setEditable(menu.canEdit());
         addRenderableWidget(textField);
-        if (menu.canEdit()) {
+        if (menu.canEdit() && oldText.isEmpty()) {
             setInitialFocus(textField);
         }
 
