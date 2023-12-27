@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.client.requirement;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.requirement.RefuseRequirement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +12,9 @@ public class RefuseRequirementRenderer implements RequirementRenderer<RefuseRequ
 
     @Override
     public void renderWidget(Player player, RefuseRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {
+        guiGraphics.setColor(1f, 1f, 1f, 0.5f);
+        RenderSystem.enableBlend();
         guiGraphics.blitSprite(CANCEL_SPRITE, x, y, 16, 16);
+        guiGraphics.setColor(1f, 1f, 1f, 1f);
     }
 }
