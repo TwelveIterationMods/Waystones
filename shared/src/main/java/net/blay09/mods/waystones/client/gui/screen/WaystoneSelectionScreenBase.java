@@ -184,11 +184,16 @@ public abstract class WaystoneSelectionScreenBase extends AbstractContainerScree
     }
 
     private boolean allowDeletion(Waystone waystone) {
-        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !Minecraft.getInstance().player.getAbilities().instabuild) {
+        final var isCreative = Minecraft.getInstance().player.getAbilities().instabuild;
+        if (waystone.getVisibility() == WaystoneVisibility.GLOBAL && !isCreative) {
             return false;
         }
 
-        if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
+        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            if (!isCreative) {
+                return false;
+            }
+        } else if (!waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)) {
             return false;
         }
 

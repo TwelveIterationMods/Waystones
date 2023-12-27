@@ -17,6 +17,6 @@ public class SharestoneSelectionScreen extends WaystoneSelectionScreenBase {
 
     @Override
     protected boolean allowDeletion() {
-        return false;
+        return true;
     }
 }
