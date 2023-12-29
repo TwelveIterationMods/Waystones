@@ -1,3 +1,4 @@
+- Fixed yet another load failure on NeoForge
 - Fixed crash on Forge and NeoForge due to invalid config definition
 
 - Added ability to delete Sharestones while in creative mode (for cases where corrupt entries are leftover)
