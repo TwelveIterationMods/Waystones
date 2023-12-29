@@ -17,19 +17,19 @@ config = "${mod_id}.mixins.json"
 config = "${mod_id}.neoforge.mixins.json"
 [[dependencies.${mod_id}]]
 modId="neoforge"
-mandatory=true
+type="required"
 versionRange="${neoforge_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
 modId="minecraft"
-mandatory=true
+type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
 modId="balm"
-mandatory=true
+type="required"
 versionRange="${balm_version_range}"
 ordering="NONE"
 side="BOTH"
