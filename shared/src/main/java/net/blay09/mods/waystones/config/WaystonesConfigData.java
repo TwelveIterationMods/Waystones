@@ -87,7 +87,7 @@ public class WaystonesConfigData implements BalmConfigData {
         public TransportMobs transportLeashed = TransportMobs.ENABLED;
 
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
-        @ExpectedType(String.class)
+        @ExpectedType(ResourceLocation.class)
         public Set<ResourceLocation> entityDenyList = Set.of(new ResourceLocation("wither"));
     }
 
@@ -121,11 +121,11 @@ public class WaystonesConfigData implements BalmConfigData {
         public int chunksBetweenWildWaystones = 25;
 
         @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList are used.")
-        @ExpectedType(String.class)
+        @ExpectedType(ResourceLocation.class)
         public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(new ResourceLocation("overworld"), new ResourceLocation("the_nether"), new ResourceLocation("the_end"));
 
         @Comment("List of dimensions that wild waystones are not allowed to spawn in. Only used if wildWaystonesDimensionAllowList is empty.")
-        @ExpectedType(String.class)
+        @ExpectedType(ResourceLocation.class)
         public Set<ResourceLocation> wildWaystonesDimensionDenyList = Set.of();
 
         @Comment("Set to 'PRESET_FIRST' to first use names from the nameGenerationPresets. Set to 'PRESET_ONLY' to use only those custom names. Set to 'MIXED' to have some waystones use custom names, and others random names.")

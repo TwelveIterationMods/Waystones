@@ -1,3 +1,5 @@
+- Fixed crash on Forge and NeoForge due to invalid config definition
+
 - Added ability to delete Sharestones while in creative mode (for cases where corrupt entries are leftover)
 - Added durability to warp stones, removed the default cooldown from it
 - Added a new warpRequirements option which replaces all existing xp cost options and allows for a lot more flexibility
