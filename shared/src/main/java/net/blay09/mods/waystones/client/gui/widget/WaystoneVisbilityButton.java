@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +21,20 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;
     private WaystoneVisibility visibility;
+    @Nullable
+    private Component network;
 
     public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options, boolean canEdit) {
+        this(x, y, visibility, options, canEdit, null);
+    }
+
+    public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options, boolean canEdit, @Nullable Component network) {
         super(x, y, 18, 18, Component.empty(), button -> {
         }, Button.DEFAULT_NARRATION);
         this.options = options;
         this.visibility = visibility;
         this.canEdit = canEdit;
+        this.network = network;
     }
 
     @Override
@@ -46,6 +54,9 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
                 .withStyle(ChatFormatting.WHITE);
         final var result = new ArrayList<Component>();
         result.add(Component.translatable("tooltip.waystones.visibility", visibilityValueComponent).withStyle(ChatFormatting.YELLOW));
+        if (this.network != null) {
+            result.add(Component.translatable("tooltip.waystones.network", this.network).withStyle(ChatFormatting.ITALIC));
+        }
         if (!canEdit) {
             result.add(Component.translatable("tooltip.waystones.edit_restricted", visibilityValueComponent).withStyle(ChatFormatting.RED));
         }

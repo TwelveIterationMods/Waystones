@@ -105,7 +105,7 @@ public class WaystoneMenu extends AbstractContainerMenu {
 
     public List<WaystoneVisibility> getVisibilityOptions() {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            return List.of(WaystoneVisibility.GLOBAL);
+            return List.of(WaystoneVisibility.NETWORK);
         } else if (waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
             return List.of(WaystoneVisibility.SHARD_ONLY);
         } else if (waystone.getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) {

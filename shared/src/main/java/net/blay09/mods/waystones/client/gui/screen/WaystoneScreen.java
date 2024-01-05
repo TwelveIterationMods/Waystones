@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.menu.WaystoneMenu;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
@@ -63,7 +65,13 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
             setInitialFocus(textField);
         }
 
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
+        MutableComponent network = null;
+        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
+            String type = waystone.getWaystoneType().getPath();
+            network = Component.translatableWithFallback("block.waystones." + type, type);
+        }
+
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit(), network);
         addRenderableWidget(visibilityButton);
     }
 
