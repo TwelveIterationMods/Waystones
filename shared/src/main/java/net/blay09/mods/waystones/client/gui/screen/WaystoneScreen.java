@@ -65,13 +65,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
             setInitialFocus(textField);
         }
 
-        MutableComponent network = null;
-        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            String type = waystone.getWaystoneType().getPath();
-            network = Component.translatableWithFallback("block.waystones." + type, type);
-        }
-
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit(), network);
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
         addRenderableWidget(visibilityButton);
     }
 

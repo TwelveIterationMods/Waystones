@@ -21,26 +21,19 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;
     private WaystoneVisibility visibility;
-    @Nullable
-    private Component network;
 
     public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options, boolean canEdit) {
-        this(x, y, visibility, options, canEdit, null);
-    }
-
-    public WaystoneVisbilityButton(int x, int y, WaystoneVisibility visibility, List<WaystoneVisibility> options, boolean canEdit, @Nullable Component network) {
         super(x, y, 18, 18, Component.empty(), button -> {
         }, Button.DEFAULT_NARRATION);
         this.options = options;
         this.visibility = visibility;
         this.canEdit = canEdit;
-        this.network = network;
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), 176 + (isHovered ? 18 : 0), 14, 18, 18);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), 176, 32 + (visibility.ordinal() * 18), 18, 18);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), visibility.getIconX(), visibility.getIconY(), 18, 18);
     }
 
     @Override
@@ -54,9 +47,6 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
                 .withStyle(ChatFormatting.WHITE);
         final var result = new ArrayList<Component>();
         result.add(Component.translatable("tooltip.waystones.visibility", visibilityValueComponent).withStyle(ChatFormatting.YELLOW));
-        if (this.network != null) {
-            result.add(Component.translatable("tooltip.waystones.network", this.network).withStyle(ChatFormatting.ITALIC));
-        }
         if (!canEdit) {
             result.add(Component.translatable("tooltip.waystones.edit_restricted", visibilityValueComponent).withStyle(ChatFormatting.RED));
         }

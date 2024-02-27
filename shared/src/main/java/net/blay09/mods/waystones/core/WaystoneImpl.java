@@ -45,16 +45,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         this.pos = pos;
         this.origin = origin;
         this.ownerUid = ownerUid;
-
-        if (WaystoneTypes.isSharestone(waystoneType)) {
-            this.visibility = WaystoneVisibility.NETWORK;
-        } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
-            this.visibility = WaystoneVisibility.SHARD_ONLY;
-        } else if (waystoneType.equals(WaystoneTypes.LANDING_STONE)) {
-            this.visibility = WaystoneVisibility.SHARD_ONLY;
-        } else {
-            this.visibility = WaystoneVisibility.ACTIVATION;
-        }
+        this.visibility = WaystoneVisibility.fromWaystoneType(waystoneType);
     }
 
     @Override
