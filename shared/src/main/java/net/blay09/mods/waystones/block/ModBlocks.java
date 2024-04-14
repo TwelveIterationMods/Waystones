@@ -28,7 +28,7 @@ public class ModBlocks {
         blocks.register(() -> waystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(waystone), id("waystone"));
         blocks.register(() -> mossyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(mossyWaystone), id("mossy_waystone"));
         blocks.register(() -> sandyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(sandyWaystone), id("sandy_waystone"));
-        blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(deepslateWaystone), id("deepslate_waystone"));
+        blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.DEEPSLATE)), () -> itemBlock(deepslateWaystone), id("deepslate_waystone"));
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
         blocks.register(() -> sharestone = new SharestoneBlock(null, defaultProperties()), () -> itemBlock(sharestone), id("sharestone"));
