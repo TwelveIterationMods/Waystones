@@ -12,6 +12,25 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class ModBlocks {
 
+    private static final DyeColor[] sharestoneColors = new DyeColor[]{
+            DyeColor.WHITE,
+            DyeColor.ORANGE,
+            DyeColor.MAGENTA,
+            DyeColor.LIGHT_BLUE,
+            DyeColor.YELLOW,
+            DyeColor.LIME,
+            DyeColor.PINK,
+            DyeColor.GRAY,
+            DyeColor.LIGHT_GRAY,
+            DyeColor.CYAN,
+            DyeColor.PURPLE,
+            DyeColor.BLUE,
+            DyeColor.BROWN,
+            DyeColor.GREEN,
+            DyeColor.RED,
+            DyeColor.BLACK
+    };
+
     public static Block waystone;
     public static Block mossyWaystone;
     public static Block sandyWaystone;
@@ -22,13 +41,15 @@ public class ModBlocks {
     public static Block warpPlate;
     public static Block portstone;
     public static Block landingStone;
-    public static Block[] scopedSharestones = new SharestoneBlock[DyeColor.values().length];
+    public static Block[] scopedSharestones = new SharestoneBlock[sharestoneColors.length];
 
     public static void initialize(BalmBlocks blocks) {
         blocks.register(() -> waystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(waystone), id("waystone"));
         blocks.register(() -> mossyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(mossyWaystone), id("mossy_waystone"));
         blocks.register(() -> sandyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(sandyWaystone), id("sandy_waystone"));
-        blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.DEEPSLATE)), () -> itemBlock(deepslateWaystone), id("deepslate_waystone"));
+        blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.DEEPSLATE)),
+                () -> itemBlock(deepslateWaystone),
+                id("deepslate_waystone"));
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
         blocks.register(() -> sharestone = new SharestoneBlock(null, defaultProperties()), () -> itemBlock(sharestone), id("sharestone"));
@@ -36,8 +57,7 @@ public class ModBlocks {
         blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
         blocks.register(() -> landingStone = new LandingStoneBlock(defaultProperties()), () -> itemBlock(landingStone), id("landing_stone"));
 
-        DyeColor[] colors = DyeColor.values();
-        for (DyeColor color : colors) {
+        for (DyeColor color : sharestoneColors) {
             blocks.register(() -> scopedSharestones[color.ordinal()] = new SharestoneBlock(color, defaultProperties()),
                     () -> itemBlock(scopedSharestones[color.ordinal()]),
                     id(color.getSerializedName() + "_sharestone"));
