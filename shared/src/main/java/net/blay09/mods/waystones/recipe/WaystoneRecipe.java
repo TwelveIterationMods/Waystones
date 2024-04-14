@@ -26,9 +26,11 @@ public class WaystoneRecipe implements Recipe<Container> {
         this.primaryIngredient = primaryIngredient;
         this.secondaryIngredients = secondaryIngredients;
 
-        this.combinedIngredients = NonNullList.createWithCapacity(5);
-        this.combinedIngredients.add(primaryIngredient);
-        this.combinedIngredients.addAll(secondaryIngredients);
+        this.combinedIngredients = NonNullList.withSize(5, Ingredient.EMPTY);
+        this.combinedIngredients.set(0, primaryIngredient);
+        for (int i = 0; i < secondaryIngredients.size(); i++) {
+            this.combinedIngredients.set(i + 1, secondaryIngredients.get(i));
+        }
     }
 
     @Override
