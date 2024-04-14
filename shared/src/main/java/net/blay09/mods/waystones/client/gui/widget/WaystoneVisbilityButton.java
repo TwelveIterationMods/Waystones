@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), 176 + (isHovered ? 18 : 0), 14, 18, 18);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), 176, 32 + (visibility.ordinal() * 18), 18, 18);
+        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), visibility.getIconX(), visibility.getIconY(), 18, 18);
     }
 
     @Override

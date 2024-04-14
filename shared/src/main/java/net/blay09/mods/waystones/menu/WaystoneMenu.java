@@ -104,20 +104,15 @@ public class WaystoneMenu extends AbstractContainerMenu {
     }
 
     public List<WaystoneVisibility> getVisibilityOptions() {
-        if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            return List.of(WaystoneVisibility.GLOBAL);
-        } else if (waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)) {
-            return List.of(WaystoneVisibility.SHARD_ONLY);
-        } else if (waystone.getWaystoneType().equals(WaystoneTypes.LANDING_STONE)) {
-            return List.of(WaystoneVisibility.SHARD_ONLY);
-        } else {
-            final var result = new ArrayList<WaystoneVisibility>();
-            result.add(WaystoneVisibility.ACTIVATION);
+        final var result = new ArrayList<WaystoneVisibility>();
+        final var baseVisibility = WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType());
+        result.add(baseVisibility);
+        if (baseVisibility == WaystoneVisibility.ACTIVATION) {
             if (WaystonePermissionManager.isAllowedVisibility(WaystoneVisibility.GLOBAL) || WaystonePermissionManager.skipsPermissions(player)) {
                 result.add(WaystoneVisibility.GLOBAL);
             }
-            return result;
         }
+        return result;
     }
 
     public boolean canEdit() {

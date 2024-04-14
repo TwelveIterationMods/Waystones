@@ -15,7 +15,23 @@ import java.util.Set;
 
 public class WaystonePermissionManager {
 
-    private static final Set<WaystoneVisibility> DEFAULT_VISIBILITIES = Set.of(WaystoneVisibility.SHARD_ONLY, WaystoneVisibility.ACTIVATION);
+    private static final Set<WaystoneVisibility> DEFAULT_VISIBILITIES = Set.of(WaystoneVisibility.SHARD_ONLY, WaystoneVisibility.ACTIVATION,
+            WaystoneVisibility.WHITE_SHARESTONE,
+            WaystoneVisibility.ORANGE_SHARESTONE,
+            WaystoneVisibility.MAGENTA_SHARESTONE,
+            WaystoneVisibility.LIGHT_BLUE_SHARESTONE,
+            WaystoneVisibility.YELLOW_SHARESTONE,
+            WaystoneVisibility.LIME_SHARESTONE,
+            WaystoneVisibility.PINK_SHARESTONE,
+            WaystoneVisibility.GRAY_SHARESTONE,
+            WaystoneVisibility.LIGHT_GRAY_SHARESTONE,
+            WaystoneVisibility.CYAN_SHARESTONE,
+            WaystoneVisibility.PURPLE_SHARESTONE,
+            WaystoneVisibility.BLUE_SHARESTONE,
+            WaystoneVisibility.BROWN_SHARESTONE,
+            WaystoneVisibility.GREEN_SHARESTONE,
+            WaystoneVisibility.RED_SHARESTONE,
+            WaystoneVisibility.BLACK_SHARESTONE);
 
     public static Optional<WaystoneEditError> mayEditWaystone(Player player, Level world, Waystone waystone) {
         if (skipsPermissions(player)) {
