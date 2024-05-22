@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sharestone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#waystones:sharestones"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:brown_sharestone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sharestone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:brown_sharestone"
+    ]
+  }
+}

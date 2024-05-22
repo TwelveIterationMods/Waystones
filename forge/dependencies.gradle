@@ -1,4 +1,7 @@
 dependencies {
+    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+        changing = balm_version.contains("SNAPSHOT")
+    }
     compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
     compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
     compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.4-SNAPSHOT' apply(false)
+    id 'fabric-loom' version '1.6-SNAPSHOT' apply(false)
     // id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT' apply(false) // this causes ForgeGradle to fail in reobf
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7" // this is required for VanillaGradle and NeoForge to exist in harmony
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT' apply(false)
@@ -8,87 +8,10 @@ plugins {
 }
 
 subprojects {
-    apply plugin: 'java'
-
-    java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
-    java.withSourcesJar()
-    java.withJavadocJar()
-
-    jar {
-        from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod_id}" }
-        }
-        manifest {
-            attributes([
-                    "Specification-Title"     : mod_id,
-                    "Specification-Vendor"    : "BlayTheNinth",
-                    "Specification-Version"   : project.jar.archiveVersion,
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
-                    "Implementation-Vendor"   : "BlayTheNinth"
-            ])
-        }
-    }
-
-    sourcesJar {
-        from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod_id}" }
-        }
-    }
-
-    repositories {
-        mavenCentral()
-
-        maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
-    }
-
-    apply from: rootProject.file('repositories.gradle')
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.encoding = 'UTF-8'
-        it.options.getRelease().set(java_version.toInteger())
-    }
-
-    tasks.withType(Javadoc).configureEach {
-        failOnError false
-    }
-
-    processResources {
-        def expandProps = [
-                "version": version,
-                "group": project.group, //Else we target the task's group.
-                "minecraft_version": minecraft_version,
-                "forge_version": forge_version,
-                "forge_loader_version_range": forge_loader_version_range,
-                "forge_version_range": forge_version_range,
-                "minecraft_version_range": minecraft_version_range,
-                "fabric_version": fabric_version,
-                "fabric_loader_version": fabric_loader_version,
-                "mod_name": mod_name,
-                "mod_main": mod_main,
-                "mod_id": mod_id,
-                "homepage": homepage,
-                "issues": issues,
-                "sources": sources,
-                "license": license,
-                "description": project.description,
-                "neoforge_version": neoforge_version,
-                "neoforge_version_range": neoforge_version_range,
-                "neoforge_loader_version_range": neoforge_loader_version_range,
-                "balm_version_range": balm_version_range,
-                "pack_format_number": pack_format_number
-        ]
-
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
-            expand expandProps
-        }
-        inputs.properties(expandProps)
-    }
-
-    // Disables Gradle's custom module metadata from being published to maven. The
-    // metadata includes mapped dependencies which are not reasonably consumable by
-    // other mod developers.
-    tasks.withType(GenerateModuleMetadata).configureEach {
-        enabled = false
-    }
+	configurations.all {
+		resolutionStrategy {
+			cacheChangingModulesFor 60, 'seconds'
+			cacheDynamicVersionsFor 60, 'seconds'
+		}
+	}
 }

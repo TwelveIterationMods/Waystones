@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.fabric;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.waystones.Waystones;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ public class FabricWaystones implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Balm.initialize(Waystones.MOD_ID, Waystones::initialize);
+        Balm.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, Waystones::initialize);
 
         // TODO would be nice if we could use Balm.initializeIfLoaded here, but it might run too late at the moment)
         if (Balm.isModLoaded("repurposed_structures")) {

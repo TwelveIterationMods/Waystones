@@ -24,4 +24,4 @@ runs
 runserver
 logs
 
-shared/src/generated/resources/.cache
+common/src/generated/resources/.cache

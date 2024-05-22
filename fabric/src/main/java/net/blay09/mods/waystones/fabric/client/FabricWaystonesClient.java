@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.fabric.client;
 
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.WaystonesClient;
@@ -9,6 +10,6 @@ public class FabricWaystonesClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        BalmClient.initialize(Waystones.MOD_ID, WaystonesClient::initialize);
+        BalmClient.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, WaystonesClient::initialize);
     }
 }
