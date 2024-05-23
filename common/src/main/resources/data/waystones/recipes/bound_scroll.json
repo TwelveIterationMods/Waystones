@@ -1,7 +1,7 @@
 {
   "type": "waystones:waystone",
   "result": {
-    "item": "waystones:bound_scroll",
+    "id": "waystones:bound_scroll",
     "count": 1
   },
   "primary": {

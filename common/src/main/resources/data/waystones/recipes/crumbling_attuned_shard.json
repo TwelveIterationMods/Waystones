@@ -1,7 +1,7 @@
 {
   "type": "waystones:waystone",
   "result": {
-    "item": "waystones:crumbling_attuned_shard",
+    "id": "waystones:crumbling_attuned_shard",
     "count": 4
   },
   "primary": {
