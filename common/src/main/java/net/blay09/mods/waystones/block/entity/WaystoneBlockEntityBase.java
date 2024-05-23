@@ -65,7 +65,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
 
     private boolean readyForAttunement;
-    private boolean completedFirstAttunement;
+    protected boolean completedFirstAttunement;
 
     protected int attunementTicks;
     private Waystone waystone = InvalidWaystone.INSTANCE;
@@ -107,6 +107,14 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
         readyForAttunement = compound.getBoolean("ReadyForAttunement");
         completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        final var waystoneUidComponent = input.get(ModComponents.waystone.get());
+        if (waystoneUidComponent != null) {
+            waystoneUid = waystoneUidComponent;
+        }
     }
 
     @Override

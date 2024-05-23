@@ -81,6 +81,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     }
 
     @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        if (input.get(ModComponents.warpPlateCompletedFirstAttunement.get()) != null) {
+            completedFirstAttunement = true;
+        }
+    }
+
+    @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         if (isCompletedFirstAttunement()) {
