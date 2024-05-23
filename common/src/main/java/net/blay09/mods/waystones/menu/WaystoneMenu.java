@@ -44,11 +44,11 @@ public class WaystoneMenu extends AbstractContainerMenu {
 
         checkContainerDataCount(containerData, 1);
 
-        addSlot(new WarpPlateAttunementSlot(blockEntity, 0, 80, 64));
-        addSlot(new WarpPlateAttunementSlot(blockEntity, 1, 80, 36));
-        addSlot(new WarpPlateAttunementSlot(blockEntity, 2, 108, 64));
-        addSlot(new WarpPlateAttunementSlot(blockEntity, 3, 80, 92));
-        addSlot(new WarpPlateAttunementSlot(blockEntity, 4, 52, 64));
+        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 0, 80, 64));
+        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 1, 80, 36));
+        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 2, 108, 64));
+        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 3, 80, 92));
+        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 4, 52, 64));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {

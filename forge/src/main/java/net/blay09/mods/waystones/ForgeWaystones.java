@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.waystones.client.WaystonesClient;
 import net.blay09.mods.waystones.compat.Compat;
@@ -18,8 +19,8 @@ public class ForgeWaystones {
     private static final Logger logger = LoggerFactory.getLogger(ForgeWaystones.class);
 
     public ForgeWaystones() {
-        Balm.initialize(Waystones.MOD_ID, Waystones::initialize);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, WaystonesClient::initialize));
+        Balm.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, Waystones::initialize);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, EmptyLoadContext.INSTANCE, WaystonesClient::initialize));
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 

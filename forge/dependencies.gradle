@@ -1,15 +1,18 @@
 dependencies {
-    implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}") {
+    implementation("net.blay09.mods:balm-forge:${balm_version}") {
         changing = balm_version.contains("SNAPSHOT")
     }
-    compileOnly fg.deobf(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
-    compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
-    compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
-    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
+    compileOnly(group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_forge_version, changing: true)
+    compileOnly("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
+    compileOnly("curse.maven:jade-324717:$jade_forge_version")
+    compileOnly("mcp.mobius.waila:wthit-api:forge-$wthit_version")
+    compileOnly("curse.maven:the-one-probe-245211:$theoneprobe_version")
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
     //runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
+
+    // temporary hacky fix as suggested by Forge
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 configurations {

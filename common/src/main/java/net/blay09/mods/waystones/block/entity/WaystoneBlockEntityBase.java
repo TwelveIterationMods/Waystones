@@ -2,7 +2,9 @@ package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
-import net.blay09.mods.balm.api.container.ImplementedContainer;
+import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import net.blay09.mods.balm.api.container.DefaultContainer;
+import net.blay09.mods.balm.api.container.ExtractionAwareContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,7 +46,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, ImplementedContainer {
+public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
 
     protected final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -61,6 +64,24 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             return 1;
         }
     };
+
+    private class WaystoneContainer extends DefaultContainer implements ExtractionAwareContainer {
+        public WaystoneContainer(int size) {
+            super(size);
+        }
+
+        @Override
+        public boolean canTakeItem(Container container, int slot, ItemStack itemStack) {
+            return isCompletedFirstAttunement();
+        }
+
+        @Override
+        public boolean canExtractItem(int i) {
+            return isCompletedFirstAttunement();
+        }
+    }
+
+    protected final Container container = new WaystoneContainer(5);
 
     private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
 
@@ -200,23 +221,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         }
     }
 
-    @Override
-    public ItemStack removeItem(int slot, int count) {
-        if (!isCompletedFirstAttunement()) {
-            return ItemStack.EMPTY;
-        }
-        return ImplementedContainer.super.removeItem(slot, count);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int slot) {
-        if (!isCompletedFirstAttunement()) {
-            return ItemStack.EMPTY;
-        }
-
-        return ImplementedContainer.super.removeItemNoUpdate(slot);
-    }
-
     public void initializeFromExisting(ServerLevelAccessor world, WaystoneImpl existingWaystone, ItemStack itemStack) {
         waystone = existingWaystone;
         existingWaystone.setDimension(world.getLevel().dimension());
@@ -277,11 +281,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         return 30;
     }
 
-    @Override
-    public NonNullList<ItemStack> getItems() {
-        return items;
-    }
-
     public ContainerData getContainerData() {
         return dataAccess;
     }
@@ -296,11 +295,11 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         }
 
         // Prevent crafting when more than one item is present in center slot
-        if (getItem(0).getCount() > 1) {
+        if (container.getItem(0).getCount() > 1) {
             return null;
         }
 
-        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, this, level)
+        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, container, level)
                 .map(RecipeHolder::value).orElse(null);
     }
 
@@ -319,18 +318,18 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     protected void craft(WaystoneRecipe recipe) {
-        ItemStack attunedShard = recipe.assemble(this, RegistryAccess.EMPTY);
+        ItemStack attunedShard = recipe.assemble(container, RegistryAccess.EMPTY);
         WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
-        ItemStack centerStack = getItem(0);
+        ItemStack centerStack = container.getItem(0);
         if (centerStack.getCount() > 1) {
             centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
             if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
                 Minecraft.getInstance().player.drop(centerStack, false);
             }
         }
-        setItem(0, attunedShard);
+        container.setItem(0, attunedShard);
         for (int i = 1; i <= 4; i++) {
-            getItem(i).shrink(1);
+            container.getItem(i).shrink(1);
         }
 
         this.completedFirstAttunement = true;
@@ -338,7 +337,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     public Collection<? extends Waystone> getAuxiliaryTargets() {
         final var result = new ArrayList<Waystone>();
-        for (final var item : getItems()) {
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            final var item = container.getItem(i);
             WaystonesAPI.getBoundWaystone(null, item).ifPresent(result::add);
         }
         return result;
@@ -376,7 +376,12 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             final var ingredient = initializingRecipe.getIngredients().get(i);
             final var ingredientItems = ingredient.getItems();
             final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
-            setItem(i, ingredientItem.copy());
+            container.setItem(i, ingredientItem.copy());
         }
+    }
+
+    @Override
+    public Container getContainer() {
+        return container;
     }
 }

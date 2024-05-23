@@ -227,8 +227,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
 
     private int getWarpPlateUseTime() {
         float useTimeMultiplier = 1;
-        for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack itemStack = getItem(i);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack itemStack = container.getItem(i);
             if (itemStack.getItem() == Items.AMETHYST_SHARD) {
                 useTimeMultiplier -= 0.016f * itemStack.getCount();
             } else if (itemStack.getItem() == Items.SLIME_BALL) {
@@ -277,8 +277,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         int witherSeconds = 0;
         int potency = 1;
         List<ItemStack> curativeItems = new ArrayList<>();
-        for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack itemStack = getItem(i);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack itemStack = container.getItem(i);
             if (itemStack.getItem() == Items.BLAZE_POWDER) {
                 fireSeconds += itemStack.getCount();
             } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
@@ -327,8 +327,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         boolean shouldRoundRobin = false;
         boolean shouldPrioritizeSingleUseShards = false;
         List<ItemStack> attunedShards = new ArrayList<>();
-        for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack itemStack = getItem(i);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack itemStack = container.getItem(i);
             if (itemStack.is(ModItemTags.WARP_SHARDS)) {
                 Waystone waystoneAttunedTo = WaystonesAPI.getBoundWaystone(null, itemStack).orElse(null);
                 if (waystoneAttunedTo != null && !waystoneAttunedTo.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
