@@ -10,9 +10,6 @@ dependencies {
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
     //runtimeOnly fg.deobf("curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}")
-
-    // temporary hacky fix as suggested by Forge
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 configurations {
