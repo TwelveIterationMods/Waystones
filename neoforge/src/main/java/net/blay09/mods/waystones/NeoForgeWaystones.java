@@ -2,9 +2,11 @@ package net.blay09.mods.waystones;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.neoforge.NeoForgeLoadContext;
 import net.blay09.mods.waystones.client.WaystonesClient;
 import net.blay09.mods.waystones.compat.Compat;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
@@ -13,13 +15,15 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 
 @Mod(Waystones.MOD_ID)
-public class ForgeWaystones {
+public class NeoForgeWaystones {
 
-    private static final Logger logger = LoggerFactory.getLogger(ForgeWaystones.class);
+    private static final Logger logger = LoggerFactory.getLogger(NeoForgeWaystones.class);
 
-    public ForgeWaystones() {
-        Balm.initialize(Waystones.MOD_ID, Waystones::initialize);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, WaystonesClient::initialize));
+    public NeoForgeWaystones(IEventBus modEventBus) {
+        final var context = new NeoForgeLoadContext(modEventBus);
+        Balm.initialize(Waystones.MOD_ID, context, Waystones::initialize);
+        // TODO client entry point
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> BalmClient.initialize(Waystones.MOD_ID, context, WaystonesClient::initialize));
 
         Balm.initializeIfLoaded(Compat.THEONEPROBE, "net.blay09.mods.waystones.compat.TheOneProbeIntegration");
 
