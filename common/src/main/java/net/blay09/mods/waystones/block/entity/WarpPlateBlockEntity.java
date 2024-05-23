@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.menu.WarpPlateMenu;
@@ -15,6 +16,7 @@ import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,6 +25,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -75,6 +78,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     @Override
     protected ResourceLocation getWaystoneType() {
         return WaystoneTypes.WARP_PLATE;
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        if (isCompletedFirstAttunement()) {
+            builder.set(ModComponents.warpPlateCompletedFirstAttunement.get(), Unit.INSTANCE);
+        }
     }
 
     @Override

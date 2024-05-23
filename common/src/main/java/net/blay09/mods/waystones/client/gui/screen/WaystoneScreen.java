@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
+import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
@@ -65,7 +66,8 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
             setInitialFocus(textField);
         }
 
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, menu.getVisibilityOptions(), menu.canEdit());
+        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(Minecraft.getInstance().player, waystone);
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, visibilityOptions, menu.canEdit());
         addRenderableWidget(visibilityButton);
     }
 

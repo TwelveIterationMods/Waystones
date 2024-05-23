@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.25,6.2)'
     id 'org.spongepowered.mixin'
     id 'net.darkhax.curseforgegradle'
     id "com.modrinth.minotaur"

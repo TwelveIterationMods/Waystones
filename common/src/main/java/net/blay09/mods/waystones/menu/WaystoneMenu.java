@@ -1,10 +1,8 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneImpl;
-import net.blay09.mods.waystones.core.WaystonePermissionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,9 +13,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WaystoneMenu extends AbstractContainerMenu {
 
@@ -33,7 +28,6 @@ public class WaystoneMenu extends AbstractContainerMenu {
             WaystoneMenu.Data::canEdit,
             WaystoneMenu.Data::new);
 
-    private final Player player;
     private final Waystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final ContainerData containerData;
@@ -41,7 +35,6 @@ public class WaystoneMenu extends AbstractContainerMenu {
 
     public WaystoneMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
-        this.player = playerInventory.player;
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.containerData = containerData;
@@ -115,18 +108,6 @@ public class WaystoneMenu extends AbstractContainerMenu {
 
     public Waystone getWaystone() {
         return waystone;
-    }
-
-    public List<WaystoneVisibility> getVisibilityOptions() {
-        final var result = new ArrayList<WaystoneVisibility>();
-        final var baseVisibility = WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType());
-        result.add(baseVisibility);
-        if (baseVisibility == WaystoneVisibility.ACTIVATION) {
-            if (WaystonePermissionManager.isAllowedVisibility(WaystoneVisibility.GLOBAL) || WaystonePermissionManager.skipsPermissions(player)) {
-                result.add(WaystoneVisibility.GLOBAL);
-            }
-        }
-        return result;
     }
 
     public boolean canEdit() {

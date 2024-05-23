@@ -4,7 +4,6 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.menu.WaystoneMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -49,14 +48,11 @@ public class EditWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        if (!(player.containerMenu instanceof WaystoneMenu settingsMenu)) {
-            return;
-        }
-
         var visibility = message.visibility;
-        if (!settingsMenu.getVisibilityOptions().contains(message.visibility)) {
+        final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(player, waystone);
+        if (!visibilityOptions.contains(message.visibility)) {
             Waystones.logger.warn("{} tried to edit a waystone with an invalid visibility {}", player.getName().getString(), message.visibility);
-            visibility = settingsMenu.getVisibilityOptions().get(0);
+            visibility = visibilityOptions.getFirst();
         }
 
         if (!WaystonePermissionManager.isAllowedVisibility(visibility) && !WaystonePermissionManager.skipsPermissions(player)) {

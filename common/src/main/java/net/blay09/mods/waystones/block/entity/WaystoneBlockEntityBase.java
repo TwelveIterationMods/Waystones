@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -106,6 +107,11 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
         readyForAttunement = compound.getBoolean("ReadyForAttunement");
         completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        builder.set(ModComponents.waystone.get(), waystone.isValid() ? waystone.getWaystoneUid() : waystoneUid);
     }
 
     @Override
