@@ -7,17 +7,21 @@ import net.blay09.mods.waystones.tag.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.blay09.mods.waystones.recipe.WaystoneRecipeBuilder.waystone;
 import static net.minecraft.data.recipes.ShapedRecipeBuilder.shaped;
 import static net.minecraft.data.recipes.ShapelessRecipeBuilder.shapeless;
 
@@ -191,6 +195,25 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .requires(Items.ENDER_PEARL)
                 .requires(Items.AMETHYST_SHARD)
                 .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+                .save(exporter);
+
+        waystone(RecipeCategory.MISC, ModItems.attunedShard.getDefaultInstance())
+                .primaryIngredient(Ingredient.of(Items.FLINT))
+                .setSecondaryIngredients(NonNullList.withSize(4, Ingredient.of(ModItems.warpDust)))
+                .unlockedBy("has_flint", has(Items.FLINT))
+                .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                .save(exporter);
+
+        waystone(RecipeCategory.MISC, ModItems.boundScroll.getDefaultInstance())
+                .primaryIngredient(Ingredient.of(ModItems.warpScroll))
+                .unlockedBy("has_warp_scroll", has(ModItems.warpScroll))
+                .save(exporter);
+
+        waystone(RecipeCategory.MISC, new ItemStack(ModItems.crumblingAttunedShard, 4))
+                .primaryIngredient(Ingredient.of(Items.ENDER_PEARL))
+                .setSecondaryIngredients(NonNullList.withSize(4, Ingredient.of(Items.AMETHYST_SHARD)))
+                .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                 .save(exporter);
     }
 

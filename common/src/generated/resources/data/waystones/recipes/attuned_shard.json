@@ -1,11 +1,11 @@
 {
   "type": "waystones:waystone",
-  "result": {
-    "id": "waystones:attuned_shard",
-    "count": 1
-  },
   "primary": {
     "item": "minecraft:flint"
+  },
+  "result": {
+    "count": 1,
+    "id": "waystones:attuned_shard"
   },
   "secondary": [
     {
