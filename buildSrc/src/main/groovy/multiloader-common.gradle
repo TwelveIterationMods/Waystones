@@ -4,8 +4,8 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_id}-${project.name}"
-    version = "${version}+${minecraft_version}"
+    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    version = project.version
 }
 
 java {
@@ -108,7 +108,7 @@ publishing {
     publications {
         register('mavenJava', MavenPublication) {
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
-            artifactId base.archivesName.get()
+            artifactId "${mod_id}-${project.name}"
             from components.java
         }
     }
