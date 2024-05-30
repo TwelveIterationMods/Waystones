@@ -101,6 +101,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     def mainFile = upload(curseforge_forge_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
+    mainFile.addRequirement("balm")
     project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
     mainFile.releaseType = "release"
 }
@@ -115,4 +116,7 @@ modrinth {
     gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['forge']
+    dependencies {
+        required.project "balm"
+    }
 }
