@@ -13,6 +13,25 @@ import org.jetbrains.annotations.Nullable;
 
 public class ModBlocks {
 
+    private static final DyeColor[] portstoneColors = new DyeColor[]{
+            DyeColor.WHITE,
+            DyeColor.ORANGE,
+            DyeColor.MAGENTA,
+            DyeColor.LIGHT_BLUE,
+            DyeColor.YELLOW,
+            DyeColor.LIME,
+            DyeColor.PINK,
+            DyeColor.GRAY,
+            DyeColor.LIGHT_GRAY,
+            DyeColor.CYAN,
+            DyeColor.PURPLE,
+            DyeColor.BLUE,
+            DyeColor.BROWN,
+            DyeColor.GREEN,
+            DyeColor.RED,
+            DyeColor.BLACK
+    };
+
     private static final DyeColor[] sharestoneColors = new DyeColor[]{
             DyeColor.ORANGE,
             DyeColor.MAGENTA,
@@ -38,8 +57,8 @@ public class ModBlocks {
     public static Block blackstoneWaystone;
     public static Block endStoneWaystone;
     public static Block warpPlate;
-    public static Block portstone;
     public static Block landingStone;
+    public static final PortstoneBlock[] portstones = new PortstoneBlock[portstoneColors.length];
     public static final SharestoneBlock[] sharestones = new SharestoneBlock[sharestoneColors.length];
 
     public static void initialize(BalmBlocks blocks) {
@@ -52,10 +71,15 @@ public class ModBlocks {
         blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
         blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
         blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
-        blocks.register(() -> portstone = new PortstoneBlock(defaultProperties()), () -> itemBlock(portstone), id("portstone"));
         blocks.register(() -> landingStone = new LandingStoneBlock(defaultProperties()), () -> itemBlock(landingStone), id("landing_stone"));
 
-        for (DyeColor color : sharestoneColors) {
+        for (final var color : portstoneColors) {
+            blocks.register(() -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties()),
+                    () -> itemBlock(portstones[color.ordinal()]),
+                    id(color.getSerializedName() + "_portstone"));
+        }
+
+        for (final var color : sharestoneColors) {
             blocks.register(() -> sharestones[color.ordinal() - 1] = new SharestoneBlock(color, defaultProperties()),
                     () -> itemBlock(sharestones[color.ordinal() - 1]),
                     id(color.getSerializedName() + "_sharestone"));
@@ -83,4 +107,15 @@ public class ModBlocks {
 
         return sharestones[index];
     }
+
+    @Nullable
+    public static PortstoneBlock getPortstone(DyeColor color) {
+        final var index = color.ordinal();
+        if (index >= portstones.length) {
+            return null;
+        }
+
+        return portstones[index];
+    }
+
 }

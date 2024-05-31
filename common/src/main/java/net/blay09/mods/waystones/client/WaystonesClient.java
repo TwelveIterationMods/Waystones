@@ -25,6 +25,7 @@ public class WaystonesClient {
         ModRenderers.initialize(BalmClient.getRenderers());
         ModScreens.initialize(BalmClient.getScreens());
         ModTextures.initialize(BalmClient.getTextures());
+        ModModels.initialize(BalmClient.getModels());
 
         InventoryButtonGuiHandler.initialize();
 

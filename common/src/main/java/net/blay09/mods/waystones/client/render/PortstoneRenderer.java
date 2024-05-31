@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.PortstoneBlock;
+import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -49,23 +51,24 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             warpStoneItem.enchant(Enchantments.UNBREAKING, 1);
         }
 
-        poseStack.pushPose();
-        poseStack.translate(0.5f, 0f, 0.5f);
-        poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
-        poseStack.mulPose(Axis.XN.rotationDegrees(180f));
-        poseStack.translate(0f, -2f, 0f);
-        float scale = 1.01f;
-        poseStack.scale(0.5f, 0.5f, 0.5f);
-        poseStack.scale(scale, scale, scale);
+        DyeColor color = ((PortstoneBlock) state.getBlock()).getColor();
+        if (color != null) {
+            poseStack.pushPose();
+            poseStack.translate(0.5f, 0f, 0.5f);
+            poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+            poseStack.mulPose(Axis.XN.rotationDegrees(180f));
+            poseStack.translate(0f, -2f, 0f);
+            float scale = 1.01f;
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+            poseStack.scale(scale, scale, scale);
 
-        VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
-        int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
-        int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-        long gameTime = level.getGameTime();
-        float min = 0.7f;
-        float color = (float) Math.max(min, min + Math.abs(Math.sin(gameTime / 32f)) * (1f - min));
-        model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color, color, color, 1f);
-        poseStack.popPose();
+            VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
+            int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
+            int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
+            float[] colors = color.getTextureDiffuseColors();
+            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
+            poseStack.popPose();
+        }
 
         poseStack.pushPose();
         poseStack.translate(0.5f, 1f, 0.5f);
@@ -74,7 +77,9 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
         poseStack.mulPose(Axis.XN.rotationDegrees(25f));
         poseStack.scale(0.5f, 0.5f, 0.5f);
         poseStack.translate(0.03125f, 0f, 0f);
-        Minecraft.getInstance().getItemRenderer().renderStatic(warpStoneItem, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, buffer, level, 0);
+        Minecraft.getInstance()
+                .getItemRenderer()
+                .renderStatic(warpStoneItem, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, buffer, level, 0);
         poseStack.popPose();
     }
 }

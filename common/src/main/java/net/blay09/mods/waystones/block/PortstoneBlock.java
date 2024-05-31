@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.block;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.Waystone;
@@ -22,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -46,7 +48,9 @@ import java.util.List;
 
 public class PortstoneBlock extends WaystoneBlockBase {
 
-    public static final MapCodec<PortstoneBlock> CODEC = simpleCodec(PortstoneBlock::new);
+    public static final MapCodec<PortstoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color")
+                    .forGetter(PortstoneBlock::getColor), propertiesCodec())
+            .apply(instance, PortstoneBlock::new));
 
     private static final VoxelShape[] LOWER_SHAPES = new VoxelShape[]{
             // South
@@ -110,9 +114,17 @@ public class PortstoneBlock extends WaystoneBlockBase {
             ).optimize()
     };
 
-    public PortstoneBlock(Properties properties) {
+    @Nullable
+    private final DyeColor color;
+
+    public PortstoneBlock(@Nullable DyeColor color, Properties properties) {
         super(properties);
+        this.color = color;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
+    }
+
+    public @Nullable DyeColor getColor() {
+        return color;
     }
 
     @Override

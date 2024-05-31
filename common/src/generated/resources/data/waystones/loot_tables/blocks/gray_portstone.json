@@ -5,7 +5,7 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "block": "waystones:portstone",
+          "block": "waystones:gray_portstone",
           "condition": "minecraft:block_state_property",
           "properties": {
             "half": "lower"
@@ -18,7 +18,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "waystones:portstone"
+          "name": "waystones:gray_portstone"
         }
       ],
       "functions": [

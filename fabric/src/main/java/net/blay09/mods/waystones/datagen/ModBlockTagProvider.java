@@ -19,8 +19,8 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        TagKey<Block> mineablePickaxeTag = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "mineable/pickaxe"));
-        FabricTagProvider<Block>.FabricTagBuilder mineableBuilder = getOrCreateTagBuilder(mineablePickaxeTag);
+        final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "mineable/pickaxe"));
+        final var mineableBuilder = getOrCreateTagBuilder(mineablePickaxeTag);
         mineableBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
@@ -28,13 +28,15 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
-                ModBlocks.portstone,
                 ModBlocks.landingStone);
-        for (Block sharestone : ModBlocks.sharestones) {
+        for (final var portstone : ModBlocks.portstones) {
+            mineableBuilder.add(portstone);
+        }
+        for (final var sharestone : ModBlocks.sharestones) {
             mineableBuilder.add(sharestone);
         }
 
-        FabricTagProvider<Block>.FabricTagBuilder isTeleportTargetBuilder = getOrCreateTagBuilder(ModBlockTags.IS_TELEPORT_TARGET);
+        final var isTeleportTargetBuilder = getOrCreateTagBuilder(ModBlockTags.IS_TELEPORT_TARGET);
         isTeleportTargetBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,
                 ModBlocks.mossyWaystone,
@@ -42,9 +44,11 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
-                ModBlocks.portstone,
                 ModBlocks.landingStone);
-        for (Block sharestone : ModBlocks.sharestones) {
+        for (final var portstone : ModBlocks.portstones) {
+            isTeleportTargetBuilder.add(portstone);
+        }
+        for (final var sharestone : ModBlocks.sharestones) {
             isTeleportTargetBuilder.add(sharestone);
         }
 
@@ -55,9 +59,14 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.blackstoneWaystone,
                 ModBlocks.endStoneWaystone);
 
-        FabricTagProvider<Block>.FabricTagBuilder sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
-        for (Block sharestone : ModBlocks.sharestones) {
+        final var sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
+        for (final var sharestone : ModBlocks.sharestones) {
             sharestonesBuilder.add(sharestone);
+        }
+
+        final var portstonesBuilder = getOrCreateTagBuilder(ModBlockTags.PORTSTONES);
+        for (final var portstone : ModBlocks.portstones) {
+            portstonesBuilder.add(portstone);
         }
     }
 

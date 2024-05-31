@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.balm.api.tag.BalmItemTags;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.tag.ModItemTags;
@@ -95,16 +96,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_waystone", has(ModBlocks.waystone))
                 .save(exporter, new ResourceLocation("waystones", "mossy_waystone_from_vines"));
 
-        shaped(RecipeCategory.DECORATIONS, ModBlocks.portstone)
-                .pattern(" S ")
-                .pattern("SWS")
-                .pattern("BBB")
-                .define('S', Blocks.STONE_BRICKS)
-                .define('W', ModItems.warpStone)
-                .define('B', Blocks.POLISHED_ANDESITE)
-                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
-                .save(exporter);
-
         shaped(RecipeCategory.DECORATIONS, ModBlocks.warpPlate)
                 .pattern("SWS")
                 .pattern("WFW")
@@ -125,7 +116,23 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .unlockedBy("has_warp_dust", has(ModItems.warpDust))
                 .save(exporter);
 
-        createSharestoneRecipe(exporter, DyeColor.WHITE, BalmItemTags.WHITE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.WHITE, BalmItemTags.WHITE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);
+        createPortstoneRecipe(exporter, DyeColor.LIGHT_BLUE, BalmItemTags.LIGHT_BLUE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.YELLOW, BalmItemTags.YELLOW_DYES);
+        createPortstoneRecipe(exporter, DyeColor.LIME, BalmItemTags.LIME_DYES);
+        createPortstoneRecipe(exporter, DyeColor.PINK, BalmItemTags.PINK_DYES);
+        createPortstoneRecipe(exporter, DyeColor.GRAY, BalmItemTags.GRAY_DYES);
+        createPortstoneRecipe(exporter, DyeColor.LIGHT_GRAY, BalmItemTags.LIGHT_GRAY_DYES);
+        createPortstoneRecipe(exporter, DyeColor.CYAN, BalmItemTags.CYAN_DYES);
+        createPortstoneRecipe(exporter, DyeColor.PURPLE, BalmItemTags.PURPLE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.BLUE, BalmItemTags.BLUE_DYES);
+        createPortstoneRecipe(exporter, DyeColor.BROWN, BalmItemTags.BROWN_DYES);
+        createPortstoneRecipe(exporter, DyeColor.GREEN, BalmItemTags.GREEN_DYES);
+        createPortstoneRecipe(exporter, DyeColor.RED, BalmItemTags.RED_DYES);
+        createPortstoneRecipe(exporter, DyeColor.BLACK, BalmItemTags.BLACK_DYES);
+
         createSharestoneRecipe(exporter, DyeColor.ORANGE, BalmItemTags.ORANGE_DYES);
         createSharestoneRecipe(exporter, DyeColor.MAGENTA, BalmItemTags.MAGENTA_DYES);
         createSharestoneRecipe(exporter, DyeColor.LIGHT_BLUE, BalmItemTags.LIGHT_BLUE_DYES);
@@ -192,6 +199,24 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('S', Blocks.STONE_BRICKS)
                 .define('W', ModItems.warpStone)
                 .define('O', Blocks.OBSIDIAN)
+                .define('D', dyeTag)
+                .unlockedBy("has_warp_stone", has(ModItems.warpStone))
+                .save(exporter);
+    }
+
+    private static void createPortstoneRecipe(RecipeOutput exporter, DyeColor color, TagKey<Item> dyeTag) {
+        final var portstone = ModBlocks.getPortstone(color);
+        if (portstone == null) {
+            return;
+        }
+
+        shaped(RecipeCategory.DECORATIONS, portstone)
+                .pattern("DSD")
+                .pattern("SWS")
+                .pattern("BBB")
+                .define('S', Blocks.STONE_BRICKS)
+                .define('W', ModItems.warpStone)
+                .define('B', Blocks.POLISHED_ANDESITE)
                 .define('D', dyeTag)
                 .unlockedBy("has_warp_stone", has(ModItems.warpStone))
                 .save(exporter);

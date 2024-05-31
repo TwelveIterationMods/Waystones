@@ -5,6 +5,9 @@
     "B": {
       "item": "minecraft:polished_andesite"
     },
+    "D": {
+      "tag": "c:dyes/magenta"
+    },
     "S": {
       "item": "minecraft:stone_bricks"
     },
@@ -13,12 +16,12 @@
     }
   },
   "pattern": [
-    " S ",
+    "DSD",
     "SWS",
     "BBB"
   ],
   "result": {
     "count": 1,
-    "id": "waystones:portstone"
+    "id": "waystones:magenta_portstone"
   }
 }

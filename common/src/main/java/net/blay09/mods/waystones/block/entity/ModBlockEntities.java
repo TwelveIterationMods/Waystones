@@ -23,7 +23,7 @@ public class ModBlockEntities {
                 SharestoneBlockEntity::new,
                 () -> ModBlocks.sharestones);
         warpPlate = blockEntities.registerBlockEntity(id("warp_plate"), WarpPlateBlockEntity::new, () -> new Block[]{ModBlocks.warpPlate});
-        portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> new Block[]{ModBlocks.portstone});
+        portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> ModBlocks.portstones);
         landingStone = blockEntities.registerBlockEntity(id("landing_stone"), LandingStoneBlockEntity::new, () -> new Block[]{ModBlocks.landingStone});
     }
 

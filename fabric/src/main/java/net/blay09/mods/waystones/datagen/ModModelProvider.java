@@ -38,8 +38,10 @@ public class ModModelProvider extends FabricModelProvider {
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.deepslateWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.blackstoneWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.endStoneWaystone);
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.portstone);
-        for (Block sharestone : ModBlocks.sharestones) {
+        for (final var portstone : ModBlocks.portstones) {
+            createPortstone(blockStateModelGenerator, portstone);
+        }
+        for (final var sharestone : ModBlocks.sharestones) {
             createSharestone(blockStateModelGenerator, sharestone);
         }
     }
@@ -55,8 +57,13 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
 
         final var sharestoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/sharestone")), Optional.empty());
-        for (Block sharestone : ModBlocks.sharestones) {
+        for (final var sharestone : ModBlocks.sharestones) {
             itemModelGenerator.generateFlatItem(sharestone.asItem(), sharestoneTemplate);
+        }
+
+        final var portstoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/portstone")), Optional.empty());
+        for (final var portstone : ModBlocks.portstones) {
+            itemModelGenerator.generateFlatItem(portstone.asItem(), portstoneTemplate);
         }
     }
 
@@ -79,6 +86,18 @@ public class ModModelProvider extends FabricModelProvider {
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, Block block) {
         final var topModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_top");
         final var bottomModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_bottom");
+        final var generator = MultiVariantGenerator.multiVariant(block)
+                .with(createHorizontalFacingDispatch())
+                .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
+                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        blockStateModelGenerator.blockStateOutput.accept(generator);
+        blockStateModelGenerator.skipAutoItemBlock(block);
+    }
+
+    private void createPortstone(BlockModelGenerators blockStateModelGenerator, Block block) {
+        final var topModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/portstone_top");
+        final var bottomModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
                 .with(createHorizontalFacingDispatch())
                 .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
