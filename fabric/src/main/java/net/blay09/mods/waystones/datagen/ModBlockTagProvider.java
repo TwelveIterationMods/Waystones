@@ -29,10 +29,9 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
-                ModBlocks.landingStone,
-                ModBlocks.sharestone);
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            mineableBuilder.add(scopedSharestone);
+                ModBlocks.landingStone);
+        for (Block sharestone : ModBlocks.sharestones) {
+            mineableBuilder.add(sharestone);
         }
 
         FabricTagProvider<Block>.FabricTagBuilder isTeleportTargetBuilder = getOrCreateTagBuilder(ModBlockTags.IS_TELEPORT_TARGET);
@@ -44,10 +43,9 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.endStoneWaystone,
                 ModBlocks.warpPlate,
                 ModBlocks.portstone,
-                ModBlocks.landingStone,
-                ModBlocks.sharestone);
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            isTeleportTargetBuilder.add(scopedSharestone);
+                ModBlocks.landingStone);
+        for (Block sharestone : ModBlocks.sharestones) {
+            isTeleportTargetBuilder.add(sharestone);
         }
 
         getOrCreateTagBuilder(ModBlockTags.WAYSTONES).add(ModBlocks.waystone,
@@ -58,11 +56,8 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
                 ModBlocks.endStoneWaystone);
 
         FabricTagProvider<Block>.FabricTagBuilder sharestonesBuilder = getOrCreateTagBuilder(ModBlockTags.SHARESTONES);
-        FabricTagProvider<Block>.FabricTagBuilder dyedSharestonesTag = getOrCreateTagBuilder(ModBlockTags.DYED_SHARESTONES);
-        sharestonesBuilder.add(ModBlocks.sharestone);
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            sharestonesBuilder.add(scopedSharestone);
-            dyedSharestonesTag.add(scopedSharestone);
+        for (Block sharestone : ModBlocks.sharestones) {
+            sharestonesBuilder.add(sharestone);
         }
     }
 

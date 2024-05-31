@@ -4,15 +4,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class WaystoneTypes {
     public static final ResourceLocation WAYSTONE = new ResourceLocation("waystones", "waystone");
     public static final ResourceLocation WARP_PLATE = new ResourceLocation("waystones", "warp_plate");
     public static final ResourceLocation PORTSTONE = new ResourceLocation("waystones", "portstone");
     public static final ResourceLocation LANDING_STONE = new ResourceLocation("waystones", "landing_stone");
 
-    public static final ResourceLocation SHARESTONE = new ResourceLocation("waystones", "sharestone");
-    public static final ResourceLocation[] DYED_SHARESTONES = new ResourceLocation[] {
-            new ResourceLocation("waystones", "white_sharestone"),
+    public static final ResourceLocation[] SHARESTONES = new ResourceLocation[]{
             new ResourceLocation("waystones", "orange_sharestone"),
             new ResourceLocation("waystones", "magenta_sharestone"),
             new ResourceLocation("waystones", "light_blue_sharestone"),
@@ -30,15 +30,15 @@ public class WaystoneTypes {
             new ResourceLocation("waystones", "black_sharestone")
     };
 
-    public static ResourceLocation getSharestone(@Nullable DyeColor color) {
-        if (color == null) {
-            return SHARESTONE;
+    public static Optional<ResourceLocation> getSharestone(@Nullable DyeColor color) {
+        if (color == null || color == DyeColor.WHITE) {
+            return Optional.empty();
         }
 
-        return new ResourceLocation("waystones", color.getSerializedName() + "_sharestone");
+        return Optional.of(new ResourceLocation("waystones", color.getSerializedName() + "_sharestone"));
     }
 
     public static boolean isSharestone(ResourceLocation waystoneType) {
-        return waystoneType.equals(SHARESTONE) || waystoneType.getPath().endsWith("_sharestone");
+        return waystoneType.getPath().endsWith("_sharestone");
     }
 }

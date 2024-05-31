@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Supplier;
 
 public class RepurposedStructuresIntegration {
+    @SuppressWarnings("unchecked")
     public RepurposedStructuresIntegration() {
         BuiltInRegistries.REGISTRY.getOptional(new ResourceLocation("repurposed_structures", "json_conditions"))
                 .ifPresent(registry -> Registry.register(

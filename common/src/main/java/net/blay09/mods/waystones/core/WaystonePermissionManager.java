@@ -16,7 +16,6 @@ import java.util.Set;
 public class WaystonePermissionManager {
 
     private static final Set<WaystoneVisibility> DEFAULT_VISIBILITIES = Set.of(WaystoneVisibility.SHARD_ONLY, WaystoneVisibility.ACTIVATION,
-            WaystoneVisibility.WHITE_SHARESTONE,
             WaystoneVisibility.ORANGE_SHARESTONE,
             WaystoneVisibility.MAGENTA_SHARESTONE,
             WaystoneVisibility.LIGHT_BLUE_SHARESTONE,

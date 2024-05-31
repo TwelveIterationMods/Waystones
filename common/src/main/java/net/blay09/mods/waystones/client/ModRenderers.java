@@ -8,7 +8,6 @@ import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.client.render.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -28,10 +27,8 @@ public class ModRenderers {
         renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
 
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor(), () -> ModBlocks.scopedSharestones);
-        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor(), () -> ModBlocks.scopedSharestones);
-
-        renderers.setBlockRenderType(() -> ModBlocks.sharestone, RenderType.cutout());
+        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor(), () -> ModBlocks.sharestones);
+        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor(), () -> ModBlocks.sharestones);
     }
 
 }

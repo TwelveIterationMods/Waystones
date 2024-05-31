@@ -33,7 +33,8 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
     @Override
     protected ResourceLocation getWaystoneType() {
-        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor());
+        return WaystoneTypes.getSharestone(((SharestoneBlock) getBlockState().getBlock()).getColor())
+                .orElse(WaystoneTypes.WAYSTONE); // fallback to regular waystone if invalid
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.datagen;
 
+import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.item.ModItems;
@@ -38,9 +39,8 @@ public class ModModelProvider extends FabricModelProvider {
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.blackstoneWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.endStoneWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.portstone);
-        createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sharestone);
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            createDoubleBlockWaystone(blockStateModelGenerator, scopedSharestone, ModBlocks.sharestone);
+        for (Block sharestone : ModBlocks.sharestones) {
+            createSharestone(blockStateModelGenerator, sharestone);
         }
     }
 
@@ -54,9 +54,9 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.returnScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
 
-        final var dyedSharestoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/dyed_sharestone")), Optional.empty());
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            itemModelGenerator.generateFlatItem(scopedSharestone.asItem(), dyedSharestoneTemplate);
+        final var sharestoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/sharestone")), Optional.empty());
+        for (Block sharestone : ModBlocks.sharestones) {
+            itemModelGenerator.generateFlatItem(sharestone.asItem(), sharestoneTemplate);
         }
     }
 
@@ -67,6 +67,18 @@ public class ModModelProvider extends FabricModelProvider {
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block, Block modelBlock) {
         final var topModelLocation = ModelLocationUtils.getModelLocation(modelBlock, "_top");
         final var bottomModelLocation = ModelLocationUtils.getModelLocation(modelBlock, "_bottom");
+        final var generator = MultiVariantGenerator.multiVariant(block)
+                .with(createHorizontalFacingDispatch())
+                .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
+                        .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
+                        .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
+        blockStateModelGenerator.blockStateOutput.accept(generator);
+        blockStateModelGenerator.skipAutoItemBlock(block);
+    }
+
+    private void createSharestone(BlockModelGenerators blockStateModelGenerator, Block block) {
+        final var topModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_top");
+        final var bottomModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
                 .with(createHorizontalFacingDispatch())
                 .with(PropertyDispatch.property(WaystoneBlockBase.HALF)

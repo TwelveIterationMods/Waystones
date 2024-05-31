@@ -6,8 +6,6 @@ public enum WaystoneVisibility {
     ACTIVATION,
     GLOBAL,
     SHARD_ONLY,
-    SHARESTONE,
-    WHITE_SHARESTONE,
     ORANGE_SHARESTONE,
     MAGENTA_SHARESTONE,
     LIGHT_BLUE_SHARESTONE,
@@ -27,7 +25,6 @@ public enum WaystoneVisibility {
     public static WaystoneVisibility fromWaystoneType(ResourceLocation waystoneType) {
         if (WaystoneTypes.isSharestone(waystoneType)) {
             return switch (waystoneType.getPath()) {
-                case "white_sharestone" -> WaystoneVisibility.WHITE_SHARESTONE;
                 case "orange_sharestone" -> WaystoneVisibility.ORANGE_SHARESTONE;
                 case "magenta_sharestone" -> WaystoneVisibility.MAGENTA_SHARESTONE;
                 case "light_blue_sharestone" -> WaystoneVisibility.LIGHT_BLUE_SHARESTONE;
@@ -43,7 +40,7 @@ public enum WaystoneVisibility {
                 case "green_sharestone" -> WaystoneVisibility.GREEN_SHARESTONE;
                 case "red_sharestone" -> WaystoneVisibility.RED_SHARESTONE;
                 case "black_sharestone" -> WaystoneVisibility.BLACK_SHARESTONE;
-                default -> WaystoneVisibility.SHARESTONE;
+                default -> WaystoneVisibility.ACTIVATION;
             };
         } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;

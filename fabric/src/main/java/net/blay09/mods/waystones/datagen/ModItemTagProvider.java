@@ -33,11 +33,8 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
                 ModBlocks.blackstoneWaystone.asItem(),
                 ModBlocks.endStoneWaystone.asItem());
         FabricTagProvider<Item>.FabricTagBuilder sharestonesTag = getOrCreateTagBuilder(ModItemTags.SHARESTONES);
-        sharestonesTag.add(ModBlocks.sharestone.asItem());
-        FabricTagProvider<Item>.FabricTagBuilder dyedSharestonesTag = getOrCreateTagBuilder(ModItemTags.DYED_SHARESTONES);
-        for (Block scopedSharestone : ModBlocks.scopedSharestones) {
-            sharestonesTag.add(scopedSharestone.asItem());
-            dyedSharestonesTag.add(scopedSharestone.asItem());
+        for (Block sharestone : ModBlocks.sharestones) {
+            sharestonesTag.add(sharestone.asItem());
         }
     }
 }

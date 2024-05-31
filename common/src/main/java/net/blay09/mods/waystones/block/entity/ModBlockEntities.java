@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class ModBlockEntities {
     public static DeferredObject<BlockEntityType<WaystoneBlockEntity>> waystone;
@@ -22,7 +21,7 @@ public class ModBlockEntities {
                 () -> new Block[]{ModBlocks.waystone, ModBlocks.mossyWaystone, ModBlocks.sandyWaystone, ModBlocks.deepslateWaystone, ModBlocks.blackstoneWaystone, ModBlocks.endStoneWaystone});
         sharestone = blockEntities.registerBlockEntity(id("sharestone"),
                 SharestoneBlockEntity::new,
-                () -> ArrayUtils.add(ModBlocks.scopedSharestones, ModBlocks.sharestone));
+                () -> ModBlocks.sharestones);
         warpPlate = blockEntities.registerBlockEntity(id("warp_plate"), WarpPlateBlockEntity::new, () -> new Block[]{ModBlocks.warpPlate});
         portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> new Block[]{ModBlocks.portstone});
         landingStone = blockEntities.registerBlockEntity(id("landing_stone"), LandingStoneBlockEntity::new, () -> new Block[]{ModBlocks.landingStone});

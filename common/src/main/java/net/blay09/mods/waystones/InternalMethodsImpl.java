@@ -123,8 +123,12 @@ public class InternalMethodsImpl implements InternalMethods {
     }
 
     @Override
-    public Optional<Waystone> placeSharestone(Level level, BlockPos pos, @Nullable DyeColor color) {
-        Block sharestone = color != null ? ModBlocks.scopedSharestones[color.ordinal()] : ModBlocks.sharestone;
+    public Optional<Waystone> placeSharestone(Level level, BlockPos pos, DyeColor color) {
+        final var sharestone = ModBlocks.getSharestone(color);
+        if (sharestone == null) {
+            return Optional.empty();
+        }
+
         level.setBlock(pos, sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER), 3);
         level.setBlock(pos.above(), sharestone.defaultBlockState().setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER), 3);
         return getWaystoneAt(level, pos);

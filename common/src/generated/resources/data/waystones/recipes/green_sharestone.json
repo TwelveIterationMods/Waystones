@@ -1,13 +1,24 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "ingredients": [
-    {
-      "tag": "waystones:sharestones"
+  "key": {
+    "D": {
+      "tag": "c:dyes/green"
     },
-    {
-      "tag": "c:green_dyes"
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "W": {
+      "item": "waystones:warp_stone"
     }
+  },
+  "pattern": [
+    "SSS",
+    "DWD",
+    "OOO"
   ],
   "result": {
     "count": 1,
