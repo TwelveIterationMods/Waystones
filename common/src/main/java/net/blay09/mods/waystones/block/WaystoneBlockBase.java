@@ -7,13 +7,9 @@ import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -44,7 +40,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public abstract class WaystoneBlockBase extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
@@ -288,7 +283,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         final var blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity)) {
-            return ItemInteractionResult.FAIL;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         return handleDebugActions(level, player, itemStack, waystoneBlockEntity);

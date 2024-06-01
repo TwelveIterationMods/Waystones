@@ -260,9 +260,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
 
     private Consumer<WaystoneTeleportError> informRejectedTeleport(final Entity entityToInform) {
         return error -> {
-            if (error.getTranslationKey() != null && entityToInform instanceof Player player) {
-                var chatComponent = Component.translatable(error.getTranslationKey());
-                chatComponent.withStyle(ChatFormatting.DARK_RED);
+            if (error.getComponent() != null && entityToInform instanceof Player player) {
+                var chatComponent = error.getComponent().copy().withStyle(ChatFormatting.DARK_RED);
                 player.displayClientMessage(chatComponent, true);
             }
         };

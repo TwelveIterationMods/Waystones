@@ -163,17 +163,22 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
-        final var waystoneType = waystone.getWaystoneType();
+        final var result = getTargetsForWaystoneType(player,  waystone.getWaystoneType());
+
+        final var blockEntity = player.level().getBlockEntity(waystone.getPos());
+        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+            result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
+        }
+
+        return result;
+    }
+
+    public static Collection<Waystone> getTargetsForWaystoneType(Player player, ResourceLocation waystoneType) {
         final var result = new ArrayList<Waystone>();
         if (WaystoneTypes.isSharestone(waystoneType)) {
             result.addAll(WaystoneManagerImpl.get(player.getServer()).getWaystonesByType(waystoneType).toList());
         } else {
             result.addAll(PlayerWaystoneManager.getActivatedWaystones(player));
-        }
-
-        final var blockEntity = player.level().getBlockEntity(waystone.getPos());
-        if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            result.addAll(waystoneBlockEntity.getAuxiliaryTargets());
         }
 
         return result;

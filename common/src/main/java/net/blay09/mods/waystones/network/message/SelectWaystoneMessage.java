@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +16,8 @@ import java.util.UUID;
 
 public class SelectWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID, "select_waystone"));
+    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+            "select_waystone"));
 
     private final UUID waystoneUid;
 
@@ -50,7 +52,8 @@ public class SelectWaystoneMessage implements CustomPacketPayload {
                     it.addFlags(selectionMenu.getFlags());
                 })
                 .ifLeft(WaystonesAPI::tryTeleport)
-                .ifLeft(selectionMenu.getPostTeleportHandler());
+                .ifLeft(selectionMenu.getPostTeleportHandler())
+                .ifRight(error -> player.displayClientMessage(error.getComponent().copy().withStyle(ChatFormatting.DARK_RED), false));
         player.closeContainer();
     }
 

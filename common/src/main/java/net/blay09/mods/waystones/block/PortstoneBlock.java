@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.menu.ModMenus;
@@ -17,6 +18,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -114,16 +116,15 @@ public class PortstoneBlock extends WaystoneBlockBase {
             ).optimize()
     };
 
-    @Nullable
     private final DyeColor color;
 
-    public PortstoneBlock(@Nullable DyeColor color, Properties properties) {
+    public PortstoneBlock(DyeColor color, Properties properties) {
         super(properties);
         this.color = color;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
     }
 
-    public @Nullable DyeColor getColor() {
+    public DyeColor getColor() {
         return color;
     }
 
@@ -142,12 +143,13 @@ public class PortstoneBlock extends WaystoneBlockBase {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (!world.isClientSide) {
-            final var waystones = PlayerWaystoneManager.getTargetsForPlayer(player);
+            final var targetWaystoneType = getTargetWaystoneType();
+            final var waystones = PlayerWaystoneManager.getTargetsForWaystoneType(player, targetWaystoneType);
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
             Balm.getNetworking().openGui(player, new BalmMenuProvider<Collection<Waystone>>() {
                 @Override
                 public Component getDisplayName() {
-                    return Component.translatable("block.waystones.portstone");
+                    return Component.translatable("container.waystones." + color.getSerializedName() + "_portstone");
                 }
 
                 @Override
@@ -167,6 +169,10 @@ public class PortstoneBlock extends WaystoneBlockBase {
             });
         }
         return InteractionResult.SUCCESS;
+    }
+
+    private ResourceLocation getTargetWaystoneType() {
+        return WaystoneTypes.getSharestone(color).orElse(WaystoneTypes.WAYSTONE);
     }
 
     @Override

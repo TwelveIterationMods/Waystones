@@ -1,26 +1,25 @@
 package net.blay09.mods.waystones.api.error;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public class WaystoneTeleportError {
 
-    private final String translationKey;
+    private final Component component;
 
     public WaystoneTeleportError() {
-        this.translationKey = null;
+        this.component = Component.empty();
     }
 
-    public WaystoneTeleportError(String translationKey) {
-        this.translationKey = translationKey;
+    public WaystoneTeleportError(Component component) {
+        this.component = component;
     }
 
-    @Nullable
-    public String getTranslationKey() {
-        return translationKey;
+    public Component getComponent() {
+        return component;
     }
 
     public static class NotOnServer extends WaystoneTeleportError {
@@ -54,7 +53,7 @@ public class WaystoneTeleportError {
         private final Waystone waystone;
 
         public MissingWaystone(Waystone waystone) {
-            super("chat.waystones.waystone_missing");
+            super(Component.translatable("chat.waystones.waystone_missing"));
             this.waystone = waystone;
         }
 
@@ -68,13 +67,13 @@ public class WaystoneTeleportError {
 
     public static class DimensionalWarpDenied extends WaystoneTeleportError {
         public DimensionalWarpDenied() {
-            super("chat.waystones.cannot_dimension_warp");
+            super(Component.translatable("chat.waystones.cannot_dimension_warp"));
         }
     }
 
     public static class LeashedWarpDenied extends WaystoneTeleportError {
         public LeashedWarpDenied() {
-            super("chat.waystones.cannot_transport_leashed");
+            super(Component.translatable("chat.waystones.cannot_transport_leashed"));
         }
     }
 
@@ -82,7 +81,7 @@ public class WaystoneTeleportError {
         private final Entity entity;
 
         public SpecificLeashedWarpDenied(Entity entity) {
-            super("chat.waystones.cannot_transport_this_leashed");
+            super(Component.translatable("chat.waystones.cannot_transport_this_leashed"));
             this.entity = entity;
         }
 
@@ -93,13 +92,13 @@ public class WaystoneTeleportError {
 
     public static class LeashedDimensionalWarpDenied extends WaystoneTeleportError {
         public LeashedDimensionalWarpDenied() {
-            super("chat.waystones.cannot_transport_leashed_dimensional");
+            super(Component.translatable("chat.waystones.cannot_transport_leashed_dimensional"));
         }
     }
 
     public static class NotEnoughXp extends WaystoneTeleportError {
         public NotEnoughXp() {
-            super("chat.waystones.not_enough_xp");
+            super(Component.translatable("chat.waystones.not_enough_xp"));
         }
     }
 }
