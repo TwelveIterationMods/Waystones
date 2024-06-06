@@ -66,6 +66,6 @@ public class InvalidWaystone implements Waystone {
 
     @Override
     public ResourceLocation getWaystoneType() {
-        return new ResourceLocation(Waystones.MOD_ID, "invalid");
+        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "invalid");
     }
 }

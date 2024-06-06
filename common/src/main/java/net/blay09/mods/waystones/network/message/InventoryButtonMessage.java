@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class InventoryButtonMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<InventoryButtonMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<InventoryButtonMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "inventory_button"));
 
     public static void encode(FriendlyByteBuf buf, InventoryButtonMessage message) {

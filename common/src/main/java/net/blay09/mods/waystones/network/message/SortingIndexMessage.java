@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class SortingIndexMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<SortingIndexMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<SortingIndexMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "sorting_index"));
 
     private final List<UUID> sortingIndex;

@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -28,13 +30,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/portstone"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
 
-    private final PortstoneModel model;
-
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
-        model = new PortstoneModel(context.bakeLayer(ModRenderers.portstoneModel));
     }
 
     @Override
@@ -48,7 +47,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
-            warpStoneItem.enchant(Enchantments.UNBREAKING, 1);
+            level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
         DyeColor color = ((PortstoneBlock) state.getBlock()).getColor();
@@ -65,8 +64,12 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            float[] colors = color.getTextureDiffuseColors();
-            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
+
+            int textureDiffuseColor = color.getTextureDiffuseColor();
+            float r = ((textureDiffuseColor & 16711680) >> 16) / 255f;
+            float g = ((textureDiffuseColor & 65280) >> 8) / 255f;
+            float b = ((textureDiffuseColor & 255)) / 255f;
+            // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
             poseStack.popPose();
         }
 

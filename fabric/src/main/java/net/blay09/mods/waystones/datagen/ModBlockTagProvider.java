@@ -19,7 +19,7 @@ public class ModBlockTagProvider extends FabricTagProvider<Block> {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, new ResourceLocation("minecraft", "mineable/pickaxe"));
+        final var mineablePickaxeTag = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("mineable/pickaxe"));
         final var mineableBuilder = getOrCreateTagBuilder(mineablePickaxeTag);
         mineableBuilder.add(ModBlocks.waystone,
                 ModBlocks.sandyWaystone,

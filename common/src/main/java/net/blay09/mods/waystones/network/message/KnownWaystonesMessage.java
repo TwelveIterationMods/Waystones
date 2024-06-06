@@ -18,7 +18,7 @@ import java.util.List;
 
 public class KnownWaystonesMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<KnownWaystonesMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<KnownWaystonesMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "known_waystones"));
 
     private final ResourceLocation type;

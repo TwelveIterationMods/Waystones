@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RemoveWaystoneButton extends Button implements ITooltipProvider {
 
-    private static final ResourceLocation CANCEL_SPRITE = new ResourceLocation("container/beacon/cancel");
+    private static final ResourceLocation CANCEL_SPRITE = ResourceLocation.withDefaultNamespace("container/beacon/cancel");
 
     private final List<Component> tooltip;
     private final List<Component> activeTooltip;

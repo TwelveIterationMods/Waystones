@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-public class WaystoneRecipe implements Recipe<Container> {
+public class WaystoneRecipe implements Recipe<WaystoneRecipeInput> {
 
     private final ItemStack resultItem;
     private final Ingredient primaryIngredient;
@@ -35,7 +35,7 @@ public class WaystoneRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inventory, Level level) {
+    public boolean matches(WaystoneRecipeInput inventory, Level level) {
         // Short-circuit if the primary ingredient is not present to ensure it's actually in the right slot and avoid unnecessary processing
         if (!primaryIngredient.test(inventory.getItem(0))) {
             return false;
@@ -55,7 +55,7 @@ public class WaystoneRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inventory, HolderLookup.Provider provider) {
+    public ItemStack assemble(WaystoneRecipeInput inventory, HolderLookup.Provider provider) {
         return this.resultItem.copy();
     }
 

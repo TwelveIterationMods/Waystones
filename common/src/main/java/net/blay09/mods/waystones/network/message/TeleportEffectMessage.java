@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 
 public class TeleportEffectMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<TeleportEffectMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<TeleportEffectMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "teleport_effect"));
 
     private final BlockPos pos;

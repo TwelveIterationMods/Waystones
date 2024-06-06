@@ -33,7 +33,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack) {
+    public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
         return WaystonesConfig.getActive().general.scrollUseTime;
     }
 

@@ -65,7 +65,7 @@ public class RequirementModifierParser {
         final var colon = value.indexOf(':');
         final var namespace = colon != -1 ? value.substring(0, colon) : "waystones";
         final var path = colon != -1 ? value.substring(colon + 1) : value;
-        return new ResourceLocation(namespace, path);
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
     }
 
     public static <T> T deserializeParameter(Class<T> type, String value) {

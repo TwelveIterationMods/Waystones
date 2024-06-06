@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CooldownRequirementType implements RequirementType<CooldownRequirement> {
 
-    public static final ResourceLocation ID = new ResourceLocation("waystones", "cooldown");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("waystones", "cooldown");
 
     @Override
     public ResourceLocation getId() {

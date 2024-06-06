@@ -7,27 +7,27 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class WaystoneTypes {
-    public static final ResourceLocation WAYSTONE = new ResourceLocation("waystones", "waystone");
-    public static final ResourceLocation WARP_PLATE = new ResourceLocation("waystones", "warp_plate");
-    public static final ResourceLocation PORTSTONE = new ResourceLocation("waystones", "portstone");
-    public static final ResourceLocation LANDING_STONE = new ResourceLocation("waystones", "landing_stone");
+    public static final ResourceLocation WAYSTONE = ResourceLocation.fromNamespaceAndPath("waystones", "waystone");
+    public static final ResourceLocation WARP_PLATE = ResourceLocation.fromNamespaceAndPath("waystones", "warp_plate");
+    public static final ResourceLocation PORTSTONE = ResourceLocation.fromNamespaceAndPath("waystones", "portstone");
+    public static final ResourceLocation LANDING_STONE = ResourceLocation.fromNamespaceAndPath("waystones", "landing_stone");
 
     public static final ResourceLocation[] SHARESTONES = new ResourceLocation[]{
-            new ResourceLocation("waystones", "orange_sharestone"),
-            new ResourceLocation("waystones", "magenta_sharestone"),
-            new ResourceLocation("waystones", "light_blue_sharestone"),
-            new ResourceLocation("waystones", "yellow_sharestone"),
-            new ResourceLocation("waystones", "lime_sharestone"),
-            new ResourceLocation("waystones", "pink_sharestone"),
-            new ResourceLocation("waystones", "gray_sharestone"),
-            new ResourceLocation("waystones", "light_gray_sharestone"),
-            new ResourceLocation("waystones", "cyan_sharestone"),
-            new ResourceLocation("waystones", "purple_sharestone"),
-            new ResourceLocation("waystones", "blue_sharestone"),
-            new ResourceLocation("waystones", "brown_sharestone"),
-            new ResourceLocation("waystones", "green_sharestone"),
-            new ResourceLocation("waystones", "red_sharestone"),
-            new ResourceLocation("waystones", "black_sharestone")
+            ResourceLocation.fromNamespaceAndPath("waystones", "orange_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "magenta_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "light_blue_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "yellow_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "lime_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "pink_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "gray_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "light_gray_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "cyan_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "purple_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "blue_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "brown_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "green_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "red_sharestone"),
+            ResourceLocation.fromNamespaceAndPath("waystones", "black_sharestone")
     };
 
     public static Optional<ResourceLocation> getSharestone(@Nullable DyeColor color) {
@@ -35,7 +35,7 @@ public class WaystoneTypes {
             return Optional.empty();
         }
 
-        return Optional.of(new ResourceLocation("waystones", color.getSerializedName() + "_sharestone"));
+        return Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", color.getSerializedName() + "_sharestone"));
     }
 
     public static boolean isSharestone(ResourceLocation waystoneType) {

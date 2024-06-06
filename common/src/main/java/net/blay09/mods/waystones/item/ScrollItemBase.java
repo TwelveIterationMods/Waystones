@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.item;
 
 import net.blay09.mods.waystones.compat.Compat;
+import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,7 +27,7 @@ public class ScrollItemBase extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack itemStack) {
-        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
+        if (WaystonesConfig.getActive().general.scrollUseTime <= 0 || Compat.isVivecraftInstalled) {
             return UseAnim.NONE;
         }
 
@@ -39,7 +40,7 @@ public class ScrollItemBase extends Item {
         if (!player.isUsingItem() && !world.isClientSide) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
         }
-        if (getUseDuration(itemStack) <= 0 || Compat.isVivecraftInstalled) {
+        if (getUseDuration(itemStack, player) <= 0 || Compat.isVivecraftInstalled) {
             finishUsingItem(itemStack, world, player);
         } else {
             player.startUsingItem(hand);
@@ -50,7 +51,7 @@ public class ScrollItemBase extends Item {
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack itemStack, int remainingTicks) {
         if (level.isClientSide) {
-            int duration = getUseDuration(itemStack);
+            int duration = getUseDuration(itemStack, entity);
             float progress = (duration - remainingTicks) / (float) duration;
             int maxParticles = Math.max(4, (int) (progress * 48));
             if (remainingTicks % 5 == 0) {

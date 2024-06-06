@@ -16,6 +16,7 @@ import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.recipe.ModRecipes;
 import net.blay09.mods.waystones.recipe.WaystoneRecipe;
+import net.blay09.mods.waystones.recipe.WaystoneRecipeInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -32,6 +33,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -299,7 +301,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             return null;
         }
 
-        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, container, level)
+        final var recipeInput = WaystoneRecipeInput.of(container);
+        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, recipeInput, level)
                 .map(RecipeHolder::value).orElse(null);
     }
 
@@ -318,7 +321,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     protected void craft(WaystoneRecipe recipe) {
-        ItemStack attunedShard = recipe.assemble(container, RegistryAccess.EMPTY);
+        final var recipeInput = WaystoneRecipeInput.of(container);
+        ItemStack attunedShard = recipe.assemble(recipeInput, RegistryAccess.EMPTY);
         WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
         ItemStack centerStack = container.getItem(0);
         if (centerStack.getCount() > 1) {

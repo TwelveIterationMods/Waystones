@@ -18,8 +18,8 @@ import net.minecraft.world.item.ItemStack;
 public class WaystoneJeiRecipeCategory implements IRecipeCategory<WaystoneRecipe> {
 
     public static final RecipeType<WaystoneRecipe> TYPE = RecipeType.create(Waystones.MOD_ID, "waystone", WaystoneRecipe.class);
-    public static final ResourceLocation UID = new ResourceLocation(Waystones.MOD_ID, "waystone");
-    private static final ResourceLocation texture = new ResourceLocation(Waystones.MOD_ID, "textures/gui/jei/warp_plate.png");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone");
+    private static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/jei/warp_plate.png");
 
     private final IDrawable background;
     private final IDrawable icon;

@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class RequestEditWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RequestEditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<RequestEditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "request_edit_waystone"));
 
     private final BlockPos pos;

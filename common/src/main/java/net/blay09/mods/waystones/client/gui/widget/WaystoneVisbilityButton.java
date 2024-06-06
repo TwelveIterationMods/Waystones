@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class WaystoneVisbilityButton extends Button implements ITooltipProvider {
 
-    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
+    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;

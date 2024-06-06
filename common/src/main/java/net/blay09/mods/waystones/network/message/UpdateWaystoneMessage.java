@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class UpdateWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<UpdateWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<UpdateWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "update_waystone"));
 
     private final Waystone waystone;

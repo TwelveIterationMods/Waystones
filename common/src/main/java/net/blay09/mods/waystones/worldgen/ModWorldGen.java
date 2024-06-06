@@ -35,16 +35,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModWorldGen {
-    private static final ResourceLocation waystone = new ResourceLocation("waystones", "waystone");
-    private static final ResourceLocation mossyWaystone = new ResourceLocation("waystones", "mossy_waystone");
-    private static final ResourceLocation sandyWaystone = new ResourceLocation("waystones", "sandy_waystone");
-    private static final ResourceLocation blackstoneWaystone = new ResourceLocation("waystones", "blackstone_waystone");
-    private static final ResourceLocation deepslateWaystone = new ResourceLocation("waystones", "deepslate_waystone");
-    private static final ResourceLocation endStoneWaystone = new ResourceLocation("waystones", "end_stone_waystone");
-    private static final ResourceLocation villageWaystoneStructure = new ResourceLocation("waystones", "village/common/waystone");
-    private static final ResourceLocation desertVillageWaystoneStructure = new ResourceLocation("waystones", "village/desert/waystone");
+    private static final ResourceLocation waystone = ResourceLocation.fromNamespaceAndPath("waystones", "waystone");
+    private static final ResourceLocation mossyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "mossy_waystone");
+    private static final ResourceLocation sandyWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "sandy_waystone");
+    private static final ResourceLocation blackstoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "blackstone_waystone");
+    private static final ResourceLocation deepslateWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "deepslate_waystone");
+    private static final ResourceLocation endStoneWaystone = ResourceLocation.fromNamespaceAndPath("waystones", "end_stone_waystone");
+    private static final ResourceLocation villageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/common/waystone");
+    private static final ResourceLocation desertVillageWaystoneStructure = ResourceLocation.fromNamespaceAndPath("waystones", "village/desert/waystone");
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST,
-            new ResourceLocation("minecraft", "empty"));
+            ResourceLocation.fromNamespaceAndPath("minecraft", "empty"));
 
     public static DeferredObject<PlacementModifierType<WaystonePlacement>> waystonePlacement;
 
@@ -99,7 +99,7 @@ public class ModWorldGen {
     }
 
     private static ResourceLocation id(String name) {
-        return new ResourceLocation(Waystones.MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
     private static ResourceLocation getWaystoneFeature(WorldGenStyle biomeWorldGenStyle) {
@@ -140,9 +140,9 @@ public class ModWorldGen {
         LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
                 .apply(StructureTemplatePool.Projection.RIGID);
         if (piece instanceof WaystoneStructurePoolElement element) {
-            element.setIsWaystone(true);
+            element.waystones$setIsWaystone(true);
         }
-        StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(new ResourceLocation(villagePiece)).orElse(null);
+        StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(ResourceLocation.withDefaultNamespace(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
             // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.

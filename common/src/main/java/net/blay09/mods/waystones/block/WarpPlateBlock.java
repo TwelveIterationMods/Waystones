@@ -55,7 +55,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         }
     }
 
-    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(new ResourceLocation("minecraft", "alt"));
+    private static final Style GALACTIC_STYLE = Style.EMPTY.withFont(ResourceLocation.fromNamespaceAndPath("minecraft", "alt"));
 
     private static final VoxelShape SHAPE = Shapes.or(
             box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0),

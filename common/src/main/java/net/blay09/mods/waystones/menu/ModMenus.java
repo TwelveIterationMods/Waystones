@@ -173,7 +173,7 @@ public class ModMenus {
 
     @NotNull
     private static ResourceLocation id(String name) {
-        return new ResourceLocation(Waystones.MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
 }

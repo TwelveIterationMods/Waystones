@@ -88,7 +88,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("List of entities that cannot be teleported, either as pet, leashed, or on warp plates.")
         @ExpectedType(ResourceLocation.class)
-        public Set<ResourceLocation> entityDenyList = Set.of(new ResourceLocation("wither"));
+        public Set<ResourceLocation> entityDenyList = Set.of(ResourceLocation.withDefaultNamespace("wither"));
     }
 
     public static class InventoryButton {
@@ -122,7 +122,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Comment("List of dimensions that wild waystones are allowed to spawn in. If left empty, all dimensions except those in wildWaystonesDimensionDenyList are used.")
         @ExpectedType(ResourceLocation.class)
-        public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(new ResourceLocation("overworld"), new ResourceLocation("the_nether"), new ResourceLocation("the_end"));
+        public Set<ResourceLocation> wildWaystonesDimensionAllowList = Set.of(ResourceLocation.withDefaultNamespace("overworld"), ResourceLocation.withDefaultNamespace("the_nether"), ResourceLocation.withDefaultNamespace("the_end"));
 
         @Comment("List of dimensions that wild waystones are not allowed to spawn in. Only used if wildWaystonesDimensionAllowList is empty.")
         @ExpectedType(ResourceLocation.class)

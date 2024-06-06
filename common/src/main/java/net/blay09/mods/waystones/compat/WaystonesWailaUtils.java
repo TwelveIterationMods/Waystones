@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  */
 public class WaystonesWailaUtils {
 
-    public static final ResourceLocation WAYSTONE_UID = new ResourceLocation(Waystones.MOD_ID, "waystone");
+    public static final ResourceLocation WAYSTONE_UID = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone");
 
     public static void appendTooltip(BlockEntity blockEntity, Player player, Consumer<Component> tooltipConsumer) {
         if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {

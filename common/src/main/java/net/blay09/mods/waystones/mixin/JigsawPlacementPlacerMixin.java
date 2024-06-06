@@ -11,6 +11,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
@@ -22,24 +23,26 @@ public class JigsawPlacementPlacerMixin {
     @Shadow
     private Registry<StructureTemplatePool> pools;
 
-    private boolean hasWaystone;
+    @Unique
+    private boolean waystones$hasWaystone;
 
-    private boolean shouldForceWaystone() {
+    @Unique
+    private boolean waystones$shouldForceWaystone() {
         return WaystonesConfig.getActive().worldGen.spawnInVillages == WaystonesConfigData.VillageWaystoneGeneration.FREQUENT;
     }
 
-    @ModifyArg(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/levelgen/structure/pools/alias/PoolAliasLookup;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;getHolder(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;"))
+    @ModifyArg(method = "tryPlacingChildren(Lnet/minecraft/world/level/levelgen/structure/PoolElementStructurePiece;Lorg/apache/commons/lang3/mutable/MutableObject;IZLnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/levelgen/structure/pools/alias/PoolAliasLookup;Lnet/minecraft/world/level/levelgen/structure/templatesystem/LiquidSettings;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;getHolder(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;"))
     private ResourceKey<StructureTemplatePool> forceWaystonePool(ResourceKey<StructureTemplatePool> resourceKey) {
-        if (!shouldForceWaystone() || hasWaystone) {
+        if (!waystones$shouldForceWaystone() || waystones$hasWaystone) {
             return resourceKey;
         }
 
         String poolPath = resourceKey.location().getPath();
         if (poolPath.endsWith("/houses")) {
-            ResourceLocation waystonePoolName = new ResourceLocation(Waystones.MOD_ID, poolPath.replace("/houses", "/waystones"));
+            ResourceLocation waystonePoolName = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, poolPath.replace("/houses", "/waystones"));
             ResourceKey<StructureTemplatePool> waystonePoolKey = ResourceKey.create(Registries.TEMPLATE_POOL, waystonePoolName);
             if (pools.getHolder(waystonePoolKey).isPresent()) {
-                hasWaystone = true;
+                waystones$hasWaystone = true;
                 return waystonePoolKey;
             }
         }

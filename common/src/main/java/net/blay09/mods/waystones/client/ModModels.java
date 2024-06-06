@@ -4,16 +4,21 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.waystones.Waystones;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModModels {
+    public static DeferredObject<BakedModel> waystoneRunes;
+    public static DeferredObject<BakedModel> sharestoneRunes;
     public static DeferredObject<BakedModel> portstoneRunes;
 
     public static void initialize(BalmModels models) {
-        portstoneRunes = models.loadModel(id("block/portstone_runes"));
+        waystoneRunes = models.loadModel(new ModelResourceLocation(id("block/waystone_runes"), ""));
+        sharestoneRunes = models.loadModel(new ModelResourceLocation(id("block/sharestone_runes"), ""));
+        portstoneRunes = models.loadModel(new ModelResourceLocation(id("block/portstone_runes"), ""));
     }
 
     private static ResourceLocation id(String path) {
-        return new ResourceLocation(Waystones.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, path);
     }
 }

@@ -17,8 +17,8 @@ public class ModComponents {
     public static DeferredObject<DataComponentType<Unit>> warpPlateCompletedFirstAttunement;
 
     public static void initialize(BalmComponents components) {
-        waystone = components.registerComponent(() -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).build(), new ResourceLocation(Waystones.MOD_ID, "waystone"));
-        attunement = components.registerComponent(() -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).build(), new ResourceLocation(Waystones.MOD_ID, "attunement"));
-        warpPlateCompletedFirstAttunement = components.registerComponent(() -> DataComponentType.<Unit>builder().persistent(Codec.unit(Unit.INSTANCE)).build(), new ResourceLocation(Waystones.MOD_ID, "warp_plate_completed_first_attunement"));
+        waystone = components.registerComponent(() -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).build(), ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone"));
+        attunement = components.registerComponent(() -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).build(), ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "attunement"));
+        warpPlateCompletedFirstAttunement = components.registerComponent(() -> DataComponentType.<Unit>builder().persistent(Codec.unit(Unit.INSTANCE)).build(), ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "warp_plate_completed_first_attunement"));
     }
 }

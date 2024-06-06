@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class SortWaystoneMessage implements CustomPacketPayload {
 
-        public static final CustomPacketPayload.Type<SortWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID, "sort_waystone"));
+        public static final CustomPacketPayload.Type<SortWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "sort_waystone"));
 
     public static final UUID SORT_FIRST = UUID.fromString("00000000-0000-0000-0000-000000000000");
     public static final UUID SORT_LAST = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class RemoveWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RemoveWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<RemoveWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "remove_waystone"));
 
     private final UUID waystoneUid;

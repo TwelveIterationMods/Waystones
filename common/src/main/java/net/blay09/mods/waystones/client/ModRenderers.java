@@ -15,15 +15,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.Objects;
 
 public class ModRenderers {
-    public static ModelLayerLocation portstoneModel;
-    public static ModelLayerLocation sharestoneModel;
-    public static ModelLayerLocation waystoneModel;
-
     public static void initialize(BalmRenderers renderers) {
-        portstoneModel = renderers.registerModel(new ResourceLocation(Waystones.MOD_ID, "portstone"), () -> PortstoneModel.createLayer(CubeDeformation.NONE));
-        sharestoneModel = renderers.registerModel(new ResourceLocation(Waystones.MOD_ID, "sharestone"), () -> SharestoneModel.createLayer(CubeDeformation.NONE));
-        waystoneModel = renderers.registerModel(new ResourceLocation(Waystones.MOD_ID, "waystone"), () -> WaystoneModel.createLayer(CubeDeformation.NONE));
-
         renderers.registerBlockEntityRenderer(ModBlockEntities.waystone::get, WaystoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);

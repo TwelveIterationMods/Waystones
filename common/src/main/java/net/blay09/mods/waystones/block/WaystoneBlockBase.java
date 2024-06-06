@@ -10,6 +10,7 @@ import net.blay09.mods.waystones.core.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -100,7 +101,7 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
         BlockEntity offsetTileEntity = isDoubleBlock ? world.getBlockEntity(offset) : null;
 
-        boolean hasSilkTouch = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player) > 0;
+        final var hasSilkTouch = world.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.SILK_TOUCH).map(it -> EnchantmentHelper.getEnchantmentLevel(it, player) > 0).orElse(false);
         if (hasSilkTouch && canSilkTouch()) {
             if (blockEntity instanceof WaystoneBlockEntityBase) {
                 ((WaystoneBlockEntityBase) blockEntity).setSilkTouched(true);

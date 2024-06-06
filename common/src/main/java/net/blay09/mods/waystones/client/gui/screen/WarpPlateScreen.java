@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class WarpPlateScreen extends AbstractContainerScreen<WarpPlateMenu> {
 
-    private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/warp_plate.png");
+    private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/warp_plate.png");
 
     public WarpPlateScreen(WarpPlateMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

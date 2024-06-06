@@ -155,7 +155,7 @@ public class PersistentPlayerWaystoneData implements IPlayerWaystoneData {
         final var cooldowns = waystonesData.getCompound(COOLDOWNS);
         final var cooldownMap = new HashMap<ResourceLocation, Long>();
         for (final var key : cooldowns.getAllKeys()) {
-            cooldownMap.put(new ResourceLocation(key), cooldowns.getLong(key));
+            cooldownMap.put(ResourceLocation.parse(key), cooldowns.getLong(key));
         }
 
         return cooldownMap;

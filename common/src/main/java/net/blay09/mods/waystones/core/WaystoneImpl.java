@@ -143,7 +143,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         final var waystoneType = buf.readResourceLocation();
         final var name = ComponentSerialization.STREAM_CODEC.decode(buf);
         final var visibility = buf.readEnum(WaystoneVisibility.class);
-        final var dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(buf.readUtf(250)));
+        final var dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(buf.readUtf(250)));
         final var pos = buf.readBlockPos();
         final var origin = buf.readEnum(WaystoneOrigin.class);
 
@@ -163,7 +163,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         final var name = compound.contains("NameV2")
                 ? Component.Serializer.fromJson(compound.getString("NameV2"), provider)
                 : Component.literal(legacyName);
-        final var dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(compound.getString("World")));
+        final var dimensionType = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(compound.getString("World")));
         final var pos = NbtUtils.readBlockPos(compound, "BlockPos").orElseGet(() -> readLegacyBlockPos(compound.getCompound("BlockPos")));
         final var legacyWasGenerated = compound.getBoolean("WasGenerated");
         var origin = legacyWasGenerated ? WaystoneOrigin.WILDERNESS : WaystoneOrigin.UNKNOWN;
@@ -174,7 +174,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
             }
         }
         final var ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
-        final var waystoneType = compound.contains("Type") ? new ResourceLocation(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
+        final var waystoneType = compound.contains("Type") ? ResourceLocation.parse(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
         final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
         if (compound.contains("Visibility")) {

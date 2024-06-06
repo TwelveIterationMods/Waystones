@@ -8,10 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SortWaystoneButton extends Button {
 
-    private static final ResourceLocation MOVE_UP_HIGHLIGHTED_SPRITE = new ResourceLocation("server_list/move_up_highlighted");
-    private static final ResourceLocation MOVE_UP_SPRITE = new ResourceLocation("server_list/move_up");
-    private static final ResourceLocation MOVE_DOWN_HIGHLIGHTED_SPRITE = new ResourceLocation("server_list/move_down_highlighted");
-    private static final ResourceLocation MOVE_DOWN_SPRITE = new ResourceLocation("server_list/move_down");
+    private static final ResourceLocation MOVE_UP_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("server_list/move_up_highlighted");
+    private static final ResourceLocation MOVE_UP_SPRITE = ResourceLocation.withDefaultNamespace("server_list/move_up");
+    private static final ResourceLocation MOVE_DOWN_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("server_list/move_down_highlighted");
+    private static final ResourceLocation MOVE_DOWN_SPRITE = ResourceLocation.withDefaultNamespace("server_list/move_down");
 
     private final int sortDir;
     private final int visibleRegionStart;

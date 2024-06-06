@@ -27,7 +27,7 @@ import java.util.Optional;
 
 public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
 
-    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = new ResourceLocation(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
+    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
 
     private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 

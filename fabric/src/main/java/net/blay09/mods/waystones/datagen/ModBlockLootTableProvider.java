@@ -42,14 +42,15 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
     }
 
     private LootTable.Builder createWaystoneLoot(Block block) {
+
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1f))
                         .add(LootItem.lootTableItem(block))
                         .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-                                .when(HAS_SILK_TOUCH)))
+                                .when(hasSilkTouch())))
                         .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)
-                                .when(HAS_SILK_TOUCH)));
+                                .when(hasSilkTouch())));
     }
 
     private LootTable.Builder createDoubleBlockWaystoneLoot(Block block) {
@@ -60,6 +61,6 @@ public class ModBlockLootTableProvider extends FabricBlockLootTableProvider {
                         .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(WaystoneBlockBase.HALF, DoubleBlockHalf.LOWER)))
                         .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-                                .when(HAS_SILK_TOUCH))));
+                                .when(hasSilkTouch()))));
     }
 }

@@ -94,7 +94,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .requires(ModBlocks.waystone)
                 .requires(Blocks.VINE, 3)
                 .unlockedBy("has_waystone", has(ModBlocks.waystone))
-                .save(exporter, new ResourceLocation("waystones", "mossy_waystone_from_vines"));
+                .save(exporter, ResourceLocation.fromNamespaceAndPath("waystones", "mossy_waystone_from_vines"));
 
         shaped(RecipeCategory.DECORATIONS, ModBlocks.warpPlate)
                 .pattern("SWS")

@@ -8,10 +8,14 @@ import net.minecraft.world.entity.player.Player;
 
 public class ExperiencePointsRequirementRenderer implements RequirementRenderer<ExperiencePointsRequirement> {
 
-    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1"), new ResourceLocation(
-            "container/enchanting_table/level_2"), new ResourceLocation("container/enchanting_table/level_3")};
-    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1_disabled"), new ResourceLocation(
-            "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
+    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3")};
+    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
     public void renderWidget(Player player, ExperiencePointsRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {

@@ -27,12 +27,9 @@ import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/waystone_active"));
-
-    private final SharestoneModel model;
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath("minecraft", "waystone_overlays/waystone_active"));
 
     public WaystoneRenderer(BlockEntityRendererProvider.Context context) {
-        model = new SharestoneModel(context.bakeLayer(ModRenderers.waystoneModel));
     }
 
     @Override
@@ -67,7 +64,7 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
                 green = 0.2f;
                 blue = 0.2f;
             }
-            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, red, green, blue, 1f);
+            // TODO 1.21 model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, red, green, blue, 1f);
         }
         matrixStack.popPose();
     }

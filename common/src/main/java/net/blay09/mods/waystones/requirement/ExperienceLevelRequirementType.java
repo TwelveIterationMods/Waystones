@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ExperienceLevelRequirementType implements RequirementType<ExperienceLevelRequirement> {
 
-    public static final ResourceLocation ID = new ResourceLocation("waystones", "experience_levels");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("waystones", "experience_levels");
 
     @Override
     public ResourceLocation getId() {

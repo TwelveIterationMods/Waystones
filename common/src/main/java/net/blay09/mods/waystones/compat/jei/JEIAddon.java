@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 public class JEIAddon implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(Waystones.MOD_ID, "jei");
+        return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "jei");
     }
 
     @Override

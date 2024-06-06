@@ -3,21 +3,19 @@ package net.blay09.mods.waystones.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
-import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -29,14 +27,11 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation("minecraft", "waystone_overlays/sharestone_color"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath("minecraft", "waystone_overlays/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 
-    private final SharestoneModel model;
-
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
-        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }
 
     @Override
@@ -61,14 +56,17 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            float[] colors = color.getTextureDiffuseColors();
-            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, colors[0], colors[1], colors[2], 1f);
+            int textureDiffuseColor = color.getTextureDiffuseColor();
+            float r = ((textureDiffuseColor & 16711680) >> 16) / 255f;
+            float g = ((textureDiffuseColor & 65280) >> 8) / 255f;
+            float b = ((textureDiffuseColor & 255)) / 255f;
+            // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
             poseStack.popPose();
         }
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
-            warpStoneItem.enchant(Enchantments.UNBREAKING, 1);
+            level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
         float angle = gameTime / 2f % 360;

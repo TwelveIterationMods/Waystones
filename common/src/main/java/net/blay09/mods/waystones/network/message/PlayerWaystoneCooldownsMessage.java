@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class PlayerWaystoneCooldownsMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<PlayerWaystoneCooldownsMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<PlayerWaystoneCooldownsMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "player_waystone_cooldowns"));
 
     private final Map<ResourceLocation, Long> cooldowns;

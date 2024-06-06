@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class RefuseRequirementRenderer implements RequirementRenderer<RefuseRequirement> {
 
-    private static final ResourceLocation CANCEL_SPRITE = new ResourceLocation("container/beacon/cancel");
+    private static final ResourceLocation CANCEL_SPRITE = ResourceLocation.withDefaultNamespace("container/beacon/cancel");
 
     @Override
     public void renderWidget(Player player, RefuseRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {

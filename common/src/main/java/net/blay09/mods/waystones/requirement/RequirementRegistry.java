@@ -201,7 +201,7 @@ public class RequirementRegistry {
         registerSerializer(NoParameter.class, it -> NoParameter.INSTANCE);
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
-        registerSerializer(IdParameter.class, it -> new IdParameter(new ResourceLocation(it)));
+        registerSerializer(IdParameter.class, it -> new IdParameter(ResourceLocation.parse(it)));
         registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
         registerSerializer(ComponentParameter.class, it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
@@ -275,7 +275,7 @@ public class RequirementRegistry {
         final var requirementType = new RequirementType<T>() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(Waystones.MOD_ID, name);
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -315,7 +315,7 @@ public class RequirementRegistry {
         register(new VariableResolver() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(Waystones.MOD_ID, name);
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -329,7 +329,7 @@ public class RequirementRegistry {
         register(new ConditionResolver<P>() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(Waystones.MOD_ID, name);
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override
@@ -348,7 +348,7 @@ public class RequirementRegistry {
         register(new ConditionResolver<P>() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(Waystones.MOD_ID, notName);
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, notName);
             }
 
             @Override
@@ -385,7 +385,7 @@ public class RequirementRegistry {
         register(new RequirementFunction<T, P>() {
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(Waystones.MOD_ID, name);
+                return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
             }
 
             @Override

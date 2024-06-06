@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class WaystoneInventoryButton extends Button {
 
-    private static final ResourceLocation INVENTORY_BUTTON_TEXTURE = new ResourceLocation(Waystones.MOD_ID, "textures/gui/inventory_button.png");
+    private static final ResourceLocation INVENTORY_BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/inventory_button.png");
 
     private final AbstractContainerScreen<?> parentScreen;
     private final ItemStack iconItem;

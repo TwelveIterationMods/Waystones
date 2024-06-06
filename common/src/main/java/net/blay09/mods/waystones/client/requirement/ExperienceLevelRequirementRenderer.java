@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.client.requirement;
 
-import net.blay09.mods.waystones.client.gui.widget.WaystoneButton;
 import net.blay09.mods.waystones.requirement.ExperienceLevelRequirement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,10 +8,14 @@ import net.minecraft.world.entity.player.Player;
 
 public class ExperienceLevelRequirementRenderer implements RequirementRenderer<ExperienceLevelRequirement> {
 
-    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1"), new ResourceLocation(
-            "container/enchanting_table/level_2"), new ResourceLocation("container/enchanting_table/level_3")};
-    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{new ResourceLocation("container/enchanting_table/level_1_disabled"), new ResourceLocation(
-            "container/enchanting_table/level_2_disabled"), new ResourceLocation("container/enchanting_table/level_3_disabled")};
+    private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[]{
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3")};
+    private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[]{
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
+            ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3_disabled")};
 
     @Override
     public void renderWidget(Player player, ExperienceLevelRequirement requirement, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, int x, int y) {

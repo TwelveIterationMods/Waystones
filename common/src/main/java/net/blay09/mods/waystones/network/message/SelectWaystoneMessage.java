@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class SelectWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(new ResourceLocation(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<SelectWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
             "select_waystone"));
 
     private final UUID waystoneUid;

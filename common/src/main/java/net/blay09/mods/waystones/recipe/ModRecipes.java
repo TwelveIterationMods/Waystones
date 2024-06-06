@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 public class ModRecipes {
 
     public static final String WAYSTONE_RECIPE_GROUP = "waystone";
-    public static final ResourceLocation WAYSTONE_RECIPE_TYPE = new ResourceLocation(Waystones.MOD_ID, WAYSTONE_RECIPE_GROUP);
+    public static final ResourceLocation WAYSTONE_RECIPE_TYPE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, WAYSTONE_RECIPE_GROUP);
 
     public static RecipeType<WaystoneRecipe> waystoneRecipeType;
     public static RecipeSerializer<WaystoneRecipe> waystoneRecipeSerializer;

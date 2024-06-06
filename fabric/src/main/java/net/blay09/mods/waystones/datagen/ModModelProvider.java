@@ -56,12 +56,12 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.returnScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
 
-        final var sharestoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/sharestone")), Optional.empty());
+        final var sharestoneTemplate = new ModelTemplate(Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", "item/sharestone")), Optional.empty());
         for (final var sharestone : ModBlocks.sharestones) {
             itemModelGenerator.generateFlatItem(sharestone.asItem(), sharestoneTemplate);
         }
 
-        final var portstoneTemplate = new ModelTemplate(Optional.of(new ResourceLocation("waystones", "item/portstone")), Optional.empty());
+        final var portstoneTemplate = new ModelTemplate(Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", "item/portstone")), Optional.empty());
         for (final var portstone : ModBlocks.portstones) {
             itemModelGenerator.generateFlatItem(portstone.asItem(), portstoneTemplate);
         }
@@ -84,8 +84,8 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createSharestone(BlockModelGenerators blockStateModelGenerator, Block block) {
-        final var topModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_top");
-        final var bottomModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/sharestone_bottom");
+        final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
+        final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
                 .with(createHorizontalFacingDispatch())
                 .with(PropertyDispatch.property(WaystoneBlockBase.HALF)
@@ -96,8 +96,8 @@ public class ModModelProvider extends FabricModelProvider {
     }
 
     private void createPortstone(BlockModelGenerators blockStateModelGenerator, Block block) {
-        final var topModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/portstone_top");
-        final var bottomModelLocation = new ResourceLocation(Waystones.MOD_ID, "block/portstone_bottom");
+        final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
+        final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
                 .with(createHorizontalFacingDispatch())
                 .with(PropertyDispatch.property(WaystoneBlockBase.HALF)

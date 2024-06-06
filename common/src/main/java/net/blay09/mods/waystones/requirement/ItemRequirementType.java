@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemRequirementType implements RequirementType<ItemRequirement> {
 
-    public static final ResourceLocation ID = new ResourceLocation("waystones", "item");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("waystones", "item");
 
     @Override
     public ResourceLocation getId() {
