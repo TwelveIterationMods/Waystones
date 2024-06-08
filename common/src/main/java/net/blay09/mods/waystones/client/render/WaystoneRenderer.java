@@ -27,9 +27,13 @@ import java.util.Objects;
 
 public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath("minecraft", "waystone_overlays/waystone_active"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS,
+            ResourceLocation.withDefaultNamespace("waystone_overlays/waystone_active"));
+
+    private final SharestoneModel model;
 
     public WaystoneRenderer(BlockEntityRendererProvider.Context context) {
+        model = new SharestoneModel(context.bakeLayer(ModRenderers.waystoneModel));
     }
 
     @Override
@@ -52,19 +56,14 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            float red = 1f;
-            float green = 1f;
-            float blue = 1f;
-            if(state.getBlock() == ModBlocks.endStoneWaystone) {
-                red = 0.45f;
-                green = 0f;
-                blue = 1f;
-            } else if(state.getBlock() == ModBlocks.blackstoneWaystone) {
-                red = 0.6f;
-                green = 0.2f;
-                blue = 0.2f;
+            int color = 0xFFFFFF;
+            if (state.getBlock() == ModBlocks.endStoneWaystone) {
+                color = 0x7200FF;
+            } else if (state.getBlock() == ModBlocks.blackstoneWaystone) {
+                color = 0x993333;
             }
-            // TODO 1.21 model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, red, green, blue, 1f);
+
+            model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, color);
         }
         matrixStack.popPose();
     }

@@ -1,12 +1,11 @@
 package net.blay09.mods.waystones.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
-import net.blay09.mods.waystones.client.ModModels;
+import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -27,18 +25,18 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
-
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
-    private static final RandomSource random = RandomSource.create();
+
+    private final PortstoneModel model;
 
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
+        model = new PortstoneModel(context.bakeLayer(ModRenderers.portstoneModel));
     }
 
     @Override
     public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         final var level = tileEntity.getLevel();
-        final var pos = tileEntity.getBlockPos();
         final var state = tileEntity.getBlockState();
         if (level == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             return;
@@ -64,15 +62,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-
-            int textureDiffuseColor = color.getTextureDiffuseColor();
-            float r = ((textureDiffuseColor & 16711680) >> 16) / 255f;
-            float g = ((textureDiffuseColor & 65280) >> 8) / 255f;
-            float b = ((textureDiffuseColor & 255)) / 255f;
-            final var dispatcher = Minecraft.getInstance().getBlockRenderer();
-            final var model = ModModels.portstoneRunes.get();
-            dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, buffer.getBuffer(RenderType.cutout()), false, random, 0, 0);
-            // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
+            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color.getTextureDiffuseColor());
             poseStack.popPose();
         }
 

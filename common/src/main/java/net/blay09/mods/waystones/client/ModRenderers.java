@@ -15,15 +15,27 @@ import net.minecraft.world.level.block.Block;
 import java.util.Objects;
 
 public class ModRenderers {
+    public static ModelLayerLocation portstoneModel;
+    public static ModelLayerLocation sharestoneModel;
+    public static ModelLayerLocation waystoneModel;
+
     public static void initialize(BalmRenderers renderers) {
+        portstoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "portstone"), () -> PortstoneModel.createLayer(CubeDeformation.NONE));
+        sharestoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "sharestone"), () -> SharestoneModel.createLayer(CubeDeformation.NONE));
+        waystoneModel = renderers.registerModel(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "waystone"), () -> WaystoneModel.createLayer(CubeDeformation.NONE));
+
         renderers.registerBlockEntityRenderer(ModBlockEntities.waystone::get, WaystoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
 
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
-        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor()).getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
-        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) Block.byItem((stack.getItem()))).getColor()).getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
+        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor())
+                .getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
+        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor())
+                .getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
+        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) state.getBlock()).getColor())
+                .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
+        renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((PortstoneBlock) Block.byItem((stack.getItem()))).getColor())
+                .getTextColor() | 0xFF000000, () -> ModBlocks.portstones);
     }
 
 }

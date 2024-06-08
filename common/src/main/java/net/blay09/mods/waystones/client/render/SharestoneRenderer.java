@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
+import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -27,11 +28,14 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEntity> {
 
-    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath("minecraft", "waystone_overlays/sharestone_color"));
+    private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/sharestone_color"));
 
     private static ItemStack warpStoneItem;
 
+    private final SharestoneModel model;
+
     public SharestoneRenderer(BlockEntityRendererProvider.Context context) {
+        model = new SharestoneModel(context.bakeLayer(ModRenderers.sharestoneModel));
     }
 
     @Override
@@ -56,11 +60,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            int textureDiffuseColor = color.getTextureDiffuseColor();
-            float r = ((textureDiffuseColor & 16711680) >> 16) / 255f;
-            float g = ((textureDiffuseColor & 65280) >> 8) / 255f;
-            float b = ((textureDiffuseColor & 255)) / 255f;
-            // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
+            model.renderToBuffer(poseStack, vertexBuilder, light, overlay, color.getTextureDiffuseColor());
             poseStack.popPose();
         }
 
