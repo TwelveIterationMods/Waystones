@@ -1,8 +1,8 @@
 name: publish-snapshot
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - '**'
 
 jobs:
   publish-snapshot:
@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         loader: [common, fabric, forge, neoforge]
+      fail-fast: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,7 +33,7 @@ jobs:
         uses: TwelveIterationMods/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
-          bump: minor
+          bump: patch
         id: bump-version
       - name: Publish
         run: ./gradlew :${{ matrix.loader }}:publish '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
