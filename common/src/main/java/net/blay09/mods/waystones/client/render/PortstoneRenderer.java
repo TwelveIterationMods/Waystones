@@ -1,26 +1,22 @@
 package net.blay09.mods.waystones.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.PortstoneBlock;
-import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
 import net.blay09.mods.waystones.client.ModModels;
-import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -28,8 +24,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
@@ -77,7 +71,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             float b = ((textureDiffuseColor & 255)) / 255f;
             final var dispatcher = Minecraft.getInstance().getBlockRenderer();
             final var model = ModModels.portstoneRunes.get();
-            // TODO 1.21 dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, buffer.getBuffer(RenderType.solid()), false, random, 0, 0);
+            dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, buffer.getBuffer(RenderType.cutout()), false, random, 0, 0);
             // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
             poseStack.popPose();
         }
