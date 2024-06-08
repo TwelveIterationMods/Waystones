@@ -6,12 +6,14 @@ import com.mojang.math.Axis;
 import net.blay09.mods.waystones.block.PortstoneBlock;
 import net.blay09.mods.waystones.block.SharestoneBlock;
 import net.blay09.mods.waystones.block.entity.PortstoneBlockEntity;
+import net.blay09.mods.waystones.client.ModModels;
 import net.blay09.mods.waystones.client.ModRenderers;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -30,20 +33,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEntity> {
+
     private static final Material MATERIAL = new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("waystone_overlays/portstone"));
     private static ItemStack warpStoneItem;
+    private static final RandomSource random = RandomSource.create();
 
     public PortstoneRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
     public void render(PortstoneBlockEntity tileEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        Level level = tileEntity.getLevel();
-        BlockState state = tileEntity.getBlockState();
+        final var level = tileEntity.getLevel();
+        final var pos = tileEntity.getBlockPos();
+        final var state = tileEntity.getBlockState();
         if (level == null || state.getValue(PortstoneBlock.HALF) != DoubleBlockHalf.LOWER) {
             return;
         }
-        Direction facing = state.getValue(PortstoneBlock.FACING);
+        final var facing = state.getValue(PortstoneBlock.FACING);
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
@@ -69,6 +75,9 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
             float r = ((textureDiffuseColor & 16711680) >> 16) / 255f;
             float g = ((textureDiffuseColor & 65280) >> 8) / 255f;
             float b = ((textureDiffuseColor & 255)) / 255f;
+            final var dispatcher = Minecraft.getInstance().getBlockRenderer();
+            final var model = ModModels.portstoneRunes.get();
+            // TODO 1.21 dispatcher.getModelRenderer().tesselateBlock(level, model, state, pos, poseStack, buffer.getBuffer(RenderType.solid()), false, random, 0, 0);
             // TODO 1.21 model.renderToBuffer(poseStack, vertexBuilder, light, overlay, r, g, b, 1f);
             poseStack.popPose();
         }
