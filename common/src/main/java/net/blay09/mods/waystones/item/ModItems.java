@@ -18,7 +18,9 @@ public class ModItems {
     public static Item warpScroll;
     public static Item warpStone;
     public static Item warpDust;
+    public static Item dormantShard;
     public static Item attunedShard;
+    public static Item deepslateShard;
     public static Item crumblingAttunedShard;
 
     public static void initialize(BalmItems items) {
@@ -27,7 +29,9 @@ public class ModItems {
         items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
         items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
         items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));
+        items.registerItem(() -> dormantShard = new ShardItem(items.itemProperties()), id("dormant_shard"));
         items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"));
+        items.registerItem(() -> deepslateShard = new ShardItem(items.itemProperties()), id("deepslate_shard"));
         items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(items.itemProperties()), id("crumbling_attuned_shard"));
 
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(ModBlocks.waystone), id("waystones"));

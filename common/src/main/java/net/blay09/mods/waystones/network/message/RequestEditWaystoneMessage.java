@@ -11,7 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class RequestEditWaystoneMessage implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<RequestEditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID,
+    public static final CustomPacketPayload.Type<RequestEditWaystoneMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(
+            Waystones.MOD_ID,
             "request_edit_waystone"));
 
     private final BlockPos pos;
@@ -37,10 +38,7 @@ public class RequestEditWaystoneMessage implements CustomPacketPayload {
 
         final var blockEntity = player.level().getBlockEntity(pos);
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-            final var menuProvider = waystoneBlockEntity.getSettingsMenuProvider();
-            if (menuProvider != null) {
-                Balm.getNetworking().openGui(player, menuProvider);
-            }
+            waystoneBlockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
         }
     }
 

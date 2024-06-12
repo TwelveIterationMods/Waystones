@@ -6,7 +6,6 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.blay09.mods.waystones.core.WaystoneSyncManager;
 import net.minecraft.ChatFormatting;
@@ -77,11 +76,11 @@ public class WaystoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
+    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         boolean isActivated = PlayerWaystoneManager.isWaystoneActivated(player, waystone);
         if (isActivated) {
             if (!world.isClientSide) {
-                Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
+                blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
         } else {
             PlayerWaystoneManager.activateWaystone(player, waystone);
@@ -155,11 +154,6 @@ public class WaystoneBlock extends WaystoneBlockBase {
     @Override
     protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
-    }
-
-    @Override
-    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
-        return ModBlockEntities.waystone.get();
     }
 
     @Override

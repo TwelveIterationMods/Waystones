@@ -200,7 +200,7 @@ public class WaystoneTeleportManager {
         }
 
         final var waystoneType = waystone.getWaystoneType();
-        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneTypes.WARP_PLATE) || waystoneType.equals(WaystoneTypes.LANDING_STONE));
+        final var shouldOffsetFacing = !(waystoneType.equals(WaystoneTypes.WARP_PLATE));
         final var targetPos = shouldOffsetFacing ? pos.relative(direction) : pos;
         final var location = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
         return Either.left(new TeleportDestination(level, location, direction));

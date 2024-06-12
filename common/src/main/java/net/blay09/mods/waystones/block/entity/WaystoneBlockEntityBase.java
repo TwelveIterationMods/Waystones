@@ -6,7 +6,6 @@ import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
 import net.blay09.mods.balm.api.container.ExtractionAwareContainer;
 import net.blay09.mods.balm.common.BalmBlockEntity;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
@@ -14,14 +13,9 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
-import net.blay09.mods.waystones.recipe.ModRecipes;
-import net.blay09.mods.waystones.recipe.WaystoneRecipe;
-import net.blay09.mods.waystones.recipe.WaystoneRecipeInput;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -31,10 +25,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,54 +34,12 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
 
-    protected final ContainerData dataAccess = new ContainerData() {
-        @Override
-        public int get(int i) {
-            return attunementTicks;
-        }
+    protected final DefaultContainer container = new DefaultContainer(5);
 
-        @Override
-        public void set(int i, int j) {
-            attunementTicks = j;
-        }
-
-        @Override
-        public int getCount() {
-            return 1;
-        }
-    };
-
-    private class WaystoneContainer extends DefaultContainer implements ExtractionAwareContainer {
-        public WaystoneContainer(int size) {
-            super(size);
-        }
-
-        @Override
-        public boolean canTakeItem(Container container, int slot, ItemStack itemStack) {
-            return isCompletedFirstAttunement();
-        }
-
-        @Override
-        public boolean canExtractItem(int i) {
-            return isCompletedFirstAttunement();
-        }
-    }
-
-    protected final Container container = new WaystoneContainer(5);
-
-    private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
-
-    private boolean readyForAttunement;
-    protected boolean completedFirstAttunement;
-
-    protected int attunementTicks;
     private Waystone waystone = InvalidWaystone.INSTANCE;
     private UUID waystoneUid;
     private boolean shouldNotInitialize;
@@ -102,21 +51,18 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        ContainerHelper.saveAllItems(tag, items, provider);
+        tag.put("Items", container.serialize(provider));
 
         if (waystone.isValid()) {
             tag.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
         } else if (waystoneUid != null) {
             tag.put("UUID", NbtUtils.createUUID(waystoneUid));
         }
-
-        tag.putBoolean("ReadyForAttunement", readyForAttunement);
-        tag.putBoolean("CompletedFirstAttunement", completedFirstAttunement);
     }
 
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        ContainerHelper.loadAllItems(compound, items, provider);
+        container.deserialize(compound.getCompound("Items"), provider);
 
         if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
             waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
@@ -127,9 +73,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             WaystoneManagerImpl.get(null).updateWaystone(syncedWaystone);
             waystone = new WaystoneProxy(null, syncedWaystone.getWaystoneUid());
         }
-
-        readyForAttunement = compound.getBoolean("ReadyForAttunement");
-        completedFirstAttunement = compound.getBoolean("CompletedFirstAttunement");
     }
 
     @Override
@@ -217,10 +160,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         this.waystone = waystone;
         setChanged();
         sync();
-
-        if (!isCompletedFirstAttunement()) {
-            initializeInventory(world);
-        }
     }
 
     public void initializeFromExisting(ServerLevelAccessor world, WaystoneImpl existingWaystone, ItemStack itemStack) {
@@ -229,12 +168,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         existingWaystone.setPos(worldPosition);
         setChanged();
         sync();
-
-        completedFirstAttunement = itemStack.has(ModComponents.warpPlateCompletedFirstAttunement.get());
-
-        if (!isCompletedFirstAttunement()) {
-            initializeInventory(world);
-        }
     }
 
     public void initializeFromBase(WaystoneBlockEntityBase tileEntity) {
@@ -274,69 +207,16 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         return silkTouched;
     }
 
-    public abstract MenuProvider getMenuProvider();
-
-    @Nullable
-    public abstract MenuProvider getSettingsMenuProvider();
-
-    public int getMaxAttunementTicks() {
-        return 30;
+    public Optional<MenuProvider> getSelectionMenuProvider() {
+        return Optional.empty();
     }
 
-    public ContainerData getContainerData() {
-        return dataAccess;
+    public Optional<MenuProvider> getSettingsMenuProvider() {
+        return Optional.empty();
     }
 
-    @Nullable
-    protected WaystoneRecipe trySelectRecipe() {
-        if (!readyForAttunement) {
-            return null;
-        }
-        if (level == null) {
-            return null;
-        }
-
-        // Prevent crafting when more than one item is present in center slot
-        if (container.getItem(0).getCount() > 1) {
-            return null;
-        }
-
-        final var recipeInput = WaystoneRecipeInput.of(container);
-        return level.getRecipeManager().getRecipeFor(ModRecipes.waystoneRecipeType, recipeInput, level)
-                .map(RecipeHolder::value).orElse(null);
-    }
-
-    public void serverTick() {
-        WaystoneRecipe recipe = trySelectRecipe();
-        if (recipe != null) {
-            attunementTicks++;
-
-            if (attunementTicks >= getMaxAttunementTicks()) {
-                attunementTicks = 0;
-                craft(recipe);
-            }
-        } else {
-            attunementTicks = 0;
-        }
-    }
-
-    protected void craft(WaystoneRecipe recipe) {
-        final var recipeInput = WaystoneRecipeInput.of(container);
-        ItemStack attunedShard = recipe.assemble(recipeInput, RegistryAccess.EMPTY);
-        WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
-        ItemStack centerStack = container.getItem(0);
-        if (centerStack.getCount() > 1) {
-            centerStack = centerStack.copyWithCount(centerStack.getCount() - 1);
-            if (!Minecraft.getInstance().player.getInventory().add(centerStack)) {
-                Minecraft.getInstance().player.drop(centerStack, false);
-            }
-        }
-        container.setItem(0, attunedShard);
-        for (int i = 1; i <= 4; i++) {
-            container.getItem(i).shrink(1);
-        }
-
-        this.completedFirstAttunement = true;
+    public Optional<MenuProvider> getModifierMenuProvider() {
+        return Optional.empty();
     }
 
     public Collection<? extends Waystone> getAuxiliaryTargets() {
@@ -346,42 +226,6 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             WaystonesAPI.getBoundWaystone(null, item).ifPresent(result::add);
         }
         return result;
-    }
-
-    public boolean shouldPerformInitialAttunement() {
-        return false;
-    }
-
-    public boolean isCompletedFirstAttunement() {
-        return !shouldPerformInitialAttunement() || completedFirstAttunement;
-    }
-
-    /**
-     * We delay attunement until the menu is opened to show the player what's happening inside the slots before converting the items to an attuned shard.
-     */
-    public void markReadyForAttunement() {
-        readyForAttunement = true;
-    }
-
-    private void initializeInventory(ServerLevelAccessor levelAccessor) {
-        WaystoneRecipe initializingRecipe = levelAccessor.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.waystoneRecipeType)
-                .stream()
-                .filter(holder -> holder.id().getNamespace().equals(Waystones.MOD_ID) && holder.id().getPath().equals("attuned_shard"))
-                .map(RecipeHolder::value)
-                .findFirst()
-                .orElse(null);
-        if (initializingRecipe == null) {
-            Waystones.logger.error("Failed to find Attunement recipe for initial attunement");
-            completedFirstAttunement = true;
-            return;
-        }
-
-        for (int i = 0; i < 5; i++) {
-            final var ingredient = initializingRecipe.getIngredients().get(i);
-            final var ingredientItems = ingredient.getItems();
-            final var ingredientItem = ingredientItems.length > 0 ? ingredientItems[0] : ItemStack.EMPTY;
-            container.setItem(i, ingredientItem.copy());
-        }
     }
 
     @Override

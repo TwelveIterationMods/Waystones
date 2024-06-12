@@ -14,41 +14,29 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class WaystoneMenu extends AbstractContainerMenu {
+public class WaystoneEditMenu extends AbstractContainerMenu {
 
     public record Data(BlockPos pos, Waystone waystone, boolean canEdit) {
     }
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneMenu.Data> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC.cast(),
-            WaystoneMenu.Data::pos,
+            WaystoneEditMenu.Data::pos,
             WaystoneImpl.STREAM_CODEC,
-            WaystoneMenu.Data::waystone,
+            WaystoneEditMenu.Data::waystone,
             ByteBufCodecs.BOOL,
-            WaystoneMenu.Data::canEdit,
-            WaystoneMenu.Data::new);
+            WaystoneEditMenu.Data::canEdit,
+            WaystoneEditMenu.Data::new);
 
     private final Waystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
-    private final ContainerData containerData;
     private final boolean canEdit;
 
-    public WaystoneMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, ContainerData containerData, Inventory playerInventory, boolean canEdit) {
+    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.waystone = waystone;
         this.blockEntity = blockEntity;
-        this.containerData = containerData;
         this.canEdit = canEdit;
-
-        blockEntity.markReadyForAttunement();
-
-        checkContainerDataCount(containerData, 1);
-
-        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 0, 80, 64));
-        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 1, 80, 36));
-        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 2, 108, 64));
-        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 3, 80, 92));
-        addSlot(new WarpPlateAttunementSlot(blockEntity.getContainer(), 4, 52, 64));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -59,12 +47,6 @@ public class WaystoneMenu extends AbstractContainerMenu {
         for (int j = 0; j < 9; ++j) {
             addSlot(new Slot(playerInventory, j, 8 + j * 18, 186));
         }
-
-        addDataSlots(containerData);
-    }
-
-    public float getAttunementProgress() {
-        return containerData.get(0) / (float) blockEntity.getMaxAttunementTicks();
     }
 
     @Override

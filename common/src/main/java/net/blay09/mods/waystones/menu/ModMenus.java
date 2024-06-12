@@ -31,8 +31,8 @@ public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> inventorySelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> adminSelection;
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> sharestoneSelection;
-    public static DeferredObject<MenuType<WarpPlateMenu>> warpPlate;
-    public static DeferredObject<MenuType<WaystoneMenu>> waystoneSettings;
+    public static DeferredObject<MenuType<WaystoneModifierMenu>> waystoneModifiers;
+    public static DeferredObject<MenuType<WaystoneEditMenu>> waystoneSettings;
 
     public static void initialize(BalmMenus menus) {
         waystoneSelection = menus.registerMenu(id("waystone_selection"), new BalmMenuFactory<WaystoneSelectionMenu, WaystoneSelectionMenu.Data>() {
@@ -137,12 +137,12 @@ public class ModMenus {
             }
         });
 
-        warpPlate = menus.registerMenu(id("warp_plate"), new BalmMenuFactory<WarpPlateMenu, BlockPos>() {
+        waystoneModifiers = menus.registerMenu(id("warp_plate"), new BalmMenuFactory<WaystoneModifierMenu, BlockPos>() {
             @Override
-            public WarpPlateMenu create(int windowId, Inventory inventory, BlockPos pos) {
+            public WaystoneModifierMenu create(int windowId, Inventory inventory, BlockPos pos) {
                 final var blockEntity = inventory.player.level().getBlockEntity(pos);
                 if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
-                    return new WarpPlateMenu(windowId, warpPlate, warpPlate.getContainerData(), inventory);
+                    return new WaystoneModifierMenu(windowId, warpPlate, inventory);
                 }
                 return null;
             }
@@ -153,20 +153,20 @@ public class ModMenus {
             }
         });
 
-        waystoneSettings = menus.registerMenu(id("waystone"), new BalmMenuFactory<WaystoneMenu, WaystoneMenu.Data>() {
+        waystoneSettings = menus.registerMenu(id("waystone"), new BalmMenuFactory<WaystoneEditMenu, WaystoneEditMenu.Data>() {
             @Override
-            public WaystoneMenu create(int windowId, Inventory inventory, WaystoneMenu.Data data) {
+            public WaystoneEditMenu create(int windowId, Inventory inventory, WaystoneEditMenu.Data data) {
                 BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.pos());
                 if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                    return new WaystoneMenu(windowId, data.waystone(), waystoneBlockEntity, waystoneBlockEntity.getContainerData(), inventory, data.canEdit());
+                    return new WaystoneEditMenu(windowId, data.waystone(), waystoneBlockEntity, inventory, data.canEdit());
                 }
 
                 return null;
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, WaystoneMenu.Data> getStreamCodec() {
-                return WaystoneMenu.STREAM_CODEC;
+            public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getStreamCodec() {
+                return WaystoneEditMenu.STREAM_CODEC;
             }
         });
     }

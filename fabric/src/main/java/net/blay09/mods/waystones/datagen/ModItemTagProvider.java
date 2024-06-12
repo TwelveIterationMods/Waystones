@@ -24,7 +24,7 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_STONES).add(ModItems.warpStone);
-        getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard, ModItems.crumblingAttunedShard);
+        getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard, ModItems.crumblingAttunedShard, ModItems.dormantShard, ModItems.deepslateShard);
         getOrCreateTagBuilder(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard);
         getOrCreateTagBuilder(ModItemTags.WAYSTONES).add(ModBlocks.waystone.asItem(),
                 ModBlocks.mossyWaystone.asItem(),

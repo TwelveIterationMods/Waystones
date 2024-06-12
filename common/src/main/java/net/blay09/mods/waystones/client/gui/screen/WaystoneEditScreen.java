@@ -6,7 +6,7 @@ import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.core.WaystoneVisibilities;
-import net.blay09.mods.waystones.menu.WaystoneMenu;
+import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
+public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
 
     private static final ResourceLocation WAYSTONE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
 
@@ -34,7 +34,7 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
     private EditBox textField;
     private WaystoneVisbilityButton visibilityButton;
 
-    public WaystoneScreen(WaystoneMenu container, Inventory playerInventory, Component title) {
+    public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         imageHeight = 210;
         inventoryLabelY = imageHeight - 94;
@@ -117,11 +117,6 @@ public class WaystoneScreen extends AbstractContainerScreen<WaystoneMenu> {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         guiGraphics.setColor(1f, 1f, 1f, 1f);
         guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 53, 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 70, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 86, topPos + 91 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos + 69, topPos + 70, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
     }
 
     @Override

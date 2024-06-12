@@ -13,7 +13,6 @@ public class ModBlockEntities {
     public static DeferredObject<BlockEntityType<SharestoneBlockEntity>> sharestone;
     public static DeferredObject<BlockEntityType<WarpPlateBlockEntity>> warpPlate;
     public static DeferredObject<BlockEntityType<PortstoneBlockEntity>> portstone;
-    public static DeferredObject<BlockEntityType<LandingStoneBlockEntity>> landingStone;
 
     public static void initialize(BalmBlockEntities blockEntities) {
         waystone = blockEntities.registerBlockEntity(id("waystone"),
@@ -24,7 +23,6 @@ public class ModBlockEntities {
                 () -> ModBlocks.sharestones);
         warpPlate = blockEntities.registerBlockEntity(id("warp_plate"), WarpPlateBlockEntity::new, () -> new Block[]{ModBlocks.warpPlate});
         portstone = blockEntities.registerBlockEntity(id("portstone"), PortstoneBlockEntity::new, () -> ModBlocks.portstones);
-        landingStone = blockEntities.registerBlockEntity(id("landing_stone"), LandingStoneBlockEntity::new, () -> new Block[]{ModBlocks.landingStone});
     }
 
     private static ResourceLocation id(String name) {

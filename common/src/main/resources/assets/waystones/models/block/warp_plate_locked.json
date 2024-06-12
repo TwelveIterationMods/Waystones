@@ -1,9 +1,8 @@
 {
-	"render_type": "cutout",
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"3": "waystones:block/warp_plate_runes",
+		"3": "waystones:block/warp_plate_lock",
 		"particle": "waystones:block/warp_plate",
 		"texture": "waystones:block/warp_plate",
 		"base": "waystones:block/warp_plate_base"
@@ -42,7 +41,7 @@
 			"from": [5, 2.01, 5],
 			"to": [11, 2.02, 11],
 			"faces": {
-				"up": {"uv": [2, 2, 14, 14], "texture": "#3", "tintindex": 1}
+				"up": {"uv": [2, 2, 14, 14], "texture": "#3"}
 			}
 		},
 		{

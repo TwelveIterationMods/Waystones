@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.item;
 
-import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneTypes;
@@ -8,12 +7,10 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.InvalidWaystone;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.menu.WarpPlateMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractAttunedShardItem extends Item implements IAttunementItem {
+public abstract class AbstractAttunedShardItem extends ShardItem implements IAttunementItem {
 
     public AbstractAttunedShardItem(Properties properties) {
         super(properties);
@@ -51,17 +48,7 @@ public abstract class AbstractAttunedShardItem extends Item implements IAttuneme
             list.add(attunedWaystone.getName().copy().withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
-        Player player = Balm.getProxy().getClientPlayer();
-        if (player != null && player.containerMenu instanceof WarpPlateMenu) {
-            Waystone currentWarpPlate = ((WarpPlateMenu) player.containerMenu).getWaystone();
-            if (attunedWaystone.getWaystoneUid().equals(currentWarpPlate.getWaystoneUid())) {
-                list.add(Component.translatable("tooltip.waystones.attuned_shard.move_to_other_warp_plate"));
-            } else {
-                list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
-            }
-        } else {
-            list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
-        }
+        list.add(Component.translatable("tooltip.waystones.attuned_shard.plug_into_warp_plate"));
     }
 
     @Override

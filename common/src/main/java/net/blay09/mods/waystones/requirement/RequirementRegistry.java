@@ -239,9 +239,6 @@ public class RequirementRegistry {
         registerConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
-        registerConditionResolver("target_is_landing_stone",
-                NoParameter.class,
-                (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.LANDING_STONE));
         registerConditionResolver("is_with_pets", NoParameter.class, (context, parameters) -> !WaystoneTeleportManager.findPets(context.getEntity()).isEmpty());
         registerConditionResolver("is_with_leashed",
                 NoParameter.class,

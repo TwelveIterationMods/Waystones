@@ -7,9 +7,10 @@ import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
+import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -17,20 +18,25 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -44,10 +50,23 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     public static final MapCodec<WarpPlateBlock> CODEC = simpleCodec(WarpPlateBlock::new);
 
+    public static int getColorForBlock(@Nullable BlockAndTintGetter view, BlockPos pos) {
+        if (view == null || !(view.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate)) {
+            return 0xFFFFFFFF;
+        }
+
+        final var name = warpPlate.getWaystone().getName().toString();
+        final var color = getColorForName(name).getColor();
+        return color != null ? color : 0xFFFFFFFF;
+    }
+
     public enum WarpPlateStatus implements StringRepresentable {
+        EMPTY,
         IDLE,
-        ACTIVE,
-        INVALID;
+        ATTUNING,
+        WARPING,
+        WARPING_INVALID,
+        LOCKED;
 
         @Override
         public String getSerializedName() {
@@ -68,7 +87,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         super(properties);
         registerDefaultState(this.stateDefinition.any()
                 .setValue(WATERLOGGED, false)
-                .setValue(STATUS, WarpPlateStatus.IDLE));
+                .setValue(STATUS, WarpPlateStatus.EMPTY));
     }
 
     @Override
@@ -114,7 +133,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (state.getValue(STATUS) == WarpPlateStatus.ACTIVE) {
+        if (state.getValue(STATUS) == WarpPlateStatus.WARPING || state.getValue(STATUS) == WarpPlateStatus.ATTUNING) {
             for (int i = 0; i < 50; i++) {
                 world.addParticle(ParticleTypes.CRIMSON_SPORE,
                         pos.getX() + Math.random(),
@@ -131,7 +150,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                         0f,
                         0f);
             }
-        } else if (state.getValue(STATUS) == WarpPlateStatus.INVALID) {
+        } else if (state.getValue(STATUS) == WarpPlateStatus.WARPING_INVALID) {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
             }
@@ -145,13 +164,39 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
-        if (!world.isClientSide) {
-            Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
-            return InteractionResult.SUCCESS;
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+        if (itemStack.is(ModItemTags.WARP_SHARDS)) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+                final var existing = warpPlate.getShardItem();
+                if (existing.isEmpty()) {
+                    warpPlate.setShardItem(itemStack.split(1));
+                }
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
 
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+                final var itemStack = warpPlate.getShardItem();
+                if (!itemStack.isEmpty()) {
+                    player.drop(itemStack, false);
+                    warpPlate.setShardItem(ItemStack.EMPTY);
+                }
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
+            warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -183,12 +228,19 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
-        return ModBlockEntities.warpPlate.get();
-    }
-
-    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        final var tickingBlockEntityType = ModBlockEntities.warpPlate.get();
+        if (tickingBlockEntityType == null) {
+            return null;
+        }
+        return world.isClientSide ? null : createTickerHelper(type,
+                tickingBlockEntityType,
+                (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }
 }

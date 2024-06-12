@@ -101,7 +101,11 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         BlockPos offset = half == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
         BlockEntity offsetTileEntity = isDoubleBlock ? world.getBlockEntity(offset) : null;
 
-        final var hasSilkTouch = world.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.SILK_TOUCH).map(it -> EnchantmentHelper.getEnchantmentLevel(it, player) > 0).orElse(false);
+        final var hasSilkTouch = world.registryAccess()
+                .registryOrThrow(Registries.ENCHANTMENT)
+                .getHolder(Enchantments.SILK_TOUCH)
+                .map(it -> EnchantmentHelper.getEnchantmentLevel(it, player) > 0)
+                .orElse(false);
         if (hasSilkTouch && canSilkTouch()) {
             if (blockEntity instanceof WaystoneBlockEntityBase) {
                 ((WaystoneBlockEntityBase) blockEntity).setSilkTouched(true);
@@ -123,20 +127,18 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         }
 
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity && !player.getAbilities().instabuild) {
-            if (waystoneBlockEntity.isCompletedFirstAttunement()) {
-                for (int i = 0; i < waystoneBlockEntity.getContainer().getContainerSize(); i++) {
-                    ItemStack itemStack = waystoneBlockEntity.getContainer().getItem(i);
+            for (int i = 0; i < waystoneBlockEntity.getContainer().getContainerSize(); i++) {
+                ItemStack itemStack = waystoneBlockEntity.getContainer().getItem(i);
 
-                    // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
-                    if (!hasSilkTouch && itemStack.getItem() instanceof IAttunementItem attunementItem) {
-                        final var waystoneAttunedTo = attunementItem.getWaystoneAttunedTo(world.getServer(), player, itemStack);
-                        if (waystoneAttunedTo.map(it -> it.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())).orElse(false)) {
-                            continue;
-                        }
+                // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
+                if (!hasSilkTouch && itemStack.getItem() instanceof IAttunementItem attunementItem) {
+                    final var waystoneAttunedTo = attunementItem.getWaystoneAttunedTo(world.getServer(), player, itemStack);
+                    if (waystoneAttunedTo.map(it -> it.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())).orElse(false)) {
+                        continue;
                     }
-
-                    popResource(world, pos, itemStack);
                 }
+
+                popResource(world, pos, itemStack);
             }
         }
 
@@ -199,13 +201,10 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     }
 
     @Nullable
-    protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
+    protected InteractionResult handleEditActions(Level world, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                final var settingsContainerProvider = tileEntity.getSettingsMenuProvider();
-                if (settingsContainerProvider != null) {
-                    Balm.getNetworking().openGui(player, settingsContainerProvider);
-                }
+                blockEntity.getSettingsMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             }
             return InteractionResult.SUCCESS;
         }
@@ -215,29 +214,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     protected boolean shouldOpenMenuWhenPlaced() {
         return true;
-    }
-
-    @Nullable
-    protected ItemInteractionResult handleDebugActions(Level world, Player player, ItemStack heldItem, WaystoneBlockEntityBase tileEntity) {
-        if (player.getAbilities().instabuild) {
-            if (heldItem.getItem() == Items.BAMBOO) {
-                if (!world.isClientSide) {
-                    tileEntity.uninitializeWaystone();
-                    player.displayClientMessage(Component.literal("Waystone was successfully reset - it will re-initialize once it is next loaded."), false);
-                }
-                return ItemInteractionResult.SUCCESS;
-            } else if (heldItem.getItem() == Items.STICK) {
-                if (!world.isClientSide) {
-                    player.displayClientMessage(Component.literal("Server UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
-                }
-                if (world.isClientSide) {
-                    player.displayClientMessage(Component.literal("Client UUID: " + tileEntity.getWaystone().getWaystoneUid()), false);
-                }
-                return ItemInteractionResult.SUCCESS;
-            }
-        }
-
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable
@@ -278,16 +254,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
         tooltip.add(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
-    }
-
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        final var blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-
-        return handleDebugActions(level, player, itemStack, waystoneBlockEntity);
     }
 
     @Override
@@ -362,9 +328,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             if (!world.isClientSide && placer instanceof ServerPlayer) {
                 final ServerPlayer player = (ServerPlayer) placer;
                 final WaystoneBlockEntityBase waystoneTileEntity = (WaystoneBlockEntityBase) blockEntity;
-                MenuProvider settingsContainerProvider = waystoneTileEntity.getSettingsMenuProvider();
-                if (settingsContainerProvider != null && shouldOpenMenuWhenPlaced()) {
-                    Balm.getNetworking().openGui(player, settingsContainerProvider);
+                if (shouldOpenMenuWhenPlaced()) {
+                    waystoneTileEntity.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
                 }
             }
         }
@@ -383,22 +348,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
-    }
-
-    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        final var tickingBlockEntityType = getTickingBlockEntityType();
-        if (tickingBlockEntityType == null) {
-            return null;
-        }
-        return world.isClientSide ? null : createTickerHelper(type,
-                tickingBlockEntityType,
-                (level, pos, state2, blockEntity) -> blockEntity.serverTick());
     }
 
 }

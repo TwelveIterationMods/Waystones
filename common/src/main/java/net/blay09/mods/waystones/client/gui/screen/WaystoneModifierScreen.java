@@ -3,7 +3,7 @@ package net.blay09.mods.waystones.client.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.menu.WarpPlateMenu;
+import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -12,11 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 
-public class WarpPlateScreen extends AbstractContainerScreen<WarpPlateMenu> {
+public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModifierMenu> {
 
     private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/warp_plate.png");
 
-    public WarpPlateScreen(WarpPlateMenu menu, Inventory playerInventory, Component title) {
+    public WaystoneModifierScreen(WaystoneModifierMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         imageHeight = 196;
         inventoryLabelY = 93;
@@ -27,11 +27,6 @@ public class WarpPlateScreen extends AbstractContainerScreen<WarpPlateMenu> {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         guiGraphics.setColor(1f, 1f, 1f, 1f);
         guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-
-        guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos + 86, topPos + 34, 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos + 107 - (int) (10 * menu.getAttunementProgress()), topPos + 51, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
-        guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos + 86, topPos + 72 - (int) (10 * menu.getAttunementProgress()), 176, 4, 4, (int) (10 * menu.getAttunementProgress()));
-        guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos + 69, topPos + 51, 176, 0, (int) (10 * menu.getAttunementProgress()), 4);
     }
 
     @Override

@@ -1,33 +1,27 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
+import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class WarpPlateMenu extends AbstractContainerMenu {
+public class WaystoneModifierMenu extends AbstractContainerMenu {
 
-    private final WarpPlateBlockEntity blockEntity;
-    private final ContainerData containerData;
+    private final WaystoneBlockEntityBase blockEntity;
 
-    public WarpPlateMenu(int windowId, WarpPlateBlockEntity warpPlate, ContainerData containerData, Inventory playerInventory) {
-        super(ModMenus.warpPlate.get(), windowId);
+    public WaystoneModifierMenu(int windowId, WaystoneBlockEntityBase warpPlate, Inventory playerInventory) {
+        super(ModMenus.waystoneModifiers.get(), windowId);
         this.blockEntity = warpPlate;
-        this.containerData = containerData;
-        warpPlate.markReadyForAttunement();
 
-        checkContainerDataCount(containerData, 1);
-
-        addSlot(new WarpPlateAttunementSlot(warpPlate.getContainer(), 0, 80, 45));
-        addSlot(new WarpPlateAttunementSlot(warpPlate.getContainer(), 1, 80, 17));
-        addSlot(new WarpPlateAttunementSlot(warpPlate.getContainer(), 2, 108, 45));
-        addSlot(new WarpPlateAttunementSlot(warpPlate.getContainer(), 3, 80, 73));
-        addSlot(new WarpPlateAttunementSlot(warpPlate.getContainer(), 4, 52, 45));
+        addSlot(new Slot(warpPlate.getContainer(), 0, 80, 45));
+        addSlot(new Slot(warpPlate.getContainer(), 1, 80, 17));
+        addSlot(new Slot(warpPlate.getContainer(), 2, 108, 45));
+        addSlot(new Slot(warpPlate.getContainer(), 3, 80, 73));
+        addSlot(new Slot(warpPlate.getContainer(), 4, 52, 45));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -38,18 +32,12 @@ public class WarpPlateMenu extends AbstractContainerMenu {
         for (int j = 0; j < 9; ++j) {
             addSlot(new Slot(playerInventory, j, 8 + j * 18, 162));
         }
-
-        addDataSlots(containerData);
     }
 
     @Override
     public boolean stillValid(Player player) {
         BlockPos pos = blockEntity.getBlockPos();
         return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
-    }
-
-    public float getAttunementProgress() {
-        return containerData.get(0) / (float) blockEntity.getMaxAttunementTicks();
     }
 
     @Override

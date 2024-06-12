@@ -31,7 +31,7 @@ public class WaystonesClient {
 
         Compat.isVivecraftInstalled = ClientBrandRetriever.getClientModName().toLowerCase(Locale.ENGLISH).contains(Compat.VIVECRAFT);
 
-        Balm.getEvents().onEvent(UseItemInputEvent.class, event -> {
+        /* TODO Balm.getEvents().onEvent(UseItemInputEvent.class, event -> {
             final var mc = Minecraft.getInstance();
             if (mc.level == null || mc.player == null || mc.hitResult == null || mc.hitResult.getType() != HitResult.Type.BLOCK) {
                 return;
@@ -46,6 +46,6 @@ public class WaystonesClient {
                     event.setCanceled(true);
                 }
             }
-        });
+        });*/
     }
 }

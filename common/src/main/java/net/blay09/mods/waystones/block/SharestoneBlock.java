@@ -35,7 +35,7 @@ import java.util.List;
 public class SharestoneBlock extends WaystoneBlockBase {
 
     public static final MapCodec<SharestoneBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color")
-            .forGetter(SharestoneBlock::getColor), propertiesCodec())
+                    .forGetter(SharestoneBlock::getColor), propertiesCodec())
             .apply(instance, SharestoneBlock::new));
 
     private static final VoxelShape LOWER_SHAPE = Shapes.or(
@@ -73,9 +73,9 @@ public class SharestoneBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase tileEntity, Waystone waystone) {
+    protected InteractionResult handleActivation(Level world, BlockPos pos, Player player, WaystoneBlockEntityBase blockEntity, Waystone waystone) {
         if (!world.isClientSide) {
-            Balm.getNetworking().openGui(player, tileEntity.getMenuProvider());
+            blockEntity.getSelectionMenuProvider().ifPresent(menuProvider -> Balm.getNetworking().openGui(player, menuProvider));
             return InteractionResult.SUCCESS;
         }
 
@@ -100,11 +100,6 @@ public class SharestoneBlock extends WaystoneBlockBase {
     @Nullable
     public DyeColor getColor() {
         return color;
-    }
-
-    @Override
-    public BlockEntityType<? extends WaystoneBlockEntityBase> getTickingBlockEntityType() {
-        return ModBlockEntities.sharestone.get();
     }
 
     @Override

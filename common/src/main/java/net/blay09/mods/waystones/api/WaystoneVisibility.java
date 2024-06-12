@@ -44,8 +44,6 @@ public enum WaystoneVisibility {
             };
         } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
-        } else if (waystoneType.equals(WaystoneTypes.LANDING_STONE)) {
-            return WaystoneVisibility.SHARD_ONLY;
         } else {
             return WaystoneVisibility.ACTIVATION;
         }
