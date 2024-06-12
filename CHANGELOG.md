@@ -1,3 +1,5 @@
+- Fixed warp plate contents not saving
+
 - Updated to Minecraft 1.20.6
 - Updated Mossy Waystone Texture
 - Changed scroll recipes to use ink instead of purple dye
