@@ -81,9 +81,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         }
     }
 
-    protected final Container container = new WaystoneContainer(5);
-
-    private final NonNullList<ItemStack> items = NonNullList.withSize(5, ItemStack.EMPTY);
+    protected final DefaultContainer container = new WaystoneContainer(5);
 
     private boolean readyForAttunement;
     protected boolean completedFirstAttunement;
@@ -100,7 +98,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        ContainerHelper.saveAllItems(tag, items, provider);
+        tag.put("Items", container.serialize(provider));
 
         if (waystone.isValid()) {
             tag.put("UUID", NbtUtils.createUUID(waystone.getWaystoneUid()));
@@ -114,7 +112,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        ContainerHelper.loadAllItems(compound, items, provider);
+        container.deserialize(compound.getCompound("Items"), provider);
 
         if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
             waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
