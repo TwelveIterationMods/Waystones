@@ -6,9 +6,11 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
+import net.blay09.mods.waystones.client.gui.screen.WaystoneEditScreen;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
@@ -101,13 +103,8 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     }
 
     @Override
-    public Optional<MenuProvider> getSelectionMenuProvider() {
-        return getSettingsMenuProvider();
-    }
-
-    @Override
     public Optional<MenuProvider> getSettingsMenuProvider() {
-        return Optional.of(new BalmMenuProvider<BlockPos>() {
+        return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
             @Override
             public Component getDisplayName() {
                 return WarpPlateBlockEntity.this.getDisplayName();
@@ -115,17 +112,19 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new WaystoneModifierMenu(i, WarpPlateBlockEntity.this, playerInventory);
+                final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
+                return new WaystoneEditMenu(i, getWaystone(), WarpPlateBlockEntity.this, playerInventory, error.isEmpty());
             }
 
             @Override
-            public BlockPos getScreenOpeningData(ServerPlayer serverPlayer) {
-                return worldPosition;
+            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
+                final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
+                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), error.isEmpty());
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, BlockPos> getScreenStreamCodec() {
-                return BlockPos.STREAM_CODEC.cast();
+            public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getScreenStreamCodec() {
+                return WaystoneEditMenu.STREAM_CODEC;
             }
         });
     }

@@ -1,43 +1,30 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.client.gui.widget.ITooltipProvider;
 import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
-
-    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
-
-    private final List<ITooltipProvider> tooltipProviders = new ArrayList<>();
 
     private EditBox textField;
     private WaystoneVisbilityButton visibilityButton;
+    private WaystoneVisbilityButton modifierButton;
+    private Button saveButton;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         imageHeight = 210;
-        inventoryLabelY = imageHeight - 94;
+        titleLabelY = 44;
     }
 
     @Override
@@ -53,9 +40,8 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
             oldVisibility = visibilityButton.getVisibility();
         }
 
-        tooltipProviders.clear();
-
-        textField = new EditBox(Minecraft.getInstance().font, leftPos + 33, topPos + 9, 110, 16, textField, Component.empty());
+        var y = topPos + titleLabelY + 16;
+        textField = new EditBox(Minecraft.getInstance().font, leftPos, y, 176, 20, textField, Component.empty());
         textField.setMaxLength(128);
         textField.setValue(oldText);
         textField.setEditable(menu.canEdit());
@@ -63,10 +49,23 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         if (menu.canEdit() && oldText.isEmpty()) {
             setInitialFocus(textField);
         }
+        y += 28;
 
         final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(Minecraft.getInstance().player, waystone);
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 9, topPos + 8, oldVisibility, visibilityOptions, menu.canEdit());
+        visibilityButton = new WaystoneVisbilityButton(leftPos + 2, y, oldVisibility, visibilityOptions, menu.canEdit());
         addRenderableWidget(visibilityButton);
+        y += 24;
+
+        modifierButton = new WaystoneVisbilityButton(leftPos + 2, y, oldVisibility, visibilityOptions, menu.canEdit());
+        addRenderableWidget(modifierButton);
+        y += 24;
+
+        saveButton = Button.builder(menu.canEdit() ? Component.literal("Save") : Component.literal("Close"), it -> onClose())
+                .pos(leftPos + 176 / 2 - 50, y)
+                .size(100, 20)
+                .build();
+        saveButton.active = menu.canEdit();
+        addRenderableWidget(saveButton);
     }
 
     @Override
@@ -97,31 +96,26 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltip(guiGraphics, mouseX, mouseY);
-        for (ITooltipProvider tooltipProvider : tooltipProviders) {
-            if (tooltipProvider.shouldShowTooltip()) {
-                guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltipProvider.getTooltipComponents(), Optional.empty(), mouseX, mouseY);
-            }
-        }
 
         if (textField != null && textField.getValue().isEmpty()) {
             guiGraphics.drawString(Minecraft.getInstance().font,
                     Component.translatable("waystones.untitled_waystone"),
                     textField.getX() + 4,
-                    textField.getY() + 4,
+                    textField.getY() + 6,
                     0x808080);
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        guiGraphics.setColor(1f, 1f, 1f, 1f);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawCenteredString(font, Component.literal("Edit Waystone"), 176 / 2, titleLabelY, 0xFFFFFFFF);
+        guiGraphics.drawString(font, Component.literal(visibilityButton.getVisibility().name()), 24, visibilityButton.getY() - topPos + 5, 0xFFFFFFFF, true);
+        guiGraphics.drawString(font, Component.literal("No modifiers active"), 24, modifierButton.getY() - topPos + 5, 0xFFAAAAAA, true);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0x404040, false);
+    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
+        renderBlurredBackground(v);
     }
 
     @Override
@@ -134,11 +128,4 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         super.onClose();
     }
 
-    @Override
-    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
-        if (widget instanceof ITooltipProvider) {
-            tooltipProviders.add((ITooltipProvider) widget);
-        }
-        return super.addRenderableWidget(widget);
-    }
 }

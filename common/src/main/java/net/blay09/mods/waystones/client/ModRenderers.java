@@ -34,9 +34,9 @@ public class ModRenderers {
         renderers.registerBlockEntityRenderer(ModBlockEntities.sharestone::get, SharestoneRenderer::new);
         renderers.registerBlockEntityRenderer(ModBlockEntities.portstone::get, PortstoneRenderer::new);
 
-        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> 0xFFFF00FF,
+        renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> 0xffe21ddc,
                 () -> new Block[]{ModBlocks.warpPlate});
-        renderers.registerItemColorHandler((itemStack, tintIndex) -> 0xFFFF00FF, () -> new Item[]{ModBlocks.warpPlate.asItem()});
+        renderers.registerItemColorHandler((itemStack, tintIndex) -> 0xffe21ddc, () -> new Item[]{ModBlocks.warpPlate.asItem()});
         renderers.registerBlockColorHandler((state, view, pos, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) state.getBlock()).getColor())
                 .getTextColor() | 0xFF000000, () -> ModBlocks.sharestones);
         renderers.registerItemColorHandler((stack, tintIndex) -> Objects.requireNonNull(((SharestoneBlock) Block.byItem((stack.getItem()))).getColor())

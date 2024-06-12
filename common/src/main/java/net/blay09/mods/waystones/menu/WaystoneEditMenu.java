@@ -37,16 +37,6 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.canEdit = canEdit;
-
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 128 + i * 18));
-            }
-        }
-
-        for (int j = 0; j < 9; ++j) {
-            addSlot(new Slot(playerInventory, j, 8 + j * 18, 186));
-        }
     }
 
     @Override
