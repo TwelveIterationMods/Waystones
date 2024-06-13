@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class WaystoneEditMenu extends AbstractContainerMenu {
 
-    public record Data(BlockPos pos, Waystone waystone, boolean canEdit) {
+    public record Data(BlockPos pos, Waystone waystone, int modifierCount, boolean canEdit) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> STREAM_CODEC = StreamCodec.composite(
@@ -24,6 +24,8 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
             WaystoneEditMenu.Data::pos,
             WaystoneImpl.STREAM_CODEC,
             WaystoneEditMenu.Data::waystone,
+            ByteBufCodecs.INT,
+            WaystoneEditMenu.Data::modifierCount,
             ByteBufCodecs.BOOL,
             WaystoneEditMenu.Data::canEdit,
             WaystoneEditMenu.Data::new);

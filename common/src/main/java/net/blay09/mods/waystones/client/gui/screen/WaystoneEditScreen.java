@@ -131,8 +131,9 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 visibilityButton.getY() - topPos + 6,
                 0xFFFFFFFF,
                 true);
+        final var modifiersComponent = Component.translatable("gui.waystones.waystone_settings.no_modifiers_active");
         guiGraphics.drawString(font,
-                Component.translatable("gui.waystones.waystone_settings.no_modifiers_active"),
+                modifiersComponent,
                 24,
                 modifierButton.getY() - topPos + 6,
                 0xFFAAAAAA,

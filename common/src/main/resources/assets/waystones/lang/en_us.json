@@ -83,6 +83,7 @@
   "gui.waystones.waystone_selection.xp_requirement": "Experience Cost: %d",
   "gui.waystones.waystone_selection.item_requirement": "Item Cost: %d %s",
   "gui.waystones.waystone_selection.no_xp_requirement": "Experience Cost: Free",
+  "gui.waystones.waystone_settings.modifiers_active": "%d modifiers active",
   "gui.waystones.waystone_settings.no_modifiers_active": "No modifiers active",
   "gui.waystones.waystone_settings.save": "Save",
   "gui.waystones.waystone_settings.close": "Close",
