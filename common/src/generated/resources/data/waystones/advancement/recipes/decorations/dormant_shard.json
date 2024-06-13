@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:dormant_shard"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warp_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "waystones:warp_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_warp_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:dormant_shard"
+    ]
+  }
+}
