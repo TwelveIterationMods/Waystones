@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class WaystoneInventoryButton extends Button {
 
-    private static final ResourceLocation INVENTORY_BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/inventory_button.png");
+    private static final ResourceLocation INVENTORY_BUTTON_SPRITE = ResourceLocation.withDefaultNamespace("waystones/inventory_button");
 
     private final AbstractContainerScreen<?> parentScreen;
     private final ItemStack iconItem;
@@ -59,7 +59,7 @@ public class WaystoneInventoryButton extends Button {
             } else {
                 RenderSystem.enableBlend();
                 guiGraphics.setColor(1f, 1f, 1f, 0.5f);
-                guiGraphics.blit(INVENTORY_BUTTON_TEXTURE, getX(), getY(), 0, 0, 16, 16, 16, 16);
+                guiGraphics.blitSprite(INVENTORY_BUTTON_SPRITE, getX(), getY(), 16, 16);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 RenderSystem.disableBlend();
             }

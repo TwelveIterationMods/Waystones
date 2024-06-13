@@ -48,17 +48,4 @@ public enum WaystoneVisibility {
             return WaystoneVisibility.ACTIVATION;
         }
     }
-
-    public int getIconX() {
-        return 176;
-    }
-
-    public int getIconY() {
-        return switch (this) {
-            case ACTIVATION -> 32;
-            case GLOBAL -> 50;
-            case SHARD_ONLY -> 68;
-            default -> 86;
-        };
-    }
 }

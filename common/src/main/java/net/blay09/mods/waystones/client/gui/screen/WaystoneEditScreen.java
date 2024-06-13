@@ -54,16 +54,15 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         y += 28;
 
         final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(Minecraft.getInstance().player, waystone);
-        visibilityButton = new WaystoneVisbilityButton(leftPos + 2, y, oldVisibility, visibilityOptions, menu.canEdit());
+        visibilityButton = new WaystoneVisbilityButton(leftPos, y, oldVisibility, visibilityOptions, menu.canEdit());
         addRenderableWidget(visibilityButton);
         y += 24;
 
         final var modifierSprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("recipe_book/page_forward"),
-                ResourceLocation.withDefaultNamespace("recipe_book/page_forward_highlighted"));
-        modifierButton = new ImageButton(16, 16, modifierSprites, (button) -> {}, Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
-        modifierButton.setPosition(leftPos + 2, y);
-        modifierButton.active = false;
+                ResourceLocation.withDefaultNamespace("waystones/small_button_blank"),
+                ResourceLocation.withDefaultNamespace("waystones/small_button_blank_highlighted"));
+        modifierButton = new ImageButton(20, 20, modifierSprites, (button) -> {}, Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
+        modifierButton.setPosition(leftPos, y);
         modifierButton.setTooltip(Tooltip.create(Component.literal("Not yet implemented.")));
         addRenderableWidget(modifierButton);
         y += 24;
@@ -73,7 +72,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 .pos(leftPos + 176 / 2 - 50, y)
                 .size(100, 20)
                 .build();
-        saveButton.active = menu.canEdit();
         addRenderableWidget(saveButton);
     }
 
@@ -121,13 +119,13 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         guiGraphics.drawString(font,
                 Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
                 24,
-                visibilityButton.getY() - topPos + 5,
+                visibilityButton.getY() - topPos + 6,
                 0xFFFFFFFF,
                 true);
         guiGraphics.drawString(font,
                 Component.translatable("gui.waystones.waystone_settings.no_modifiers_active"),
                 24,
-                modifierButton.getY() - topPos + 5,
+                modifierButton.getY() - topPos + 6,
                 0xFFAAAAAA,
                 true);
     }

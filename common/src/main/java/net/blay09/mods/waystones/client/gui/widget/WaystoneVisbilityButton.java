@@ -1,14 +1,12 @@
 package net.blay09.mods.waystones.client.gui.widget;
 
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,18 @@ import java.util.Locale;
 
 public class WaystoneVisbilityButton extends Button implements ITooltipProvider {
 
-    private static final ResourceLocation WAYSTONE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone.png");
+    private final WidgetSprites ACTIVATION_SPRITES = new WidgetSprites(
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_activation"),
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_activation_highlighted"));
+    private final WidgetSprites GLOBAL_SPRITES = new WidgetSprites(
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_global"),
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_global_highlighted"));
+    private final WidgetSprites SHARD_ONLY_SPRITES = new WidgetSprites(
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_shard_only"),
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_shard_only_highlighted"));
+    private final WidgetSprites SHARESTONE_SPRITES = new WidgetSprites(
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_sharestone"),
+            ResourceLocation.withDefaultNamespace("waystones/visibility_button_sharestone_highlighted"));
 
     private final List<WaystoneVisibility> options;
     private final boolean canEdit;
@@ -32,8 +41,8 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), 176 + (isHovered ? 18 : 0), 14, 18, 18);
-        guiGraphics.blit(WAYSTONE_GUI_TEXTURES, getX(), getY(), visibility.getIconX(), visibility.getIconY(), 18, 18);
+        final var sprite = getSprites().get(this.isActive(), this.isHoveredOrFocused());
+        guiGraphics.blitSprite(sprite, getX(), getY(), 20, 20);
     }
 
     @Override
@@ -48,13 +57,24 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
         final var result = new ArrayList<Component>();
         result.add(Component.translatable("tooltip.waystones.visibility", visibilityValueComponent).withStyle(ChatFormatting.YELLOW));
         if (!canEdit) {
-            result.add(Component.translatable("tooltip.waystones.edit_restricted", visibilityValueComponent).withStyle(ChatFormatting.RED));
+            result.add(Component.translatable("tooltip.waystones.edit_restricted").withStyle(ChatFormatting.RED));
         }
         return result;
     }
 
     public WaystoneVisibility getVisibility() {
         return visibility;
+    }
+
+    private WidgetSprites getSprites() {
+        return switch (visibility) {
+            case ACTIVATION -> ACTIVATION_SPRITES;
+            case GLOBAL -> GLOBAL_SPRITES;
+            case SHARD_ONLY -> SHARD_ONLY_SPRITES;
+            case ORANGE_SHARESTONE, GRAY_SHARESTONE, LIGHT_GRAY_SHARESTONE, BLACK_SHARESTONE, RED_SHARESTONE, GREEN_SHARESTONE, BROWN_SHARESTONE,
+                 BLUE_SHARESTONE, PURPLE_SHARESTONE, CYAN_SHARESTONE, PINK_SHARESTONE, LIME_SHARESTONE, YELLOW_SHARESTONE, LIGHT_BLUE_SHARESTONE,
+                 MAGENTA_SHARESTONE -> SHARESTONE_SPRITES;
+        };
     }
 
     @Override
