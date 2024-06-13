@@ -6,12 +6,10 @@ import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.client.gui.screen.WaystoneEditScreen;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
-import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
@@ -26,12 +24,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -46,7 +44,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 
-public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nameable {
+public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     private final WeakHashMap<Entity, Integer> ticksPassedPerEntity = new WeakHashMap<>();
 
@@ -55,7 +53,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     private int lastAttunementSlot;
 
     protected int attunementTicks;
-    private Component customName;
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
@@ -73,6 +70,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         }
 
         WaystoneSyncManager.sendWaystoneUpdateToAll(world.getServer(), waystone);
+
+        initializeInventory();
+    }
+
+    private void initializeInventory() {
+        setShardItem(new ItemStack(ModItems.dormantShard));
     }
 
     @Override
@@ -84,20 +87,12 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
 
-        if (customName != null) {
-            tag.putString("CustomName", Component.Serializer.toJson(customName, provider));
-        }
-
         tag.putInt("LastAttunementSlot", lastAttunementSlot);
     }
 
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
         super.loadAdditional(compound, provider);
-
-        if (compound.contains("CustomName")) {
-            customName = Component.Serializer.fromJson(compound.getString("CustomName"), provider);
-        }
 
         lastAttunementSlot = compound.getInt("LastAttunementSlot");
     }
@@ -107,7 +102,7 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
             @Override
             public Component getDisplayName() {
-                return WarpPlateBlockEntity.this.getDisplayName();
+                return Component.translatable("container.waystones.waystone_settings", Component.translatable("container.waystones.warp_plate"));
             }
 
             @Override
@@ -358,26 +353,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
         ticksPassedPerEntity.put(entity, -1);
     }
 
-    @Override
-    public Component getDisplayName() {
-        return hasCustomName() ? getCustomName() : getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName() {
-        return customName;
-    }
-
-    public void setCustomName(@Nullable Component customName) {
-        this.customName = customName;
-    }
-
-    @Override
-    public Component getName() {
-        return Component.translatable("container.waystones.warp_plate");
-    }
-
     public void setShardItem(ItemStack itemStack) {
         container.setItem(0, itemStack);
         if (level != null) {
@@ -401,6 +376,18 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Nam
                 WaystonesAPI.setBoundWaystone(attunedShard, getWaystone());
                 setShardItem(attunedShard);
             }
+        } else if (level != null && shardItem.is(ModItems.attunedShard)) {
+            WaystonesAPI.getBoundWaystone(null, shardItem).ifPresent(it -> {
+                if (it.getWaystoneUid().equals(getWaystone().getWaystoneUid())) {
+                    final var shardEntity = new ItemEntity(level,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            shardItem);
+                    level.addFreshEntity(shardEntity);
+                    setShardItem(ItemStack.EMPTY);
+                }
+            });
         } else {
             attunementTicks = 0;
         }

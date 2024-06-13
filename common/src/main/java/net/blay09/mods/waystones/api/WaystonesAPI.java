@@ -68,7 +68,7 @@ public class WaystonesAPI {
         return __internalMethods.placeWarpPlate(level, pos);
     }
 
-    public static Optional<Waystone> getBoundWaystone(Player player, ItemStack itemStack) {
+    public static Optional<Waystone> getBoundWaystone(@Nullable Player player, ItemStack itemStack) {
         return __internalMethods.getBoundWaystone(player, itemStack);
     }
 

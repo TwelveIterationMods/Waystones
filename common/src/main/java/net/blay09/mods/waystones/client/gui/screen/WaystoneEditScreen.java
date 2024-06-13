@@ -7,18 +7,20 @@ import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Locale;
 
 public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu> {
 
     private EditBox textField;
     private WaystoneVisbilityButton visibilityButton;
-    private WaystoneVisbilityButton modifierButton;
+    private ImageButton modifierButton;
     private Button saveButton;
 
     public WaystoneEditScreen(WaystoneEditMenu container, Inventory playerInventory, Component title) {
@@ -56,11 +58,18 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         addRenderableWidget(visibilityButton);
         y += 24;
 
-        modifierButton = new WaystoneVisbilityButton(leftPos + 2, y, oldVisibility, visibilityOptions, menu.canEdit());
+        final var modifierSprites = new WidgetSprites(
+                ResourceLocation.withDefaultNamespace("recipe_book/page_forward"),
+                ResourceLocation.withDefaultNamespace("recipe_book/page_forward_highlighted"));
+        modifierButton = new ImageButton(16, 16, modifierSprites, (button) -> {}, Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
+        modifierButton.setPosition(leftPos + 2, y);
+        modifierButton.active = false;
+        modifierButton.setTooltip(Tooltip.create(Component.literal("Not yet implemented.")));
         addRenderableWidget(modifierButton);
         y += 24;
 
-        saveButton = Button.builder(menu.canEdit() ? Component.literal("Save") : Component.literal("Close"), it -> onClose())
+        saveButton = Button.builder(menu.canEdit() ? Component.translatable("gui.waystones.waystone_settings.save") : Component.translatable(
+                        "gui.waystones.waystone_settings.close"), it -> onClose())
                 .pos(leftPos + 176 / 2 - 50, y)
                 .size(100, 20)
                 .build();
@@ -108,9 +117,19 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawCenteredString(font, Component.literal("Edit Waystone"), 176 / 2, titleLabelY, 0xFFFFFFFF);
-        guiGraphics.drawString(font, Component.literal(visibilityButton.getVisibility().name()), 24, visibilityButton.getY() - topPos + 5, 0xFFFFFFFF, true);
-        guiGraphics.drawString(font, Component.literal("No modifiers active"), 24, modifierButton.getY() - topPos + 5, 0xFFAAAAAA, true);
+        guiGraphics.drawCenteredString(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
+        guiGraphics.drawString(font,
+                Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
+                24,
+                visibilityButton.getY() - topPos + 5,
+                0xFFFFFFFF,
+                true);
+        guiGraphics.drawString(font,
+                Component.translatable("gui.waystones.waystone_settings.no_modifiers_active"),
+                24,
+                modifierButton.getY() - topPos + 5,
+                0xFFAAAAAA,
+                true);
     }
 
     @Override

@@ -129,15 +129,6 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity && !player.getAbilities().instabuild) {
             for (int i = 0; i < waystoneBlockEntity.getContainer().getContainerSize(); i++) {
                 ItemStack itemStack = waystoneBlockEntity.getContainer().getItem(i);
-
-                // If not silk touching, don't bother dropping shards attuned to this waystone, since the waystone is gonna die anyways
-                if (!hasSilkTouch && itemStack.getItem() instanceof IAttunementItem attunementItem) {
-                    final var waystoneAttunedTo = attunementItem.getWaystoneAttunedTo(world.getServer(), player, itemStack);
-                    if (waystoneAttunedTo.map(it -> it.getWaystoneUid().equals(waystoneBlockEntity.getWaystone().getWaystoneUid())).orElse(false)) {
-                        continue;
-                    }
-                }
-
                 popResource(world, pos, itemStack);
             }
         }

@@ -40,7 +40,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             return 0xFFFFFFFF;
         }
 
-        final var name = warpPlate.getWaystone().getName().toString();
+        final var name = getGalacticIdentifier(warpPlate.getWaystone());
         final var color = getColorForName(name).getColor();
         return color != null ? color : 0xFFFFFFFF;
     }
@@ -93,18 +92,6 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     @Override
     protected boolean canSilkTouch() {
         return true;
-    }
-
-    @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.setPlacedBy(world, pos, state, placer, stack);
-
-        if (stack.has(DataComponents.CUSTOM_NAME)) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof WarpPlateBlockEntity warpPlate) {
-                warpPlate.setCustomName(stack.getHoverName());
-            }
-        }
     }
 
     @Override
@@ -217,8 +204,12 @@ public class WarpPlateBlock extends WaystoneBlockBase {
         return textFormatting != null ? textFormatting : ChatFormatting.GRAY;
     }
 
+    public static String getGalacticIdentifier(Waystone waystone) {
+        return waystone.getWaystoneUid().toString().replace("-", "").substring(0, 6);
+    }
+
     public static Component getGalacticName(Waystone waystone) {
-        final var name = StringUtils.substringBeforeLast(waystone.getName().getString(), " ");
+        final var name = getGalacticIdentifier(waystone);
         return Component.literal(name).withStyle(WarpPlateBlock.getColorForName(name)).withStyle(GALACTIC_STYLE);
     }
 
