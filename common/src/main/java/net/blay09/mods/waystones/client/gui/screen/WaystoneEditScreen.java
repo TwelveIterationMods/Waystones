@@ -55,12 +55,13 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
         final var visibilityOptions = WaystoneVisibilities.getVisibilityOptions(Minecraft.getInstance().player, waystone);
         visibilityButton = new WaystoneVisbilityButton(leftPos, y, oldVisibility, visibilityOptions, menu.canEdit());
+        visibilityButton.active = menu.canEdit() && visibilityOptions.size() > 1;
         addRenderableWidget(visibilityButton);
         y += 24;
 
         final var modifierSprites = new WidgetSprites(
-                ResourceLocation.withDefaultNamespace("waystones/small_button_blank"),
-                ResourceLocation.withDefaultNamespace("waystones/small_button_blank_highlighted"));
+                ResourceLocation.withDefaultNamespace("waystones/modifier_button"),
+                ResourceLocation.withDefaultNamespace("waystones/modifier_button_highlighted"));
         modifierButton = new ImageButton(20, 20, modifierSprites, (button) -> {}, Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
         modifierButton.setPosition(leftPos, y);
         modifierButton.setTooltip(Tooltip.create(Component.literal("Not yet implemented.")));
