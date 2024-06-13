@@ -1,5 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
@@ -28,11 +29,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -240,13 +245,13 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneEditMenu(i, getWaystone(), WaystoneBlockEntityBase.this, playerInventory, error.isEmpty());
+                return new WaystoneEditMenu(i, getWaystone(), WaystoneBlockEntityBase.this, playerInventory, getModifierCount(), error.isEmpty());
             }
 
             @Override
             public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
                 final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
-                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), error.isEmpty());
+                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), getModifierCount(), error.isEmpty());
             }
 
             @Override
@@ -292,5 +297,90 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     @Override
     public Container getContainer() {
         return container;
+    }
+
+    protected void applyModifierEffects(Entity entity) { // TODO apply these on all, not just warp plates
+        int fireSeconds = 0;
+        int poisonSeconds = 0;
+        int blindSeconds = 0;
+        int featherFallSeconds = 0;
+        int fireResistanceSeconds = 0;
+        int witherSeconds = 0;
+        int potency = 1;
+        List<ItemStack> curativeItems = new ArrayList<>();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack itemStack = container.getItem(i);
+            if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                fireSeconds += itemStack.getCount();
+            } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                poisonSeconds += itemStack.getCount();
+            } else if (itemStack.getItem() == Items.INK_SAC) {
+                blindSeconds += itemStack.getCount();
+            } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                curativeItems.add(itemStack);
+            } else if (itemStack.getItem() == Items.DIAMOND) {
+                potency = Math.min(4, potency + itemStack.getCount());
+            } else if (itemStack.getItem() == Items.FEATHER) {
+                featherFallSeconds = Math.min(8, featherFallSeconds + itemStack.getCount());
+            } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
+                fireResistanceSeconds = Math.min(8, fireResistanceSeconds + itemStack.getCount());
+            } else if (itemStack.getItem() == Items.WITHER_ROSE) {
+                witherSeconds += itemStack.getCount();
+            }
+        }
+
+        if (entity instanceof LivingEntity) {
+            if (fireSeconds > 0) {
+                entity.setRemainingFireTicks(fireSeconds * 20);
+            }
+            if (poisonSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, poisonSeconds * 20, potency));
+            }
+            if (blindSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindSeconds * 20, potency));
+            }
+            if (featherFallSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, featherFallSeconds * 20, potency));
+            }
+            if (fireResistanceSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, fireResistanceSeconds * 20, potency));
+            }
+            if (witherSeconds > 0) {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.WITHER, witherSeconds * 20, potency));
+            }
+            for (ItemStack curativeItem : curativeItems) {
+                Balm.getHooks().curePotionEffects((LivingEntity) entity, curativeItem);
+            }
+        }
+    }
+
+    private int getModifierCount() {
+        // TODO I'm sorry, Future Blay will create a proper system for these modifiers (I promise)
+        var modifiers = 0;
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack itemStack = container.getItem(i);
+            if (itemStack.getItem() == Items.BLAZE_POWDER) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.POISONOUS_POTATO) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.INK_SAC) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.MILK_BUCKET || itemStack.getItem() == Items.HONEY_BLOCK) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.DIAMOND) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.FEATHER) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.MAGMA_CREAM) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.WITHER_ROSE) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.QUARTZ) {
+                modifiers += 1;
+            } else if (itemStack.getItem() == Items.SPIDER_EYE) {
+                modifiers += 1;
+            }
+        }
+        return modifiers;
     }
 }

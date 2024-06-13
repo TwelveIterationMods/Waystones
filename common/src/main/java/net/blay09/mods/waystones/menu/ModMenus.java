@@ -158,7 +158,7 @@ public class ModMenus {
             public WaystoneEditMenu create(int windowId, Inventory inventory, WaystoneEditMenu.Data data) {
                 BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.pos());
                 if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                    return new WaystoneEditMenu(windowId, data.waystone(), waystoneBlockEntity, inventory, data.canEdit());
+                    return new WaystoneEditMenu(windowId, data.waystone(), waystoneBlockEntity, inventory, data.modifierCount(), data.canEdit());
                 }
 
                 return null;

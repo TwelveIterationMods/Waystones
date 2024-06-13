@@ -32,12 +32,14 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
 
     private final Waystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
+    private final int modifierCount;
     private final boolean canEdit;
 
-    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, boolean canEdit) {
+    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, int modifierCount, boolean canEdit) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.waystone = waystone;
         this.blockEntity = blockEntity;
+        this.modifierCount = modifierCount;
         this.canEdit = canEdit;
     }
 
@@ -82,6 +84,10 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
 
     public Waystone getWaystone() {
         return waystone;
+    }
+
+    public int getModifierCount() {
+        return modifierCount;
     }
 
     public boolean canEdit() {
