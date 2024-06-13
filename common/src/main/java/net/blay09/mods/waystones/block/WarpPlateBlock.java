@@ -205,7 +205,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     public static String getGalacticIdentifier(Waystone waystone) {
-        return waystone.getWaystoneUid().toString().replace("-", "").substring(0, 6);
+        final var intermediate = waystone.getWaystoneUid().toString().replaceAll("[0-9\\-]", "");
+        return intermediate.substring(0, Math.min(8, intermediate.length()));
     }
 
     public static Component getGalacticName(Waystone waystone) {

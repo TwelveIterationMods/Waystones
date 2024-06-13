@@ -89,7 +89,7 @@
   "gui.waystones.waystone_settings.manage_modifiers": "Manage Modifiers",
   "gui.waystones.waystone_settings.visibility.activation": "Visible upon Activation",
   "gui.waystones.waystone_settings.visibility.global": "Visible to Everyone",
-  "gui.waystones.waystone_settings.visibility.shard_only": "Teleport via Attuned Shard",
+  "gui.waystones.waystone_settings.visibility.shard_only": "Teleports via Attuned Shard",
   "gui.waystones.waystone_settings.visibility.orange_sharestone": "Visible to Orange Sharestones",
   "gui.waystones.waystone_settings.visibility.magenta_sharestone": "Visible to Magenta Sharestones",
   "gui.waystones.waystone_settings.visibility.light_blue_sharestone": "Visible to Light Blue Sharestones",
