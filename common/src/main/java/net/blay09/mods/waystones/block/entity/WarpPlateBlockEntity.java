@@ -222,7 +222,6 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
                         }
                     }
                 })
-                .ifLeft(entities -> entities.forEach(this::applyModifierEffects))
                 .left();
     }
 

@@ -137,12 +137,12 @@ public class ModMenus {
             }
         });
 
-        waystoneModifiers = menus.registerMenu(id("warp_plate"), new BalmMenuFactory<WaystoneModifierMenu, BlockPos>() {
+        waystoneModifiers = menus.registerMenu(id("waystone_modifiers"), new BalmMenuFactory<WaystoneModifierMenu, BlockPos>() {
             @Override
             public WaystoneModifierMenu create(int windowId, Inventory inventory, BlockPos pos) {
                 final var blockEntity = inventory.player.level().getBlockEntity(pos);
-                if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
-                    return new WaystoneModifierMenu(windowId, warpPlate, inventory);
+                if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
+                    return new WaystoneModifierMenu(windowId, waystoneBlockEntity, inventory);
                 }
                 return null;
             }

@@ -139,7 +139,7 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
                 modifiersComponent,
                 24,
                 modifierButton.getY() - topPos + 6,
-                menu.getModifierCount() > 0 ? 0xFF55ff55 : 0xFFAAAAAA,
+                menu.getModifierCount() > 0 ? 0xFf55Ff55 : 0xfFaAaAaA,
                 true);
     }
 

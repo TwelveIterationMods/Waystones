@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -156,7 +157,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
                 final var existing = warpPlate.getShardItem();
                 if (existing.isEmpty()) {
-                    warpPlate.setShardItem(itemStack.split(1));
+                    warpPlate.setShardItem(player.getAbilities().instabuild ? itemStack.copy().split(1) : itemStack.split(1));
                 }
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
@@ -171,7 +172,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
                 final var itemStack = warpPlate.getShardItem();
                 if (!itemStack.isEmpty()) {
-                    player.drop(itemStack, false);
+                    final var itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
+                    level.addFreshEntity(itemEntity);
                     warpPlate.setShardItem(ItemStack.EMPTY);
                 }
             }

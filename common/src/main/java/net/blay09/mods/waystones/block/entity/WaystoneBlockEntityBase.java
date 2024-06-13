@@ -299,7 +299,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         return container;
     }
 
-    protected void applyModifierEffects(Entity entity) { // TODO apply these on all, not just warp plates
+    public void applyModifierEffects(Entity entity) {
         int fireSeconds = 0;
         int poisonSeconds = 0;
         int blindSeconds = 0;

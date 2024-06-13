@@ -100,10 +100,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("SWS")
                 .pattern("WFW")
                 .pattern("SWS")
-                .define('F', Items.FLINT)
+                .define('F', ModItems.dormantShard)
                 .define('W', ModItems.warpDust)
                 .define('S', Blocks.STONE_BRICKS)
                 .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                .save(exporter);
+
+        shapeless(RecipeCategory.DECORATIONS, ModItems.dormantShard, 1)
+                .requires(ModItems.warpDust, 2)
+                .requires(Items.FLINT)
+                .unlockedBy("has_warp_dust", has(ModItems.warpDust))
+                .save(exporter);
+
+        shapeless(RecipeCategory.DECORATIONS, ModItems.deepslateShard, 1)
+                .requires(Items.DEEPSLATE)
+                .requires(Items.FLINT)
+                .unlockedBy("has_deepslate", has(Items.DEEPSLATE))
                 .save(exporter);
 
         createPortstoneRecipe(exporter, DyeColor.WHITE, BalmItemTags.WHITE_DYES);
