@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.api.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
@@ -9,7 +8,6 @@ import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.item.ModItems;
-import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
@@ -17,22 +15,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -56,6 +48,13 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
 
     public WarpPlateBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.warpPlate.get(), blockPos, blockState);
+    }
+
+    @Override
+    protected void onInventoryChanged() {
+        if (level != null) {
+            level.setBlock(worldPosition, getIdleState(), 3);
+        }
     }
 
     @Override
@@ -97,36 +96,14 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase {
         lastAttunementSlot = compound.getInt("LastAttunementSlot");
     }
 
-    @Override
-    public Optional<MenuProvider> getSettingsMenuProvider() {
-        return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
-            @Override
-            public Component getDisplayName() {
-                return Component.translatable("container.waystones.waystone_settings", Component.translatable("container.waystones.warp_plate"));
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneEditMenu(i, getWaystone(), WarpPlateBlockEntity.this, playerInventory, error.isEmpty());
-            }
-
-            @Override
-            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
-                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), error.isEmpty());
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getScreenStreamCodec() {
-                return WaystoneEditMenu.STREAM_CODEC;
-            }
-        });
-    }
-
     public boolean hasPotentialWarpTarget() {
         final var shardItem = getShardItem();
         return !shardItem.isEmpty() && !shardItem.is(ModItems.deepslateShard);
+    }
+
+    @Override
+    public Component getName() {
+        return Component.translatable("container.waystones.warp_plate");
     }
 
     public void onEntityCollision(Entity entity) {

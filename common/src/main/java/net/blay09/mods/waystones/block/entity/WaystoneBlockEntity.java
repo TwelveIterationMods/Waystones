@@ -34,6 +34,11 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
     }
 
     @Override
+    public Component getName() {
+        return Component.translatable("container.waystones.waystone");
+    }
+
+    @Override
     public Optional<MenuProvider> getSelectionMenuProvider() {
         return Optional.of(new BalmMenuProvider<WaystoneSelectionMenu.Data>() {
             @Override
@@ -56,33 +61,6 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public StreamCodec<RegistryFriendlyByteBuf, WaystoneSelectionMenu.Data> getScreenStreamCodec() {
                 return WaystoneSelectionMenu.STREAM_CODEC;
-            }
-        });
-    }
-
-    @Override
-    public Optional<MenuProvider> getSettingsMenuProvider() {
-        return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
-            @Override
-            public Component getDisplayName() {
-                return Component.translatable("container.waystones.waystone");
-            }
-
-            @Override
-            public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-                final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneEditMenu(windowId, getWaystone(), WaystoneBlockEntity.this, inventory, error.isEmpty());
-            }
-
-            @Override
-            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
-                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), error.isEmpty());
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getScreenStreamCodec() {
-                return WaystoneEditMenu.STREAM_CODEC;
             }
         });
     }

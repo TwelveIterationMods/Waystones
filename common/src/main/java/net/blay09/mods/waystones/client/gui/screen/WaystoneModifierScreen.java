@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModifierMenu> {
 
-    private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/warp_plate.png");
+    private static final ResourceLocation WARP_PLATE_GUI_TEXTURES = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "textures/gui/menu/waystone_modifiers.png");
 
     public WaystoneModifierScreen(WaystoneModifierMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

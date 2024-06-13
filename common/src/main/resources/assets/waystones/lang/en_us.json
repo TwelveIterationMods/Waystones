@@ -49,6 +49,7 @@
   "item.waystones.crumbling_attuned_shard": "Crumbling Attuned Shard",
   "item.waystones.deepslate_shard": "Deepslate Shard",
   "container.waystones.waystone_settings": "Edit %s",
+  "container.waystones.waystone_modifiers": "Warp Modifiers",
   "container.waystones.waystone_selection": "Select your destination:",
   "container.waystones.waystone_admin_selection": "Select which waystone of <%s> you would like to visit:",
   "container.waystones.waystone": "Waystone",

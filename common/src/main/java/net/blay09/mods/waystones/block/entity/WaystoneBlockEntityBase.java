@@ -4,7 +4,7 @@ import net.blay09.mods.balm.api.block.entity.CustomRenderBoundingBox;
 import net.blay09.mods.balm.api.block.entity.OnLoadHandler;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.container.DefaultContainer;
-import net.blay09.mods.balm.api.container.ExtractionAwareContainer;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
@@ -13,18 +13,25 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.menu.WaystoneEditMenu;
+import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,7 +45,15 @@ import java.util.*;
 
 public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
 
-    protected final DefaultContainer container = new DefaultContainer(5);
+    protected final DefaultContainer container = new DefaultContainer(5) {
+        @Override
+        public void setChanged() {
+            onInventoryChanged();
+        }
+    };
+
+    protected void onInventoryChanged() {
+    }
 
     private Waystone waystone = InvalidWaystone.INSTANCE;
     private UUID waystoneUid;
@@ -62,7 +77,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
     @Override
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
-        container.deserialize(compound.getCompound("Items"), provider);
+        if (compound.contains("Items")) {
+            container.deserialize(compound.getCompound("Items"), provider);
+        }
 
         if (compound.contains("UUID", Tag.TAG_INT_ARRAY)) {
             waystoneUid = NbtUtils.loadUUID(Objects.requireNonNull(compound.get("UUID")));
@@ -211,12 +228,56 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         return Optional.empty();
     }
 
+    public abstract Component getName();
+
     public Optional<MenuProvider> getSettingsMenuProvider() {
-        return Optional.empty();
+        return Optional.of(new BalmMenuProvider<WaystoneEditMenu.Data>() {
+            @Override
+            public Component getDisplayName() {
+                return Component.translatable("container.waystones.waystone_settings", getName());
+            }
+
+            @Override
+            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+                final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
+                return new WaystoneEditMenu(i, getWaystone(), WaystoneBlockEntityBase.this, playerInventory, error.isEmpty());
+            }
+
+            @Override
+            public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
+                final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
+                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), error.isEmpty());
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> getScreenStreamCodec() {
+                return WaystoneEditMenu.STREAM_CODEC;
+            }
+        });
     }
 
     public Optional<MenuProvider> getModifierMenuProvider() {
-        return Optional.empty();
+        return Optional.of(new BalmMenuProvider<BlockPos>() {
+            @Override
+            public Component getDisplayName() {
+                return Component.translatable("container.waystones.waystone_modifiers");
+            }
+
+            @Override
+            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+                return new WaystoneModifierMenu(i, WaystoneBlockEntityBase.this, playerInventory);
+            }
+
+            @Override
+            public BlockPos getScreenOpeningData(ServerPlayer serverPlayer) {
+                return worldPosition;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, BlockPos> getScreenStreamCodec() {
+                return BlockPos.STREAM_CODEC.cast();
+            }
+        });
     }
 
     public Collection<? extends Waystone> getAuxiliaryTargets() {

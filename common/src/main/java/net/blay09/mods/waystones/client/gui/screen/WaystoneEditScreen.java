@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.client.gui.widget.WaystoneVisbilityButton;
 import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
+import net.blay09.mods.waystones.network.message.RequestManageWaystoneModifiersMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -62,9 +63,16 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         final var modifierSprites = new WidgetSprites(
                 ResourceLocation.withDefaultNamespace("waystones/modifier_button"),
                 ResourceLocation.withDefaultNamespace("waystones/modifier_button_highlighted"));
-        modifierButton = new ImageButton(20, 20, modifierSprites, (button) -> {}, Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
+        modifierButton = new ImageButton(20,
+                20,
+                modifierSprites,
+                (button) -> {
+                    Balm.getNetworking()
+                            .sendToServer(new EditWaystoneMessage(menu.getWaystone().getWaystoneUid(), textField.getValue(), visibilityButton.getVisibility()));
+                    Balm.getNetworking().sendToServer(new RequestManageWaystoneModifiersMessage(menu.getWaystone().getPos()));
+                },
+                Component.literal("gui.waystones.waystone_settings.manage_modifiers"));
         modifierButton.setPosition(leftPos, y);
-        modifierButton.setTooltip(Tooltip.create(Component.literal("Not yet implemented.")));
         addRenderableWidget(modifierButton);
         y += 24;
 
