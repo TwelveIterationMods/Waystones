@@ -121,7 +121,8 @@ public class WarpPlateBlock extends WaystoneBlockBase {
 
     @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if (state.getValue(STATUS) == WarpPlateStatus.WARPING || state.getValue(STATUS) == WarpPlateStatus.ATTUNING) {
+        final var status = state.getValue(STATUS);
+        if (status == WarpPlateStatus.WARPING) {
             for (int i = 0; i < 50; i++) {
                 world.addParticle(ParticleTypes.CRIMSON_SPORE,
                         pos.getX() + Math.random(),
@@ -138,9 +139,16 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                         0f,
                         0f);
             }
-        } else if (state.getValue(STATUS) == WarpPlateStatus.WARPING_INVALID) {
+        } else if (status == WarpPlateStatus.WARPING_INVALID) {
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0.01f, 0f);
+            }
+        } else if(status == WarpPlateStatus.ATTUNING) {
+            for (int i = 0; i < 10; i++) {
+                world.addParticle(ParticleTypes.WARPED_SPORE, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0f, 0f);
+            }
+            for (int i = 0; i < 10; i++) {
+                world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, pos.getX() + Math.random(), pos.getY(), pos.getZ() + Math.random(), 0f, 0f, 0f);
             }
         }
     }
