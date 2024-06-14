@@ -1,1 +1,17 @@
 - Updated to Minecraft 1.21
+- Updated Mossy Waystone Texture 
+- Changed scroll recipes to use ink instead of purple dye
+- Added colored portstone that allow teleporting to colored sharestones
+- Removed white and colorless sharestones
+- Removed Landing Plate (use a Warp Plate with Deepslate Shard instead)
+- Made warp plates rename-able like regular waystones
+- Added Dormant Shard, which can be plugged into a Warp Plate to attune it
+- Added Deepslate Shard, which can be plugged into a Warp Plate to fill in the hole
+- Changed shard placement to happen in-world for warp plates
+- Changed auxiliary warp items (warp modifiers) to be applied on arrival rather than departure
+- Made auxiliary warp items (warp modifiers) apply on regular waystones as well
+- Removed the slot UI for waystones and warp plates
+- Added new modifiers UI for waystones and warp plates for placing auxiliary warp items
+- Changed the waystone edit screen to be more intuitive
+- Removed Crumbling Attuned Shard for now because it doesn't have a crafting recipe yet
+- Removed Bound Scrolls for now because there is no way of obtaining them yet
