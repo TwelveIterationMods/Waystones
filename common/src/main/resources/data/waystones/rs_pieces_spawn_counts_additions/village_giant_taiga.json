@@ -1,5 +1,5 @@
 {
-  "target_pool": "repurposed_structures:village_giant_taiga",
+  "target_structure": "repurposed_structures:village_giant_taiga",
   "pieces_spawn_counts": [
     {
       "nbt_piece_name": "waystones:village/common/waystone",
