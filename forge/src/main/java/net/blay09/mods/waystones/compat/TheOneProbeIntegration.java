@@ -39,7 +39,7 @@ public class TheOneProbeIntegration {
 
         @Override
         public ResourceLocation getID() {
-            return new ResourceLocation(Waystones.MOD_ID, "top");
+            return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "top");
         }
 
         @Override

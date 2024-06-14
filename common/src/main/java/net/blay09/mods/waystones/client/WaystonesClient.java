@@ -1,18 +1,11 @@
 package net.blay09.mods.waystones.client;
 
-import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
-import net.blay09.mods.balm.api.event.client.UseItemInputEvent;
 import net.blay09.mods.waystones.InternalClientMethodsImpl;
 import net.blay09.mods.waystones.api.client.WaystonesClientAPI;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.client.requirement.RequirementClientRegistry;
 import net.blay09.mods.waystones.compat.Compat;
-import net.blay09.mods.waystones.network.message.RequestEditWaystoneMessage;
 import net.minecraft.client.ClientBrandRetriever;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import java.util.Locale;
 
@@ -24,7 +17,6 @@ public class WaystonesClient {
         ModClientEventHandlers.initialize();
         ModRenderers.initialize(BalmClient.getRenderers());
         ModScreens.initialize(BalmClient.getScreens());
-        ModTextures.initialize(BalmClient.getTextures());
         ModModels.initialize(BalmClient.getModels());
 
         InventoryButtonGuiHandler.initialize();

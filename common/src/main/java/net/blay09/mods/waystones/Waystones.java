@@ -32,9 +32,9 @@ public class Waystones {
         ModEventHandlers.initialize();
         ModNetworking.initialize(Balm.getNetworking());
         ModBlocks.initialize(Balm.getBlocks());
-        ModBlockEntities.initialize(Balm.getBlockEntities());
+        ModBlockEntities.initialize();
         ModItems.initialize(Balm.getItems());
-        ModMenus.initialize(Balm.getMenus());
+        ModMenus.initialize();
         ModWorldGen.initialize(Balm.getWorldGen());
         ModCommands.initialize(Balm.getCommands());
         ModComponents.initialize(Balm.getComponents());

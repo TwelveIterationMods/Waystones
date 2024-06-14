@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class RepurposedStructuresIntegration {
     public static final DeferredRegister<Supplier<Boolean>> RS_CONDITIONS_REGISTRY = DeferredRegister.createOptional(
-            new ResourceLocation("repurposed_structures", "json_conditions"), "waystones");
+            ResourceLocation.fromNamespaceAndPath("repurposed_structures", "json_conditions"), "waystones");
 
     public static final RegistryObject<Supplier<Boolean>> WAYSTONE_CONFIG_CONDITION = RS_CONDITIONS_REGISTRY.register(
             "config", () -> () -> WaystonesConfig.getActive().worldGen.spawnInVillages != WaystonesConfigData.VillageWaystoneGeneration.DISABLED);
