@@ -30,7 +30,7 @@ public class ModMenus {
                 @Override
                 public WaystoneSelectionMenu create(int windowId, Inventory inventory, WaystoneSelectionMenu.Data data) {
                     final var blockEntity = inventory.player.level().getBlockEntity(data.pos());
-                    if (blockEntity instanceof WaystoneBlockEntity waystone) {
+                    if (blockEntity instanceof WaystoneBlockEntityBase waystone) {
                         return new WaystoneSelectionMenu(ModMenus.waystoneSelection.get(),
                                 waystone.getWaystone(),
                                 windowId,
@@ -111,7 +111,7 @@ public class ModMenus {
                 @Override
                 public WaystoneSelectionMenu create(int windowId, Inventory inventory, WaystoneSelectionMenu.Data data) {
                     final var blockEntity = inventory.player.level().getBlockEntity(data.pos());
-                    if (blockEntity instanceof WaystoneBlockEntity waystone) {
+                    if (blockEntity instanceof WaystoneBlockEntityBase waystone) {
                         return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(),
                                 waystone.getWaystone(),
                                 windowId,
