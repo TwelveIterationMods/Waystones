@@ -1,3 +1,4 @@
+- Fixed sharestones not being right-clickable
 - Fixed crash with JEI on Fabric
 
 - Updated to Minecraft 1.21
