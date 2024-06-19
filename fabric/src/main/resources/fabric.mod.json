@@ -39,9 +39,6 @@
     ],
     "jade": [
       "net.blay09.mods.waystones.compat.JadeIntegration"
-    ],
-    "jei_mod_plugin": [
-      "net.blay09.mods.waystones.compat.jei.JEIAddon"
     ]
   },
   "mixins": [
