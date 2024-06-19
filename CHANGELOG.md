@@ -1,3 +1,5 @@
+- Fixed crash with JEI on Fabric
+
 - Updated to Minecraft 1.21
 - Updated Mossy Waystone Texture 
 - Changed scroll recipes to use ink instead of purple dye
