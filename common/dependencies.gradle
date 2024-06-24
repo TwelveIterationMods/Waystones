@@ -2,7 +2,7 @@ dependencies {
     implementation("net.blay09.mods:balm-common:${balm_version}") {
         changing = balm_version.endsWith("SNAPSHOT")
     }
-    compileOnly "info.journeymap:journeymap-api-common:${journeymap_api_common_version}"
+    compileOnly "info.journeymap:journeymap-api-common:${journeymap_api_version}"
     compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
