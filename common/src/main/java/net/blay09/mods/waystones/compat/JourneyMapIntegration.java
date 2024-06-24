@@ -173,7 +173,7 @@ public class JourneyMapIntegration implements IClientPlugin {
 
             final var group = getWaystoneGroup(waystone);
             if (group != null) {
-                group.addWaypoint(waypoint);
+                // TODO group.addWaypoint(waypoint);
             }
         } catch (Exception e) {
             e.printStackTrace();
