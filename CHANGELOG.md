@@ -1,4 +1,5 @@
 - Re-added JourneyMap support
+- Fixed missing particle texture in mossy waystones
 
 - Fixed sharestones not being right-clickable
 - Fixed crash with JEI on Fabric
