@@ -29,6 +29,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     private WaypointGroup sharestonesGroup;
     private boolean journeyMapReady;
     private final Map<UUID, String> waystoneToWaypoint = new HashMap<>();
+    private final Map<String, UUID> waypointToWaystone = new HashMap<>();
     private final Map<String, ResourceLocation> waypointTypes = new HashMap<>();
 
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
@@ -117,17 +118,21 @@ public class JourneyMapIntegration implements IClientPlugin {
     }
 
     private void updateAllWaypoints(ResourceLocation waystoneType, List<Waystone> waystones) {
-        final var stillExistingIds = new HashSet<String>();
+        final var stillExistingIds = new HashSet<UUID>();
         for (final var waystone : waystones) {
-            stillExistingIds.add(waystone.getWaystoneUid().toString());
+            stillExistingIds.add(waystone.getWaystoneUid());
             updateWaypoint(waystone);
         }
 
         final var waypoints = api.getWaypoints(Waystones.MOD_ID);
         for (final var waypoint : waypoints) {
+            final var waystoneUid = waypointToWaystone.get(waypoint.getGuid());
             final var type = waypointTypes.get(waypoint.getGuid());
-            if (waystoneType.equals(type) && !stillExistingIds.contains(waypoint.getId())) {
+            if (waystoneType.equals(type) && !stillExistingIds.contains(waystoneUid)) {
                 api.removeWaypoint(Waystones.MOD_ID, waypoint);
+                waystoneToWaypoint.remove(waystoneUid);
+                waypointToWaystone.remove(waypoint.getGuid());
+                waypointTypes.remove(waypoint.getGuid());
             }
         }
     }
@@ -138,7 +143,10 @@ public class JourneyMapIntegration implements IClientPlugin {
             final var waypoint = api.getWaypoint(Waystones.MOD_ID, waypointId);
             if (waypoint != null) {
                 api.removeWaypoint(Waystones.MOD_ID, waypoint);
+                waypointTypes.remove(waypoint.getGuid());
             }
+            waystoneToWaypoint.remove(waystoneId);
+            waypointToWaystone.remove(waypointId);
         }
     }
 
@@ -160,11 +168,12 @@ public class JourneyMapIntegration implements IClientPlugin {
             }
             api.addWaypoint(Waystones.MOD_ID, waypoint);
             waystoneToWaypoint.put(waystone.getWaystoneUid(), waypoint.getGuid());
+            waypointToWaystone.put(waypoint.getGuid(), waystone.getWaystoneUid());
             waypointTypes.put(waypoint.getGuid(), waystone.getWaystoneType());
 
             final var group = getWaystoneGroup(waystone);
             if (group != null) {
-                // TODO group.addWaypoint(waypoint); not yet implemented
+                group.addWaypoint(waypoint);
             }
         } catch (Exception e) {
             e.printStackTrace();
