@@ -144,7 +144,7 @@ public class JourneyMapIntegration implements IClientPlugin {
     private void updateWaypoint(Waystone waystone) {
         try {
             final var waypointId = waystoneToWaypoint.get(waystone.getWaystoneUid());
-            final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, waypointId);
+            final var oldWaypoint = waypointId != null ? api.getWaypoint(Waystones.MOD_ID, waypointId) : null;
             final var waystoneName = waystone.hasName() ? waystone.getName() : Component.translatable("waystones.map.untitled_waystone");
             final var waypoint = WaypointFactory.createClientWaypoint(Waystones.MOD_ID,
                     waystone.getPos(),
