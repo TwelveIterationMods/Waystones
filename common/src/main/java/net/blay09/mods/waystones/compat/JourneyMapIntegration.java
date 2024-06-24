@@ -1,11 +1,12 @@
 package net.blay09.mods.waystones.compat;
 
-import journeymap.client.api.ClientPlugin;
-import journeymap.client.api.IClientAPI;
-import journeymap.client.api.IClientPlugin;
-import journeymap.client.api.display.Waypoint;
-import journeymap.client.api.display.WaypointGroup;
-import journeymap.client.api.event.ClientEvent;
+import journeymap.api.v2.client.IClientAPI;
+import journeymap.api.v2.client.IClientPlugin;
+import journeymap.api.v2.client.JourneyMapPlugin;
+import journeymap.api.v2.client.event.MappingEvent;
+import journeymap.api.v2.common.event.ClientEventRegistry;
+import journeymap.api.v2.common.waypoint.WaypointFactory;
+import journeymap.api.v2.common.waypoint.WaypointGroup;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.*;
@@ -20,11 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@ClientPlugin
+@JourneyMapPlugin(apiVersion = "2.0.0")
 public class JourneyMapIntegration implements IClientPlugin {
-
-    private static final UUID WAYSTONE_GROUP_ID = UUID.fromString("005bdf11-2dbb-4a27-8aa4-0184e86fa33c");
-    private static final UUID SHARESTONE_GROUP_ID = UUID.fromString("199e2989-df63-4ab4-bd5d-2fa24e72b4fc");
 
     private IClientAPI api;
     private boolean journeyMapReady;
@@ -44,7 +42,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         api = iClientAPI;
 
         // This fires after all waypoints have been loaded
-        api.subscribe(Waystones.MOD_ID, EnumSet.of(ClientEvent.Type.MAPPING_STARTED));
+        ClientEventRegistry.MAPPING_EVENT.subscribe(Waystones.MOD_ID, this::onMappingEvent);
     }
 
     /**
@@ -60,9 +58,8 @@ public class JourneyMapIntegration implements IClientPlugin {
         return Waystones.MOD_ID;
     }
 
-    @Override
-    public void onEvent(ClientEvent clientEvent) {
-        if (clientEvent.type == ClientEvent.Type.MAPPING_STARTED) {
+    public void onMappingEvent(MappingEvent event) {
+        if (event.getStage() == MappingEvent.Stage.MAPPING_STARTED) {
             journeyMapReady = true;
 
             for (Runnable scheduledJob : scheduledJobsWhenReady) {
@@ -122,7 +119,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         final var waypoints = api.getWaypoints(Waystones.MOD_ID);
         for (final var waypoint : waypoints) {
             if (waypoint.getId().startsWith(idPrefix) && !stillExistingIds.contains(waypoint.getId())) {
-                api.remove(waypoint);
+                api.removeWaypoint(Waystones.MOD_ID, waypoint);
             }
         }
     }
@@ -131,7 +128,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         final var prefixedId = getPrefixedWaystoneId(waystoneType, waystoneId);
         final var waypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
         if (waypoint != null) {
-            api.remove(waypoint);
+            api.removeWaypoint(Waystones.MOD_ID, waypoint);
         }
     }
 
@@ -140,20 +137,14 @@ public class JourneyMapIntegration implements IClientPlugin {
             final var prefixedId = getPrefixedWaystoneId(waystone);
             final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
             final var waystoneName = waystone.hasName() ? waystone.getName() : Component.translatable("waystones.map.untitled_waystone");
-            Waypoint waypoint = new Waypoint(Waystones.MOD_ID, prefixedId, waystoneName.getString(), waystone.getDimension(), waystone.getPos());
-            waypoint.setName(waystoneName.getString());
-            waypoint.setGroup(getWaystoneGroup(waystone));
+            final var waypoint = WaypointFactory.createClientWaypoint(Waystones.MOD_ID, waystone.getPos(), waystoneName.getString(), waystone.getDimension(), false);
             if (oldWaypoint != null) {
                 waypoint.setEnabled(oldWaypoint.isEnabled());
-                if (oldWaypoint.hasColor()) {
-                    waypoint.setColor(oldWaypoint.getColor());
-                }
-                if (oldWaypoint.hasBackgroundColor()) {
-                    waypoint.setBackgroundColor(oldWaypoint.getBackgroundColor());
-                }
-                api.remove(oldWaypoint);
+                waypoint.setColor(oldWaypoint.getColor());
+                waypoint.setIconColor(oldWaypoint.getIconColor());
+                api.removeWaypoint(Waystones.MOD_ID, oldWaypoint);
             }
-            api.show(waypoint);
+            api.addWaypoint(Waystones.MOD_ID, waypoint);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -161,9 +152,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
     private static WaypointGroup getWaystoneGroup(Waystone waystone) {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            return new WaypointGroup(Waystones.MOD_ID, SHARESTONE_GROUP_ID.toString(), "Sharestones");
+            return WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "sharestones");
         } else {
-            return new WaypointGroup(Waystones.MOD_ID, WAYSTONE_GROUP_ID.toString(), "Waystones");
+            return WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "waystones");
         }
     }
 
