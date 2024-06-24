@@ -25,6 +25,8 @@ import java.util.*;
 public class JourneyMapIntegration implements IClientPlugin {
 
     private IClientAPI api;
+    private WaypointGroup waystonesGroup;
+    private WaypointGroup sharestonesGroup;
     private boolean journeyMapReady;
     private final List<Runnable> scheduledJobsWhenReady = new ArrayList<>();
 
@@ -43,6 +45,9 @@ public class JourneyMapIntegration implements IClientPlugin {
 
         // This fires after all waypoints have been loaded
         ClientEventRegistry.MAPPING_EVENT.subscribe(Waystones.MOD_ID, this::onMappingEvent);
+
+        waystonesGroup = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "waystones");
+        sharestonesGroup = WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "sharestones");
     }
 
     /**
@@ -137,7 +142,11 @@ public class JourneyMapIntegration implements IClientPlugin {
             final var prefixedId = getPrefixedWaystoneId(waystone);
             final var oldWaypoint = api.getWaypoint(Waystones.MOD_ID, prefixedId);
             final var waystoneName = waystone.hasName() ? waystone.getName() : Component.translatable("waystones.map.untitled_waystone");
-            final var waypoint = WaypointFactory.createClientWaypoint(Waystones.MOD_ID, waystone.getPos(), waystoneName.getString(), waystone.getDimension(), false);
+            final var waypoint = WaypointFactory.createClientWaypoint(Waystones.MOD_ID,
+                    waystone.getPos(),
+                    waystoneName.getString(),
+                    waystone.getDimension(),
+                    false);
             if (oldWaypoint != null) {
                 waypoint.setEnabled(oldWaypoint.isEnabled());
                 waypoint.setColor(oldWaypoint.getColor());
@@ -145,16 +154,21 @@ public class JourneyMapIntegration implements IClientPlugin {
                 api.removeWaypoint(Waystones.MOD_ID, oldWaypoint);
             }
             api.addWaypoint(Waystones.MOD_ID, waypoint);
+
+            final var group = getWaystoneGroup(waystone);
+            if (group != null) {
+                // TODO group.addWaypoint(waypoint); not yet implemented
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static WaypointGroup getWaystoneGroup(Waystone waystone) {
+    private WaypointGroup getWaystoneGroup(Waystone waystone) {
         if (WaystoneTypes.isSharestone(waystone.getWaystoneType())) {
-            return WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "sharestones");
+            return sharestonesGroup;
         } else {
-            return WaypointFactory.createWaypointGroup(Waystones.MOD_ID, "waystones");
+            return waystonesGroup;
         }
     }
 
