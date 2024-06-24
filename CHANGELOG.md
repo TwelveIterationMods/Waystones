@@ -1,3 +1,5 @@
+- Re-added JourneyMap support
+
 - Fixed sharestones not being right-clickable
 - Fixed crash with JEI on Fabric
 
