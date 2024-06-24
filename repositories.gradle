@@ -41,6 +41,7 @@ repositories {
         url = "https://jm.gserv.me/repository/maven-public/"
         content {
             includeGroup "info.journeymap"
+            includeGroup "mysticdrew"
         }
     }
 
