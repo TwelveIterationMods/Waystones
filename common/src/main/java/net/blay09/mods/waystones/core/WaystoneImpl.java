@@ -154,7 +154,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     }
 
     private static BlockPos readLegacyBlockPos(CompoundTag compound) {
-        return new BlockPos(compound.getInt("x"), compound.getInt("y"), compound.getInt("z"));
+        return new BlockPos(compound.getInt("X"), compound.getInt("Y"), compound.getInt("Z"));
     }
 
     public static Waystone read(CompoundTag compound, HolderLookup.Provider provider) {
