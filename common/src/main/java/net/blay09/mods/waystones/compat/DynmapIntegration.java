@@ -24,6 +24,15 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     private MarkerSet waystoneMarkers;
     private MarkerSet sharestoneMarkers;
 
+    private void prepareMarkerSets() {
+        if (waystoneMarkers == null) {
+            waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", Collections.emptySet(), false);
+        }
+        if (sharestoneMarkers == null) {
+            sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", Collections.emptySet(), false);
+        }
+    }
+
     public void createFromWaystones(List<Waystone> waystones) {
         if (waystoneMarkers != null) {
             waystoneMarkers.deleteMarkerSet();
@@ -31,8 +40,7 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
         if (sharestoneMarkers != null) {
             sharestoneMarkers.deleteMarkerSet();
         }
-        waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", Collections.emptySet(), false);
-        sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", Collections.emptySet(), false);
+        prepareMarkerSets();
 
         for (final var waystone : waystones) {
             addWaystoneMarker(waystone);
@@ -40,11 +48,16 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     }
 
     public void addWaystoneMarker(Waystone waystone) {
+        prepareMarkerSets();
         final var markerSet = WaystoneTypes.isSharestone(waystone.getWaystoneType()) ? sharestoneMarkers : waystoneMarkers;
         createWaystoneMarker(markerSet, waystone);
     }
 
     public void removeWaystoneMarker(Waystone waystone) {
+        if (waystoneMarkers != null) {
+            return;
+        }
+
         final var markerId = getMarkerId(waystone);
         final var marker = waystoneMarkers.findMarker(markerId);
         if (marker != null) {
