@@ -1,3 +1,5 @@
+- Fixed crash when DynMap integration is used
+
 - Fixed waystones from pre-1.21 worlds not migrating correctly to 1.21
 
 - Re-added JourneyMap support
