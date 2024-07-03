@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
+import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,11 +18,11 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
         super(ModMenus.waystoneModifiers.get(), windowId);
         this.blockEntity = warpPlate;
 
-        addSlot(new Slot(warpPlate.getContainer(), 0, 80, 45));
-        addSlot(new Slot(warpPlate.getContainer(), 1, 80, 17));
-        addSlot(new Slot(warpPlate.getContainer(), 2, 108, 45));
-        addSlot(new Slot(warpPlate.getContainer(), 3, 80, 73));
-        addSlot(new Slot(warpPlate.getContainer(), 4, 52, 45));
+        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 0, 80, 45));
+        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 1, 80, 17));
+        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 2, 108, 45));
+        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 3, 80, 73));
+        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 4, 52, 45));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {

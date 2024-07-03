@@ -14,6 +14,7 @@ import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.core.BlockPos;
@@ -51,6 +52,24 @@ import java.util.*;
 public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements OnLoadHandler, CustomRenderBoundingBox, BalmContainerProvider {
 
     protected final DefaultContainer container = new DefaultContainer(5) {
+        @Override
+        public int getMaxStackSize(ItemStack itemStack) {
+            if (itemStack.is(ModItems.dormantShard)) {
+                return 1;
+            }
+
+            return super.getMaxStackSize(itemStack);
+        }
+
+        @Override
+        public boolean canPlaceItem(int slot, ItemStack itemStack) {
+            if (itemStack.is(ModItems.dormantShard)) {
+                return slot == 0;
+            }
+
+            return super.canPlaceItem(slot, itemStack);
+        }
+
         @Override
         public void setChanged() {
             onInventoryChanged();
