@@ -1,3 +1,5 @@
+- Fixed modifier screen accepting more than one dormant shard, resulting in all others being consumed
+
 - Fixed crash when DynMap integration is used
 
 - Fixed waystones from pre-1.21 worlds not migrating correctly to 1.21
