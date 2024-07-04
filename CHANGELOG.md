@@ -1,14 +1,1 @@
-- Fixed warp plates claiming to have lost attunement on dedicated servers 
-
-- Fixed warp plate recipes breaking after a single shard was crafted
-- Fixed warp plate showing dust instead of warp particles even if the target is valid
-- Fixed being unable to join multiplayer server
-- Changed newly activated waystones to be added to the end of the list rather than the start
-
-- Added Crumbling Attuned Shard, an attuned shard that is used up when teleporting (by edralzar)
-- Added waystones:warp_plate recipe type, allowing to define new recipes for the Warp Plate (by edralzar)
-- Fixed buckets not having any effect on waterlogged waystones
-- Fixed warp stone cooldown getting corrupted into millions of seconds
-- Restricted the warp plate's center slot to a single item to prevent item loss when crafting attuned shards (by edralzar)
-- Added Waystones to Cherry and Bamboo Repurposed Structures villages (by TelepathicGrunt)
-- Inject waystone pieces into Repurposed Structures zombie village variants (by TelepathicGrunt)
+- Fixed Waystones sometimes restricting structure parts containing the word "waystone" from spawning (which caused the top of Towers of the Wild to sometimes be missing)
