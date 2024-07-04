@@ -119,7 +119,7 @@ public class ModWorldGen {
         LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
                 .apply(StructureTemplatePool.Projection.RIGID);
         if (piece instanceof WaystoneStructurePoolElement element) {
-            element.setIsWaystone(true);
+            element.waystones$setIsWaystone(true);
         }
         StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(new ResourceLocation(villagePiece)).orElse(null);
         if (pool != null) {
