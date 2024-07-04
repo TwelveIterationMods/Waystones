@@ -1,3 +1,5 @@
+- Fixed Waystones sometimes restricting structure parts containing the word "waystone" from spawning (which caused the top of Towers of the Wild to sometimes be missing)
+
 - Fixed modifier screen accepting more than one dormant shard, resulting in all others being consumed
 
 - Fixed crash when DynMap integration is used
