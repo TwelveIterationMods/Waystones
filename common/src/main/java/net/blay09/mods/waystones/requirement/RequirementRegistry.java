@@ -85,8 +85,9 @@ public class RequirementRegistry {
             cost.setLevels((int) (cost.getLevels() + sourceValue * parameters.scale.value));
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
-        registerModifier("multiply_level_cost", experienceLevelRequirements, FloatParameter.class, (cost, context, parameters) -> {
-            cost.setLevels((int) (cost.getLevels() * parameters.value));
+        registerModifier("scaled_multiply_level_cost", experienceLevelRequirements, VariableScaledParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.id.value);
+            cost.setLevels((int) (cost.getLevels() * sourceValue * parameters.scale.value));
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
         registerModifier("min_level_cost", experienceLevelRequirements, IntParameter.class, (cost, context, parameters) -> {
@@ -111,6 +112,11 @@ public class RequirementRegistry {
             cost.setPoints((int) (cost.getPoints() + sourceValue * parameters.scale.value));
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
+        registerModifier("scaled_multiply_level_cost", experiencePointRequirements, VariableScaledParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.id.value);
+            cost.setPoints((int) (cost.getPoints() * sourceValue * parameters.scale.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCosts);
         registerModifier("min_xp_cost", experiencePointRequirements, IntParameter.class, (cost, context, parameters) -> {
             cost.setPoints(Math.max(cost.getPoints(), parameters.value));
             return cost;
@@ -131,6 +137,11 @@ public class RequirementRegistry {
         registerModifier("scaled_add_cooldown", cooldownRequirements, VariableScaledCooldownParameter.class, (cost, context, parameters) -> {
             final var sourceValue = context.getContextValue(parameters.variable.value);
             cost.setCooldown(parameters.cooldown.value, (int) ((float) cost.getCooldownSeconds() + sourceValue * parameters.seconds.value));
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
+        registerModifier("scaled_multiply_cooldown", cooldownRequirements, VariableScaledCooldownParameter.class, (cost, context, parameters) -> {
+            final var sourceValue = context.getContextValue(parameters.variable.value);
+            cost.setCooldown(parameters.cooldown.value, (int) ((float) cost.getCooldownSeconds() * sourceValue * parameters.seconds.value));
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCooldowns);
         registerModifier("min_cooldown", cooldownRequirements, CooldownParameter.class, (cost, context, parameters) -> {
@@ -169,6 +180,16 @@ public class RequirementRegistry {
                 cost.setCount((int) (context.getContextValue(parameters.variable.value) * parameters.count.value));
             } else {
                 cost.setCount((int) (cost.getCount() + context.getContextValue(parameters.variable.value) * parameters.count.value));
+            }
+            return cost;
+        }, () -> WaystonesConfig.getActive().teleports.enableCosts);
+        registerModifier("scaled_multiply_item_cost", itemRequirements, VariableScaledItemParameter.class, (cost, context, parameters) -> {
+            final var item = BuiltInRegistries.ITEM.get(parameters.item.value);
+            if (cost.getItemStack().getItem() != item) {
+                cost.setItemStack(new ItemStack(item));
+                cost.setCount((int) (context.getContextValue(parameters.variable.value) * parameters.count.value));
+            } else {
+                cost.setCount((int) (cost.getCount() * context.getContextValue(parameters.variable.value) * parameters.count.value));
             }
             return cost;
         }, () -> WaystonesConfig.getActive().teleports.enableCosts);
