@@ -219,11 +219,11 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
             if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
                 final var waystone = waystoneBlockEntity.getWaystone();
                 final var wasNotSilkTouched = !canSilkTouch() || !waystoneBlockEntity.isSilkTouched();
+                WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
                 if (wasNotSilkTouched) {
                     WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
                     PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
                 }
-                WaystoneSyncManager.sendWaystoneRemovalToAll(world.getServer(), waystone, wasNotSilkTouched);
             }
         }
 
