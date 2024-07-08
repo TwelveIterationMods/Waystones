@@ -1,5 +1,7 @@
 package net.blay09.mods.waystones.requirement;
 
+import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneStyle;
 import net.blay09.mods.waystones.api.requirement.ConditionResolver;
 import net.blay09.mods.waystones.api.requirement.RequirementFunction;
 import net.blay09.mods.waystones.api.requirement.WarpRequirement;
@@ -13,13 +15,18 @@ import java.util.regex.Pattern;
 public class RequirementModifierParser {
 
     public static Optional<ConfiguredRequirementModifier<?, ?>> parse(String input) {
-        final var conditionsStart = input.indexOf('[');
-        final var conditionsEnd = input.indexOf(']');
-        final var conditionsPart = conditionsStart != -1 && conditionsEnd != - 1 ? input.substring(conditionsStart + 1, conditionsEnd) : "";
-        final var functionPart = input.substring(conditionsEnd + 1).trim();
-        final var conditions = parseConditions(conditionsPart);
-        final var requirement = parseRequirement(functionPart);
-        return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
+        try {
+            final var conditionsStart = input.indexOf('[');
+            final var conditionsEnd = input.indexOf(']');
+            final var conditionsPart = conditionsStart != -1 && conditionsEnd != -1 ? input.substring(conditionsStart + 1, conditionsEnd) : "";
+            final var functionPart = input.substring(conditionsEnd + 1).trim();
+            final var conditions = parseConditions(conditionsPart);
+            final var requirement = parseRequirement(functionPart);
+            return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
+        } catch (Exception e) {
+            Waystones.logger.error("Could not parse warp requirement", e);
+            return Optional.empty();
+        }
     }
 
     private static List<ConfiguredCondition<?>> parseConditions(String conditionsPart) {
@@ -52,7 +59,7 @@ public class RequirementModifierParser {
             final var requirement = RequirementRegistry.getRequirementFunction(requirementId);
             return parseRequirement(requirement, args != null ? args : "");
         } else {
-            throw new IllegalArgumentException("Invalid format for requirement modifier: " + functionPart);
+            throw new IllegalArgumentException("Invalid format for requirement modifier: '" + functionPart + "'");
         }
     }
 
