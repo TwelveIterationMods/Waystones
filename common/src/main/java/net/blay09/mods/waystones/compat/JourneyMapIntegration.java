@@ -174,9 +174,6 @@ public class JourneyMapIntegration implements IClientPlugin {
             final var waypoint = api.getWaypoint(Waystones.MOD_ID, waypointId);
             if (waypoint != null) {
                 api.removeWaypoint(Waystones.MOD_ID, waypoint);
-                // TODO if (api.getWaypoint(Waystones.MOD_ID, waypointId) != null) {
-                // TODO     throw new IllegalStateException("it broken");
-                // TODO }
             }
             waystoneToWaypoint.remove(waystoneId);
         }
