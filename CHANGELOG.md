@@ -1,4 +1,1 @@
-- Added scaled_multiply_* requirement functions for warp requirements
-- Fixed crash when warp requirements failed to parse due to invalid formats
-- Fixed waystone removals not being sent to clients
-- Fixed JourneyMap waypoints disappearing when switching dimensions
+- Fixed crash when generating wild waystones due to incorrect default state
