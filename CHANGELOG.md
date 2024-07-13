@@ -1,1 +1,1 @@
-- Fixed Waystones sometimes restricting structure parts containing the word "waystone" from spawning (which caused the top of Towers of the Wild to sometimes be missing)
+- Fixed crash when generating wild waystones due to incorrect default state
