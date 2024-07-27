@@ -197,7 +197,7 @@
   "config.waystones.inventoryButton.creativeInventoryButtonY.tooltip": "La posición y del botón de inventario en el menú creativo.",
   "config.waystones.worldGen": "Generación Mundial",
   "config.waystones.worldGen.wildWaystoneStyle": "Estilo waystone salvaje",
-  "config.waystones.worldGen.wildWaystoneStyle.tooltip": "Establezca en "DEFAULT" para generar únicamente las waystones con textura normal. Establezca en "MOSSY" o "SANDY" para generar todos con esa variante. Establezca en "BIOME" para que el estilo dependa del bioma en el que se genera.",
+  "config.waystones.worldGen.wildWaystoneStyle.tooltip": "Establezca en 'DEFAULT' para generar únicamente las waystones con textura normal. Establezca en 'MOSSY' o 'SANDY' para generar todos con esa variante. Establezca en 'BIOME' para que el estilo dependa del bioma en el que se genera.",
   "config.waystones.worldGen.chunksBetweenWildWaystones": "Chunks entre waystones salvajes",
   "config.waystones.worldGen.chunksBetweenWildWaystones.tooltip": "Distancia aproximada de los chunks entre las waystones que se están generando. Establezca en 0 para deshabilitar la generación.",
   "config.waystones.worldGen.wildWaystonesDimensionAllowList": "Lista de dimensiones permitidas",
