@@ -1,1 +1,1 @@
-- Fixed crash when generating wild waystones due to incorrect default state
+- Updated to Minecraft 1.21.1
