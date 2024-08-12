@@ -80,7 +80,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
-        public TransportMobs transportPets = TransportMobs.SAME_DIMENSION;
+        public TransportMobs transportPets = TransportMobs.DISABLED;
 
         @Synced
         @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
