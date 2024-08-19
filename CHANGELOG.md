@@ -1,5 +1,2 @@
-- Updated to Minecraft 1.21.1
-- Fixed leashed tamed pets desyncing when being teleported
-- Fixed warp scrolls not being consumed
-- Fixed possible crash when waystones are placed by third party mods
-- Changed default of transportPets config option to be DISABLED
+- Added Mossy Waystone from Moss Blocks recipe
+- Fixed warp stone not being enchantable with Mending
