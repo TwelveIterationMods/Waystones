@@ -1,2 +1,1 @@
-- Added Mossy Waystone from Moss Blocks recipe
-- Fixed warp stone not being enchantable with Mending
+- Possibly fixed waystone runes not showing up when using shaders
