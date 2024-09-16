@@ -48,7 +48,7 @@
   "chat.waystones.waystone_activated": "Aktivierter Wegstein: %s",
   "chat.waystones.scroll_bound": "Schriftrolle gebunden: %s",
   "chat.waystones.scroll_not_yet_bound": "Diese Schriftrolle ist nicht an einen Wegstein gebunden.",
-  "chat.waystones.cannot_dimension_warp": "Du kannst nicht zwischen disen Welten hin- und herwechseln.",
+  "chat.waystones.cannot_dimension_warp": "Du kannst nicht zwischen diesen Welten hin- und herwechseln.",
   "chat.waystones.waystone_missing": "Der Wegstein, zu dem Du versucht hast, dich zu teleportieren, wird derzeit verschoben oder ist verschwunden.",
   "chat.waystones.cannot_transport_leashed": "Du kannst keine angeleinten Kreaturen mitnehmen",
   "chat.waystones.cannot_transport_leashed_dimensional": "Du kannst angeleinte Kreaturen nicht zwischen den Welten mitnehmen",
