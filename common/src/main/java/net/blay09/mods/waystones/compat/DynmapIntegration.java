@@ -26,10 +26,10 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private void prepareMarkerSets() {
         if (waystoneMarkers == null) {
-            waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", Collections.emptySet(), false);
+            waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", null, false);
         }
         if (sharestoneMarkers == null) {
-            sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", Collections.emptySet(), false);
+            sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", null, false);
         }
     }
 
