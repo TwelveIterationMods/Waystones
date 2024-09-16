@@ -145,7 +145,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
-        renderBlurredBackground(v);
     }
 
     @Override
