@@ -160,6 +160,10 @@ public class InternalMethodsImpl implements InternalMethods {
         final var requirementsContext = new WarpRequirementsContextImpl(context);
         final var configuredModifiers = WaystonesConfig.getActive().teleports.warpRequirements;
         for (final var modifier : configuredModifiers) {
+            if (modifier.isBlank()) {
+                continue;
+            }
+
             RequirementModifierParser.parse(modifier)
                     .filter(configuredModifier -> configuredModifier.requirement().modifier().isEnabled())
                     .ifPresent(requirementsContext::apply);
