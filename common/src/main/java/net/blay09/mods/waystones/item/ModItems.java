@@ -35,15 +35,15 @@ public class ModItems {
     public static Item crumblingAttunedShard;
 
     public static void initialize(BalmItems items) {
-        items.registerItem(() -> returnScroll = new ReturnScrollItem(defaultProperties("return_scroll")), id("return_scroll"));
-        items.registerItem(() -> boundScroll = new BoundScrollItem(defaultProperties("bound_scroll")), id("bound_scroll"), null);
-        items.registerItem(() -> warpScroll = new WarpScrollItem(defaultProperties("warp_scroll")), id("warp_scroll"));
-        items.registerItem(() -> warpStone = new WarpStoneItem(defaultProperties("warp_stone")), id("warp_stone"));
-        items.registerItem(() -> warpDust = new WarpDustItem(defaultProperties("warp_dust")), id("warp_dust"));
-        items.registerItem(() -> dormantShard = new ShardItem(defaultProperties("dormant_shard")), id("dormant_shard"));
-        items.registerItem(() -> attunedShard = new AttunedShardItem(defaultProperties("attuned_shard")), id("attuned_shard"), null);
-        items.registerItem(() -> deepslateShard = new ShardItem(defaultProperties("deepslate_shard")), id("deepslate_shard"));
-        items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(defaultProperties("crumbling_attuned_shard")), id("crumbling_attuned_shard"), null);
+        items.registerItem((identifier) -> returnScroll = new ReturnScrollItem(defaultProperties(identifier)), id("return_scroll"));
+        items.registerItem((identifier) -> boundScroll = new BoundScrollItem(defaultProperties(identifier)), id("bound_scroll"), null);
+        items.registerItem((identifier) -> warpScroll = new WarpScrollItem(defaultProperties(identifier)), id("warp_scroll"));
+        items.registerItem((identifier) -> warpStone = new WarpStoneItem(defaultProperties(identifier)), id("warp_stone"));
+        items.registerItem((identifier) -> warpDust = new WarpDustItem(defaultProperties(identifier)), id("warp_dust"));
+        items.registerItem((identifier) -> dormantShard = new ShardItem(defaultProperties(identifier)), id("dormant_shard"));
+        items.registerItem((identifier) -> attunedShard = new AttunedShardItem(defaultProperties(identifier)), id("attuned_shard"), null);
+        items.registerItem((identifier) -> deepslateShard = new ShardItem(defaultProperties(identifier)), id("deepslate_shard"));
+        items.registerItem((identifier) -> crumblingAttunedShard = new CrumblingAttunedShardItem(defaultProperties(identifier)), id("crumbling_attuned_shard"), null);
 
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(ModBlocks.waystone), id("waystones"));
 
@@ -114,15 +114,15 @@ public class ModItems {
         });
     }
 
-    private static Item.Properties defaultProperties(String name) {
-        return Balm.getItems().itemProperties().setId(itemId(name));
+    private static Item.Properties defaultProperties(ResourceLocation identifier) {
+        return new Item.Properties().setId(itemId(identifier));
     }
 
     private static ResourceLocation id(String name) {
         return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
-    private static ResourceKey<Item> itemId(String name) {
-        return ResourceKey.create(Registries.ITEM, id(name));
+    private static ResourceKey<Item> itemId(ResourceLocation identifier) {
+        return ResourceKey.create(Registries.ITEM, identifier);
     }
 }
