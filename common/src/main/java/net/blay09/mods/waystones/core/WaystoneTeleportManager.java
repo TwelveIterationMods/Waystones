@@ -140,9 +140,9 @@ public class WaystoneTeleportManager {
             }
 
             if (targetWorld == entity.level()) {
-                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot(), Collections.emptySet());
+                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot());
             } else {
-                ((ServerPlayer) entity).teleportTo(targetWorld, x, y, z, yaw, entity.getXRot());
+                entity.teleportTo(targetWorld, x, y, z, Set.of(), yaw, entity.getXRot(), false);
             }
 
             entity.setYHeadRot(yaw);
@@ -154,7 +154,7 @@ public class WaystoneTeleportManager {
             } else {
                 entity.unRide();
                 Entity oldEntity = entity;
-                entity = entity.getType().create(targetWorld);
+                entity = entity.getType().create(targetWorld, EntitySpawnReason.DIMENSION_TRAVEL);
                 if (entity == null) {
                     return oldEntity;
                 }

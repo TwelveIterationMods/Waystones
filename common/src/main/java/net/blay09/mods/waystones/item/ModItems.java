@@ -1,16 +1,20 @@
 package net.blay09.mods.waystones.item;
 
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,15 +35,15 @@ public class ModItems {
     public static Item crumblingAttunedShard;
 
     public static void initialize(BalmItems items) {
-        items.registerItem(() -> returnScroll = new ReturnScrollItem(items.itemProperties()), id("return_scroll"));
-        items.registerItem(() -> boundScroll = new BoundScrollItem(items.itemProperties()), id("bound_scroll"), null);
-        items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
-        items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
-        items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));
-        items.registerItem(() -> dormantShard = new ShardItem(items.itemProperties()), id("dormant_shard"));
-        items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"), null);
-        items.registerItem(() -> deepslateShard = new ShardItem(items.itemProperties()), id("deepslate_shard"));
-        items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(items.itemProperties()), id("crumbling_attuned_shard"), null);
+        items.registerItem(() -> returnScroll = new ReturnScrollItem(defaultProperties("return_scroll")), id("return_scroll"));
+        items.registerItem(() -> boundScroll = new BoundScrollItem(defaultProperties("bound_scroll")), id("bound_scroll"), null);
+        items.registerItem(() -> warpScroll = new WarpScrollItem(defaultProperties("warp_scroll")), id("warp_scroll"));
+        items.registerItem(() -> warpStone = new WarpStoneItem(defaultProperties("warp_stone")), id("warp_stone"));
+        items.registerItem(() -> warpDust = new WarpDustItem(defaultProperties("warp_dust")), id("warp_dust"));
+        items.registerItem(() -> dormantShard = new ShardItem(defaultProperties("dormant_shard")), id("dormant_shard"));
+        items.registerItem(() -> attunedShard = new AttunedShardItem(defaultProperties("attuned_shard")), id("attuned_shard"), null);
+        items.registerItem(() -> deepslateShard = new ShardItem(defaultProperties("deepslate_shard")), id("deepslate_shard"));
+        items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(defaultProperties("crumbling_attuned_shard")), id("crumbling_attuned_shard"), null);
 
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(ModBlocks.waystone), id("waystones"));
 
@@ -110,8 +114,15 @@ public class ModItems {
         });
     }
 
+    private static Item.Properties defaultProperties(String name) {
+        return Balm.getItems().itemProperties().setId(itemId(name));
+    }
+
     private static ResourceLocation id(String name) {
         return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
-    
+
+    private static ResourceKey<Item> itemId(String name) {
+        return ResourceKey.create(Registries.ITEM, id(name));
+    }
 }

@@ -41,7 +41,7 @@ public class JigsawPlacementPlacerMixin {
         if (poolPath.endsWith("/houses")) {
             ResourceLocation waystonePoolName = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, poolPath.replace("/houses", "/waystones"));
             ResourceKey<StructureTemplatePool> waystonePoolKey = ResourceKey.create(Registries.TEMPLATE_POOL, waystonePoolName);
-            if (pools.getHolder(waystonePoolKey).isPresent()) {
+            if (pools.get(waystonePoolKey).isPresent()) {
                 waystones$hasWaystone = true;
                 return waystonePoolKey;
             }

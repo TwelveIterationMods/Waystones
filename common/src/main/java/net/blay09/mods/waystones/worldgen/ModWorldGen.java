@@ -135,14 +135,14 @@ public class ModWorldGen {
 
     private static void addWaystoneStructureToVillageConfig(RegistryAccess registryAccess, String villagePiece, ResourceLocation waystoneStructure, int weight) {
 
-        Holder<StructureProcessorList> emptyProcessorList = registryAccess.registryOrThrow(Registries.PROCESSOR_LIST)
-                .getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
+        Holder<StructureProcessorList> emptyProcessorList = registryAccess.lookupOrThrow(Registries.PROCESSOR_LIST)
+                .getOrThrow(EMPTY_PROCESSOR_LIST_KEY);
         LegacySinglePoolElement piece = StructurePoolElement.legacy(waystoneStructure.toString(), emptyProcessorList)
                 .apply(StructureTemplatePool.Projection.RIGID);
         if (piece instanceof WaystoneStructurePoolElement element) {
             element.waystones$setIsWaystone(true);
         }
-        StructureTemplatePool pool = registryAccess.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(ResourceLocation.withDefaultNamespace(villagePiece)).orElse(null);
+        StructureTemplatePool pool = registryAccess.lookupOrThrow(Registries.TEMPLATE_POOL).getOptional(ResourceLocation.withDefaultNamespace(villagePiece)).orElse(null);
         if (pool != null) {
             var poolAccessor = (StructureTemplatePoolAccessor) pool;
             // pretty sure this can be an immutable list (when datapacked) so gotta make a copy to be safe.
