@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,4 +60,10 @@ public interface InternalMethods {
     void registerConditionResolver(ConditionResolver<?> conditionResolver);
 
     void registerParameterSerializer(ParameterSerializer<?> parameterSerializer);
+
+    boolean isWaystoneActivated(Player player, Waystone waystone);
+
+    Collection<Waystone> getActivatedWaystones(Player player);
+
+    Optional<Waystone> getNearestWaystone(Player player);
 }
