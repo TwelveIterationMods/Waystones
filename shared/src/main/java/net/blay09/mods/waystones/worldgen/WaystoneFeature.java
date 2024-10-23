@@ -37,14 +37,14 @@ public class WaystoneFeature extends Feature<NoneFeatureConfiguration> {
         BlockState stateAbove = world.getBlockState(posAbove);
         if (state.isAir() && stateAbove.isAir()) {
             world.setBlock(pos, waystoneState
+                    .setValue(WaystoneBlock.FACING, facing)
                     .setValue(WaystoneBlock.HALF, DoubleBlockHalf.LOWER)
-                    .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS)
-                    .setValue(WaystoneBlock.FACING, facing), 2);
+                    .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS), 2);
 
             world.setBlock(posAbove, waystoneState
+                    .setValue(WaystoneBlock.FACING, facing)
                     .setValue(WaystoneBlock.HALF, DoubleBlockHalf.UPPER)
-                    .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS)
-                    .setValue(WaystoneBlock.FACING, facing), 2);
+                    .setValue(WaystoneBlockBase.ORIGIN, WaystoneOrigin.WILDERNESS), 2);
 
             WaystoneBlockEntity tileEntity = (WaystoneBlockEntity) world.getBlockEntity(pos);
             if (tileEntity != null) {

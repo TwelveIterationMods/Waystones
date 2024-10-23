@@ -55,10 +55,10 @@ public class WaystoneBlock extends WaystoneBlockBase {
     public WaystoneBlock(Properties properties) {
         super(properties);
         registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
                 .setValue(HALF, DoubleBlockHalf.LOWER)
                 .setValue(ORIGIN, WaystoneOrigin.UNKNOWN)
-                .setValue(WATERLOGGED, false)
-                .setValue(FACING, Direction.NORTH));
+                .setValue(WATERLOGGED, false));
     }
 
     @Override

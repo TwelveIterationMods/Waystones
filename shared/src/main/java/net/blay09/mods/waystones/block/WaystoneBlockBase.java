@@ -48,9 +48,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
     public WaystoneBlockBase(Properties properties) {
         super(properties.pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
                 .setValue(WATERLOGGED, false)
-                .setValue(ORIGIN, WaystoneOrigin.UNKNOWN)
-                .setValue(FACING, Direction.NORTH));
+                .setValue(ORIGIN, WaystoneOrigin.UNKNOWN));
     }
 
     @Override
