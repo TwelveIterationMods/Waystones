@@ -4,11 +4,13 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,4 +46,10 @@ public interface InternalMethods {
     Optional<IWaystone> getBoundWaystone(ItemStack itemStack);
 
     void setBoundWaystone(ItemStack itemStack, @Nullable IWaystone waystone);
+
+    boolean isWaystoneActivated(Player player, IWaystone waystone);
+
+    Collection<IWaystone> getActivatedWaystones(Player player);
+
+    Optional<IWaystone> getNearestWaystone(Player player);
 }

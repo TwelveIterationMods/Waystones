@@ -6,11 +6,13 @@ import net.blay09.mods.waystones.core.WaystoneTeleportContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,6 +70,18 @@ public class WaystonesAPI {
      */
     public static Optional<IWaystone> getWaystone(Level level, UUID uuid) {
         return __internalMethods.getWaystone(level, uuid);
+    }
+
+    public static boolean isWaystoneActivated(Player player, IWaystone waystone) {
+        return __internalMethods.isWaystoneActivated(player, waystone);
+    }
+
+    public static Collection<IWaystone> getActivatedWaystones(Player player) {
+        return __internalMethods.getActivatedWaystones(player);
+    }
+
+    public static Optional<IWaystone> getNearestWaystone(Player player) {
+        return __internalMethods.getNearestWaystone(player);
     }
 
     public static Optional<IWaystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
