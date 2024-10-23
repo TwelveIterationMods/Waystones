@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -195,5 +196,20 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
         RequirementRegistry.register(parameterSerializer);
+    }
+
+    @Override
+    public boolean isWaystoneActivated(Player player, Waystone waystone) {
+        return PlayerWaystoneManager.isWaystoneActivated(player, waystone);
+    }
+
+    @Override
+    public Collection<Waystone> getActivatedWaystones(Player player) {
+        return PlayerWaystoneManager.getActivatedWaystones(player);
+    }
+
+    @Override
+    public Optional<Waystone> getNearestWaystone(Player player) {
+        return PlayerWaystoneManager.getNearestWaystone(player);
     }
 }
