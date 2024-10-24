@@ -20,7 +20,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -59,22 +58,19 @@ public class ModWorldGen {
 
         waystonePlacement = worldGen.registerPlacementModifier(id("waystone"), () -> () -> WaystonePlacement.CODEC);
 
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.IS_DESERT), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.SANDY));
-        worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_JUNGLE), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.IS_SWAMP), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.IS_MUSHROOM),
+        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_SANDY_WAYSTONE),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                getWaystoneFeature(WorldGenStyle.SANDY));
+        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_MOSSY_WAYSTONE),
                 GenerationStep.Decoration.VEGETAL_DECORATION,
                 getWaystoneFeature(WorldGenStyle.MOSSY));
-        worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_NETHER),
+        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_BLACKSTONE_WAYSTONE),
                 GenerationStep.Decoration.VEGETAL_DECORATION,
                 getWaystoneFeature(WorldGenStyle.BLACKSTONE));
-        worldGen.addFeatureToBiomes(matchesTag(BiomeTags.IS_END), GenerationStep.Decoration.VEGETAL_DECORATION, getWaystoneFeature(WorldGenStyle.END_STONE));
-        worldGen.addFeatureToBiomes(matchesNeitherTag(List.of(ModBiomeTags.IS_SWAMP,
-                        ModBiomeTags.IS_DESERT,
-                        BiomeTags.IS_JUNGLE,
-                        ModBiomeTags.IS_MUSHROOM,
-                        BiomeTags.IS_NETHER,
-                        BiomeTags.IS_END)),
+        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_END_STONE_WAYSTONE),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                getWaystoneFeature(WorldGenStyle.END_STONE));
+        worldGen.addFeatureToBiomes(matchesTag(ModBiomeTags.HAS_STRUCTURE_WAYSTONE),
                 GenerationStep.Decoration.VEGETAL_DECORATION,
                 getWaystoneFeature(WorldGenStyle.DEFAULT));
 
@@ -84,18 +80,6 @@ public class ModWorldGen {
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
         return (resourceLocation, biome) -> biome.is(tag);
-    }
-
-    private static BiomePredicate matchesNeitherTag(List<TagKey<Biome>> tags) {
-        return (resourceLocation, biome) -> {
-            for (TagKey<Biome> tag : tags) {
-                if (biome.is(tag)) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
     }
 
     private static ResourceLocation id(String name) {
