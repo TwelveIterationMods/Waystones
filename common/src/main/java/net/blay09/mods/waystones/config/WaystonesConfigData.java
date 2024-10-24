@@ -40,7 +40,11 @@ public class WaystonesConfigData implements BalmConfigData {
         public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
-        @Comment("Add GLOBAL to allow every player to create global waystones.")
+        @Comment("Set to \"GLOBAL\" and change allowedVisibilities to have newly placed or found waystones be global by default.")
+        public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
+
+        @Synced
+        @Comment("Add \"GLOBAL\" to allow every player to create global waystones.")
         @ExpectedType(WaystoneVisibility.class)
         public Set<WaystoneVisibility> allowedVisibilities = Set.of();
 
