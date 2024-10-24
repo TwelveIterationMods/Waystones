@@ -1,6 +1,8 @@
 package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.waystones.api.MutableWaystone;
+import net.blay09.mods.waystones.api.WaystoneManager;
 import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
@@ -218,6 +220,9 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                 if (wasNotSilkTouched) {
                     WaystoneManagerImpl.get(world.getServer()).removeWaystone(waystone);
                     PlayerWaystoneManager.removeKnownWaystone(world.getServer(), waystone);
+                } else if (waystone instanceof MutableWaystone mutableWaystone) {
+                    mutableWaystone.setTransient(true);
+                    WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
                 }
             }
         }
@@ -285,10 +290,8 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
                     existingWaystone = new WaystoneProxy(world.getServer(), waystoneUid);
                 }
 
-                if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof WaystoneImpl) {
-                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world,
-                            ((WaystoneImpl) existingWaystone.getBackingWaystone()),
-                            stack);
+                if (existingWaystone != null && existingWaystone.isValid() && existingWaystone.getBackingWaystone() instanceof WaystoneImpl backingWaystone) {
+                    ((WaystoneBlockEntityBase) blockEntity).initializeFromExisting((ServerLevelAccessor) world, backingWaystone, stack);
                 } else {
                     ((WaystoneBlockEntityBase) blockEntity).initializeWaystone((ServerLevelAccessor) world, placer, WaystoneOrigin.PLAYER);
                 }
