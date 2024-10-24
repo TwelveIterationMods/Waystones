@@ -207,6 +207,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         waystone = existingWaystone;
         existingWaystone.setDimension(world.getLevel().dimension());
         existingWaystone.setPos(worldPosition);
+        existingWaystone.setTransient(false);
+        WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
         setChanged();
         sync();
     }
