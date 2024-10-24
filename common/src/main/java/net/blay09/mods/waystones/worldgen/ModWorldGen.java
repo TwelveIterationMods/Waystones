@@ -9,7 +9,9 @@ import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.waystones.Waystones;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.ModBlocks;
+import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.config.WorldGenStyle;
@@ -21,7 +23,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -32,6 +36,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ModWorldGen {
     private static final ResourceLocation waystone = ResourceLocation.fromNamespaceAndPath("waystones", "waystone");
@@ -74,8 +80,23 @@ public class ModWorldGen {
                 GenerationStep.Decoration.VEGETAL_DECORATION,
                 getWaystoneFeature(WorldGenStyle.DEFAULT));
 
+        worldGen.registerPoiType(id("wild_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.WILDERNESS), 1, 1));
+        worldGen.registerPoiType(id("village_waystone"), () -> new PoiType(gatherWaystonesOfOrigin(WaystoneOrigin.VILLAGE), 1, 1));
+
         Balm.getEvents().onEvent(ServerStartedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
         Balm.getEvents().onEvent(ServerReloadedEvent.class, event -> setupDynamicRegistries(event.getServer().registryAccess()));
+    }
+
+    private static Set<BlockState> gatherWaystonesOfOrigin(WaystoneOrigin origin) {
+        final var sourceBlocks = List.of(ModBlocks.waystone,
+                ModBlocks.sandyWaystone,
+                ModBlocks.mossyWaystone,
+                ModBlocks.blackstoneWaystone,
+                ModBlocks.endStoneWaystone);
+        return sourceBlocks.stream()
+                .flatMap(it -> it.getStateDefinition().getPossibleStates().stream())
+                .filter(it -> it.getValue(WaystoneBlock.ORIGIN) == origin)
+                .collect(Collectors.toSet());
     }
 
     private static BiomePredicate matchesTag(TagKey<Biome> tag) {
