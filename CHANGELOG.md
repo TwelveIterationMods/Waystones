@@ -1,1 +1,1 @@
-- Fixed crash when creating a new world
+- Fixed shift-clicking to sort a waystone to front or back not being saved
