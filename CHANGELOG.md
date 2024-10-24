@@ -1,3 +1,4 @@
+- Added Blank Scroll to re-add bound scroll functionality
 - Added defaultVisibility option that can be set to "GLOBAL" to have newly placed and found waystones start out as global (default: ACTIVATION)
 - Added /waystones activate <targets> <pos> and /waystones forget <targets> <pos|all> commands
 - Added display of reason why editing is disabled to waystone edit screen
