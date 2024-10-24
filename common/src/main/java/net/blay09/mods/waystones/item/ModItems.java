@@ -32,7 +32,7 @@ public class ModItems {
 
     public static void initialize(BalmItems items) {
         items.registerItem(() -> returnScroll = new ReturnScrollItem(items.itemProperties()), id("return_scroll"));
-        items.registerItem((identifier) -> blankScroll = new BlankScrollItem(items.itemProperties()), id("blank_scroll"));
+        items.registerItem(() -> blankScroll = new BlankScrollItem(items.itemProperties()), id("blank_scroll"));
         items.registerItem(() -> boundScroll = new BoundScrollItem(items.itemProperties()), id("bound_scroll"), null);
         items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
         items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
