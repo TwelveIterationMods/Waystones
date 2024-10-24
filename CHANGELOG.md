@@ -1,4 +1,5 @@
-- Added defaultVisibility option that can be set to "GLOBAL" to have newly placed and found waystones start out as global
+- Added defaultVisibility option that can be set to "GLOBAL" to have newly placed and found waystones start out as global (default: ACTIVATION)
+- Added /waystones activate <targets> <pos> and /waystones forget <targets> <pos|all> commands
 - Changed wild waystone spawns to use waystones:has_structure/*_waystone tags to allow for more control
 - Fixed shift-clicking to sort a waystone to front or back not being saved
 - Technical: Added "Transient" state to waystones that indicates whether the waystone was picked up with silk touch and is in an unknown state of existence
