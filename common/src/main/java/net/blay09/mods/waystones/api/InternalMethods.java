@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -66,4 +68,8 @@ public interface InternalMethods {
     Collection<Waystone> getActivatedWaystones(Player player);
 
     Optional<Waystone> getNearestWaystone(Player player);
+
+    void activateWaystone(ServerPlayer player, Waystone waystone);
+
+    void deactivateWaystone(ServerPlayer player, Waystone waystone);
 }
