@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": "minecraft:feather",
-    "G": "#c:nuggets/gold",
-    "P": "minecraft:paper"
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "G": {
+      "tag": "c:nuggets/gold"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
   },
   "pattern": [
     "GFG",
