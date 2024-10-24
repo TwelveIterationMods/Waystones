@@ -2,13 +2,12 @@ package net.blay09.mods.waystones.block;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.MutableWaystone;
-import net.blay09.mods.waystones.api.WaystoneManager;
-import net.blay09.mods.waystones.api.trait.IAttunementItem;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,12 +17,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -31,8 +28,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -250,6 +245,14 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
         tooltip.add(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+        if (itemStack.is(ModItems.blankScroll)) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+        return super.useItemOn(itemStack, state, level, pos, player, hand, blockHitResult);
     }
 
     @Override
