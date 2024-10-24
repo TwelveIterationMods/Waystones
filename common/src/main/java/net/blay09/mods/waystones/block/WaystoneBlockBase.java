@@ -9,6 +9,7 @@ import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.core.*;
+import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,6 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -245,6 +247,14 @@ public abstract class WaystoneBlockBase extends BaseEntityBlock implements Simpl
 
     protected void addWaystoneNameToTooltip(List<Component> tooltip, WaystoneProxy waystone) {
         tooltip.add(waystone.getName().copy().withStyle(ChatFormatting.AQUA));
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+        if (itemStack.is(ModItems.blankScroll)) {
+            return InteractionResult.PASS;
+        }
+        return super.useItemOn(itemStack, state, level, pos, player, hand, blockHitResult);
     }
 
     @Override

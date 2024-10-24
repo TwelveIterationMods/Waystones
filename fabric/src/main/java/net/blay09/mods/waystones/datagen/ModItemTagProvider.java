@@ -22,7 +22,7 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
         getOrCreateTagBuilder(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/durability"))).add(ModItems.warpStone);
-        getOrCreateTagBuilder(ModItemTags.SCROLLS).add(ModItems.warpScroll, ModItems.returnScroll, ModItems.boundScroll);
+        getOrCreateTagBuilder(ModItemTags.SCROLLS).add(ModItems.warpScroll, ModItems.returnScroll, ModItems.boundScroll, ModItems.blankScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll);
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);

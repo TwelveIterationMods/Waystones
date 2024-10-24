@@ -175,6 +175,15 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                         .save(exporter);
 
+                shaped(RecipeCategory.DECORATIONS, ModItems.blankScroll, 3)
+                        .pattern("GFG")
+                        .pattern("PPP")
+                        .define('F', Items.FEATHER)
+                        .define('G', BalmItemTags.GOLD_NUGGETS)
+                        .define('P', Items.PAPER)
+                        .unlockedBy("has_paper", has(Items.PAPER))
+                        .save(exporter);
+
                 shaped(RecipeCategory.DECORATIONS, ModItems.returnScroll, 3)
                         .pattern("GEG")
                         .pattern("PPP")
