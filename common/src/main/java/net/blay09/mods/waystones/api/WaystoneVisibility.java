@@ -1,6 +1,5 @@
 package net.blay09.mods.waystones.api;
 
-import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.resources.ResourceLocation;
 
 public enum WaystoneVisibility {
@@ -41,12 +40,12 @@ public enum WaystoneVisibility {
                 case "green_sharestone" -> WaystoneVisibility.GREEN_SHARESTONE;
                 case "red_sharestone" -> WaystoneVisibility.RED_SHARESTONE;
                 case "black_sharestone" -> WaystoneVisibility.BLACK_SHARESTONE;
-                default -> WaystonesConfig.getActive().general.defaultVisibility;
+                default -> WaystoneVisibility.ACTIVATION;
             };
         } else if (waystoneType.equals(WaystoneTypes.WARP_PLATE)) {
             return WaystoneVisibility.SHARD_ONLY;
         } else {
-            return WaystonesConfig.getActive().general.defaultVisibility;
+            return WaystoneVisibility.ACTIVATION;
         }
     }
 }
