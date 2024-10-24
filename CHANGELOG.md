@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.2
+- Fixed crash when creating a new world
