@@ -18,6 +18,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -211,5 +212,17 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public Optional<Waystone> getNearestWaystone(Player player) {
         return PlayerWaystoneManager.getNearestWaystone(player);
+    }
+
+    @Override
+    public void activateWaystone(ServerPlayer player, Waystone waystone) {
+        PlayerWaystoneManager.activateWaystone(player, waystone);
+        WaystoneSyncManager.sendActivatedWaystones(player);
+    }
+
+    @Override
+    public void deactivateWaystone(ServerPlayer player, Waystone waystone) {
+        PlayerWaystoneManager.deactivateWaystone(player, waystone);
+        WaystoneSyncManager.sendActivatedWaystones(player);
     }
 }

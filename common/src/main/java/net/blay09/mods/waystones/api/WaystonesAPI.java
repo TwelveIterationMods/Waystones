@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -121,4 +122,11 @@ public class WaystonesAPI {
         __internalMethods.registerParameterSerializer(parameterSerializer);
     }
 
+    public static void activateWaystone(ServerPlayer player, Waystone waystone) {
+        __internalMethods.activateWaystone(player, waystone);
+    }
+
+    public static void deactivateWaystone(ServerPlayer player, Waystone waystone) {
+        __internalMethods.deactivateWaystone(player, waystone);
+    }
 }
