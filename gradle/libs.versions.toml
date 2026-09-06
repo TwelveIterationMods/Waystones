@@ -1,10 +1,10 @@
 [versions]
 balm = "26.3.0.1-SNAPSHOT"
-minecraft = "26.3-pre-1"
-neoForm = "26.3-pre-1-1"
+minecraft = "26.3-pre-2"
+neoForm = "26.3-pre-2-1"
 neoForge = "26.2.0.0-beta"
 forge = "63.0.2"
-fabricApi = "0.159.2+26.3"
+fabricApi = "0.159.4+26.3"
 fabricLoader = "0.19.5"
 journeyMapApi = "26.2-2.0.0"
 unbreakables = "26.1.0.2"
