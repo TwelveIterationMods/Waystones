@@ -61,7 +61,7 @@ public class WaystoneIndexManager {
         final var result = new ArrayList<Waystone>();
         for (final var waystoneId : globalWaystones) {
             store.getWaystoneById(waystoneId)
-                    .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.GLOBAL)
+                    .filter(waystone -> !waystone.isTransient() && waystone.getVisibility() == WaystoneVisibility.GLOBAL)
                     .ifPresent(result::add);
         }
         return result;
@@ -82,7 +82,7 @@ public class WaystoneIndexManager {
         final var result = new ArrayList<Waystone>();
         for (final var waystoneId : waystoneIds) {
             store.getWaystoneById(waystoneId)
-                    .filter(waystone -> waystone.getVisibility() == WaystoneVisibility.TEAM)
+                    .filter(waystone -> !waystone.isTransient() && waystone.getVisibility() == WaystoneVisibility.TEAM)
                     .ifPresent(result::add);
         }
         return result;
