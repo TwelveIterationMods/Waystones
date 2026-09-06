@@ -34,19 +34,21 @@ public class PlayerWaystoneManager {
     }
 
     public static void activateWaystone(Player player, Waystone waystone) {
-        if (!waystone.hasName() && waystone instanceof MutableWaystone && waystone.wasGenerated()) {
-            NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
-            final var name = NameGeneratorManager.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
-            ((MutableWaystone) waystone).setName(name);
-        }
+        if(waystone instanceof MutableWaystone mutableWaystone) {
+            if (!waystone.hasName() && waystone.wasGenerated()) {
+                NameGenerationMode nameGenerationMode = WaystonesConfig.getActive().worldGen.nameGenerationMode;
+                final var name = NameGeneratorManager.get(player.getServer()).getName(player.level(), waystone, player.level().random, nameGenerationMode);
+                mutableWaystone.setName(name);
+            }
 
-        if (!waystone.hasOwner() && waystone instanceof MutableWaystone mutableWaystone) {
-            final var previousVisibility = waystone.getVisibility();
-            mutableWaystone.setOwnerUid(player.getUUID());
-            mutableWaystone.setOwnerUsername(player.getGameProfile().getName());
-            mutableWaystone.setVisibility(WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType()));
-            if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
-                WaystoneIndexManager.visibilityChanged(player.getServer(), waystone, previousVisibility);
+            if (!waystone.hasOwner()) {
+                final var previousVisibility = waystone.getVisibility();
+                mutableWaystone.setOwnerUid(player.getUUID());
+                mutableWaystone.setOwnerUsername(player.getGameProfile().getName());
+                mutableWaystone.setVisibility(WaystoneVisibility.fromWaystoneType(waystone.getWaystoneType()));
+                if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || waystone.getVisibility() == WaystoneVisibility.TEAM) {
+                    WaystoneIndexManager.visibilityChanged(player.getServer(), waystone, previousVisibility);
+                }
             }
         }
 

@@ -89,19 +89,23 @@ public class WaystoneIndexManager {
     }
 
     private static void add(MinecraftServer server, Waystone waystone) {
+        // Prevent unnamed waystones from showing up on indexes
+        // TODO consider lazy-initialization on activation, since there isn't any benefit to having undiscovered waystones in the db
+        if (waystone.wasGenerated() && !waystone.hasName()) {
+            return;
+        }
+
         if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
             globalWaystones.add(waystone.getWaystoneUid());
             return;
         }
 
-        if (waystone.getVisibility() != WaystoneVisibility.TEAM) {
-            return;
+        if (waystone.getVisibility() == WaystoneVisibility.TEAM) {
+            PlayerWaystoneManager.getOwnerUsername(waystone, server)
+                    .map(ownerUsername -> server.getScoreboard().getPlayersTeam(ownerUsername))
+                    .map(PlayerTeam::getName)
+                    .ifPresent(teamName -> waystonesByTeamName.put(teamName, waystone.getWaystoneUid()));
         }
-
-        PlayerWaystoneManager.getOwnerUsername(waystone, server)
-                .map(ownerUsername -> server.getScoreboard().getPlayersTeam(ownerUsername))
-                .map(PlayerTeam::getName)
-                .ifPresent(teamName -> waystonesByTeamName.put(teamName, waystone.getWaystoneUid()));
     }
 
     private static void remove(Waystone waystone) {
