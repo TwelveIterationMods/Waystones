@@ -54,17 +54,18 @@ public class PlayerWaystoneManager {
                     mutableWaystone.setName(name);
                 }
 
+                mutableWaystone.setSeen(true);
+
                 if (!waystone.hasOwner()) {
                     final var previousVisibility = waystone.getVisibility();
                     mutableWaystone.setOwnerUid(player.getUUID());
                     mutableWaystone.setOwnerUsername(player.getGameProfile().name());
                     mutableWaystone.setVisibility(WaystoneVisibility.getDefaultForWaystoneKind(waystone.getWaystoneKind()));
-                    if (waystone.getVisibility() == WaystoneVisibility.GLOBAL) {
+                    if (waystone.getVisibility() == WaystoneVisibility.GLOBAL || waystone.getVisibility() == WaystoneVisibility.TEAM) {
                         WaystoneIndexManager.visibilityChanged(serverLevel.getServer(), waystone, previousVisibility);
                     }
                 }
 
-                mutableWaystone.setSeen(true);
             }
 
             SavedDataWaystonesStore.get(serverLevel.getServer()).setDirty();
