@@ -15,8 +15,8 @@ public class WaystoneVisibilities {
     public static List<WaystoneVisibility> getVisibilityOptions(ServerPlayer player, Waystone waystone) {
         final var waystoneKind = waystone.getWaystoneKind();
         final var result = new LinkedHashSet<WaystoneVisibility>();
-        result.add(WaystonesConfig.getActive().rules.defaultVisibility.getVisibility());
         result.add(WaystoneVisibility.getDefaultForWaystoneKind(waystoneKind));
+        result.add(WaystoneVisibility.ACTIVATION);
         result.add(WaystoneVisibility.TEAM);
         final var context = MutableShogiContext.of(player);
         WaystoneRuleContext.setEffectiveWaystone(context, waystone);
