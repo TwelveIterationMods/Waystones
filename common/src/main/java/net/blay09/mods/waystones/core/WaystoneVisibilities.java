@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.core;
 
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.api.WaystoneVisibility;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +18,10 @@ public class WaystoneVisibilities {
         if (!result.contains(baseVisibility)) {
             result.add(baseVisibility);
         }
-        if (baseVisibility == WaystoneVisibility.ACTIVATION) {
+        if (WaystoneTypes.WAYSTONE.equals(waystone.getWaystoneType())) {
+            if (!result.contains(WaystoneVisibility.ACTIVATION)) {
+                result.add(WaystoneVisibility.ACTIVATION);
+            }
             if (!result.contains(WaystoneVisibility.TEAM)) {
                 result.add(WaystoneVisibility.TEAM);
             }
