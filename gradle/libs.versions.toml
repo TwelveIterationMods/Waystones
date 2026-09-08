@@ -12,7 +12,6 @@ shogi = "26.1.2.8"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-parchment = { module = "org.parchmentmc.data:parchment-1.21.10", version = "2025.10.12" }
 balmCommon = { module = "net.blay09.mods:balm-common", version.ref = "balm" }
 balmNeoForge = { module = "net.blay09.mods:balm-neoforge", version.ref = "balm" }
 balmForge = { module = "net.blay09.mods:balm-forge", version.ref = "balm" }

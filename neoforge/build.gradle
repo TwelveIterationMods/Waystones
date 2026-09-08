@@ -15,7 +15,6 @@ neoForge {
         accessTransformers.from(at.absolutePath)
     }
 
-    parchment.parchmentArtifact = libs.parchment.get().toString()
 
     runs {
         configureEach {
