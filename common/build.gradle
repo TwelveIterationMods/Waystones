@@ -10,7 +10,6 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    parchment.parchmentArtifact = libs.parchment.get().toString()
 }
 
 dependencies {
