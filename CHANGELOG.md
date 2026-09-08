@@ -1,1 +1,1 @@
-- Fixed unnamed sharestones being created when placing a new one on Forge
+- Fixed world gen features being registered multiple times in some cases, resulting in feature cycle order crashes
