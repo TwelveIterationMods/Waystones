@@ -1,5 +1,4 @@
-- Added button to hide waystones if they can't be deleted
-- Fixed custom reach distance being ignored in distance validity checks
-- Fixed warp modifiers not being applied to waystones
-- Fixed warp plates teleporting previously received entities back when the chunk was unloaded in between
-- Fixed possible crashes with chunk multithreading mods
+- Fixed setting waystones to activation visibility no longer working when default visibility is set to global
+- Fixed silk-touched waystones still showing up in global/team index
+- Fixed unseen, unnamed waystones showing up when default visibility is global
+- Fixed animations becoming choppy as time passes
